@@ -1,0 +1,4 @@
+*.log
+environment.php
+application/logs/**/*
+html/files/**/*

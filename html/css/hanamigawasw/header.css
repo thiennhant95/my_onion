@@ -1,0 +1,339 @@
+/* header: common
+-------------------------------------------------- */
+
+.header-cell
+{
+  display: table-cell;
+  height: 100%;
+  padding: 0 .5em;
+  vertical-align: middle;
+}
+
+.header-logo
+{
+  width: 86px;
+  padding-right: 1rem;
+}
+
+.header-logo > img
+{
+  width: 100%;
+  min-height: auto;
+}
+
+.header-body
+{
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.header-hd
+{
+  line-height: 1.2;
+}
+
+.header-hd-main
+{
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+}
+
+.header-hd-sub
+{
+  font-size: 12px;
+  display: block;
+  padding-top: 7px;
+}
+
+@media (min-width: 576px)
+{
+  .header-logo
+  {
+    width: 136px;
+    padding-right: 1.5rem;
+  }
+  .header-hd-main
+  {
+    font-size: 45px;
+  }
+  .header-hd-sub
+  {
+    font-size: 16px;
+  }
+}
+
+
+/* nav: sp
+-------------------------------------------------- */
+
+.nav-sp
+{
+  font-size: 18px;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  visibility: hidden;
+  min-width: 240px;
+  height: 100%;
+  transition: all .5s;
+  transform: translateX(30%);
+  opacity: 0;
+  color: white;
+  background: #595757;
+}
+
+.nav-sp.js-active
+{
+  visibility: visible;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.nav-sp-title
+{
+  font-weight: normal;
+  padding: 1rem;
+}
+
+.nav-sp-list
+{
+  padding-left: 0;
+  list-style: none;
+}
+
+.nav-sp-list > li > a
+{
+  display: block;
+  padding: 1rem;
+  color: #333;
+  border-left: 1px solid #ccc;
+  background: white;
+}
+
+.nav-sp-list > li:not(:last-child) > a
+{
+  border-bottom: 1px dotted #ccc;
+}
+
+.nav-sp-list > li > a::before
+{
+  padding-right: .5em;
+}
+
+.nav-sp-list > li:nth-of-type(1) > a::before
+{
+  content: url(../../images/hanamigawasw/icon_4.svg);
+}
+
+.nav-sp-list > li:nth-of-type(2) > a::before
+{
+  content: url(../../images/hanamigawasw/icon_5.svg);
+}
+
+.nav-sp-list > li:nth-of-type(3) > a::before
+{
+  content: url(../../images/hanamigawasw/icon_6.svg);
+}
+
+.nav-sp-list > li:nth-of-type(4) > a::before
+{
+  content: url(../../images/hanamigawasw/icon_7.svg);
+}
+
+.nav-sp-list > li:nth-of-type(5) > a::before
+{
+  content: url(../../images/hanamigawasw/icon_8.svg);
+}
+
+.nav-sp-logout
+{
+  padding: 1rem 1.5rem;
+}
+
+.nav-sp-logout > .btn
+{
+  border-color: transparent;
+}
+
+.nav-sp-close
+{
+  position: absolute;
+  top: 0;
+  left: -40px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+}
+
+.nav-sp-close::before
+{
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  line-height: 40px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: auto;
+  content: "\f00d";
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: auto;
+}
+
+
+/* button: btn-menu
+--------------------------------------------------*/
+
+.btn-menu-wrapper
+{
+  position: relative;
+  width: 40px;
+  padding: 0;
+}
+
+.btn-menu
+{
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: auto;
+  width: 100%;
+  height: 40px;
+  margin: auto;
+  transition: all .4s;
+  border: none;
+  background: transparent;
+}
+
+.btn-menu.js-active
+{
+  opacity: 0;
+}
+
+.btn-menu:hover
+{
+  cursor: pointer;
+}
+
+.btn-menu > span
+{
+  position: absolute;
+  right: 0;
+  left: 0;
+  width: 75%;
+  height: 4px;
+  margin: auto;
+  background: #ccc;
+}
+
+.btn-menu > span:first-child
+{
+  margin-top: -10px;
+}
+
+.btn-menu > span:last-child
+{
+  margin-top: 10px;
+}
+
+
+/* header: mypage
+-------------------------------------------------- */
+
+.header-mypage
+{
+  position: relative;
+  padding: 10px 0;
+  border-bottom: 5px solid #171c61;
+}
+
+.header-mypage-select
+{
+  font-weight: bold;
+  position: relative;
+  display: inline-block;
+  max-width: 10em;
+}
+
+
+/* header:login
+--------------------------------------------------*/
+
+.header-login
+{
+  padding: 1rem 0;
+  color: #fff;
+  background-color: #171c61;
+}
+
+.header-login-badge
+{
+  font-size: 14px;
+  font-weight: bold;
+  margin: auto;
+  padding: .6em 0;
+  text-align: center;
+  color: #171c61;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+/* header:admin
+--------------------------------------------------*/
+
+.header-admin
+{
+  padding: 1rem 0;
+  color: #fff;
+  background-color: #171c61;
+}
+
+.header-admin-title
+{
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.header-admin-name
+{
+  font-size: 12px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.header-admin-logout
+{
+  width: 10%;
+  text-align: right;
+}
+
+.header-admin-logout .btn
+{
+  font-size: 12px;
+  font-weight: bold;
+  border-color: transparent;
+  border-radius: 8px;
+}
+
+@media (min-width: 576px)
+{
+  .header-admin-title
+  {
+    font-size: 18px;
+  }
+  .header-admin-name
+  {
+    font-size: 14px;
+  }
+}

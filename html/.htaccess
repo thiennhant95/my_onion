@@ -1,0 +1,48 @@
+RewriteEngine on
+
+
+#
+# 検索エンジン許可設定
+#
+SetEnvIf User-Agent "Googlebot" shutout
+SetEnvIf User-Agent "Slurp" shutout
+SetEnvIf User-Agent "msnbot" shutout
+order Allow,Deny
+Allow from all
+Deny from env=shutout
+
+#
+# BASIC認証設定
+#
+AuthUserFile D:/xampp/htdocs/onion/html/.htpasswd
+AuthGroupFile /dev/null
+AuthName "Secret Area"
+AuthType Basic
+require valid-user
+
+#
+# キャッシュさせない
+#
+FileEtag None
+RequestHeader unset If-Modified-Since
+Header set Cache-Control no-store
+
+
+#
+# wwwは取る
+#
+RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+
+#
+# https強制
+#
+RewriteCond %{SERVER_PORT} !^443$
+RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
+
+#
+# codeigniter設定
+#
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.php/$1 [L]

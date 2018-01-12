@@ -1,0 +1,9 @@
+Dear %name_user% !
+
+------------------------------------------
+実行開始
+This is new password ：%pass_new%
+
+Thanks and best regards!
+Dev VV-JSC.
+------------------------------------------
