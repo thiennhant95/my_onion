@@ -24,7 +24,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
 
-          <form class="form-horizontal" action="<?php echo site_url('admin/edit-subject/'.$get_subject['id'])?>" method="post">
+          <form class="form-horizontal" action="<?php echo site_url('admin/subject/edit/'.$get_subject['id'])?>" method="post">
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">科目コード</label>
               <div class="col-sm-3">
@@ -38,8 +38,6 @@
                 <input type="text" class="form-control" name="subject_name" value="<?php echo $get_subject['subject_name']?>" placeholder="" required>
               </div>
             </div>
-
-
         </div>
       </div>
       <div class="block-15 text-center row">

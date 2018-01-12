@@ -24,7 +24,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <form class="form-horizontal" action="<?php echo site_url('admin/create-grade/')?>" method="post">
+                <form class="form-horizontal" action="<?php echo site_url('admin/grade/create')?>" method="post">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">級コード</label>
                         <div class="col-sm-3">

@@ -38,7 +38,6 @@ class Distance extends ADMIN_Controller {
         if ($this->error_flg) return;
         try {
             $data['get_distance']=$this->distance->select_by_id($id)[0];
-            $data['title'] ="距離登録";
             if ($this->input->post()) {
                 if($this->input->post('distance_code') != $data['get_distance']['distance_code'])
                 {
@@ -61,7 +60,7 @@ class Distance extends ADMIN_Controller {
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Distance code already exists</div>");
-                    redirect('admin/edit-distance/'.$id);
+                    redirect('admin/distance/edit/'.$id);
                 }
             }
             $this->viewVar = $data;
@@ -81,7 +80,6 @@ class Distance extends ADMIN_Controller {
     public function create() {
         if ($this->error_flg) return;
         try {
-            $data['title'] ="距離登録";
             if ($this->input->post())
             {
                 $this->form_validation->set_rules('distance_code','distance_code','required|trim|xss_clean|is_unique[m_distance#distance_code]');
@@ -93,15 +91,14 @@ class Distance extends ADMIN_Controller {
                     );
                     $this->distance->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/create-distance');
+                    redirect('admin/distance/create');
                 }
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Distance code already exists</div>");
-                    redirect('admin/create-distance');
+                    redirect('admin/distance/create');
                 }
             }
-            $this->viewVar = $data;
             admin_layout_view('distance_create', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());

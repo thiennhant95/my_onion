@@ -27,10 +27,10 @@
                     <a href="<?php echo site_url('admin/classes')?>">クラス</a>
                 </li>
                 <li role="presentation" class="active">
-                    <a href="<?php echo site_url('admin/bus-stop')?>">バス停</a>
+                    <a href="<?php echo site_url('admin/bus_stop')?>">バス停</a>
                 </li>
                 <li role="presentation">
-                    <a href="<?php echo site_url('admin/bus-route')?>">バスコース</a>
+                    <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
                 </li>
                 <li role="presentation">
                     <a href="<?php echo site_url('admin/item')?>">品名</a>
@@ -88,7 +88,7 @@
                     <td>
                         <div class="row">
                             <div class="col-xs-6">
-                                <a href="<?php echo site_url('admin/edit-bus-stop/' . $row['id']) ?>"
+                                <a href="<?php echo site_url('admin/bus_stop/edit/' . $row['id']) ?>"
                                    class="btn btn-outline-blue btn-block btn-sm">編集</a>
                             </div>
                             <div class="col-xs-6">
@@ -108,7 +108,7 @@
       </div>
       <div class="block-15 text-center row">
         <div class="col-sm-8 col-sm-offset-2">
-          <a class="btn btn-info btn-block" href="<?php echo site_url('admin/create-bus-stop')?>">
+          <a class="btn btn-info btn-block" href="<?php echo site_url('admin/bus_stop/create')?>">
             <i class="fa fa-plus" aria-hidden="true"></i>
             <span>新規登録</span>
           </a>

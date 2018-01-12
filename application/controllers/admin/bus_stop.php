@@ -59,7 +59,7 @@ class Bus_stop extends ADMIN_Controller {
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Bus stop code already exists</div>");
-                    redirect('admin/edit-bus-stop/'.$id);
+                    redirect('admin/bus_stop/edit/'.$id);
                 }
             }
             $this->viewVar = $data;
@@ -90,12 +90,12 @@ class Bus_stop extends ADMIN_Controller {
                     );
                     $this->bus_stop->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/create-bus-stop');
+                    redirect('admin/bus_stop/create');
                 }
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Bus stop code already exists</div>");
-                    redirect('admin/create-bus-stop');
+                    redirect('admin/bus_stop/create');
                 }
             }
             admin_layout_view('bus_stop_create', $this->viewVar);

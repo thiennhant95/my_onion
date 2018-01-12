@@ -24,7 +24,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
 
-          <form class="form-horizontal" action="<?php echo site_url('admin/edit-bus-stop/'.$get_bus_stop['id'])?>" method="post">
+          <form class="form-horizontal" action="<?php echo site_url('admin/bus_stop/edit/'.$get_bus_stop['id'])?>" method="post">
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">乗車場所コード</label>
               <div class="col-sm-5">
@@ -43,7 +43,7 @@
       <div class="block-15 text-center row">
         <div class="col-sm-4 col-sm-offset-2">
           <p>
-            <a class="btn btn-default btn-block" href="<?php echo site_url('admin/bus-stop')?>">
+            <a class="btn btn-default btn-block" href="<?php echo site_url('admin/bus_stop')?>">
               <span>戻る</span>
             </a>
           </p>

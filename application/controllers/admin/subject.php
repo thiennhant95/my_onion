@@ -60,7 +60,7 @@ class Subject extends ADMIN_Controller {
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Subject code already exists</div>");
-                    redirect('admin/edit-subject/'.$id);
+                    redirect('admin/subject/edit/'.$id);
                 }
             }
             $this->viewVar = $data;
@@ -91,12 +91,12 @@ class Subject extends ADMIN_Controller {
                     );
                     $this->subject->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/create-subject');
+                    redirect('admin/subject/create');
                 }
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Subject code already exists</div>");
-                    redirect('admin/create-subject');
+                    redirect('admin/subject/create');
                 }
             }
             admin_layout_view('subject_create', $this->viewVar);

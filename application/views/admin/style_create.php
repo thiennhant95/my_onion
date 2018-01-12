@@ -24,7 +24,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <form class="form-horizontal" action="<?php echo site_url('admin/create-style/')?>" method="post">
+                <form class="form-horizontal" action="<?php echo site_url('admin/style/create')?>" method="post">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">種目コード</label>
                         <div class="col-sm-3">

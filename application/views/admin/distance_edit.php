@@ -24,7 +24,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
 
-          <form class="form-horizontal" action="<?php echo site_url('admin/edit-distance/'.$get_distance['id'])?>" method="post">
+          <form class="form-horizontal" action="<?php echo site_url('admin/distance/edit/'.$get_distance['id'])?>" method="post">
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">距離コード</label>
               <div class="col-sm-3">
@@ -67,3 +67,5 @@
 </body>
 
 </html>
+
+

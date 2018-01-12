@@ -59,7 +59,7 @@ class Grade extends ADMIN_Controller {
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Grade code already exists</div>");
-                    redirect('admin/edit-grade/'.$id);
+                    redirect('admin/grade/edit/'.$id);
                 }
             }
             $this->viewVar = $data;
@@ -90,12 +90,12 @@ class Grade extends ADMIN_Controller {
                     );
                     $this->grade->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/create-grade');
+                    redirect('admin/grade/create');
                 }
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Grade code already exists</div>");
-                    redirect('admin/create-grade');
+                    redirect('admin/grade/create');
                 }
             }
             admin_layout_view('grade_create', $this->viewVar);

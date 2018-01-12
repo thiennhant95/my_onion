@@ -60,7 +60,7 @@ class Style extends ADMIN_Controller {
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Style code already exists</div>");
-                    redirect('admin/edit-style/'.$id);
+                    redirect('admin/style/edit/'.$id);
                 }
             }
             $this->viewVar = $data;
@@ -91,12 +91,12 @@ class Style extends ADMIN_Controller {
                     );
                     $this->style->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/create-style');
+                    redirect('admin/style/create');
                 }
                 else if ($this->form_validation->run() == false)
                 {
                     $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Style code already exists</div>");
-                    redirect('admin/create-style');
+                    redirect('admin/style/create');
                 }
             }
             admin_layout_view('style_create', $this->viewVar);
