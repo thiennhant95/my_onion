@@ -149,8 +149,10 @@
             <div class="modal-body">
                 <p id="status_update"></p>
             </div>
-            <div class="modal-footer">
-            </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px }
+    .alert-danger {border-radius: 0px }
+</style>

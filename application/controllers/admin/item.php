@@ -72,8 +72,6 @@ class Item extends ADMIN_Controller {
                 {
                     echo "0";
                     die();
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! item code already exists</div>");
-                    redirect('admin/item/edit/'.$id);
                 }
             }
             $this->viewVar = $data;
@@ -92,25 +90,35 @@ class Item extends ADMIN_Controller {
     public function create() {
         if ($this->error_flg) return;
         try {
+            $this->load->model('db/m_subject_model','subject');
+            $data['subject_list']=$this->subject->get_list();
             if ($this->input->post())
             {
                 $this->form_validation->set_rules('item_code','item_code','required|trim|xss_clean|is_unique[m_item#item_code]');
-                if ($this->form_validation->run() == true)
-                {
+                if ($this->form_validation->run() == true) {
                     $dataInsert = array(
-                        'item_code'=>$this->input->post('item_code'),
-                        'item_name'=>$this->input->post('item_name')
+                        'item_code' => $this->input->post('item_code'),
+                        'item_name' => $this->input->post('item_name'),
+                        'subject_id'=>$this->input->post('subject_id'),
+                        'sell_price'=>$this->input->post('sell_price'),
+                        'buy_price'=>$this->input->post('buy_price'),
+                        'tax_flg'=>$this->input->post('tax'),
+                        'manage_flg'=>$this->input->post('stock'),
+                        'left_num'=>$this->input->post('left_num'),
+                        'type'=>$this->input->post('type'),
+                        'disp_flg'=>$this->input->post('display'),
                     );
                     $this->item->insert($dataInsert);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/item/create');
+                    echo "1";
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! item code already exists</div>");
-                    redirect('admin/item/create');
+                    echo "0";
+                    die();
                 }
             }
+            $this->viewVar = $data;
             admin_layout_view('item_create', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());

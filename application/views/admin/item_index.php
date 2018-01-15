@@ -67,6 +67,9 @@
         <p class="box-msg">
         <div style="display:none;" id="alert-delete" class='alert alert-danger'>Deleted !</div>
         </p>
+        <p class="box-msg">
+        <div style="display:none;" id="alert-insert" class='alert alert-success'>Inserted !</div>
+        </p>
         <div class="panel panel-default">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-lg table-center">

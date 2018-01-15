@@ -90,7 +90,7 @@ class Grade extends ADMIN_Controller {
                     );
                     $this->grade->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/grade/create');
+                    redirect('admin/grade');
                 }
                 else if ($this->form_validation->run() == false)
                 {

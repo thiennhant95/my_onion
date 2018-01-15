@@ -38,3 +38,7 @@
 <!-- コンテンツ用CSS -->
 <link rel="stylesheet" href="/css/hanamigawasw/style.css?<?php echo time(); ?>">
 
+<!-- format time-->
+<link rel="stylesheet" href="/css/w2ui-1.5.rc1.min.css" media="all" />
+<script src="/js/admin/w2ui-1.5.rc1.js"></script>
+

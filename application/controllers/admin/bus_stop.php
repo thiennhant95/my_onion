@@ -90,7 +90,7 @@ class Bus_stop extends ADMIN_Controller {
                     );
                     $this->bus_stop->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/bus_stop/create');
+                    redirect('admin/bus_stop');
                 }
                 else if ($this->form_validation->run() == false)
                 {

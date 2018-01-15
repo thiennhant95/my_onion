@@ -91,7 +91,7 @@ class Style extends ADMIN_Controller {
                     );
                     $this->style->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/style/create');
+                    redirect('admin/style');
                 }
                 else if ($this->form_validation->run() == false)
                 {

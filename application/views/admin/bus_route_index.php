@@ -18,43 +18,43 @@
         </a>
       </h1>
 
-      <nav class="master-nav">
-        <ul class="nav nav-pills" role="group">
-          <li role="presentation">
-            <a href="#0">練習コース</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">クラス</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">バス停</a>
-          </li>
-          <li role="presentation" class="active">
-            <a href="#0">バスコース</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">品名</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">科目</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">級</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">種目</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">距離</a>
-          </li>
-          <li role="presentation" class="disabled">
-            <a href="#0">銀行・支店</a>
-          </li>
-          <li role="presentation" class="disabled">
-            <a href="#0">ゆうちょ銀行</a>
-          </li>
-        </ul>
-      </nav>
+        <nav class="master-nav">
+            <ul class="nav nav-pills" role="group">
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/course')?>">練習コース</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/classes')?>">クラス</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/bus_stop')?>">バス停</a>
+                </li>
+                <li role="presentation" class="active">
+                    <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/item')?>">品名</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/subject')?>">科目</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/grade')?>">級</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/style')?>">種目</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/distance')?>">距離</a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a href="#">銀行・支店</a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a href="#">ゆうちょ銀行</a>
+                </li>
+            </ul>
+        </nav>
 
       <hr>
 
@@ -73,70 +73,42 @@
             </thead>
 
             <tbody>
-              <tr>
-                <td>11</td>
-                <td>さつきコース　M</td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div class="row">
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                    </div>
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-default btn-block btn-sm">削除</a>
-                    </div>
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-default btn-block btn-sm">コピー作成</a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>12</td>
-                <td>さつきコース　A</td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div class="row">
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                    </div>
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-default btn-block btn-sm">削除</a>
-                    </div>
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-default btn-block btn-sm">コピー作成</a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>13</td>
-                <td>さつきコース　B</td>
-                <td></td>
-                <td></td>
-                <td>
-                  <div class="row">
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                    </div>
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-default btn-block btn-sm">削除</a>
-                    </div>
-                    <div class="col-xs-4">
-                      <a href="#0" class="btn btn-default btn-block btn-sm">コピー作成</a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
+            <?php
+            foreach ($bus_course_list as $row) :
+            foreach ($class_list as $row_class) :
+            if ($row['class_id'] == $row_class['id']) {
+                ?>
+                <tr>
+                    <td class=""><?php echo $row['bus_course_code'] ?></td>
+                    <td class=""><?php echo $row['bus_course_name'] ?></td>
+                    <td class=""><?php echo $row_class['class_name'] ?></td>
+                    <td class=""><?php echo $row['max'] ?></td>
+                    <td>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <a href="<?php echo site_url('admin/bus_route/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
+                            </div>
+                            <div class="col-xs-4">
+                                <a href="<?php echo site_url('admin/bus_route/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="Bus Course">削除</a>
+                            </div>
+                            <div class="col-xs-4">
+                                <a href="<?php echo site_url('admin/bus_route')?>" class="btn btn-default btn-block btn-sm">コピー作成</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <?php
+            }
+            endforeach;
+            endforeach;
+            ?>
             </tbody>
           </table>
         </div>
       </div>
       <div class="block-15 text-center row">
         <div class="col-sm-8 col-sm-offset-2">
-          <a class="btn btn-info btn-block" href="#0">
+          <a class="btn btn-info btn-block" href="<?php echo site_url('admin/bus_route/create')?>">
             <i class="fa fa-plus" aria-hidden="true"></i>
             <span>新規登録</span>
           </a>

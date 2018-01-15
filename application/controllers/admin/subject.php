@@ -91,7 +91,7 @@ class Subject extends ADMIN_Controller {
                     );
                     $this->subject->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/subject/create');
+                    redirect('admin/subject');
                 }
                 else if ($this->form_validation->run() == false)
                 {

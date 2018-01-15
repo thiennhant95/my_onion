@@ -91,7 +91,7 @@ class Distance extends ADMIN_Controller {
                     );
                     $this->distance->insert($dataInsert);
                     $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/distance/create');
+                    redirect('admin/distance');
                 }
                 else if ($this->form_validation->run() == false)
                 {
