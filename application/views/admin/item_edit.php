@@ -121,7 +121,7 @@
         </div>
         <div class="col-sm-4">
           <p>
-            <button id="update"  class="btn btn-success btn-block" href="<?php echo site_url('admin/item/edit/'.$get_item['id'])?>">
+            <button id="update" class="btn btn-success btn-block" href="<?php echo site_url('admin/item/edit/'.$get_item['id'])?>">
               <span>更新</span>
             </button>
           </p>

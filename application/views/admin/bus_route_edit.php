@@ -22,20 +22,20 @@
             <div class="form-group" >
               <label for="" class="col-sm-2 control-label">バスコースコード</label>
               <div class="col-sm-5">
-                <input type="text" class="form-control" name="bus_course_code" value="<?php echo $get_bus_course['bus_course_code']?>" required placeholder="">
+                <input type="text" class="form-control" id="bus_course_code" name="bus_course_code" value="<?php echo $get_bus_course['bus_course_code']?>" required placeholder="">
               </div>
             </div>
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">バスコース名</label>
               <div class="col-sm-5">
-                <input type="text" class="form-control" name="bus_course_name" value="<?php echo $get_bus_course['bus_course_name']?>" required placeholder="">
+                <input type="text" class="form-control" id="bus_course_name" name="bus_course_name" value="<?php echo $get_bus_course['bus_course_name']?>" required placeholder="">
               </div>
             </div>
 
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">クラス</label>
               <div class="col-sm-5">
-                <select class="form-control" id="class_id">
+                <select class="form-control" name="class_id" id="class_id">
                     <?php
                     foreach ($class_list as $row_class) {
                         ?>
@@ -50,11 +50,10 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">定員</label>
               <div class="col-sm-5">
-                <input type="text" class="form-control" name="max" value="<?php echo $get_bus_course['max']?>" required placeholder="">
+                <input type="text" class="form-control" id="max" name="max" value="<?php echo $get_bus_course['max']?>" required placeholder="">
               </div>
             </div>
             <hr>
-
             <div class="panel panel-default">
               <div class="table-responsive">
                 <table class="table table-bordered table-hover table-lg table-center" id="route-table">
@@ -77,7 +76,7 @@
                               <input type="text" class="form-control"name="route_order[]" required placeholder="">
                           </td>
                           <td>
-                              <select class="form-control" name="bus_stop_id">
+                              <select class="form-control" name="bus_stop_id[]" required>
                                   <option selected disabled>Choose one</option>
                                   <?php
                                   foreach ($bus_stop_list as $row_stop) {
@@ -89,10 +88,10 @@
                               </select>
                           </td>
                           <td>
-                              <input type="asia-time" class="form-control" name="go_time" placeholder="00:00" required>
+                              <input type="asia-time" class="form-control" name="go_time[]" placeholder="00:00" required>
                           </td>
                           <td>
-                              <input type="asia-time" class="form-control" name="ret_time" placeholder="00:00" required>
+                              <input type="asia-time" class="form-control" name="ret_time[]" placeholder="00:00" required>
                           </td>
                           <td>
                               <input type="button" href="" url_edit="<?php echo site_url('admin/edit-bus-routes/' . $get_bus_course['id']) ?>" class="btn btn-default btn-block btn-sm btnDelete" value="削除">
@@ -107,11 +106,13 @@
                           ?>
                           <tr>
                               <td>
+                                  <input type="hidden" class="form-control" name="route_id[]" id="route_id"
+                                         value="<?php echo $row_route['id'] ?>">
                                   <input type="text" class="form-control" name="route_order[]"
                                          value="<?php echo $row_route['route_order'] ?>" required placeholder="">
                               </td>
                               <td>
-                                  <select class="form-control" name="bus_stop_id">
+                                  <select class="form-control" name="bus_stop_id[]">
                                       <?php
                                       foreach ($bus_stop_list as $row_stop) {
                                           ?>
@@ -123,22 +124,16 @@
                               </td>
                               <?php
                               // go_time
-                              $duration = $row_route['go_time'];
-                              $hours = floor($duration / 60);
-                              $mins = $duration % 60;
-                              $go_time = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($mins, 2, '0', STR_PAD_LEFT);
-                              // ret_time
-                              $duration = $row_route['ret_time'];
-                              $hours = floor($duration / 60);
-                              $mins = $duration % 60;
-                              $ret_time = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($mins, 2, '0', STR_PAD_LEFT);
+                              $go_time = substr_replace($row_route['go_time'],':',2,0);
+                              //ret time
+                              $ret_time = substr_replace($row_route['ret_time'],':',2,0);
                               ?>
                               <td>
-                                  <input type="asia-time" class="form-control" name="go_time"
+                                  <input type="asia-time" class="form-control" name="go_time[]"
                                          value="<?php echo $go_time ?>" placeholder="00:00" required>
                               </td>
                               <td>
-                                  <input type="asia-time" class="form-control" name="ret_time"
+                                  <input type="asia-time" class="form-control" name="ret_time[]"
                                          value="<?php echo $ret_time ?>" placeholder="00:00" required>
                               </td>
                               <td>
@@ -158,10 +153,10 @@
             </div>
             <div class="block-15 text-center row">
               <div class="col-sm-8 col-sm-offset-2">
-                <a class="btn btn-info btn-block" id="insert-more">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                  <span>乗車場所を追加</span>
-                </a>
+                  <a class="btn btn-info btn-block insert-more" id="insert-more" url_edit="<?php echo site_url('admin/bus_route/edit/' . $get_bus_course['id']) ?>">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                      <span>乗車場所を追加</span>
+                  </a>
               </div>
             </div>
         </div>
@@ -176,7 +171,7 @@
         </div>
         <div class="col-sm-4">
           <p>
-            <button class="btn btn-success btn-block" href="#0">
+            <button id="update" data_id="<?php echo $get_bus_course['id']?>" class="btn btn-success btn-block" disabled="disabled">
               <span>更新</span>
             </button>
           </p>
@@ -190,3 +185,22 @@
 </body>
 
 </html>
+<button style=" visibility: hidden;" type="button" id="popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+</button>
+
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="status_update"></p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px }
+    .alert-danger {border-radius: 0px }
+</style>

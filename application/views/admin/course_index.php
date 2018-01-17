@@ -18,43 +18,43 @@
         </a>
       </h1>
 
-      <nav class="master-nav">
-        <ul class="nav nav-pills" role="group">
-          <li role="presentation" class="active">
-            <a href="#0">練習コース</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">クラス</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">バス停</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">バスコース</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">品名</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">科目</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">級</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">種目</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">距離</a>
-          </li>
-          <li role="presentation" class="disabled">
-            <a href="#0">銀行・支店</a>
-          </li>
-          <li role="presentation" class="disabled">
-            <a href="#0">ゆうちょ銀行</a>
-          </li>
-        </ul>
-      </nav>
+        <nav class="master-nav">
+            <ul class="nav nav-pills" role="group">
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/course')?>">練習コース</a>
+                </li>
+                <li role="presentation" class="active">
+                    <a href="<?php echo site_url('admin/classes')?>">クラス</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/bus_stop')?>">バス停</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/item')?>">品名</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/subject')?>">科目</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/grade')?>">級</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/style')?>">種目</a>
+                </li>
+                <li role="presentation" >
+                    <a href="<?php echo site_url('admin/distance')?>">距離</a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a href="#">銀行・支店</a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a href="#">ゆうちょ銀行</a>
+                </li>
+            </ul>
+        </nav>
 
       <hr>
 

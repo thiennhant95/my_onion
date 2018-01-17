@@ -17,7 +17,6 @@
           <strong>CSV出力</strong>
         </a>
       </h1>
-
         <nav class="master-nav">
             <ul class="nav nav-pills" role="group">
                 <li role="presentation">
@@ -55,6 +54,7 @@
                 </li>
             </ul>
         </nav>
+
 
       <hr>
         <p class="box-msg">

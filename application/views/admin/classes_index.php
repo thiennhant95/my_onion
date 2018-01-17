@@ -18,43 +18,43 @@
         </a>
       </h1>
 
-      <nav class="master-nav">
-        <ul class="nav nav-pills" role="group">
-          <li role="presentation">
-            <a href="#0">練習コース</a>
-          </li>
-          <li role="presentation" class="active">
-            <a href="#0">クラス</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">バス停</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">バスコース</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">品名</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">科目</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">級</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">種目</a>
-          </li>
-          <li role="presentation">
-            <a href="#0">距離</a>
-          </li>
-          <li role="presentation" class="disabled">
-            <a href="#0">銀行・支店</a>
-          </li>
-          <li role="presentation" class="disabled">
-            <a href="#0">ゆうちょ銀行</a>
-          </li>
-        </ul>
-      </nav>
+        <nav class="master-nav">
+            <ul class="nav nav-pills" role="group">
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/course')?>">練習コース</a>
+                </li>
+                <li role="presentation" class="active">
+                    <a href="<?php echo site_url('admin/classes')?>">クラス</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/bus_stop')?>">バス停</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/item')?>">品名</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/subject')?>">科目</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/grade')?>">級</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/style')?>">種目</a>
+                </li>
+                <li role="presentation">
+                    <a href="<?php echo site_url('admin/distance')?>">距離</a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a href="#">銀行・支店</a>
+                </li>
+                <li role="presentation" class="disabled">
+                    <a href="#">ゆうちょ銀行</a>
+                </li>
+            </ul>
+        </nav>
 
       <hr>
 
@@ -76,42 +76,67 @@
             </thead>
 
             <tbody>
-              <tr>
-                <td>BA1</td>
-                <td>BA火　13:30</td>
-                <td>しない</td>
-                <td>火</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                </td>
-              </tr>
-              <tr>
-                <td>BA4</td>
-                <td>BA金　13:30</td>
-                <td>しない</td>
-                <td>金</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                </td>
-              </tr>
-              <tr class="disabled">
-                <td>BM2</td>
-                <td>BM水　11:00</td>
-                <td>しない</td>
-                <td>水</td>
-                <td></td>
-                <td></td>
-                <td>無効</td>
-                <td>
-                  <a href="#0" class="btn btn-outline-blue btn-block btn-sm disabled">編集</a>
-                </td>
-              </tr>
+            <?php
+            foreach ($class_list as $row_class):
+//                foreach ($course_list as $row_course):
+//                    if ($row_class['course_id']==$row_course['id']) {
+                        ?>
+                        <tr <?php if($row_class['invalid_flg']==DATA_ON) echo 'class="disabled"' ?>>
+                            <td><?php echo $row_class['class_code']?></td>
+                            <td><?php echo $row_class['class_name'] ?></td>
+                            <td><?php if ($row_class['grade_manage_flg']==DATA_ON)
+                                {
+                                    echo "する";
+                                }
+                                else
+                                    echo "しない​";
+                                ?></td>
+                            <td><?php
+                                $row_class['week']=explode(',',$row_class['week']);
+                                if (in_array(SUNDAY,$row_class['week']))
+                                    $day[]="日";
+                                if (in_array(MONDAY,$row_class['week']))
+                                    $day[]= "月";
+                                if (in_array(TUESDAY,$row_class['week']))
+                                    $day[]= "火";
+                                if (in_array(WEDNESDAY,$row_class['week']))
+                                    $day[]="水";
+                                if (in_array(THURSDAY,$row_class['week']))
+                                    $day[]= "木";
+                                if (in_array(FRIDAY,$row_class['week']))
+                                    $day[]= "金";
+                                if (in_array(SATURDAY,$row_class['week']))
+                                    $day[]="土";
+                                $day_implode=implode('、',$day);
+                                echo $day_implode;
+                                unset($day);
+                                ?></td>
+                            <td><?php echo "データがありません"?></td>
+                            <td><?php if ($row_class['use_bus_flg']==DATA_ON)
+                                {
+                                    echo "あり";
+                                }
+                                else
+                                    echo "なし";
+                                ?></td>
+                            <td><?php if($row_class['invalid_flg']==DATA_ON)
+                                {
+                                echo "無効";
+                                }
+                                else
+                                {
+                                echo "有効";
+                                }
+                                ?></td>
+                            <td>
+                                <a href="<?php echo site_url('admin/classes/edit/'.$row_class['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
+                            </td>
+                        </tr>
+                        <?php
+//                    }
+//                endforeach;
+            endforeach;
+            ?>
             </tbody>
           </table>
         </div>

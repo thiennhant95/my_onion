@@ -275,5 +275,15 @@ $config['course_type'] = array(
     VALUE_COURSE_TYPE_FREE          => '無料体験コース',
 );
 
+// 授業曜日
+
+define('SUNDAY',        0);
+define('MONDAY',        1);
+define('TUESDAY',       2);
+define('WEDNESDAY',     3);
+define('THURSDAY',      4);
+define('FRIDAY',        5);
+define('SATURDAY',      6);
+
 
 
