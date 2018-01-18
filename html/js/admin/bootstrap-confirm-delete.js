@@ -12,10 +12,10 @@
         this.settings = $.extend(
             {
                 debug: false,
-                heading: 'Delete',
+                heading: '削除',
                 message: 'Are you sure you want to delete this item?',
-                btn_ok_label: 'Yes',
-                btn_cancel_label: 'Cancel',
+                btn_ok_label: 'はい',
+                btn_cancel_label: 'キャンセル',
                 data_type: null,
                 callback: null,
                 delete_callback: null,
@@ -34,8 +34,8 @@
             {
                 var name = $( this ).attr( 'data-type' );
 
-                plugin.settings.heading = 'Delete ' + name[ 0 ].toUpperCase() + name.substr( 1 );
-                plugin.settings.message = 'Are you sure you want to delete this ' + name + '?';
+                plugin.settings.heading = '削除' + name[ 0 ].toUpperCase() + name.substr( 1 );
+                plugin.settings.message =  name + 'を削除します。よろしいでしょうか'+'';
             }
 
             if ( null === document.getElementById( 'bootstrap-confirm-delete-container' ) )

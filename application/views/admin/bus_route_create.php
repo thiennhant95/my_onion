@@ -69,7 +69,7 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <input type="text" class="form-control route-order"name="route_order[1]" required placeholder="">
+                                            <input type="text" class="form-control route-order"name="route_order[]" required placeholder="">
                                         </td>
                                         <td>
                                             <select class="form-control bus_stop_id" name="bus_stop_id[]" required>

@@ -54,13 +54,13 @@ class Subject extends ADMIN_Controller {
                         'subject_name' => $this->input->post('subject_name')
                     );
                     $this->subject->update_by_id($dataUpdate);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Updated !</div>");
-                    redirect('admin/subject');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Subject code already exists</div>");
-                    redirect('admin/subject/edit/'.$id);
+                   echo DATA_OFF;
+                   die();
                 }
             }
             $this->viewVar = $data;
@@ -90,13 +90,13 @@ class Subject extends ADMIN_Controller {
                         'subject_name'=>$this->input->post('subject_name')
                     );
                     $this->subject->insert($dataInsert);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/subject');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Subject code already exists</div>");
-                    redirect('admin/subject/create');
+                    echo DATA_OFF;
+                    die();
                 }
             }
             admin_layout_view('subject_create', $this->viewVar);
@@ -117,7 +117,7 @@ class Subject extends ADMIN_Controller {
         try {
             $dataUpdate = array(
                 'id'=>$id,
-                'delete_flg'=>'1',
+                'delete_flg'=>DATA_ON,
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->subject->update_by_id($dataUpdate);

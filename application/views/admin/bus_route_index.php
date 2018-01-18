@@ -33,7 +33,7 @@
                     <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
                 </li>
                 <li role="presentation">
-                    <a href="<?php echo site_url('admin/item')?>">品名</a>
+                    <a href="<?php echo site_url('admin/item')?>">品目</a>
                 </li>
                 <li role="presentation">
                     <a href="<?php echo site_url('admin/subject')?>">科目</a>

@@ -20,10 +20,10 @@
 
         <nav class="master-nav">
             <ul class="nav nav-pills" role="group">
-                <li role="presentation">
+                <li role="presentation" class="active">
                     <a href="<?php echo site_url('admin/course')?>">練習コース</a>
                 </li>
-                <li role="presentation" class="active">
+                <li role="presentation">
                     <a href="<?php echo site_url('admin/classes')?>">クラス</a>
                 </li>
                 <li role="presentation">
@@ -33,7 +33,7 @@
                     <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
                 </li>
                 <li role="presentation">
-                    <a href="<?php echo site_url('admin/item')?>">品名</a>
+                    <a href="<?php echo site_url('admin/item')?>">品目</a>
                 </li>
                 <li role="presentation">
                     <a href="<?php echo site_url('admin/subject')?>">科目</a>
@@ -166,6 +166,35 @@
                   <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                 </td>
               </tr>
+              <?php
+              foreach ($course_list as $row):
+              ?>
+                  <tr>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_name']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td><?php echo $row['course_code']?></td>
+                      <td>
+                          <?php echo $row['course_code']?>
+                      </td>
+                      <td></td>
+                      <td>
+                          <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
+                      </td>
+                  </tr>
+
+              <?php
+              endforeach;
+              ?>
             </tbody>
           </table>
         </div>

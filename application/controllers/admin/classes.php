@@ -45,10 +45,10 @@ class Classes extends ADMIN_Controller {
             if ($this->input->post()) {
                 $id_course = $this->input->post('short_course_name');
                 $data_course=$this->course->select_by_id($id_course)[0];
-                echo $data_course['short_course_name'];
-                echo $this->input->post('class_code');
-                die();
-                if($this->input->post('short_course_name') != $data['get_class']['class_code'])
+                $class_code=$this->input->post('class_code');
+                $base_class_sign=substr($class_code,0,1);
+                $class_code=$data_course['short_course_name'].$class_code;
+                if($class_code != $data['get_class']['class_code'])
                 {
                     $is_unique =  '|is_unique[m_class#class_code]';
                 }
@@ -79,6 +79,59 @@ class Classes extends ADMIN_Controller {
             }
             $this->viewVar = $data;
             admin_layout_view('classes_edit', $this->viewVar);
+        } catch (Exception $e) {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+    /**
+     *
+     *
+     * @param
+     * @return
+     *
+     */
+    public function create() {
+        if ($this->error_flg) return;
+        try {
+            $data['course_list']=$this->course->get_list();
+            if ($this->input->post()) {
+                $id_course = $this->input->post('short_course_name');
+                $data_course=$this->course->select_by_id($id_course)[0];
+                echo $data_course['short_course_name'];
+                echo $this->input->post('class_code');
+                die();
+                if($this->input->post('short_course_name') != $data['get_class']['class_code'])
+                {
+                    $is_unique =  '|is_unique[m_class#class_code]';
+                }
+                else {
+                    $is_unique =  '';
+                }
+                $this->form_validation->set_rules('item_code', 'item_code', 'required|trim|xss_clean|is_unique[m_class#m_class]');
+                if ($this->form_validation->run() == true) {
+                    $dataUpdate = array(
+                        'id' => $id,
+                        'class_code' => $this->input->post('class_code'),
+                        'class_name' => $this->input->post('class_name'),
+                        'course_id'=>$this->input->post('course_id'),
+                        'grade_manage_flg'=>$this->input->post('grade_manage_flg'),
+                        'use_bus_flg'=>$this->input->post('use_bus_flg'),
+                        'week'=>$this->input->post('week'),
+                        'invalid_flg'=>$this->input->post('invalid_flg'),
+                    );
+                    $this->class->update_by_id($dataUpdate);
+                    echo DATA_ON;
+                    die();
+                }
+                else if ($this->form_validation->run() == false)
+                {
+                    echo DATA_OFF;
+                    die();
+                }
+            }
+            $this->viewVar = $data;
+            admin_layout_view('classes_create', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

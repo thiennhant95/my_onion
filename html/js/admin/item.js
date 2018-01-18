@@ -49,19 +49,19 @@ $(document).ready(function() {
             type:"required"
         },
         messages: {
-            item_name: "必須",
-            item_code: "必須",
+            item_name: "この項目は必須です",
+            item_code: "この項目は必須です",
             sell_price: {
-                required: "必須",
-                number: "数字形式"
+                required: "この項目は必須です",
+                number: "有効な数値を入力してください。"
             },
             buy_price: {
-                required: "必須",
-                number: "数字形式"
+                required: "この項目は必須です",
+                number: "有効な数値を入力してください。"
             },
             left_num: {
-                required: "必須",
-                number: "数字形式"
+                required: "この項目は必須です",
+                number: "有効な数値を入力してください。"
             },
             type:"必須"
         },
@@ -109,7 +109,7 @@ $("#update").click(function(e) {
                 if (data == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
-                    $("#status_update").html("<b>Updated!</b>");
+                    $("#status_update").html("<b>有効な数値を入力してください。</b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
@@ -120,7 +120,7 @@ $("#update").click(function(e) {
                 else if (data == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
-                    $("#status_update").html("<b>Update fail! Item code already exists</b>");
+                    $("#status_update").html("<b>この品名コードは既存しています。他の品名コードを入力してください。 </b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
@@ -160,7 +160,7 @@ $("#create").click(function(e) {
                 if (data == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
-                    $("#status_update").html("<b>Inserted!</b>");
+                    $("#status_update").html("<b>品目を追加しました。 </b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
@@ -172,7 +172,7 @@ $("#create").click(function(e) {
                 else if (data == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
-                    $("#status_update").html("<b>Insert fail! Item code already exists</b>");
+                    $("#status_update").html("<b>この品名コードは既存しています。他の品名コードを入力してください。</b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');

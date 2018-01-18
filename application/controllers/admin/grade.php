@@ -53,13 +53,13 @@ class Grade extends ADMIN_Controller {
                         'grade_name' => $this->input->post('grade_name')
                     );
                     $this->grade->update_by_id($dataUpdate);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Updated !</div>");
-                    redirect('admin/grade');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Grade code already exists</div>");
-                    redirect('admin/grade/edit/'.$id);
+                    echo  DATA_OFF;
+                    die();
                 }
             }
             $this->viewVar = $data;
@@ -89,13 +89,13 @@ class Grade extends ADMIN_Controller {
                         'grade_name'=>$this->input->post('grade_name')
                     );
                     $this->grade->insert($dataInsert);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/grade');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Grade code already exists</div>");
-                    redirect('admin/grade/create');
+                    echo DATA_OFF;
+                    die();
                 }
             }
             admin_layout_view('grade_create', $this->viewVar);
@@ -116,11 +116,11 @@ class Grade extends ADMIN_Controller {
         try {
             $dataUpdate = array(
                 'id'=>$id,
-                'delete_flg'=>'1',
+                'delete_flg'=>DATA_ON,
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->grade->update_by_id($dataUpdate);
-            echo json_encode(array('status'=>'1'));
+            echo json_encode(array('status'=>DATA_ON));
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

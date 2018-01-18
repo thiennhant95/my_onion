@@ -33,7 +33,7 @@
                     <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
                 </li>
                 <li role="presentation">
-                    <a href="<?php echo site_url('admin/item')?>">品名</a>
+                    <a href="<?php echo site_url('admin/item')?>">品目</a>
                 </li>
                 <li role="presentation">
                     <a href="<?php echo site_url('admin/subject')?>">科目</a>
@@ -65,7 +65,7 @@
             ?>
         </p>
         <p class="box-msg">
-        <div style="display:none;" id="alert-delete" class='alert alert-danger'>Deleted !</div>
+        <div style="display:none;" id="alert-delete" class='alert alert-danger'>正常に削除されました。</div>
         </p>
 
       <div class="panel panel-default">
@@ -93,7 +93,7 @@
                       <a href="<?php echo site_url('admin/style/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                     </div>
                     <div class="col-xs-6">
-                        <a href="<?php echo site_url('admin/style/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="Style Swingming">削除</a>
+                        <a href="<?php echo site_url('admin/style/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="種目">削除</a>
                     </div>
                   </div>
                 </td>

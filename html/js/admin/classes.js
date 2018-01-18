@@ -6,17 +6,19 @@ $(document).ready(function() {
     $("#class_form").validate({
         rules: {
             class_code: {
-                math:true,
+                // math:true,
                 required:true
             },
             name_class: "required",
+            "week[]": { required: true, minlength: 1 }
         },
         messages: {
             class_code:
                 {
-                    required: "必須",
+                    required: "この項目は必須です",
                 },
-            name_class: "必須",
+            name_class: "この項目は必須です",
+            "week[]":"You must check at least one!"
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {

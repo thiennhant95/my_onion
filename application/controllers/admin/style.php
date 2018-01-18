@@ -54,13 +54,13 @@ class Style extends ADMIN_Controller {
                         'style_name' => $this->input->post('style_name')
                     );
                     $this->style->update_by_id($dataUpdate);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Updated !</div>");
-                    redirect('admin/style');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Style code already exists</div>");
-                    redirect('admin/style/edit/'.$id);
+                  echo DATA_OFF;
+                  die();
                 }
             }
             $this->viewVar = $data;
@@ -90,13 +90,13 @@ class Style extends ADMIN_Controller {
                         'style_name'=>$this->input->post('style_name')
                     );
                     $this->style->insert($dataInsert);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/style');
+                    echo  DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Style code already exists</div>");
-                    redirect('admin/style/create');
+                    echo DATA_OFF;
+                    die();
                 }
             }
             admin_layout_view('style_create', $this->viewVar);
@@ -117,7 +117,7 @@ class Style extends ADMIN_Controller {
         try {
             $dataUpdate = array(
                 'id'=>$id,
-                'delete_flg'=>'1',
+                'delete_flg'=>DATA_ON,
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->style->update_by_id($dataUpdate);

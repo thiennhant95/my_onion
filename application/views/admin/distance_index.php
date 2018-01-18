@@ -33,7 +33,7 @@
             <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
           </li>
           <li role="presentation">
-            <a href="<?php echo site_url('admin/item')?>">品名</a>
+            <a href="<?php echo site_url('admin/item')?>">品目</a>
           </li>
           <li role="presentation">
             <a href="<?php echo site_url('admin/subject')?>">科目</a>
@@ -66,7 +66,7 @@
             ?>
         </p>
         <p class="box-msg">
-        <div style="display:none;" id="alert-delete" class='alert alert-danger'>Deleted !</div>
+        <div style="display:none;" id="alert-delete" class='alert alert-danger'>距離を削除しました。</div>
         </p>
       <div class="panel panel-default">
         <div class="table-responsive">
@@ -91,7 +91,7 @@
                       <a href="<?php echo site_url('admin/distance/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                     </div>
                     <div class="col-xs-6">
-                      <a href="<?php echo site_url('admin/distance/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="Distance">削除</a>
+                      <a href="<?php echo site_url('admin/distance/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="距離">削除</a>
                     </div>
                   </div>
                 </td>

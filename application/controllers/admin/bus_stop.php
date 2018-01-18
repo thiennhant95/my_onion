@@ -53,13 +53,13 @@ class Bus_stop extends ADMIN_Controller {
                         'bus_stop_name' => $this->input->post('bus_stop_name')
                     );
                     $this->bus_stop->update_by_id($dataUpdate);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Updated !</div>");
-                    redirect('admin/bus_stop');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Bus stop code already exists</div>");
-                    redirect('admin/bus_stop/edit/'.$id);
+                   echo DATA_OFF;
+                   die();
                 }
             }
             $this->viewVar = $data;
@@ -89,13 +89,13 @@ class Bus_stop extends ADMIN_Controller {
                         'bus_stop_name'=>$this->input->post('bus_stop_name')
                     );
                     $this->bus_stop->insert($dataInsert);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/bus_stop');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Bus stop code already exists</div>");
-                    redirect('admin/bus_stop/create');
+                    echo DATA_OFF;
+                    die();
                 }
             }
             admin_layout_view('bus_stop_create', $this->viewVar);
@@ -116,11 +116,11 @@ class Bus_stop extends ADMIN_Controller {
         try {
             $dataUpdate = array(
                 'id'=>$id,
-                'delete_flg'=>'1',
+                'delete_flg'=>DATA_ON,
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->bus_stop->update_by_id($dataUpdate);
-            echo json_encode(array('status'=>'1'));
+            echo json_encode(array('status'=>DATA_ON));
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

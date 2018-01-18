@@ -24,7 +24,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
 
-                <form class="form-horizontal" action="<?php echo site_url('admin/subject/create')?>" method="post">
+                <form class="form-horizontal" id="subject_form" method="post">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">科目コード</label>
                         <div class="col-sm-3">
@@ -49,7 +49,7 @@
             </div>
             <div class="col-sm-4">
                 <p>
-                    <button class="btn btn-success btn-block" href="#0">
+                    <button class="btn btn-success btn-block" href="<?php echo site_url('admin/subject/create')?>" id="create" disabled="disabled">
                         <span>更新</span>
                     </button>
                 </p>
@@ -64,3 +64,23 @@
 </body>
 
 </html>
+<button style=" visibility: hidden;" type="button" id="popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+</button>
+
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="status_update"></p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px;border: 0px solid  }
+</style>
+

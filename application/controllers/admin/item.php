@@ -65,12 +65,12 @@ class Item extends ADMIN_Controller {
                         'disp_flg'=>$this->input->post('display'),
                     );
                     $this->item->update_by_id($dataUpdate);
-                    echo "1";
+                    echo DATA_ON;
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo "0";
+                    echo DATA_OFF;
                     die();
                 }
             }
@@ -109,12 +109,12 @@ class Item extends ADMIN_Controller {
                         'disp_flg'=>$this->input->post('display'),
                     );
                     $this->item->insert($dataInsert);
-                    echo "1";
+                    echo DATA_ON;
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo "0";
+                    echo DATA_OFF;
                     die();
                 }
             }
@@ -137,7 +137,7 @@ class Item extends ADMIN_Controller {
         try {
             $dataUpdate = array(
                 'id'=>$id,
-                'delete_flg'=>'1',
+                'delete_flg'=>DATA_ON,
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->item->update_by_id($dataUpdate);

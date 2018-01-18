@@ -19,18 +19,32 @@
         <div class="panel-body">
 
           <form class="form-horizontal"id="class_form" method="post">
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">コース記号</label>
+                  <div class="col-sm-10">
+                      <select class="form-control" name="short_course_name" required>
+                          <?php
+                          foreach ($course_list as $row_course):
+                              ?>
+                              <option value="<?php echo $row_course['id']?>" <?php if ($row_course['id']==$get_class['course_id']) echo "selected"?>><?php echo $row_course['short_course_name']?></option>
+                          <?php
+                          endforeach;
+                          ?>
+                      </select>
+                  </div>
+              </div>
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">クラスコード</label>
               <div class="col-sm-5">
-                <select class="form-control" name="short_course_name" required>
-                    <?php
-                    foreach ($course_list as $row_course):
-                    ?>
-                  <option value="<?php echo $row_course['id']?>" <?php if ($row_course['id']==$get_course['id']) echo "selected"?>><?php echo $row_course['short_course_name'] ?></option>
-                    <?php
-                    endforeach;
-                    ?>
-                </select>
+                  <select class="form-control" name="base_class_sign" required>
+                      <option value="M" <?php if ($get_class['base_class_sign']=="M") echo "selected"?>>M</option>
+                      <option value="A" <?php if ($get_class['base_class_sign']=="A") echo "selected"?>>A</option>
+                      <option value="B" <?php if ($get_class['base_class_sign']=="B") echo "selected"?>>B</option>
+                      <option value="C" <?php if ($get_class['base_class_sign']=="C") echo "selected"?>>C</option>
+                      <option value="D" <?php if ($get_class['base_class_sign']=="D") echo "selected"?>>D</option>
+                      <option value="E" <?php if ($get_class['base_class_sign']=="E") echo "selected"?>>E</option>
+                      <option value="F" <?php if ($get_class['base_class_sign']=="F") echo "selected"?>>F</option>
+                  </select>
               </div>
               <div class="col-sm-5">
                 <input type="text" class="form-control" name="class_code" value="<?php echo $get_class['class_code']?>" required placeholder="">
@@ -71,25 +85,25 @@
                   $get_class['week']=explode(',',$get_class['week']);
                   ?>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="<?php echo MONDAY?>" <?php if (in_array(MONDAY,$get_class['week'])) {echo "checked";}?>> 月
+                  <input type="checkbox"  name="week[]" value="<?php echo MONDAY?>" <?php if (in_array(MONDAY,$get_class['week'])) {echo "checked";}?>> 月
                   </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="<?php echo TUESDAY?>"  <?php if (in_array(TUESDAY,$get_class['week'])) {echo "checked";}?>> 火
+                  <input type="checkbox"  name="week[]" value="<?php echo TUESDAY?>"  <?php if (in_array(TUESDAY,$get_class['week'])) {echo "checked";}?>> 火
                 </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="<?php echo WEDNESDAY?>"  <?php if (in_array(WEDNESDAY,$get_class['week'])) {echo "checked";}?>> 水
+                  <input type="checkbox"  name="week[]" value="<?php echo WEDNESDAY?>"  <?php if (in_array(WEDNESDAY,$get_class['week'])) {echo "checked";}?>> 水
                 </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="<?php echo THURSDAY?>"  <?php if (in_array(THURSDAY,$get_class['week'])) {echo "checked";}?>> 木
+                  <input type="checkbox"  name="week[]" value="<?php echo THURSDAY?>"  <?php if (in_array(THURSDAY,$get_class['week'])) {echo "checked";}?>> 木
                 </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="<?php echo FRIDAY?>"  <?php if (in_array(FRIDAY,$get_class['week'])) {echo "checked";}?>> 金
+                  <input type="checkbox"  name="week[]" value="<?php echo FRIDAY?>"  <?php if (in_array(FRIDAY,$get_class['week'])) {echo "checked";}?>> 金
                 </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="<?php echo SATURDAY?>"  <?php if (in_array(SATURDAY,$get_class['week'])) {echo "checked";}?>> 土
+                  <input type="checkbox"  name="week[]" value="<?php echo SATURDAY?>"  <?php if (in_array(SATURDAY,$get_class['week'])) {echo "checked";}?>> 土
                 </label>
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="<?php echo SUNDAY?>"  <?php if (in_array(SUNDAY,$get_class['week'])) {echo "checked";}?>> 日
+                  <input type="checkbox"  name="week[]" value="<?php echo SUNDAY?>"  <?php if (in_array(SUNDAY,$get_class['week'])) {echo "checked";}?>> 日
                 </label>
               </div>
             </div>

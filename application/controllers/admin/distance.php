@@ -54,13 +54,13 @@ class Distance extends ADMIN_Controller {
                         'distance_name' => $this->input->post('distance_name')
                     );
                     $this->distance->update_by_id($dataUpdate);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Updated !</div>");
-                    redirect('admin/distance');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Update fail! Distance code already exists</div>");
-                    redirect('admin/distance/edit/'.$id);
+                    echo DATA_OFF;
+                    die();
                 }
             }
             $this->viewVar = $data;
@@ -90,13 +90,13 @@ class Distance extends ADMIN_Controller {
                         'distance_name'=>$this->input->post('distance_name')
                     );
                     $this->distance->insert($dataInsert);
-                    $this->session->set_flashdata('message', "<div class='alert alert-success'>Inserted !</div>");
-                    redirect('admin/distance');
+                    echo DATA_ON;
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    $this->session->set_flashdata('message', "<div class='alert alert-danger'>Insert fail! Distance code already exists</div>");
-                    redirect('admin/distance/create');
+                    echo DATA_OFF;
+                    die();
                 }
             }
             admin_layout_view('distance_create', $this->viewVar);
@@ -117,11 +117,11 @@ class Distance extends ADMIN_Controller {
         try {
             $dataUpdate = array(
                 'id'=>$id,
-                'delete_flg'=>'1',
+                'delete_flg'=>DATA_ON,
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->distance->update_by_id($dataUpdate);
-            echo json_encode(array('status'=>'1'));
+            echo json_encode(array('status'=>DATA_ON));
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

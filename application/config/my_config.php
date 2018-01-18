@@ -285,5 +285,7 @@ define('THURSDAY',      4);
 define('FRIDAY',        5);
 define('SATURDAY',      6);
 
+//	クラス記号
+
 
 

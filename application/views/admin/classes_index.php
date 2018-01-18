@@ -33,7 +33,7 @@
                     <a href="<?php echo site_url('admin/bus_route')?>">バスコース</a>
                 </li>
                 <li role="presentation">
-                    <a href="<?php echo site_url('admin/item')?>">品名</a>
+                    <a href="<?php echo site_url('admin/item')?>">品目</a>
                 </li>
                 <li role="presentation">
                     <a href="<?php echo site_url('admin/subject')?>">科目</a>
@@ -143,7 +143,7 @@
       </div>
       <div class="block-15 text-center row">
         <div class="col-sm-8 col-sm-offset-2">
-          <a class="btn btn-info btn-block" href="#0">
+          <a class="btn btn-info btn-block" href="<?php echo site_url('admin/classes/create') ?>">
             <i class="fa fa-plus" aria-hidden="true"></i>
             <span>新規登録</span>
           </a>

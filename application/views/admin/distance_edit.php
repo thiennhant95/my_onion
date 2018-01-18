@@ -24,7 +24,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
 
-          <form class="form-horizontal" action="<?php echo site_url('admin/distance/edit/'.$get_distance['id'])?>" method="post">
+          <form class="form-horizontal" id="distance_form" method="post">
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">距離コード</label>
               <div class="col-sm-3">
@@ -35,11 +35,9 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">距離名</label>
               <div class="col-sm-5">
-                <input type="number" min="1" class="form-control" name="distance_name" value="<?php echo $get_distance['distance_name']?>" required placeholder="">
+                <input type="text" class="form-control" name="distance_name" value="<?php echo $get_distance['distance_name']?>" required placeholder="">
               </div>
             </div>
-
-
         </div>
       </div>
       <div class="block-15 text-center row">
@@ -52,7 +50,7 @@
         </div>
         <div class="col-sm-4">
           <p>
-            <button class="btn btn-success btn-block" href="#0">
+            <button class="btn btn-success btn-block" id="update" href="<?php echo site_url('admin/distance/edit/'.$get_distance['id'])?>">
               <span>更新</span>
             </button>
           </p>
@@ -67,5 +65,23 @@
 </body>
 
 </html>
+<button style=" visibility: hidden;" type="button" id="popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+</button>
 
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="status_update"></p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px;border: 0px solid }
+</style>
 

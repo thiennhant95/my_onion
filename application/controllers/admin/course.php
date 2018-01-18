@@ -2,6 +2,13 @@
 
 class Course extends ADMIN_Controller {
 
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('db/m_course_model','course');
+        $this->load->library('form_validation');
+    }
+
     /**
      * 練習コースマスター
      *
@@ -12,6 +19,8 @@ class Course extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
+            $data['course_list']=$this->course->get_list();
+            $this->viewVar=$data;
             admin_layout_view('course_index', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
