@@ -53,9 +53,11 @@ $(document).ready(function(){
     });
 });
 
+
 //append row table bus_route
     $("body").on("click", ".insert-more", function () {
         $this = $(this);
+        var count = 1;
         var url_edit = $(this).attr("url_edit") + ' #route-table';
         $("#route-table").each(function () {
 
@@ -66,6 +68,15 @@ $(document).ready(function(){
             tds += '</tr>';
             if ($('tbody', this).length > 0) {
                 $('tbody', this).append(tds);
+                $('input#route_oder').attr('id', function(i) {
+                    return "route_oder" +count++;
+                });
+                $('input#go_time').attr('id', function(i) {
+                    return "go_time" + count++;
+                });
+                $('input#ret_time').attr('id', function(i) {
+                    return "ret_time" +count++;
+                });
                 $('tr:last td input').removeAttr("href");
                 $('tr:last td #route_id').val('');
             } else {
@@ -78,33 +89,37 @@ $(document).ready(function(){
 //  validate edit/ create bus course-route
 $(document).ready(function() {
     $("#bus_couse").validate({
+        focusInvalid: false,
+        ignore: [],
         rules: {
             bus_course_code: "required",
             bus_course_name: "required",
             max: {
                 required: true,
+                number: true,
+                digits: true
+            },
+            'route_order[]': {
+                required: true,
                 number: true
             },
-            // 'route_order[]': {
-            //     required: true,
-            //     number: true
-            // },
             'go_time[]': "required",
             'ret_time[]': "required",
         },
         messages: {
-            bus_course_code: "必須",
-            bus_course_name: "必須",
+            bus_course_code: "この項目は必須です",
+            bus_course_name: "この項目は必須です",
             max: {
-                required: "必須",
-                number: "数字形式"
+                required: "この項目は必須です",
+                number: "有効な数値を入力してください。",
+                digits: "数字のみ入力して下さい。",
             },
-            // 'route_order[]': {
-            //     required: "必須",
-            //     number: "数字形式"
-            // },
-            go_time: "必須",
-            ret_time: "必須",
+            'route_order[]': {
+                required: "この項目は必須です",
+                number: "有効な数値を入力してください。"
+            },
+            'go_time[]': "この項目は必須です",
+            'ret_time[]': "この項目は必須です",
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -114,13 +129,8 @@ $(document).ready(function() {
             return false;
         }
     });
-    $("input.route-order").each(function(){
-        $(this).rules("add", {
-            required:true,
-            number:true
-        });
-    });
-    $('#bus_couse input').on('keyup blur', function () {
+
+    $('#bus_couse input ').on('keyup blur', function () {
         if ($('#bus_couse').valid()) {
             $('button.btn').prop('disabled', false);
         } else {
@@ -131,7 +141,7 @@ $(document).ready(function() {
 
 //update bus course - bus route
 $("#update").click(function(e) {
-    // if ($('#bus_couse').valid()) {
+    if ($('#bus_couse').valid()) {
         e.preventDefault();
         var data_id = $(this).attr("data_id");
         var bus_course_code = $("#bus_course_code").val();
@@ -168,7 +178,7 @@ $("#update").click(function(e) {
                 }
             }
         });
-    // }
+    }
 });
 
 //create bus course - bus route
@@ -318,4 +328,39 @@ $("#update_bus_stop").click(function(e) {
             }
         });
     }
+});
+
+//copy bus route
+$(".copy").click(function(e) {
+        e.preventDefault();
+        var id = $(this).attr("id");
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: url_top + '/bus_route/copy/'+id,
+            success: function (data) {
+                console.log(data);
+                if (data == 1) {
+                    $('#popup').click();
+                    $('.modal-body').addClass('alert alert-success');
+                    $("#status_update").html("<b>情報を更新しました。 </b>");
+                    window.setTimeout(function () {
+                        $('#myModal').fadeToggle(300, function () {
+                            $('#myModal').modal('hide');
+                            window.location = url_top + '/bus_stop';
+                        });
+                    }, 1000);
+                }
+                else if (data == 0) {
+                    $('#popup').click();
+                    $('.modal-body').addClass('alert alert-danger');
+                    $("#status_update").html("<b>この乗車場所コードは既存しています。他の乗車場所コードを入力してください。</b>");
+                    window.setTimeout(function () {
+                        $('#myModal').fadeToggle(300, function () {
+                            $('#myModal').modal('hide');
+                        });
+                    }, 2000);
+                }
+            }
+        });
 });

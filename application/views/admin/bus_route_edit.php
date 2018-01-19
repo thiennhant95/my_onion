@@ -171,7 +171,7 @@
         </div>
         <div class="col-sm-4">
           <p>
-            <button id="update" data_id="<?php echo $get_bus_course['id']?>" class="btn btn-success btn-block" disabled="disabled">
+            <button id="update" data_id="<?php echo $get_bus_course['id']?>" class="btn btn-success btn-block">
               <span>更新</span>
             </button>
           </p>

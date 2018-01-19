@@ -46,6 +46,10 @@ $route['404_override'] = '';
 
 // 管理画面
 $route['admin'] = "admin/top";
+
+$route['admin/login'] = "admin/auth";
+$route['admin/logout'] = "admin/auth/logout";
+
 $route['admin/(:any)'] = "admin/$1";
 
 // API
@@ -57,6 +61,8 @@ $route['batch/(:any)'] = "batch/$1";
 // その他
 $route['(:any)'] = "front/$1";  // この行は最後に書くこと
 
-
+$route['login'] = "front/auth/login";
+$route['logout']  = "front/auth/logout";
+$route['auth/forgot-password'] = "front/auth/forgot_password";
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

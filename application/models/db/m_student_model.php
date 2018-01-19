@@ -90,4 +90,17 @@ class M_student_model extends DB_Model {
         return $query;
     }
 
+    public function select_student_field( $id, $key ) {
+        $array = array( 'id' => $id );
+        $this->db->select( $key )->from( 'm_student' )->where( $array );
+        $result = $this->db->get()->result_array();
+        return $result;
+    }
+
+    public function update_student_info( $student_id, $field, $value ) {
+        $query = $this->db->update('m_student', array( $field => $value ), array( 'id' => $student_id ) );
+        if ( $query === FALSE ) {
+            return 'error';
+        } else return 'success';
+    }
 }

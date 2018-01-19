@@ -169,24 +169,66 @@
               <?php
               foreach ($course_list as $row):
               ?>
-                  <tr>
+                  <tr <?php if($row['invalid_flg']==DATA_ON) echo 'class="disabled"' ?>>
                       <td><?php echo $row['course_code']?></td>
                       <td><?php echo $row['course_name']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td><?php echo $row['course_code']?></td>
-                      <td>
-                          <?php echo $row['course_code']?>
+                      <td><?php
+                          foreach ($item_list as $row_item)
+                          {
+                              if ($row_item['id']==$row['cost_item_id'])
+                              {
+                                  echo $row_item['sell_price'];
+                              }
+                          }
+                          ?></td>
+                      <td><?php
+                          foreach ($item_list as $row_item)
+                          {
+                              if ($row['rest_item_id']==$row_item['id'])
+                              {
+                                  echo $row_item['sell_price'];
+                              }
+                          }
+                          ?></td>
+                      <td><?php
+                          foreach ($item_list as $row_item)
+                          {
+                              if ($row_item['id']==$row['bus_item_id'])
+                              {
+                                  echo $row_item['sell_price'];
+                              }
+                          }
+                          ?></td>
+                      <td><?php echo $row['short_course_name']?></td>
+                      <td><?php echo $row['practice_max']?></td>
+                      <td><?php if ($row['change_flg']==DATA_ON)
+                          {
+                             echo "◯";
+                          }
+                          else
+                          {
+                              echo "";
+                          }?>
                       </td>
-                      <td></td>
+                      <td><?php if ($row['type']==DATA_ON )
+                          {
+                              echo "◯";
+                          }?></td>
+                      <td><?php echo date("Y/m/d", strtotime($row['start_date'])).'～'.date("Y/m/d", strtotime($row['end_date']))?></td>
+                      <td><?php echo $row['max_count']?></td>
+                      <td><?php echo date("Y/m/d", strtotime($row['regist_start_date']))?></td>
+                      <td>
+                          <?php echo date("Y/m/d", strtotime($row['regist_end_date']))?>
+                      </td>
+                      <td><?php
+                          $join_condition=json_decode($row['join_condition'],true);
+                       foreach ( (array)$join_condition as $row_condition)
+                       {
+                            echo $row_condition.'<br>';
+                       }
+                          ?>
+                      </td>
+                      <td><?php  if ($row['invalid_flg']==DATA_ON) echo "無効"?></td>
                       <td>
                           <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                       </td>

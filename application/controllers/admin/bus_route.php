@@ -108,12 +108,12 @@ class Bus_route extends ADMIN_Controller {
                               $this->bus_route->insert($data_Bus_Route);
                           }
                       }
-                      echo "1";
+                      echo DATA_ON;
                       die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo "0";
+                    echo DATA_OFF;
                     die();
                 }
             }
@@ -179,12 +179,12 @@ class Bus_route extends ADMIN_Controller {
                         );
                         $this->bus_route->insert($data_Bus_Route);
                     }
-                    echo "1";
+                    echo DATA_ON;
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo "0";
+                    echo DATA_OFF;
                     die();
                 }
             }
@@ -234,6 +234,46 @@ class Bus_route extends ADMIN_Controller {
             );
             $this->bus_route->update_by_id($dataUpdate);
             echo json_encode(array("success" => true));
+        } catch (Exception $e) {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+    /**
+     *
+     *
+     * @param
+     * @return
+     *
+     */
+    public function copy($id=NULL)
+    {
+        if ($this->error_flg) return;
+        try {
+            $bus_course= $this->bus_course->select_by_id($id)[0];
+            $bus_route=$this->bus_route->get_list(array('bus_course_id'=> "=".$id));
+            $data_bus_course = array(
+                'bus_course_code'=>$bus_course['bus_course_code'] .' (Copy)',
+                'bus_course_name'=>$bus_course['bus_course_name'].' (Copy)',
+                'class_id'=>$bus_course['class_id'],
+                'max'=>$bus_course['max'],
+            );
+            $this->bus_course->insert($data_bus_course);
+            $id_last=$this->bus_course->get_last_insert_id();
+            foreach ($bus_route as $row_bus_route)
+            {
+                $data_bus_route= array(
+                    'bus_course_id'=>$id_last,
+                    'route_order' =>$row_bus_route['route_order'],
+                    'bus_stop_id' =>$row_bus_route['bus_stop_id'],
+                    'go_time'=>$row_bus_route['go_time'],
+                    'ret_time'=>$row_bus_route['ret_time'],
+                );
+                $this->bus_route->duplicate_insert($data_bus_route);
+            }
+            $data_json=$this->bus_course->select_by_id($id_last)[0];
+            echo json_encode($data_json);
+            die();
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

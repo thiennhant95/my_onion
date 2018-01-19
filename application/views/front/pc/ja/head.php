@@ -19,6 +19,9 @@
 <!-- VendorJS -->
 <script src="//cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <script src="//cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js" crossorigin="anonymous"></script>
+<script src="//cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://ajaxzip3.github.io/ajaxzip3.js" charset="utf-8"></script>
+<script src="https://momentjs.com/downloads/moment.js" crossorigin="anonymous"></script>
 
 <!-- コンテンツ用JS -->
 <script src="/js/hanamigawasw/common.js"></script>

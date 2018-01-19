@@ -275,8 +275,13 @@ $config['course_type'] = array(
     VALUE_COURSE_TYPE_FREE          => '無料体験コース',
 );
 
-// 授業曜日
+/* Define Constant */
+define('PASSWORD_SALT', 'asdfqwezxcvrtyufghjvbnmuiop123456789'); // password salt
+define('PASSWORD_LENGTH', 16); // password length
+define('REGISTER_TOKEN_LENGTH', 32); // register token length
+define('CREATE_ID_QUESTIONNAIRE_LENGTH', 9); // create_id questionnaire length
 
+// 授業曜日
 define('SUNDAY',        0);
 define('MONDAY',        1);
 define('TUESDAY',       2);
@@ -284,8 +289,3 @@ define('WEDNESDAY',     3);
 define('THURSDAY',      4);
 define('FRIDAY',        5);
 define('SATURDAY',      6);
-
-//	クラス記号
-
-
-

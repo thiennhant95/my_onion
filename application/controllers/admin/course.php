@@ -20,6 +20,23 @@ class Course extends ADMIN_Controller {
         if ($this->error_flg) return;
         try {
             $data['course_list']=$this->course->get_list();
+//            foreach ($data['course_list'] as $row)
+//            {
+//                $json=json_decode($row['join_condition'],true);
+////                $json=json_decode($json);
+//                echo "<pre>";
+//                print_r($json);
+//                foreach ((array)$json as $row_avd)
+//                {
+//                }
+//                echo "</pre>";
+//
+//            }
+////            $json$data['course_list']['join_condition'];
+//
+//            die();
+            $this->load->model('db/m_item_model','item');
+            $data['item_list']=$this->item->get_list();
             $this->viewVar=$data;
             admin_layout_view('course_index', $this->viewVar);
         } catch (Exception $e) {

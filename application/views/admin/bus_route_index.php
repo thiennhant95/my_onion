@@ -92,7 +92,7 @@
                                 <a href="<?php echo site_url('admin/bus_route/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="Bus Course">削除</a>
                             </div>
                             <div class="col-xs-4">
-                                <a href="<?php echo site_url('admin/bus_route')?>" class="btn btn-default btn-block btn-sm">コピー作成</a>
+                                <a id="<?php echo $row['id']?>" href="<?php echo site_url('admin/bus_route/copy/'.$row['id'])?>" class="btn btn-default btn-block btn-sm copy">コピー作成</a>
                             </div>
                         </div>
                     </td>

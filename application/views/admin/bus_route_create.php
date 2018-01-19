@@ -69,11 +69,11 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <input type="text" class="form-control route-order"name="route_order[]" required placeholder="">
+                                            <input type="text" id="route_oder" class="form-control route-order"name="route_order[]" required placeholder="">
                                         </td>
                                         <td>
                                             <select class="form-control bus_stop_id" name="bus_stop_id[]" required>
-                                                <option selected disabled>Choose one</option>
+<!--                                                <option selected disabled>Choose one</option>-->
                                                 <?php
                                                 foreach ($bus_stop_list as $row_stop) {
                                                     ?>
@@ -84,10 +84,10 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="asia-time" class="form-control go-time" name="go_time[]" placeholder="00:00" required>
+                                            <input type="asia-time" id="go_time" class="form-control go-time" name="go_time[]" placeholder="00:00" required>
                                         </td>
                                         <td>
-                                            <input type="asia-time" class="form-control ret-time" name="ret_time[]" placeholder="00:00" required>
+                                            <input type="asia-time" id="ret_time" class="form-control ret-time" name="ret_time[]" placeholder="00:00" required>
                                         </td>
                                         <td>
                                             <input type="button" href="" url_edit="<?php echo site_url('admin/bus_route/create') ?>" class="btn btn-default btn-block btn-sm btnDelete" value="削除">
@@ -117,7 +117,7 @@
             </div>
             <div class="col-sm-4">
                 <p>
-                    <button id="create" data_id="" class="btn btn-success btn-block">
+                    <button id="create" data_id="" class="btn btn-success btn-block" disabled="disabled">
                         <span>更新</span>
                     </button>
                 </p>

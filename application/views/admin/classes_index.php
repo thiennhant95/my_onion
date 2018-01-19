@@ -125,7 +125,7 @@
                                 }
                                 else
                                 {
-                                echo "有効";
+                                echo "";
                                 }
                                 ?></td>
                             <td>
