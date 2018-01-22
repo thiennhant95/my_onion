@@ -60,7 +60,7 @@
 
       <div class="panel panel-default">
         <div class="table-responsive">
-          <table class="table table-bordered table-hover table-lg table-center">
+          <table class="table table-bordered table-hover table-lg table-center" id="mytable">
 
             <thead>
               <tr>
@@ -89,7 +89,7 @@
                                 <a href="<?php echo site_url('admin/bus_route/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                             </div>
                             <div class="col-xs-4">
-                                <a href="<?php echo site_url('admin/bus_route/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="Bus Course">削除</a>
+                                <a href="<?php echo site_url('admin/bus_route/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="マスター設定​">削除</a>
                             </div>
                             <div class="col-xs-4">
                                 <a id="<?php echo $row['id']?>" href="<?php echo site_url('admin/bus_route/copy/'.$row['id'])?>" class="btn btn-default btn-block btn-sm copy">コピー作成</a>
@@ -122,3 +122,22 @@
 </body>
 
 </html>
+<button style=" visibility: hidden;" type="button" id="popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+</button>
+
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="status_update"></p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px;border: 0px solid}
+</style>

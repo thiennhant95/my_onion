@@ -55,35 +55,26 @@ $(document).ready(function(){
 
 
 //append row table bus_route
-    $("body").on("click", ".insert-more", function () {
-        $this = $(this);
-        var count = 1;
-        var url_edit = $(this).attr("url_edit") + ' #route-table';
-        $("#route-table").each(function () {
-
-            var tds = '<tr>';
-            jQuery.each($('tr:last td', this), function () {
-                tds += '<td>' + $(this).html() + '</td>';
-            });
-            tds += '</tr>';
-            if ($('tbody', this).length > 0) {
-                $('tbody', this).append(tds);
-                $('input#route_oder').attr('id', function(i) {
-                    return "route_oder" +count++;
-                });
-                $('input#go_time').attr('id', function(i) {
-                    return "go_time" + count++;
-                });
-                $('input#ret_time').attr('id', function(i) {
-                    return "ret_time" +count++;
-                });
-                $('tr:last td input').removeAttr("href");
-                $('tr:last td #route_id').val('');
-            } else {
-                $(this).append(tds);
-            }
+$("body").on("click", ".insert-more", function () {
+    $this = $(this);
+    var url_edit = $(this).attr("url_edit") + ' #route-table';
+    $("#route-table").each(function () {
+        var tds = '<tr>';
+        jQuery.each($('tr:last td', this), function () {
+            tds += '<td>' + $(this).html() + '</td>';
         });
+        tds += '</tr>';
+        if ($('tbody', this).length > 0) {
+            $('tbody', this).append(tds);
+            $('tr:last td input').removeAttr("href");
+            $('tr:last td #route_id').val('');
+        } else {
+            $(this).append(tds);
+            $('tr:last td input').removeAttr("href");
+            $('tr:last td #route_id').val('');
+        }
     });
+});
 
 
 //  validate edit/ create bus course-route
@@ -150,15 +141,16 @@ $("#update").click(function(e) {
         var max = $("#max").val();
         var dataString = 'bus_course_code=' + bus_course_code + '&bus_course_name=' + bus_course_name + '&class_id=' + class_id + '&max=' + max;
         $.ajax({
+            dataType: 'json',
             type: 'POST',
             data: $('#bus_couse').serialize(),
             url: url_top + '/bus_route/edit/' + data_id,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.success == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
-                    $("#status_update").html("<b>Updated!</b>");
+                    $("#status_update").html("<b>情報を更新しました。</b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
@@ -166,10 +158,10 @@ $("#update").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data == 0) {
+                else if (data.success == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
-                    $("#status_update").html("<b>Update fail! Bus course code already exists</b>");
+                    $("#status_update").html("<b>このバスコースコードは既存しています。他のバスコースコードを入力してください。</b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
@@ -299,12 +291,13 @@ $("#update_bus_stop").click(function(e) {
         e.preventDefault();
         var url = $(this).attr("href");
         $.ajax({
+            dataType : "json",
             type: 'POST',
             data: $('#bus_stop_form').serialize(),
             url: url,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.success == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。 </b>");
@@ -315,7 +308,7 @@ $("#update_bus_stop").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data == 0) {
+                else if (data.fail == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>この乗車場所コードは既存しています。他の乗車場所コードを入力してください。</b>");
@@ -331,36 +324,71 @@ $("#update_bus_stop").click(function(e) {
 });
 
 //copy bus route
-$(".copy").click(function(e) {
+$("#mytable").on("click", ".copy", function (e) {
+// $(".copy").click(function(e) {
         e.preventDefault();
+        var table = url_top +'/bus_route'+"#mytable";
         var id = $(this).attr("id");
         $.ajax({
             type: 'POST',
             dataType: 'json',
             url: url_top + '/bus_route/copy/'+id,
             success: function (data) {
-                console.log(data);
-                if (data == 1) {
-                    $('#popup').click();
-                    $('.modal-body').addClass('alert alert-success');
-                    $("#status_update").html("<b>情報を更新しました。 </b>");
-                    window.setTimeout(function () {
-                        $('#myModal').fadeToggle(300, function () {
-                            $('#myModal').modal('hide');
-                            window.location = url_top + '/bus_stop';
+                // console.log(data);
+                $('#popup').click();
+                $('.modal-body').addClass('alert alert-success');
+                $("#status_update").html("<b>正常にコピーされた。 </b>");
+                window.setTimeout(function () {
+                    $('#myModal').fadeToggle(300, function () {
+                        $('#myModal').modal('hide');
+                    });
+                }, 1000);
+                //Compose template string
+                String.prototype.compose = (function (){
+                    var re = /\{{(.+?)\}}/g;
+                    return function (o){
+                        return this.replace(re, function (_, k){
+                            return typeof o[k] != 'undefined' ? o[k] : '';
                         });
-                    }, 1000);
-                }
-                else if (data == 0) {
-                    $('#popup').click();
-                    $('.modal-body').addClass('alert alert-danger');
-                    $("#status_update").html("<b>この乗車場所コードは既存しています。他の乗車場所コードを入力してください。</b>");
-                    window.setTimeout(function () {
-                        $('#myModal').fadeToggle(300, function () {
-                            $('#myModal').modal('hide');
-                        });
-                    }, 2000);
-                }
+                    }
+                }());
+                var tbody = $('#mytable').children('tbody');
+                var table = tbody.length ? tbody : $('#mytable');
+                var row = '<tr>'+
+                    '<td>{{bus_course_code}}</td>'+
+                    '<td>{{bus_course_name}}</td>'+
+                    '<td>{{class_name}}</td>'+
+                    '<td>{{max}}</td>'+
+                    '<td>{{action}}</td>'+
+                    '</tr>';
+                    //Add row
+                    table.append(row.compose({
+                        'bus_course_code':data.bus_course_code ,
+                        'bus_course_name': data.bus_course_name,
+                        'class_name': data.class_name,
+                        'max':data.max,
+                        'action':' <div class="row">\n' +
+                            '                            <div class="col-xs-4">\n' +
+                            '                                <a id="edit_row" href="" class="btn btn-outline-blue btn-block btn-sm">編集</a>\n' +
+                            '                            </div>\n' +
+                            '                            <div class="col-xs-4">\n' +
+                            '                                <button id="delete_row" href="" class="btn btn-default btn-block btn-sm" data-type="マスター設定​">削除</button>\n' +
+                            '                            </div>\n' +
+                            '                            <div class="col-xs-4">\n' +
+                            '                                <a id="copy_row" href="" class="btn btn-default btn-block btn-sm">コピー作成</a>\n' +
+                            '                            </div>\n' +
+                            '                        </div>',
+                        })
+                    );
+                        var edit_row =url_top +'/bus_route/edit/'+data.id;
+                        var delete_row =url_top + '/bus_route/delete/'+data.id;
+                        var copy_row=url_top + '/bus_route/copy/'+data.id;
+                        $('#edit_row').attr("href", edit_row);
+            //             $('#delete_row').attr("href", delete_row);
+            //             $('#copy_row').attr("href",copy_row);
             }
         });
 });
+
+
+

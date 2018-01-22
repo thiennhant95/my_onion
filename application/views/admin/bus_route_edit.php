@@ -66,7 +66,7 @@
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody href="dsdsdsdsđsds" id="222">
                   <?php
                   if (count($bus_route_list)==0)
                   {
@@ -201,6 +201,6 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <style>
-    .alert-success {border-radius: 0px }
-    .alert-danger {border-radius: 0px }
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px ;border: 0px solid}
 </style>

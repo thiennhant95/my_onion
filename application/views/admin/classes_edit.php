@@ -14,14 +14,13 @@
       <h1 class="lead-heading h3">
         <span>クラス編集</span>
       </h1>
-
       <div class="panel panel-default">
         <div class="panel-body">
 
           <form class="form-horizontal"id="class_form" method="post">
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">コース記号</label>
-                  <div class="col-sm-10">
+                  <div class="col-sm-5">
                       <select class="form-control" name="short_course_name" required>
                           <?php
                           foreach ($course_list as $row_course):
@@ -47,13 +46,16 @@
                   </select>
               </div>
               <div class="col-sm-5">
-                <input type="text" class="form-control" name="class_code" value="<?php echo $get_class['class_code']?>" required placeholder="">
+                  <?php
+                  $class_code = substr_replace($get_class['class_code'], '', 0, 1);
+                  ?>
+                <input type="text" class="form-control" name="class_code" value="<?php echo $class_code?>" required placeholder="">
               </div>
             </div>
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">クラス名</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" name="name_class" value="<?php echo $get_class['class_name']?>" required placeholder="">
+                <input type="text" class="form-control" name="class_name" value="<?php echo $get_class['class_name']?>" required placeholder="">
               </div>
             </div>
             <div class="form-group">
@@ -105,8 +107,15 @@
                 <label class="checkbox-inline">
                   <input type="checkbox"  name="week[]" value="<?php echo SUNDAY?>"  <?php if (in_array(SUNDAY,$get_class['week'])) {echo "checked";}?>> 日
                 </label>
+                  <label id="week[]-error"class="label label-danger" for="week[]" style=" display: none">一個以上のチェックボックスにチェックを入れてください</label>
               </div>
             </div>
+              <div class="form-group">
+                  <label for="" class="col-sm-2 control-label">定員</label>
+                  <div class="col-sm-5">
+                      <input type="text" class="form-control" name="max_count" value="<?php echo $get_class['max_count']?>" required placeholder="">
+                  </div>
+              </div>
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">有効/無効</label>
               <div class="col-sm-10">

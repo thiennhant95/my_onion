@@ -37,6 +37,7 @@ class Bus_route extends ADMIN_Controller {
      * @return  
      *
     */
+
     public function edit($id = NULL) {
         if ($this->error_flg) return;
         try {
@@ -63,6 +64,7 @@ class Bus_route extends ADMIN_Controller {
                         'class_id'=>$this->input->post('class_id'),
                         'max'=>$this->input->post('max')
                     );
+
                     $this->bus_course->update_by_id($dataUpdate);
                     //update bus route
                     $route_id =$this->input->post('route_id');
@@ -108,12 +110,12 @@ class Bus_route extends ADMIN_Controller {
                               $this->bus_route->insert($data_Bus_Route);
                           }
                       }
-                      echo DATA_ON;
-                      die();
+                    echo json_encode(array('success'=>DATA_ON));
+                    die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('success'=>DATA_OFF));
                     die();
                 }
             }
@@ -253,8 +255,8 @@ class Bus_route extends ADMIN_Controller {
             $bus_course= $this->bus_course->select_by_id($id)[0];
             $bus_route=$this->bus_route->get_list(array('bus_course_id'=> "=".$id));
             $data_bus_course = array(
-                'bus_course_code'=>$bus_course['bus_course_code'] .' (Copy)',
-                'bus_course_name'=>$bus_course['bus_course_name'].' (Copy)',
+                'bus_course_code'=>$bus_course['bus_course_code'],
+                'bus_course_name'=>$bus_course['bus_course_name'],
                 'class_id'=>$bus_course['class_id'],
                 'max'=>$bus_course['max'],
             );
@@ -272,6 +274,8 @@ class Bus_route extends ADMIN_Controller {
                 $this->bus_route->duplicate_insert($data_bus_route);
             }
             $data_json=$this->bus_course->select_by_id($id_last)[0];
+            $class_name= $this->class->select_by_id($data_json['class_id'])[0];
+            $data_json['class_name']=$class_name['class_name'];
             echo json_encode($data_json);
             die();
         } catch (Exception $e) {

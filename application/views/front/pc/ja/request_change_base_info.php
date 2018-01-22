@@ -113,7 +113,7 @@
 
         <section>
           <div class="panel panel-dotted">
-            <div class="panel-heading">健康管理連絡事項</div>
+            <div class="panel-heading">コーチへの伝達事項</div>
             <div class="panel-body">
               <div class="form-group">
                 <div class="col-sm-10 col-sm-offset-2">

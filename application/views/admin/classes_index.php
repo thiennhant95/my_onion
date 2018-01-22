@@ -78,8 +78,8 @@
             <tbody>
             <?php
             foreach ($class_list as $row_class):
-//                foreach ($course_list as $row_course):
-//                    if ($row_class['course_id']==$row_course['id']) {
+                foreach ($course_list as $row_course):
+                    if ($row_class['course_id']==$row_course['id']) {
                         ?>
                         <tr <?php if($row_class['invalid_flg']==DATA_ON) echo 'class="disabled"' ?>>
                             <td><?php echo $row_class['class_code']?></td>
@@ -111,7 +111,7 @@
                                 echo $day_implode;
                                 unset($day);
                                 ?></td>
-                            <td><?php echo "データがありません"?></td>
+                            <td><?php echo $row_class['max_count']?></td>
                             <td><?php if ($row_class['use_bus_flg']==DATA_ON)
                                 {
                                     echo "あり";
@@ -133,8 +133,8 @@
                             </td>
                         </tr>
                         <?php
-//                    }
-//                endforeach;
+                    }
+                endforeach;
             endforeach;
             ?>
             </tbody>

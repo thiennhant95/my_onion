@@ -2,6 +2,10 @@
 
 class Test extends FRONT_Controller {
 
+    public function auth() {
+        $this->session->set_userdata('user_account', 1);
+    }
+
     public function index() {
         $this->load->model('student_model');
         $result = $this->student_model->get_student_data(1);

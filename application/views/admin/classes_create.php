@@ -19,10 +19,10 @@
             <div class="panel-body">
 
                 <form class="form-horizontal"id="class_form" method="post">
-                    <div class="form-group" hidden>
+                    <div class="form-group">
                         <label for="" class="col-sm-2 control-label">コース記号</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" name="short_course_name1" required>
+                        <div class="col-sm-5">
+                            <select class="form-control" name="short_course_name" required>
                                 <?php
                                 foreach ($course_list as $row_course):
                                     ?>
@@ -36,14 +36,14 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">クラスコード</label>
                         <div class="col-sm-5">
-                            <select class="form-control" name="short_course_name" required>
-                                <?php
-                                foreach ($course_list as $row_course):
-                                    ?>
-                                    <option value="<?php echo $row_course['id']?>"><?php echo $row_course['short_course_name'] ?></option>
-                                <?php
-                                endforeach;
-                                ?>
+                            <select class="form-control" name="base_class_sign" required>
+                               <option value="M">M</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
                             </select>
                         </div>
                         <div class="col-sm-5">
@@ -53,7 +53,7 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">クラス名</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="name_class" required placeholder="">
+                            <input type="text" class="form-control" name="class_name" required placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
@@ -102,6 +102,13 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox" name="week[]" value="<?php echo SUNDAY?>"> 日
                             </label>
+                            <label id="week[]-error"class="label label-danger" for="week[]" style=" display: none">一個以上のチェックボックスにチェックを入れてください</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">定員</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" name="max_count" required placeholder="">
                         </div>
                     </div>
                     <div class="form-group">

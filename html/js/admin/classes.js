@@ -9,16 +9,28 @@ $(document).ready(function() {
                 // math:true,
                 required:true
             },
-            name_class: "required",
-            "week[]": { required: true, minlength: 1 }
+            class_name: "required",
+            "week[]": { required: true, minlength: 1 },
+            max_count:
+                {
+                    required: true,
+                    number: true,
+                    digits: true,
+                },
         },
         messages: {
             class_code:
                 {
                     required: "この項目は必須です",
                 },
-            name_class: "この項目は必須です",
-            "week[]":"You must check at least one!"
+            class_name: "この項目は必須です",
+            "week[]":"一個以上のチェックボックスにチェックを入れてください",
+            max_count:
+                {
+                    required: "この項目は必須です",
+                    number: "有効な数値を入力してください。",
+                    digits: "有効な数値を入力してください。 ",
+                },
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -44,26 +56,64 @@ $("#update").click(function(e) {
         e.preventDefault();
         var id = $(this).attr("data_id");
         $.ajax({
+            dataType : "json",
             type: 'POST',
             data: $('#class_form').serialize(),
             url: url_top + '/classes/edit/' + id,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.success == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
-                    $("#status_update").html("<b>Updated!</b>");
+                    $("#status_update").html("<b>情報を更新しました。</b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                             window.location = url_top + '/classes';
                         });
-                    }, 1000);
+                    }, 900);
                 }
-                else if (data == 0) {
+                else if (data.fail == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
-                    $("#status_update").html("<b>Update fail! Item code already exists</b>");
+                    $("#status_update").html("<b>エラーが発生しました。 後でもう一度お試しください。</b>");
+                    window.setTimeout(function () {
+                        $('#myModal').fadeToggle(300, function () {
+                            $('#myModal').modal('hide');
+                        });
+                    }, 2000);
+                }
+            }
+        });
+    }
+});
+
+//Insert data
+$("#create").click(function(e) {
+    if ($('#class_form').valid()) {
+        e.preventDefault();
+        $.ajax({
+            dataType : "json",
+            type: 'POST',
+            data: $('#class_form').serialize(),
+            url: url_top + '/classes/create/',
+            success: function (data) {
+                console.log(data.success);
+                if (data.success == 1) {
+                    $('#popup').click();
+                    $('.modal-body').addClass('alert alert-success');
+                    $("#status_update").html("<b>クラスを追加しました。</b>");
+                    window.setTimeout(function () {
+                        $('#myModal').fadeToggle(300, function () {
+                            $('#myModal').modal('hide');
+                            window.location = url_top + '/classes';
+                        });
+                    }, 900);
+                }
+                else if (data.fail == 0) {
+                    $('#popup').click();
+                    $('.modal-body').addClass('alert alert-danger');
+                    $("#status_update").html("<b>エラーが発生しました。 後でもう一度お試しください。</b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');

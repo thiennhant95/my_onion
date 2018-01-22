@@ -82,90 +82,6 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1041</td>
-                <td>ベビー週１</td>
-                <td>7020</td>
-                <td>3240</td>
-                <td>864</td>
-                <td>B</td>
-                <td>週1</td>
-                <td>◯</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                </td>
-              </tr>
-              <tr>
-                <td>1042</td>
-                <td>ベビー週４</td>
-                <td>8640</td>
-                <td>3240</td>
-                <td>864</td>
-                <td>B</td>
-                <td>週4</td>
-                <td>◯</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                </td>
-              </tr>
-              <tr class="disabled">
-                <td>1240</td>
-                <td>幼稚園児週１</td>
-                <td>7020</td>
-                <td>3240</td>
-                <td>864</td>
-                <td>Y</td>
-                <td>週1</td>
-                <td>◯</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>無効</td>
-                <td>
-                  <a href="#0" class="btn btn-outline-blue btn-block btn-sm disabled">編集</a>
-                </td>
-              </tr>
-              <tr>
-                <td>1241</td>
-                <td>2017年春・はじめてのスイミングレッスン2日間</td>
-                <td>3780</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>◯</td>
-                <td>2017/3/28～2017/3/29</td>
-                <td>25</td>
-                <td>2017/2/11</td>
-                <td>2017/3/27</td>
-                <td>
-                  【年齢】年中～小6
-                  <br>【級】　制限無し
-                  <br>【泳力】制限無し
-                </td>
-                <td></td>
-                <td>
-                  <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
-                </td>
-              </tr>
               <?php
               foreach ($course_list as $row):
               ?>
@@ -226,11 +142,11 @@
                        {
                             echo $row_condition.'<br>';
                        }
-                          ?>
+                        ?>
                       </td>
                       <td><?php  if ($row['invalid_flg']==DATA_ON) echo "無効"?></td>
                       <td>
-                          <a href="#0" class="btn btn-outline-blue btn-block btn-sm">編集</a>
+                          <a href="<?php echo site_url('admin/course/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                       </td>
                   </tr>
 
@@ -243,17 +159,14 @@
       </div>
       <div class="block-15 text-center row">
         <div class="col-sm-8 col-sm-offset-2">
-          <a class="btn btn-info btn-block" href="#0">
+          <a class="btn btn-info btn-block" href="<?php echo site_url('admin/course/create')?>">
             <i class="fa fa-plus" aria-hidden="true"></i>
             <span>新規登録</span>
           </a>
         </div>
       </div>
     </div>
-
   </main>
-
   <?php require_once("contents_footer.php"); ?>
 </body>
-
 </html>
