@@ -66,18 +66,19 @@
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody href="dsdsdsdsđsds" id="222">
+                  <tbody>
                   <?php
                   if (count($bus_route_list)==0)
                   {
+                      $i=0;
                       ?>
                       <tr>
                           <td>
-                              <input type="text" class="form-control"name="route_order[]" required placeholder="">
+                              <input type="text" class="form-control"name="route_order[]" id="route_order_id" required placeholder="">
                           </td>
                           <td>
                               <select class="form-control" name="bus_stop_id[]" required>
-                                  <option selected disabled>Choose one</option>
+<!--                                  <option selected disabled>Choose one</option>-->
                                   <?php
                                   foreach ($bus_stop_list as $row_stop) {
                                       ?>
@@ -102,6 +103,7 @@
                   else if (count($bus_route_list) >0) {
                       ?>
                       <?php
+                      $i=0;
                       foreach ($bus_route_list as $row_route) {
                           ?>
                           <tr>
@@ -144,6 +146,7 @@
                               </td>
                           </tr>
                           <?php
+                          $i++;
                       }
                   }
                   ?>
@@ -171,7 +174,7 @@
         </div>
         <div class="col-sm-4">
           <p>
-            <button id="update" data_id="<?php echo $get_bus_course['id']?>" class="btn btn-success btn-block">
+            <button id="update" data_id="<?php echo $get_bus_course['id']?>" class="btn btn-success btn-block" disabled>
               <span>更新</span>
             </button>
           </p>

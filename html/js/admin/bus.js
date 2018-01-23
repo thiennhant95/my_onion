@@ -55,6 +55,7 @@ $(document).ready(function(){
 
 
 //append row table bus_route
+// var emailCounter = 1;
 $("body").on("click", ".insert-more", function () {
     $this = $(this);
     var url_edit = $(this).attr("url_edit") + ' #route-table';
@@ -68,6 +69,14 @@ $("body").on("click", ".insert-more", function () {
             $('tbody', this).append(tds);
             $('tr:last td input').removeAttr("href");
             $('tr:last td #route_id').val('');
+            // $('tr:last td #route_order_id').attr('name', 'route_oder[' + (emailCounter) + ']');
+            // ++emailCounter;
+            // // var route_name= $('tr:last td #route_order_id').attr('name');
+            // // var res = parseInt(route_name.substring(12,13));
+            // // var num =parseInt(1);
+            // // var sum= res+num;
+            // // $('tr:last td #route_order_id').attr('name', 'route_oder[' + (sum) +']');
+            // // num ++;
         } else {
             $(this).append(tds);
             $('tr:last td input').removeAttr("href");
@@ -92,7 +101,7 @@ $(document).ready(function() {
             },
             'route_order[]': {
                 required: true,
-                number: true
+                // number: true
             },
             'go_time[]': "required",
             'ret_time[]': "required",
@@ -105,12 +114,12 @@ $(document).ready(function() {
                 number: "有効な数値を入力してください。",
                 digits: "数字のみ入力して下さい。",
             },
-            'route_order[]': {
-                required: "この項目は必須です",
-                number: "有効な数値を入力してください。"
-            },
-            'go_time[]': "この項目は必須です",
-            'ret_time[]': "この項目は必須です",
+            // 'route_order[]': {
+            //     required: "この項目は必須です",
+            //     number: "有効な数値を入力してください。"
+            // },
+            // 'go_time[]': "この項目は必須です",
+            // 'ret_time[]': "この項目は必須です",
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -120,7 +129,30 @@ $(document).ready(function() {
             return false;
         }
     });
-
+    $('[name^="route_order"]').each(function() {
+        $(this).rules('add', {
+            required: true,
+            messages: {
+                required: "この項目は必須です",
+            }
+        })
+    });
+    $('[name^="go_time"]').each(function() {
+        $(this).rules('add', {
+            required: true,
+            messages: {
+                required: "この項目は必須です",
+            }
+        })
+    });
+    $('[name^="ret_time"]').each(function() {
+        $(this).rules('add', {
+            required: true,
+            messages: {
+                required: "この項目は必須です",
+            }
+        })
+    });
     $('#bus_couse input ').on('keyup blur', function () {
         if ($('#bus_couse').valid()) {
             $('button.btn').prop('disabled', false);
