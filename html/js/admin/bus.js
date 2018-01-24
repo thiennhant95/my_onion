@@ -179,7 +179,7 @@ $("#update").click(function(e) {
             url: url_top + '/bus_route/edit/' + data_id,
             success: function (data) {
                 console.log(data);
-                if (data.success == 1) {
+                if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。</b>");
@@ -190,7 +190,7 @@ $("#update").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data.success == 0) {
+                else if (data.status == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>このバスコースコードは既存しています。他のバスコースコードを入力してください。</b>");
@@ -221,7 +221,7 @@ $("#create").click(function(e) {
             url: url_top + '/bus_route/create/',
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>Updated!</b>");
@@ -232,7 +232,7 @@ $("#create").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data == 0) {
+                else if (data.status == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>Update fail! Bus course code already exists</b>");
@@ -286,12 +286,13 @@ $("#create_bus_stop").click(function(e) {
         e.preventDefault();
         var url = $(this).attr("href");
         $.ajax({
+            dataType:'json',
             type: 'POST',
             data: $('#bus_stop_form').serialize(),
             url: url,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>バス停を追加しました。 </b>");
@@ -302,7 +303,7 @@ $("#create_bus_stop").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data == 0) {
+                else if (data.status == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>この乗車場所コードは既存しています。他の乗車場所コードを入力してください。 </b>");
@@ -329,7 +330,7 @@ $("#update_bus_stop").click(function(e) {
             url: url,
             success: function (data) {
                 console.log(data);
-                if (data.success == 1) {
+                if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。 </b>");
@@ -340,7 +341,7 @@ $("#update_bus_stop").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data.fail == 0) {
+                else if (data.status == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>この乗車場所コードは既存しています。他の乗車場所コードを入力してください。</b>");

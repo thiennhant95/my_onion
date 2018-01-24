@@ -106,7 +106,7 @@ $("#update").click(function(e) {
             url: url,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>有効な数値を入力してください。</b>");
@@ -117,7 +117,7 @@ $("#update").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data == 0) {
+                else if (data.status  == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>この品名コードは既存しています。他の品名コードを入力してください。 </b>");
@@ -157,7 +157,7 @@ $("#create").click(function(e) {
             url: url,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>品目を追加しました。 </b>");
@@ -169,7 +169,7 @@ $("#create").click(function(e) {
                     }, 1000);
 
                 }
-                else if (data == 0) {
+                else if (data.status  == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>この品名コードは既存しています。他の品名コードを入力してください。</b>");

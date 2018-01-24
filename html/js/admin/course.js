@@ -53,3 +53,43 @@ $(document).ready(function(){
             });
     })
 });
+
+//update course
+$(document).ready(function() {
+    $("#update").click(function (e) {
+        if ($('#course_form').valid()) {
+            e.preventDefault();
+            var id = $(this).attr("data_id");
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: $('#course_form').serialize(),
+                url: url_top+'/course/edit/'+id,
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == 1) {
+                        $('#popup').click();
+                        $('.modal-body').addClass('alert alert-success');
+                        $("#status_update").html("<b>情報を更新しました。 </b>");
+                        window.setTimeout(function () {
+                            $('#myModal').fadeToggle(300, function () {
+                                $('#myModal').modal('hide');
+                                window.location = url_top + '/course';
+                            });
+                        }, 1000);
+                    }
+                    else if (data.status == 0) {
+                        $('#popup').click();
+                        $('.modal-body').addClass('alert alert-danger');
+                        $("#status_update").html("<b>このコースコードは既存しています。再度してください。</b>");
+                        window.setTimeout(function () {
+                            $('#myModal').fadeToggle(300, function () {
+                                $('#myModal').modal('hide');
+                            });
+                        }, 2000);
+                    }
+                }
+            });
+        }
+    });
+});

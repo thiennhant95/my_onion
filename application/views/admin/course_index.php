@@ -138,9 +138,28 @@
                       </td>
                       <td><?php
                           $join_condition=json_decode($row['join_condition'],true);
-                       foreach ( (array)$join_condition as $row_condition)
+                       foreach ( (array)$join_condition as $key_conditon=> $row_condition)
                        {
-                            echo $row_condition.'<br>';
+                           if (!is_array($row_condition))
+                           {
+                               echo "<b>".'「'.$key_conditon.'」'."</b>".$row_condition.'<br>';
+                           }
+                           if (is_array($row_condition))
+                           {
+                               echo "<b>".'「'.$key_conditon.'」'."</b>";
+                               foreach ($row_condition as $key=>$row_key):
+                                   if (!is_array($row_key))
+                                   {
+                                       echo $row_key.'<br>';
+                                   }
+                                   if (is_array($row_key))
+                                   {
+                                       foreach ($row_key as $key_swin=>$row_swin):
+                                           echo $key_swin.'：'.$row_swin;
+                                           endforeach;
+                                   }
+                               endforeach;
+                           }
                        }
                         ?>
                       </td>

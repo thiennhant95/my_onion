@@ -7,6 +7,7 @@ class Course extends ADMIN_Controller {
         parent::__construct();
         $this->load->model('db/m_course_model','course');
         $this->load->model('db/m_item_model','item');
+        $this->load->model('db/m_grade_model','grade');
         $this->load->library('form_validation');
     }
 
@@ -22,6 +23,7 @@ class Course extends ADMIN_Controller {
         try {
             $data['course_list']=$this->course->get_list();
             $data['item_list']=$this->item->get_list();
+
             $this->viewVar=$data;
             admin_layout_view('course_index', $this->viewVar);
         } catch (Exception $e) {
@@ -41,9 +43,40 @@ class Course extends ADMIN_Controller {
         try {
             $data['get_course']=$this->course->select_by_id($id)[0];
             $data['item_list']=$this->item->get_list();
+            $data['grade_list']=$this->grade->get_list();
             if ($this->input->post())
             {
-
+                if($this->input->post('course_code') != $data['get_course']['course_code'])
+                {
+                    $is_unique_code =  '|is_unique[m_course#course_code]';
+                }
+                else {
+                    $is_unique_code =  '';
+                }
+                if($this->input->post('short_course_name') != $data['get_course']['short_course_name'])
+                {
+                    $is_unique_short =  '|is_unique[m_course#short_course_name]';
+                }
+                else {
+                    $is_unique_short =  '';
+                }
+                $this->form_validation->set_rules('course_code', 'course_code', 'required|trim|xss_clean'.$is_unique_code);
+//                $this->form_validation->set_rules('short_course_name', 'short_course_name', 'required|trim|xss_clean'.$is_unique_short);
+                if ($this->form_validation->run() == true) {
+                    $dataUpdate = array(
+                        'id' => $id,
+                        'subject_code' => $this->input->post('subject_code'),
+                        'subject_name' => $this->input->post('subject_name')
+                    );
+//                    $this->subject->update_by_id($dataUpdate);
+                    echo json_encode(array('status'=>DATA_ON));
+                    die();
+                }
+                else if ($this->form_validation->run() == false)
+                {
+                    echo json_encode(array('status'=>DATA_OFF));
+                    die();
+                }
             }
             $this->viewVar=$data;
             admin_layout_view('course_edit', $this->viewVar);

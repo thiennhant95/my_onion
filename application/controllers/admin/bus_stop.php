@@ -53,13 +53,13 @@ class Bus_stop extends ADMIN_Controller {
                         'bus_stop_name' => $this->input->post('bus_stop_name')
                     );
                     $this->bus_stop->update_by_id($dataUpdate);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                   echo DATA_OFF;
-                   die();
+                    echo json_encode(array('status'=>DATA_OFF));
+                    die();
                 }
             }
             $this->viewVar = $data;
@@ -89,12 +89,12 @@ class Bus_stop extends ADMIN_Controller {
                         'bus_stop_name'=>$this->input->post('bus_stop_name')
                     );
                     $this->bus_stop->insert($dataInsert);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('status'=>DATA_OFF));
                     die();
                 }
             }

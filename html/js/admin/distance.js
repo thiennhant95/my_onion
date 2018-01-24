@@ -75,7 +75,7 @@ $("#create").click(function(e) {
             url: url,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>距離を追加しました。 </b>");
@@ -86,7 +86,7 @@ $("#create").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data == 0) {
+                else if (data.status  == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>この距離コードは既存しています。他の距離コードを入力してください。 </b>");
@@ -112,7 +112,7 @@ $("#update").click(function(e) {
             url: url,
             success: function (data) {
                 console.log(data);
-                if (data == 1) {
+                if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。 </b>");
@@ -123,7 +123,7 @@ $("#update").click(function(e) {
                         });
                     }, 1000);
                 }
-                else if (data == 0) {
+                else if (data.status  == 0) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
                     $("#status_update").html("<b>この距離コードは既存しています。他の距離コードを入力してください。 </b>");

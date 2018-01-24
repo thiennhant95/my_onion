@@ -350,3 +350,18 @@ $config['day']=array(
     'DAY30'     =>'30',
     'DAY31'     =>'31',
 );
+
+//distance swinming
+$config['distance']=array(
+    '25m'=>'25m',
+    '50m'=>'50m',
+    '100m'=>'100m',
+    '200m'=>'200m',
+    '400m'=>'400m',
+    '800m'=>'800m',
+    '1500m'=>'1500m',
+    '3000m'=>'3000m',
+);
+//join_condition
+
+
