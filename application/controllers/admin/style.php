@@ -54,13 +54,13 @@ class Style extends ADMIN_Controller {
                         'style_name' => $this->input->post('style_name')
                     );
                     $this->style->update_by_id($dataUpdate);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                  echo DATA_OFF;
-                  die();
+                    echo json_encode(array('status'=>DATA_OFF));
+                    die();
                 }
             }
             $this->viewVar = $data;
