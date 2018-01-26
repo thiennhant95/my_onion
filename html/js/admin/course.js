@@ -414,3 +414,80 @@ $(document).ready(function(){
         })
     });
 
+//check dd/mm/yy end > dd/mm/yy regist start
+
+$(document).ready(function () {
+    $("#day_regist_start").change(function () {
+        var year_start = $('#year_start').val();
+        var month_start = $('#month_start').val();
+        var day_start = $('#day_start').val();
+        var year_regist_start = $('#year_regist_start').val();
+        var month_regist_start = $('#month_regist_start').val();
+        var day_regist_start = $('#day_regist_start').val();
+        var start = year_start + '-' + month_start + '-' + day_start;
+        var end = year_regist_start + '-' + month_regist_start+ '-' + day_regist_start;
+        var date_start = new Date(start);
+        var date_end = new Date(end);
+        if (date_end > date_start) {
+            $('#popup').click();
+            $('.modal-body').addClass('alert alert-danger');
+            $("#status_update").html("<b>Ngày kết thúc phải lớn hơn ngày bắt đầu </b>");
+            window.setTimeout(function () {
+                $('#myModal').fadeToggle(300, function () {
+                    $('#myModal').modal('hide');
+                });
+            }, 1500);
+            var next_year = parseInt(year_start) - parseInt(1);
+            $("#year_regist_start").val(next_year);
+            return false;
+        }
+        return true;
+    })
+});
+
+
+//check dd/mm/yy end > dd/mm/yy regist end
+
+$(document).ready(function () {
+    $("#day_regist_end").change(function () {
+        var year_regist_start = $('#year_regist_start').val();
+        var month_regist_start = $('#month_regist_start').val();
+        var day_regist_start = $('#day_regist_start').val();
+        var year_regist_end = $('#year_regist_end').val();
+        var month_regist_end = $('#month_regist_end').val();
+        var day_regist_end = $('#day_regist_end').val();
+        var end = year_regist_end + '-' + month_regist_end+ '-' + day_regist_end ;
+        var start = year_regist_start + '-' + month_regist_start+ '-' + day_regist_start;
+        var date_start = new Date(start);
+        var date_end = new Date(end);
+        if (date_end < date_start) {
+            $('#popup').click();
+            $('.modal-body').addClass('alert alert-danger');
+            $("#status_update").html("<b>Ngày kết thúc phải lớn hơn ngày bắt đầu </b>");
+            window.setTimeout(function () {
+                $('#myModal').fadeToggle(300, function () {
+                    $('#myModal').modal('hide');
+                });
+            }, 1500);
+            var next_year = parseInt(year_regist_end) + parseInt(1);
+            $("#year_regist_end").val(next_year);
+            return false;
+        }
+        return true;
+    })
+});
+
+
+//onchange check age
+$(document).ready(function(){
+    $("#condition_age_from").change(function () {
+        var condition_age_from=$('#condition_age_from').val();
+        var condition_age_to=$('#condition_age_to').val(condition_age_from+1);
+
+
+        $('#condition_age_to option').each(function(index,element) {
+                var i=5;
+                $("#condition_age_to option[value=i]").remove();
+        });
+    })
+});

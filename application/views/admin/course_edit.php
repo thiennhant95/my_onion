@@ -470,14 +470,14 @@
                       <input type="checkbox" name="swimming_ability[float]" value="<?php echo DATA_ON?>" <?php if ($join_condition['swimming_ability']['float']==DATA_ON) echo "checked"?>> 浮かべる
                     </label>
                   </div>
-                  <div class="row block-15">
+                    <div class="row block-15">
                     <div class="col-xs-6 col-sm-4">
                       <label for="" class=" control-label">バタ足</label>
                         <select class="form-control" name="swimming_ability[style][flutter_kick]">
                             <?php
                             foreach ($distance_list as $row_distance):
                                 ?>
-                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                <option value="<?php echo $row_distance['distance_name']?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['flutter_kick']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
                             <?php
                             endforeach;
                             ?>
@@ -489,7 +489,7 @@
                           <?php
                           foreach ($distance_list as $row_distance):
                               ?>
-                              <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                              <option value="<?php echo $row_distance['distance_name']?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['board_kick']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
                           <?php
                           endforeach;
                           ?>
@@ -501,7 +501,7 @@
                             <?php
                             foreach ($distance_list as $row_distance):
                                 ?>
-                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                <option value="<?php echo $row_distance['distance_name'].'m'?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['backstroke']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
                             <?php
                             endforeach;
                             ?>
@@ -513,7 +513,7 @@
                             <?php
                             foreach ($distance_list as $row_distance):
                                 ?>
-                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                <option value="<?php echo $row_distance['distance_name']?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['crawl']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
                             <?php
                             endforeach;
                             ?>
@@ -525,7 +525,7 @@
                             <?php
                             foreach ($distance_list as $row_distance):
                                 ?>
-                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                <option value="<?php echo $row_distance['distance_name']?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['breast_stroke']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
                             <?php
                             endforeach;
                             ?>
@@ -537,7 +537,7 @@
                             <?php
                             foreach ($distance_list as $row_distance):
                                 ?>
-                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                <option value="<?php echo $row_distance['distance_name']?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['butterfly']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
                             <?php
                             endforeach;
                             ?>

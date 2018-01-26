@@ -34,7 +34,7 @@ $(document).ready(function() {
             distance_name: {
                 required: true,
                 number: true,
-                min:10,
+                // min:10,
                 digits: true
             },
         },
@@ -43,7 +43,7 @@ $(document).ready(function() {
             distance_name: {
                 required: "この項目は必須です",
                 number: "有効な数値を入力してください。",
-                min: "10以上の値を入力してください",
+                // min: "10以上の値を入力してください",
                 digits: "数字のみ入力して下さい。",
             },
         },
@@ -70,6 +70,7 @@ $("#create").click(function(e) {
         e.preventDefault();
         var url = $(this).attr("href");
         $.ajax({
+            dataType: 'json',
             type: 'POST',
             data: $('#distance_form').serialize(),
             url: url,
@@ -107,6 +108,7 @@ $("#update").click(function(e) {
         e.preventDefault();
         var url = $(this).attr("href");
         $.ajax({
+            dataType: 'json',
             type: 'POST',
             data: $('#distance_form').serialize(),
             url: url,

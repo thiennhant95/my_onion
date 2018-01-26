@@ -54,12 +54,12 @@ class Distance extends ADMIN_Controller {
                         'distance_name' => $this->input->post('distance_name')
                     );
                     $this->distance->update_by_id($dataUpdate);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('status'=>DATA_OFF));
                     die();
                 }
             }
@@ -90,12 +90,12 @@ class Distance extends ADMIN_Controller {
                         'distance_name'=>$this->input->post('distance_name')
                     );
                     $this->distance->insert($dataInsert);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('status'=>DATA_OFF));
                     die();
                 }
             }

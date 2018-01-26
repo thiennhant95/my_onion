@@ -65,12 +65,12 @@ class Item extends ADMIN_Controller {
                         'disp_flg'=>$this->input->post('display'),
                     );
                     $this->item->update_by_id($dataUpdate);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('status'=>DATA_OFF));
                     die();
                 }
             }
