@@ -76,7 +76,12 @@ $(document).ready(function() {
             type:"required"
         },
         messages: {
-
+            course_code:"この項目は必須です",
+            course_name:"この項目は必須です",
+            short_course_name:"この項目は必須です",
+            max_count:{
+                required:true,
+            },
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -177,7 +182,7 @@ $(document).ready(function() {
 
 //check - uncheck radio button free_practic
 var radioState = false;
-var practice_select=$('#number_practice_select').val()
+var practice_select=$('#number_practice_select').val();
 function test(element){
     if(radioState == false) {
         check();
@@ -195,6 +200,8 @@ function uncheck() {
     document.getElementById("free_practice_radio").checked = false;
     $("#number_practice_select").val(practice_select);
 }
+
+//onchange number practice select
 
 //onchange select start
 $(document).ready(function(){
@@ -477,17 +484,45 @@ $(document).ready(function () {
     })
 });
 
-
 //onchange check age
 $(document).ready(function(){
     $("#condition_age_from").change(function () {
+        // $('#condition_age_to').removeAttr('disabled');
         var condition_age_from=$('#condition_age_from').val();
-        var condition_age_to=$('#condition_age_to').val(condition_age_from+1);
-
-
+        var age_to = parseInt(condition_age_from) + parseInt(1);
+        var condition_age_to=$('#condition_age_to').val(age_to);
+        var a=$('#condition_age_to option').size();
+        var i=parseInt(condition_age_from);
+        var j = parseInt(condition_age_from) + parseInt(1);
         $('#condition_age_to option').each(function(index,element) {
-                var i=5;
-                $("#condition_age_to option[value=i]").remove();
+            $("#condition_age_to option[value=" + i + "]").attr('disabled','disabled').css({"background-color": "#E6E6E6"});
+            i--;
+            $("#condition_age_to option[value=" + j + "]").removeAttr('disabled').css({"background-color": "white"});
+            j++;
         });
+    })
+});
+
+$(document).ready(function(){
+    $("#condition_age_to").change(function () {
+        var condition_age_from=$('#condition_age_from').val();
+        var condition_age_to=$('#condition_age_to').val();
+       if (condition_age_to<condition_age_from)
+       {
+           var age_from = parseInt(condition_age_to) - parseInt(1);
+            $('#condition_age_from').val(age_from);
+       }
+    })
+});
+
+////onchange check age
+$(document).ready(function(){
+    $("#condition_grade_from").change(function () {
+        var condition_grade_from=$('#condition_grade_from').val();
+        var condition_grade_to=$('#condition_grade_to').val();
+        if(condition_grade_from=='制限無し')
+        {
+            $('#condition_grade_to').val('制限無し');
+        }
     })
 });

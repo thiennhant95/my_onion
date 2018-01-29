@@ -150,8 +150,8 @@
                   <label class="radio-inline">
                     <input type="radio" name="number" value="<?php echo DATA_OFF?>" <?php if ($get_course['practice_type']==DATA_OFF) echo "checked"?>> 月
                   </label>
-                  <select class="form-control mr-1 ml-1" name="number_practice_select" id="number_practice_select" data_value="<?php echo 8?>">
-                      <option value="0" disabled>選択する</option>
+                  <select class="form-control mr-1 ml-1" name="number_practice_select" id="number_practice_select">
+                      <option value="0" disabled <?php if ($get_course['practice_max']==DATA_OFF) echo "selected"?>>選択する</option>
                       <option value="<?php echo ONE?>" <?php if ($get_course['practice_max']==ONE) echo 'selected'?>><?php echo ONE?></option>
                     <option value="<?php echo TWO?>" <?php if ($get_course['practice_max']==TWO) echo 'selected'?>><?php echo TWO?></option>
                     <option value="<?php echo THREE?>"<?php if ($get_course['practice_max']==THREE) echo 'selected'?>><?php echo THREE?></option>
@@ -189,9 +189,11 @@
                 <label class="radio-inline">
                   <input type="radio" name="course-type" value="<?php echo DATA_ON?>" <?php if ($get_course['type']==DATA_ON) echo "checked"?>> 短期
                 </label>
+                  <label class="radio-inline">
+                      <input type="radio" name="course-type" value="<?php echo THREE?>" <?php if ($get_course['type']==THREE) echo "checked"?>>無料
+                  </label>
               </div>
             </div>
-
             <hr>
               <?php
               $config= $this->configVar;
@@ -225,7 +227,7 @@
                     foreach ($config['month'] as $row_month):
                         ?>
                         <option value="<?php echo $row_month?>" <?php if ($row_month==$get_start_day[1]) echo "selected"?>><?php echo $row_month?>月</option>
-                    <?php
+                        <?php
                     endforeach;
                     ?>
                 </select>
@@ -284,7 +286,7 @@
               <div class="form-group">
                   <label for="" class="col-sm-2 control-label">定員​</label>
                   <div class="col-sm-5">
-                      <input type="text" class="form-control" name="max_count" value="<?php echo $get_course['max_count']?>" required placeholder="">
+                      <input type="number" class="form-control" name="max_count" value="<?php echo $get_course['max_count']?>" required placeholder="">
                   </div>
               </div>
             <hr>
@@ -397,7 +399,7 @@
               </div>
               <div class="col-xs-3">
                   <select class="form-control" name="condition_age[]" id="condition_age_to">
-                      <option value="">制限無し​</option>
+                      <option value="制限無し​" <?php if ($age_condition[1]=='制限無し​') echo "selected"?>>制限無し​</option>
                       <?php
                       foreach ($age as $row_age):
                           ?>
@@ -417,12 +419,12 @@
                 $grade_condition=explode('~',$join_condition['grade']);
                 ?>
               <div class="col-xs-3">
-                  <select class="form-control" name="condition_grade[]">
-                      <option value="">制限無し​</option>
+                  <select class="form-control" name="condition_grade[]" id="condition_grade_from" >
+                      <option value="制限無し" <?php if ($grade_condition['0']=='制限無し') echo "selected"?>>制限無し​</option>
                       <?php
-                      foreach ($grade_list as $row_grade):
+                      foreach ($config['school_grades'] as $row_grade):
                           ?>
-                          <option value="<?php echo $row_grade['grade_name'] ?>" <?php if ($row_grade['grade_name']==$grade_condition[0]) echo "selected"?>><?php echo $row_grade['grade_name']?></option>
+                          <option value="<?php echo $row_grade ?>" <?php if ($row_grade ==$grade_condition[0]) echo "selected"?>><?php echo $row_grade?></option>
                       <?php
                       endforeach;
                       ?>
@@ -432,12 +434,12 @@
                 <p class="text-center">〜</p>
               </div>
               <div class="col-xs-3">
-                  <select class="form-control" name="condition_grade[]">
-                      <option value="">制限無し​</option>
+                  <select class="form-control" name="condition_grade[]" id="condition_grade_to">
+                      <option value="制限無し" <?php if ($grade_condition['1']=='制限無し') echo "selected"?>>制限無し​</option>
                       <?php
-                      foreach ($grade_list as $row_grade1):
+                      foreach ($config['school_grades'] as $row_grade1):
                           ?>
-                          <option value="<?php echo $row_grade1['grade_name'] ?>"<?php if ($row_grade1['grade_name']==$grade_condition['1']) echo "selected"?> ><?php echo $row_grade1['grade_name']?></option>
+                          <option value="<?php echo $row_grade1 ?>"<?php if ($row_grade1==$grade_condition['1']) echo "selected"?> ><?php echo $row_grade1?></option>
                       <?php
                       endforeach;
                       ?>

@@ -44,3 +44,16 @@
 <link rel="stylesheet" href="/css/w2ui-1.5.rc1.min.css" media="all" />
 <script src="/js/admin/w2ui-1.5.rc1.js"></script>
 
+<!--<script type="text/javascript">-->
+<!--    window.oncontextmenu = function () {-->
+<!--        return false;-->
+<!--    }-->
+<!--    $(document).keydown(function (event) {-->
+<!--        if (event.keyCode == 123) {-->
+<!--            return false;-->
+<!--        }-->
+<!--        else if ((event.ctrlKey && event.shiftKey && event.keyCode == 73) || (event.ctrlKey && event.shiftKey && event.keyCode == 74)) {-->
+<!--            return false;-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->

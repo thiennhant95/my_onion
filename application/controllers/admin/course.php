@@ -79,9 +79,9 @@ class Course extends ADMIN_Controller {
                     $end_regist=implode('-',$this->input->post('end_regist'));
                     $condition_age=implode('~',$this->input->post('condition_age'));
                     $condition_grade=implode('~',$this->input->post('condition_grade'));
-                    $join_condition_array['swimming_ability']=$this->input->post('swimming_ability');
                     $join_condition_array['age']=$condition_age;
                     $join_condition_array['grade']=$condition_grade;
+                    $join_condition_array['swimming_ability']=$this->input->post('swimming_ability');
 
                     if (!array_key_exists('face_into_water',$join_condition_array['swimming_ability']))
                         $join_condition_array['swimming_ability']['face_into_water']=0;
