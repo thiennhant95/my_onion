@@ -57,9 +57,9 @@ $(document).ready(function() {
     });
     $('#distance_form input').on('keyup blur', function () {
         if ($('#distance_form').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 });

@@ -43,21 +43,22 @@
                         </div>
                         <div class="col-xs-4">
                             <!--                <input type="text" class="form-control"  placeholder="">-->
-                            <select name="cost_item_id" class="form-control" id="cost_item_id">
-                                <option disabled selected>Select</option>
+                            <select name="cost_item_id" class="form-control" id="cost_item_id" required>
+                                <option selected disabled>選択する</option>
                                 <?php
                                 foreach ($item_list as $row_item)
                                 {
                                     ?>
-                                    <option value="<?php echo $row_item['id']?>"><?php echo $row_item['item_code']?></option>
+                                    <option value="<?php echo $row_item['id']?>"><?php echo $row_item['item_name']?></option>
                                     <?php
                                 }
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3 col-sm-2 sub-label">
-                <span id="cost_item"><?php
-                    ?></span>
+                <span id="cost_item">
+
+                </span>
                         </div>
                     </div>
 
@@ -68,13 +69,13 @@
                         </div>
                         <div class="col-xs-4">
                             <!--                <input type="text" class="form-control" placeholder="">-->
-                            <select name="rest_item_id" class="form-control" id="rest_item_id">
-                                <option disabled selected>Select</option>
+                            <select name="rest_item_id" class="form-control" id="rest_item_id" required>
+                                <option selected disabled>選択する</option>
                                 <?php
                                 foreach ($item_list as $row_item)
                                 {
                                     ?>
-                                    <option value="<?php echo $row_item['id']?>"><?php echo $row_item['item_code']?></option>
+                                    <option value="<?php echo $row_item['id']?>"><?php echo $row_item['item_name']?></option>
                                     <?php
                                 }
                                 ?>
@@ -93,13 +94,13 @@
                         </div>
                         <div class="col-xs-4">
                             <!--                <input type="text" class="form-control" placeholder="">-->
-                            <select name="bus_item_id" class="form-control" id="bus_item_id">
-                                <option disabled selected>Select</option>
+                            <select name="bus_item_id" class="form-control" id="bus_item_id" required>
+                                <option selected disabled>選択する</option>
                                 <?php
                                 foreach ($item_list as $row_item)
                                 {
                                     ?>
-                                    <option value="<?php echo $row_item['id']?>"><?php echo $row_item['item_code']?></option>
+                                    <option value="<?php echo $row_item['id']?>"><?php echo $row_item['item_name']?></option>
                                     <?php
                                 }
                                 ?>
@@ -128,8 +129,8 @@
                                 <label class="radio-inline">
                                     <input type="radio" name="number" value="<?php echo DATA_OFF?>"> 月
                                 </label>
-                                <select class="form-control mr-1 ml-1" name="number_practice_select">
-                                    <option selected disabled value="0">Select One</option>
+                                <select class="form-control mr-1 ml-1" name="number_practice_select" id="number_practice_select">
+                                    <option value="0" disabled>選択する</option>
                                     <option value="<?php echo ONE?>"><?php echo ONE?></option>
                                     <option value="<?php echo TWO?>"><?php echo TWO?></option>
                                     <option value="<?php echo THREE?>"><?php echo THREE?></option>
@@ -167,14 +168,16 @@
                             <label class="radio-inline">
                                 <input type="radio" name="course-type" value="<?php echo DATA_ON?>"> 短期
                             </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="course-type" value="<?php echo THREE?>">無料
+                            </label>
                         </div>
                     </div>
-
                     <hr>
                     <?php
                     $config= $this->configVar;
                     $year_curent=date("Y");
-                    $year[]= $year_curent;
+                    $year[]= $year_curent-1;
                     for ($i=0;$i<=20;$i++)
                     {
                         $year[]=$year_curent++;
@@ -183,33 +186,33 @@
                     <div class="form-group">
                         <label for="" class="col-xs-12 col-sm-2 control-label">開催開始</label>
                         <div class="col-xs-3">
-                            <select class="form-control" name="start[]">
+                            <select class="form-control" name="start[]" id="year_start">
                                 <?php
                                 foreach ($year as $row_year):
                                     ?>
-                                    <option value="<?php echo $row_year ?>"><?php echo $row_year?>年</option>
+                                    <option value="<?php echo $row_year ?>" <?php if ($row_year==date('Y')) echo "selected"?>><?php echo $row_year?>年</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="start[]">
+                            <select class="form-control" name="start[]" id="month_start">
                                 <?php
                                 foreach ($config['month'] as $row_month):
                                     ?>
-                                    <option value="<?php echo $row_month?>"><?php echo $row_month?>月</option>
+                                    <option value="<?php echo $row_month?>" <?php if ($row_month==date('m')) echo "selected"?>><?php echo $row_month?>月</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="start[]">
+                            <select class="form-control" name="start[]" id="day_start">
                                 <?php
                                 foreach ($config['day'] as $row_day):
                                     ?>
-                                    <option value="<?php echo $row_day?>"><?php echo $row_day?>日</option>
+                                    <option value="<?php echo $row_day?>" <?php if ($row_day==date('d')) echo "selected"?>><?php echo $row_day?>日</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -217,36 +220,37 @@
                         </div>
                     </div>
 
+
                     <div class="form-group">
                         <label for="" class="col-xs-12 col-sm-2 control-label">開催終了</label>
                         <div class="col-xs-3">
-                            <select class="form-control" name="end[]">
+                            <select class="form-control" name="end[0]" id="year_end">
                                 <?php
                                 foreach ($year as $row_year):
                                     ?>
-                                    <option value="<?php echo $row_year ?>"><?php echo $row_year?>年</option>
+                                    <option value="<?php echo $row_year ?>" <?php if ($row_year==date('Y')) echo "selected"?>><?php echo $row_year?>年</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="end[]">
+                            <select class="form-control" name="end[1]" id="month_end">
                                 <?php
                                 foreach ($config['month'] as $row_month):
                                     ?>
-                                    <option value="<?php echo $row_month?>"><?php echo $row_month?>月</option>
+                                    <option value="<?php echo $row_month?>" <?php if ($row_month==date('m')) echo "selected"?>><?php echo $row_month?>月</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="end[]">
+                            <select class="form-control" name="end[2]" id="day_end">
                                 <?php
                                 foreach ($config['day'] as $row_day):
                                     ?>
-                                    <option value="<?php echo $row_day?>"><?php echo $row_day?>日</option>
+                                    <option value="<?php echo $row_day?>" <?php if ($row_day==date('d')) echo "selected"?>><?php echo $row_day?>日</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -257,7 +261,7 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">定員​</label>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" name="max_count" required placeholder="">
+                            <input type="number" class="form-control" name="max_count"required placeholder="">
                         </div>
                     </div>
                     <hr>
@@ -265,33 +269,33 @@
                     <div class="form-group">
                         <label for="" class="col-xs-12 col-sm-2 control-label">申込開始</label>
                         <div class="col-xs-3">
-                            <select class="form-control" name="start_regist[]">
+                            <select class="form-control" name="start_regist[0]" id="year_regist_start">
                                 <?php
                                 foreach ($year as $row_year):
                                     ?>
-                                    <option value="<?php echo $row_year ?>"><?php echo $row_year?>年</option>
+                                    <option value="<?php echo $row_year ?>" <?php if ($row_year==date('Y')) echo "selected"?>><?php echo $row_year?>年</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="start_regist[]">
+                            <select class="form-control" name="start_regist[1]" id="month_regist_start">
                                 <?php
                                 foreach ($config['month'] as $row_month):
                                     ?>
-                                    <option value="<?php echo $row_month?>"><?php echo $row_month?>月</option>
+                                    <option value="<?php echo $row_month?>" <?php if ($row_month==date('m')) echo "selected"?>><?php echo $row_month?>月</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="start_regist[]">
+                            <select class="form-control" name="start_regist[2]" id="day_regist_start">
                                 <?php
                                 foreach ($config['day'] as $row_day):
                                     ?>
-                                    <option value="<?php echo $row_day?>"><?php echo $row_day?>日</option>
+                                    <option value="<?php echo $row_day?>"  <?php if ($row_day==date('d')) echo "selected"?>><?php echo $row_day?>日</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -302,33 +306,33 @@
                     <div class="form-group">
                         <label for="" class="col-xs-12 col-sm-2 control-label">申込終了</label>
                         <div class="col-xs-3">
-                            <select class="form-control" name="end_regist[]" >
+                            <select class="form-control" name="end_regist[0]" id="year_regist_end">
                                 <?php
                                 foreach ($year as $row_year):
                                     ?>
-                                    <option value="<?php echo $row_year ?>"><?php echo $row_year?>年</option>
+                                    <option value="<?php echo $row_year ?>" <?php if ($row_year==date('Y')) echo "selected"?>><?php echo $row_year?>年</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="end_regist[]">
+                            <select class="form-control" name="end_regist[1]" id="month_regist_end">
                                 <?php
                                 foreach ($config['month'] as $row_month):
                                     ?>
-                                    <option value="<?php echo $row_month?>"><?php echo $row_month?>月</option>
+                                    <option value="<?php echo $row_month?>" <?php if ($row_month==date('m')) echo "selected"?>><?php echo $row_month?>月</option>
                                 <?php
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="end_regist[]">
+                            <select class="form-control" name="end_regist[2]" id="day_regist_end">
                                 <?php
                                 foreach ($config['day'] as $row_day):
                                     ?>
-                                    <option value="<?php echo $row_day?>"><?php echo $row_day?>日</option>
+                                    <option value="<?php echo $row_day?>" <?php if ($row_day==date('d')) echo "selected"?>><?php echo $row_day?>日</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -352,6 +356,7 @@
                         <div class="col-xs-3">
                             <select class="form-control" name="condition_age[]" id="condition_age_from">
                                 <?php
+                                $age_condition=explode('~',$join_condition['age']);
                                 foreach ($age as $row_age):
                                     ?>
                                     <option value="<?php echo $row_age?>"><?php echo $row_age?></option>
@@ -365,7 +370,7 @@
                         </div>
                         <div class="col-xs-3">
                             <select class="form-control" name="condition_age[]" id="condition_age_to">
-                                <option value="">制限無し​</option>
+                                <option value="制限無し​">制限無し​</option>
                                 <?php
                                 foreach ($age as $row_age):
                                     ?>
@@ -382,12 +387,12 @@
                             <small>（級）</small>
                         </label>
                         <div class="col-xs-3">
-                            <select class="form-control" name="condition_grade[]">
-                                <option value="">制限無し​</option>
+                            <select class="form-control" name="condition_grade[]" id="condition_grade_from" >
+                                <option value="制限無し">制限無し​</option>
                                 <?php
-                                foreach ($grade_list as $row_grade):
+                                foreach ($config['school_grades'] as $row_grade):
                                     ?>
-                                    <option value="<?php echo $row_grade['grade_name'] ?>"><?php echo $row_grade['grade_name']?></option>
+                                    <option value="<?php echo $row_grade ?>"><?php echo $row_grade?></option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -397,12 +402,12 @@
                             <p class="text-center">〜</p>
                         </div>
                         <div class="col-xs-3">
-                            <select class="form-control" name="condition_grade[]">
-                                <option value="">制限無し​</option>
+                            <select class="form-control" name="condition_grade[]" id="condition_grade_to">
+                                <option value="制限無し">制限無し​</option>
                                 <?php
-                                foreach ($grade_list as $row_grade1):
+                                foreach ($config['school_grades'] as $row_grade1):
                                     ?>
-                                    <option value="<?php echo $row_grade1['grade_name'] ?>"><?php echo $row_grade1['grade_name']?></option>
+                                    <option value="<?php echo $row_grade1 ?>"><?php echo $row_grade1?></option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -442,7 +447,7 @@
                                             <?php
                                             foreach ($distance_list as $row_distance):
                                                 ?>
-                                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                                <option value="<?php echo $row_distance['distance_name']?>"><?php echo $row_distance['distance_name'].'m'?></option>
                                             <?php
                                             endforeach;
                                             ?>
@@ -454,7 +459,7 @@
                                             <?php
                                             foreach ($distance_list as $row_distance):
                                                 ?>
-                                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                                <option value="<?php echo $row_distance['distance_name']?>"><?php echo $row_distance['distance_name'].'m'?></option>
                                             <?php
                                             endforeach;
                                             ?>
@@ -478,7 +483,7 @@
                                             <?php
                                             foreach ($distance_list as $row_distance):
                                                 ?>
-                                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                                <option value="<?php echo $row_distance['distance_name']?>"><?php echo $row_distance['distance_name'].'m'?></option>
                                             <?php
                                             endforeach;
                                             ?>
@@ -490,7 +495,7 @@
                                             <?php
                                             foreach ($distance_list as $row_distance):
                                                 ?>
-                                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                                <option value="<?php echo $row_distance['distance_name']?>"><?php echo $row_distance['distance_name'].'m'?></option>
                                             <?php
                                             endforeach;
                                             ?>
@@ -502,7 +507,7 @@
                                             <?php
                                             foreach ($distance_list as $row_distance):
                                                 ?>
-                                                <option value="<?php echo $row_distance['distance_name'].'m'?>"><?php echo $row_distance['distance_name'].'m'?></option>
+                                                <option value="<?php echo $row_distance['distance_name']?>"><?php echo $row_distance['distance_name'].'m'?></option>
                                             <?php
                                             endforeach;
                                             ?>
@@ -534,7 +539,7 @@
                         <label for="" class="col-sm-2 control-label">有効/無効</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="enable" value="<?php echo DATA_OFF?>"> 有効
+                                <input type="radio" name="enable" value="<?php echo DATA_OFF?>" checked> 有効
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="enable" value="<?php echo DATA_ON?>"> 無効

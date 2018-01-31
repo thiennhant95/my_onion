@@ -17551,7 +17551,7 @@ var w2prompt = function (label, title, callBack) {
             }
             var html =
                 '<div class="w2ui-calendar">'+
-                '   <div class="w2ui-calendar-title">'+ w2utils.lang('Select Hour') +'</div>'+
+                '   <div class="w2ui-calendar-title">'+ w2utils.lang('時を選択してください') +'</div>'+
                 '   <div class="w2ui-calendar-time"><table><tbody><tr>'+
                 '       <td>'+ tmp[0] +'</td>' +
                 '       <td>'+ tmp[1] +'</td>' +
@@ -17581,7 +17581,7 @@ var w2prompt = function (label, title, callBack) {
             }
             var html =
                 '<div class="w2ui-calendar">'+
-                '   <div class="w2ui-calendar-title">'+ w2utils.lang('Select Minute') +'</div>'+
+                '   <div class="w2ui-calendar-title">'+ w2utils.lang('分を選択してください') +'</div>'+
                 '   <div class="w2ui-calendar-time"><table><tbody><tr>'+
                 '       <td>'+ tmp[0] +'</td>' +
                 '       <td>'+ tmp[1] +'</td>' +

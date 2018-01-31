@@ -109,12 +109,12 @@ class Item extends ADMIN_Controller {
                         'disp_flg'=>$this->input->post('display'),
                     );
                     $this->item->insert($dataInsert);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
             }
@@ -141,7 +141,7 @@ class Item extends ADMIN_Controller {
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->item->update_by_id($dataUpdate);
-            echo json_encode(array('status'=>'1'));
+            echo json_encode(array('status'=>DATA_ON));
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

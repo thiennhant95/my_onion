@@ -48,7 +48,7 @@
                         foreach ($item_list as $row_item)
                         {
                             ?>
-                            <option value="<?php echo $row_item['id']?>" <?php if ($get_course['cost_item_id']==$row_item['id']) echo "selected" ?>><?php echo $row_item['item_code']?></option>
+                            <option value="<?php echo $row_item['id']?>" <?php if ($get_course['cost_item_id']==$row_item['id']) echo "selected" ?>><?php echo $row_item['item_name']?></option>
                       <?php
                         }
                       ?>
@@ -79,7 +79,7 @@
                       foreach ($item_list as $row_item)
                       {
                           ?>
-                          <option value="<?php echo $row_item['id']?>" <?php if ($get_course['rest_item_id']==$row_item['id']) echo "selected" ?>><?php echo $row_item['item_code']?></option>
+                          <option value="<?php echo $row_item['id']?>" <?php if ($get_course['rest_item_id']==$row_item['id']) echo "selected" ?>><?php echo $row_item['item_name']?></option>
                           <?php
                       }
                       ?>
@@ -112,7 +112,7 @@
                       foreach ($item_list as $row_item)
                       {
                           ?>
-                          <option value="<?php echo $row_item['id']?>" <?php if ($get_course['bus_item_id']==$row_item['id']) echo "selected" ?>><?php echo $row_item['item_code']?></option>
+                          <option value="<?php echo $row_item['id']?>" <?php if ($get_course['bus_item_id']==$row_item['id']) echo "selected" ?>><?php echo $row_item['item_name']?></option>
                           <?php
                       }
                       ?>
@@ -249,7 +249,7 @@
             <div class="form-group">
               <label for="" class="col-xs-12 col-sm-2 control-label">開催終了</label>
               <div class="col-xs-3">
-                  <select class="form-control" name="end[]" id="year_end">
+                  <select class="form-control" name="end[0]" id="year_end">
                       <?php
                       foreach ($year as $row_year):
                           ?>
@@ -260,7 +260,7 @@
                   </select>
               </div>
               <div class="col-xs-3">
-                  <select class="form-control" name="end[]" id="month_end">
+                  <select class="form-control" name="end[1]" id="month_end">
                       <?php
                       foreach ($config['month'] as $row_month):
                           ?>
@@ -271,7 +271,7 @@
                   </select>
               </div>
               <div class="col-xs-3">
-                  <select class="form-control" name="end[]" id="day_end">
+                  <select class="form-control" name="end[2]" id="day_end">
                       <?php
                       foreach ($config['day'] as $row_day):
                           ?>
@@ -294,7 +294,7 @@
             <div class="form-group">
               <label for="" class="col-xs-12 col-sm-2 control-label">申込開始</label>
               <div class="col-xs-3">
-                  <select class="form-control" name="start_regist[]" id="year_regist_start">
+                  <select class="form-control" name="start_regist[0]" id="year_regist_start">
                   <?php
                   foreach ($year as $row_year):
                       ?>
@@ -305,7 +305,7 @@
                   </select>
               </div>
               <div class="col-xs-3">
-                  <select class="form-control" name="start_regist[]" id="month_regist_start">
+                  <select class="form-control" name="start_regist[1]" id="month_regist_start">
                       <?php
                       foreach ($config['month'] as $row_month):
                           ?>
@@ -316,7 +316,7 @@
                   </select>
               </div>
               <div class="col-xs-3">
-                  <select class="form-control" name="start_regist[]" id="day_regist_start">
+                  <select class="form-control" name="start_regist[2]" id="day_regist_start">
                       <?php
                       foreach ($config['day'] as $row_day):
                           ?>
@@ -331,7 +331,7 @@
             <div class="form-group">
               <label for="" class="col-xs-12 col-sm-2 control-label">申込終了</label>
               <div class="col-xs-3">
-                  <select class="form-control" name="end_regist[]" id="year_regist_end">
+                  <select class="form-control" name="end_regist[0]" id="year_regist_end">
                       <?php
                       foreach ($year as $row_year):
                           ?>
@@ -342,7 +342,7 @@
                   </select>
               </div>
               <div class="col-xs-3">
-                  <select class="form-control" name="end_regist[]" id="month_regist_end">
+                  <select class="form-control" name="end_regist[1]" id="month_regist_end">
                       <?php
                       foreach ($config['month'] as $row_month):
                           ?>
@@ -353,7 +353,7 @@
                   </select>
               </div>
               <div class="col-xs-3">
-                  <select class="form-control" name="end_regist[]" id="day_regist_end">
+                  <select class="form-control" name="end_regist[2]" id="day_regist_end">
                       <?php
                       foreach ($config['day'] as $row_day):
                           ?>
@@ -503,7 +503,7 @@
                             <?php
                             foreach ($distance_list as $row_distance):
                                 ?>
-                                <option value="<?php echo $row_distance['distance_name'].'m'?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['backstroke']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
+                                <option value="<?php echo $row_distance['distance_name']?>" <?php if ($row_distance['distance_name']==$join_condition['swimming_ability']['style']['backstroke']) echo "selected"?>><?php echo $row_distance['distance_name'].'m'?></option>
                             <?php
                             endforeach;
                             ?>

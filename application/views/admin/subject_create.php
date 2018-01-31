@@ -49,7 +49,7 @@
             </div>
             <div class="col-sm-4">
                 <p>
-                    <button class="btn btn-success btn-block" href="<?php echo site_url('admin/subject/create')?>" id="create" disabled="disabled">
+                    <button class="btn btn-success btn-block" href="<?php echo site_url('admin/subject/create')?>" id="create">
                         <span>更新</span>
                     </button>
                 </p>

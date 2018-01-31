@@ -89,10 +89,10 @@
                               </select>
                           </td>
                           <td>
-                              <input type="asia-time" class="form-control" name="go_time[]" placeholder="00:00" required>
+                              <input type="asia-time" class="form-control" value="00:00" name="go_time[]" placeholder="00:00" required>
                           </td>
                           <td>
-                              <input type="asia-time" class="form-control" name="ret_time[]" placeholder="00:00" required>
+                              <input type="asia-time" class="form-control" value="00:00" name="ret_time[]" placeholder="00:00" required>
                           </td>
                           <td>
                               <input type="button" href="" url_edit="<?php echo site_url('admin/edit-bus-routes/' . $get_bus_course['id']) ?>" class="btn btn-default btn-block btn-sm btnDelete" value="削除">
@@ -174,7 +174,7 @@
         </div>
         <div class="col-sm-4">
           <p>
-            <button id="update" data_id="<?php echo $get_bus_course['id']?>" class="btn btn-success btn-block" disabled>
+            <button id="update" data_id="<?php echo $get_bus_course['id']?>" class="btn btn-success btn-block">
               <span>更新</span>
             </button>
           </p>

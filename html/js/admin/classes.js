@@ -1,8 +1,8 @@
 //validate form class
 $(document).ready(function() {
-    jQuery.validator.addMethod("math", function(value, element, params) {
-        return this.optional(element) ||/^[M|A|B|C|D,E|F].*/.test(value);
-    }, jQuery.validator.format("ký tự đầu là 1 trong M,A,B,C,D,E,F"));
+    // jQuery.validator.addMethod("math", function(value, element, params) {
+    //     return this.optional(element) ||/^[M|A|B|C|D,E|F].*/.test(value);
+    // }, jQuery.validator.format("ký tự đầu là 1 trong M,A,B,C,D,E,F"));
     $("#class_form").validate({
         rules: {
             class_code: {
@@ -16,7 +16,8 @@ $(document).ready(function() {
                     required: true,
                     number: true,
                     digits: true,
-                },
+                    min:1
+                }
         },
         messages: {
             class_code:
@@ -30,7 +31,8 @@ $(document).ready(function() {
                     required: "この項目は必須です",
                     number: "有効な数値を入力してください。",
                     digits: "有効な数値を入力してください。 ",
-                },
+                    min: "1以上の値を入力してください",
+                }
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -42,9 +44,9 @@ $(document).ready(function() {
     });
     $('#class_form input').on('keyup blur', function () {
         if ($('#class_form').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 

@@ -52,9 +52,9 @@ $(document).ready(function() {
     });
     $('#style_form input').on('keyup blur', function () {
         if ($('#style_form').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 });
@@ -68,6 +68,7 @@ $("#create").click(function(e) {
             type: 'POST',
             data: $('#style_form').serialize(),
             url: url,
+            dataType:'json',
             success: function (data) {
                 console.log(data);
                 if (data.status  == 1) {
@@ -105,6 +106,7 @@ $("#update").click(function(e) {
             type: 'POST',
             data: $('#style_form').serialize(),
             url: url,
+            dataType:'json',
             success: function (data) {
                 console.log(data);
                 if (data.status  == 1) {

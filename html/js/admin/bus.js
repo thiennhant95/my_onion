@@ -55,7 +55,7 @@ $(document).ready(function(){
 
 
 //append row table bus_route
-// var emailCounter = 1;
+var i=1;
 $("body").on("click", ".insert-more", function () {
     $this = $(this);
     var url_edit = $(this).attr("url_edit") + ' #route-table';
@@ -69,14 +69,8 @@ $("body").on("click", ".insert-more", function () {
             $('tbody', this).append(tds);
             $('tr:last td input').removeAttr("href");
             $('tr:last td #route_id').val('');
-            // $('tr:last td #route_order_id').attr('name', 'route_oder[' + (emailCounter) + ']');
-            // ++emailCounter;
-            // // var route_name= $('tr:last td #route_order_id').attr('name');
-            // // var res = parseInt(route_name.substring(12,13));
-            // // var num =parseInt(1);
-            // // var sum= res+num;
-            // // $('tr:last td #route_order_id').attr('name', 'route_oder[' + (sum) +']');
-            // // num ++;
+            // $('tr:last td #route_oder').attr('name', 'route_oder[' + (i) + ']');
+            // ++i;
         } else {
             $(this).append(tds);
             $('tr:last td input').removeAttr("href");
@@ -97,7 +91,8 @@ $(document).ready(function() {
             max: {
                 required: true,
                 number: true,
-                digits: true
+                digits: true,
+                min:1
             },
             'route_order[]': {
                 required: true,
@@ -113,6 +108,7 @@ $(document).ready(function() {
                 required: "この項目は必須です",
                 number: "有効な数値を入力してください。",
                 digits: "数字のみ入力して下さい。",
+                min: "1以上の値を入力してください",
             },
             // 'route_order[]': {
             //     required: "この項目は必須です",
@@ -132,6 +128,7 @@ $(document).ready(function() {
     $('[name^="route_order"]').each(function() {
         $(this).rules('add', {
             required: true,
+            // number: true,
             messages: {
                 required: "この項目は必須です",
             }
@@ -155,9 +152,9 @@ $(document).ready(function() {
     });
     $('#bus_couse input ').on('keyup blur', function () {
         if ($('#bus_couse').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 });
@@ -217,6 +214,7 @@ $("#create").click(function(e) {
         var dataString = 'bus_course_code=' + bus_course_code + '&bus_course_name=' + bus_course_name + '&class_id=' + class_id + '&max=' + max;
         $.ajax({
             type: 'POST',
+            dataType:'json',
             data: $('#bus_couse').serialize(),
             url: url_top + '/bus_route/create/',
             success: function (data) {
@@ -273,9 +271,9 @@ $(document).ready(function() {
     });
     $('#bus_stop_form input').on('keyup blur', function () {
         if ($('#bus_stop_form').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 });

@@ -50,14 +50,14 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">売り単価</label>
               <div class="col-sm-3">
-                <input type="text" name="sell_price" id="sell_price" class="form-control" value="<?php echo number_format($get_item['sell_price'])?>" required placeholder="">
+                <input type="text" name="sell_price" id="sell_price" class="form-control" value="<?php echo $get_item['sell_price']?>" required placeholder="">
               </div>
             </div>
 
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">仕入単価</label>
               <div class="col-sm-3">
-                <input type="text" class="form-control" name="buy_price" id="buy_price" value="<?php echo number_format($get_item['buy_price'])?>" required placeholder="">
+                <input type="text" class="form-control" name="buy_price" id="buy_price" value="<?php echo $get_item['buy_price']?>" required placeholder="">
               </div>
             </div>
 
@@ -88,7 +88,7 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">在庫数</label>
               <div class="col-sm-3">
-                <input type="number" class="form-control"name="left_num"  id="left_num" value="<?php echo $get_item['left_num']?>" required placeholder="">
+                <input type="text" class="form-control"name="left_num"  id="left_num" value="<?php echo $get_item['left_num']?>" required placeholder="">
               </div>
             </div>
             <div class="form-group">

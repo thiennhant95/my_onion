@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" id="bus_course_index">
 
 <head>
   <?php require_once("head.php"); ?>
@@ -75,13 +75,11 @@
             <tbody>
             <?php
             foreach ($bus_course_list as $row) :
-            foreach ($class_list as $row_class) :
-            if ($row['class_id'] == $row_class['id']) {
                 ?>
                 <tr>
                     <td class=""><?php echo $row['bus_course_code'] ?></td>
                     <td class=""><?php echo $row['bus_course_name'] ?></td>
-                    <td class=""><?php echo $row_class['class_name'] ?></td>
+                    <td class=""><?php echo $row['class_name'] ?></td>
                     <td class=""><?php echo $row['max'] ?></td>
                     <td>
                         <div class="row">
@@ -98,14 +96,17 @@
                     </td>
                 </tr>
                 <?php
-            }
-            endforeach;
             endforeach;
             ?>
             </tbody>
           </table>
         </div>
       </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <?php echo $pagination; ?>
+            </div>
+        </div>
       <div class="block-15 text-center row">
         <div class="col-sm-8 col-sm-offset-2">
           <a class="btn btn-info btn-block" href="<?php echo site_url('admin/bus_route/create')?>">

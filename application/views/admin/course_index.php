@@ -142,21 +142,89 @@
                        {
                            if (!is_array($row_condition))
                            {
-                               echo "<b>".'「'.$key_conditon.'」'."</b>".$row_condition.'<br>';
+                              if ($key_conditon=='age') {
+                                  echo "<b>" . '「年齢」' . "</b>" . $row_condition . '<br>';
+                              }
+                              if ($key_conditon=='grade')
+                              {
+                                  if (strpos($row_condition,'~制限無し'))
+                                  {
+                                      echo "<b>" . '「級」' . "</b> 制限無し<br>";
+                                  }
+                                  else {
+                                      echo "<b>" . '「級」' . "</b>" . $row_condition . '<br>';
+                                  }
+                              }
                            }
                            if (is_array($row_condition))
                            {
-                               echo "<b>".'「'.$key_conditon.'」'."</b>";
+                               echo "<b>".'「泳力」'."</b>";
+                               if ($row_condition['face_into_water']==1)
+                               {
+                                   $row_condition['face_into_water']="水に顔をつけることができない";
+                               }
+                               if ($row_condition['not_face_into_water']==1)
+                               {
+                                   $row_condition['not_face_into_water']="水に顔をつけることができる";
+                               }
+                               if ($row_condition['dive']==1)
+                               {
+                                   $row_condition['dive']="潜れる";
+                               }
+                               if ($row_condition['float']==1)
+                               {
+                                   $row_condition['float']="浮かべる";
+                               }
+                               if ($row_condition['free_lesson']==1)
+                               {
+                                   $row_condition['free_lesson']="短期水泳教室に参加をしたことがある";
+                               }
+                               if ($row_condition['short_lesson']==1)
+                               {
+                                   $row_condition['short_lesson']="無料体験に参加したことがある";
+                               }
                                foreach ($row_condition as $key=>$row_key):
                                    if (!is_array($row_key))
                                    {
-                                       echo $row_key.'<br>';
+                                       if ($row_key!=null) {
+                                           echo $row_key . '<br>';
+                                       }
                                    }
                                    if (is_array($row_key))
                                    {
-                                       foreach ($row_key as $key_swin=>$row_swin):
-                                           echo $key_swin.'：'.$row_swin;
-                                           endforeach;
+                                       if ($key=='style') {
+                                           if (count($key) > 0) {
+                                               echo "<br>" . "スイミングスタイル：";
+                                               foreach ($row_key as $key_swin => $row_swin):
+                                                   if ($row_swin != 0) {
+                                                       if ($key_swin == 'flutter_kick') {
+                                                           $key_swin = "<br>" . "バタ足 ";
+                                                       }
+                                                       if ($key_swin == 'board_kick') {
+                                                           $key_swin = "<br>" . "板キック  ";
+                                                       }
+                                                       if ($key_swin == 'backstroke') {
+                                                           $key_swin = "<br>" . "背泳ぎ  ";
+                                                       }
+                                                       if ($key_swin == 'crawl') {
+                                                           $key_swin = "<br>" . "クロール";
+                                                       }
+                                                       if ($key_swin == 'breast_stroke') {
+                                                           $key_swin = "<br>" . "平泳ぎ ";
+                                                       }
+                                                       if ($key_swin == 'butterfly') {
+                                                           $key_swin = "<br>" . "バタフライ ";
+                                                       }
+                                                       echo $key_swin . '：' . $row_swin.'m';
+                                                   }
+                                               endforeach;
+                                           }
+                                       }
+                                       else
+                                       {
+                                           if ($row_key['status']!='0')
+                                           echo "経験" . '：'.'はい';
+                                       }
                                    }
                                endforeach;
                            }
@@ -168,7 +236,6 @@
                           <a href="<?php echo site_url('admin/course/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                       </td>
                   </tr>
-
               <?php
               endforeach;
               ?>

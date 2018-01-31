@@ -9,6 +9,7 @@ class Bus_route extends ADMIN_Controller {
         $this->load->model('db/m_bus_course_model','bus_course');
         $this->load->model('db/m_class_model','class');
         $this->load->model('db/m_bus_stop_model','bus_stop');
+        $this->load->library("pagination");
     }
     /**
      * バスコースマスター
@@ -17,12 +18,41 @@ class Bus_route extends ADMIN_Controller {
      * @return  
      *
     */
-    public function index() {
+    public function index(  ) {
         if ($this->error_flg) return;
         try {
-            $data['bus_course_list']=$this->bus_course->get_list();
-            $data['bus_route_list']=$this->bus_route->get_list();
-            $data['class_list']=$this->class->get_list();
+            $config = array();
+            $config["base_url"] = 'bus_route/index/';
+//            $config['page_query_string'] = TRUE;
+            $config['total_rows'] = '27522';
+            $config["per_page"] = 8;
+            $config["uri_segment"] = 4;
+            $config['num_links'] = 3;
+            $config['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $config['full_tag_close']  = '</ul>';
+            $config['num_tag_open']    = '<li>';
+            $config['num_tag_close']   = '</li>';
+            $config['cur_tag_open']    = '<li class="active"><a>';
+            $config['cur_tag_close']   = '</a></li>';
+            $config['prev_tag_open']   = '<li>';
+            $config['prev_tag_close']  = '</li>';
+            $config['next_tag_open']   = '<li>';
+            $config['next_tag_close']  = '</li>';
+            $config['first_link']      = '&laquo;';
+            $config['prev_link']       = '&lsaquo;';
+            $config['last_link']       = '&raquo;';
+            $config['next_link']       = '&rsaquo;';
+            $config['first_tag_open']  = '<li>';
+            $config['first_tag_close'] = '</li>';
+            $config['last_tag_open']   = '<li>';
+            $config['last_tag_close']  = '</li>';
+
+
+//            $data['create_pagination']=$this->paginationConfig;
+            $this->pagination->initialize($config);
+            $data['page'] = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+            $data['bus_course_list']=$this->bus_course->get_list_bus_course($config["per_page"], $data['page']);
+            $data['pagination'] = $this->pagination->create_links();
             $this->viewVar=$data;
             admin_layout_view('bus_route_index', $this->viewVar);
         } catch (Exception $e) {
@@ -110,12 +140,12 @@ class Bus_route extends ADMIN_Controller {
                               $this->bus_route->insert($data_Bus_Route);
                           }
                       }
-                    echo json_encode(array('success'=>DATA_ON));
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo json_encode(array('success'=>DATA_OFF));
+                    echo json_encode(array('status'=>DATA_OFF));
                     die();
                 }
             }
@@ -181,12 +211,12 @@ class Bus_route extends ADMIN_Controller {
                         );
                         $this->bus_route->insert($data_Bus_Route);
                     }
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('status'=>DATA_OFF));
                     die();
                 }
             }
@@ -208,11 +238,11 @@ class Bus_route extends ADMIN_Controller {
         try {
             $dataUpdate = array(
                 'id'=>$id,
-                'delete_flg'=>'1',
+                'delete_flg'=>DATA_ON,
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->bus_course->update_by_id($dataUpdate);
-            echo json_encode(array('status'=>'1'));
+            echo json_encode(array('status'=>DATA_ON));
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

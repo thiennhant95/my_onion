@@ -53,9 +53,9 @@ $(document).ready(function() {
     });
     $('#grade_form input').on('keyup blur', function () {
         if ($('#grade_form').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 });
@@ -69,6 +69,7 @@ $("#create").click(function(e) {
             type: 'POST',
             data: $('#grade_form').serialize(),
             url: url,
+            dataType:'json',
             success: function (data) {
                 console.log(data);
                 if (data.status  == 1) {
@@ -80,7 +81,7 @@ $("#create").click(function(e) {
                             $('#myModal').modal('hide');
                             window.location = url_top + '/grade';
                         });
-                    }, 1000);
+                    }, 900);
                 }
                 else if (data.status  == 0) {
                     $('#popup').click();
@@ -90,7 +91,7 @@ $("#create").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 1900);
                 }
             }
         });
@@ -106,6 +107,7 @@ $("#update").click(function(e) {
             type: 'POST',
             data: $('#grade_form').serialize(),
             url: url,
+            dataType:'json',
             success: function (data) {
                 console.log(data);
                 if (data.status  == 1) {
@@ -117,7 +119,7 @@ $("#update").click(function(e) {
                             $('#myModal').modal('hide');
                             window.location = url_top + '/grade';
                         });
-                    }, 1000);
+                    }, 900);
                 }
                 else if (data.status  == 0) {
                     $('#popup').click();
@@ -127,7 +129,7 @@ $("#update").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 1900);
                 }
             }
         });

@@ -43,14 +43,13 @@ class Classes extends ADMIN_Controller {
             $data['course_list']=$this->course->get_list();
             $data['get_course']=$this->course->select_by_id($data['get_class']['course_id'])[0];
             if ($this->input->post()) {
-                $class_code=$this->input->post('base_class_sign')."".$this->input->post('class_code');
                 $this->form_validation->set_rules('class_code', 'class_code', 'required|trim|xss_clean');
                 if ($this->form_validation->run() == true) {
                     $dataUpdate = array(
                         'id'=>$id,
                         'course_id'=>$this->input->post('short_course_name'),
                         'base_class_sign'=>$this->input->post('base_class_sign'),
-                        'class_code' => $class_code,
+                        'class_code' => $this->input->post('class_code'),
                         'class_name' => $this->input->post('class_name'),
                         'grade_manage_flg'=>$this->input->post('level-manage'),
                         'use_bus_flg'=>$this->input->post('use-bus'),
@@ -87,13 +86,12 @@ class Classes extends ADMIN_Controller {
         try {
             $data['course_list']=$this->course->get_list();
             if ($this->input->post()) {
-                $class_code=$this->input->post('base_class_sign')."".$this->input->post('class_code');
                     $this->form_validation->set_rules('class_code', 'class_code', 'required|trim|xss_clean');
                 if ($this->form_validation->run() == true) {
                     $dataInsert = array(
                         'course_id'=>$this->input->post('short_course_name'),
                         'base_class_sign'=>$this->input->post('base_class_sign'),
-                        'class_code' => $class_code,
+                        'class_code' => $this->input->post('class_code'),
                         'class_name' => $this->input->post('class_name'),
                         'grade_manage_flg'=>$this->input->post('level-manage'),
                         'use_bus_flg'=>$this->input->post('use-bus'),
@@ -117,7 +115,6 @@ class Classes extends ADMIN_Controller {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
-
 }
 
 /* End of file class.php */

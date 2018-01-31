@@ -30,6 +30,9 @@ $( document ).ready( function( )
 
 //validate form
 $(document).ready(function() {
+    // $.validator.addMethod("regex", function(value, element) {
+    //     return this.optional(element) ||/^(\d?[1-9]+\d*)(,\s*\d?[1-9]+\d*\s*)*$/.test(value);
+    // }, "有効な数値を入力してください.");
     $("#item_form").validate({
         rules: {
             item_name: "required",
@@ -63,7 +66,7 @@ $(document).ready(function() {
                 required: "この項目は必須です",
                 number: "有効な数値を入力してください。"
             },
-            type:"必須"
+            type:"この項目は必須です"
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -75,9 +78,9 @@ $(document).ready(function() {
     });
     $('#item_form input').on('keyup blur', function () {
         if ($('#item_form').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 
@@ -104,18 +107,19 @@ $("#update").click(function(e) {
             type: 'POST',
             data: $('#item_form').serialize(),
             url: url,
+            dataType:'json',
             success: function (data) {
                 console.log(data);
                 if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
-                    $("#status_update").html("<b>有効な数値を入力してください。</b>");
+                    $("#status_update").html("<b>情報を更新しました。</b>");
                     window.setTimeout(function () {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                             window.location = url_top + '/item';
                         });
-                    }, 1000);
+                    }, 900);
                 }
                 else if (data.status  == 0) {
                     $('#popup').click();
@@ -125,7 +129,7 @@ $("#update").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 1900);
                 }
             }
         });
@@ -155,6 +159,7 @@ $("#create").click(function(e) {
             type: 'POST',
             data: $('#item_form').serialize(),
             url: url,
+            dataType:'json',
             success: function (data) {
                 console.log(data);
                 if (data.status  == 1) {
@@ -166,7 +171,7 @@ $("#create").click(function(e) {
                             $('#myModal').modal('hide');
                             window.location = url_top + '/item';
                         });
-                    }, 1000);
+                    }, 900);
 
                 }
                 else if (data.status  == 0) {
@@ -177,7 +182,7 @@ $("#create").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 1900);
                 }
             }
         });

@@ -56,32 +56,136 @@ $(document).ready(function(){
 
 //validate form
 $(document).ready(function() {
+    $.validator.addMethod(
+        "end_date",
+        function(value, element) {
+            var year_start = $('#year_start').val();
+            var month_start = $('#month_start').val();
+            var day_start = $('#day_start').val();
+            var year_end = $('#year_end').val();
+            var month_end = $('#month_end').val();
+            var day_end = $('#day_end').val();
+            var start = year_start + '-' + month_start + '-' + day_start;
+            var end = year_end + '-' + month_end + '-' + day_end;
+            var date_start = new Date(start);
+            var date_end = new Date(end);
+            if (date_end <= date_start) {
+                return false;
+            }
+            return true;
+        },
+        "Ngày kết thúc phải lớn hơn ngày bắt đầu"
+    );
+    $.validator.addMethod(
+        "start_regist",
+        function(value, element) {
+            var year_start = $('#year_start').val();
+            var month_start = $('#month_start').val();
+            var day_start = $('#day_start').val();
+            var year_regist_start = $('#year_regist_start').val();
+            var month_regist_start = $('#month_regist_start').val();
+            var day_regist_start = $('#day_regist_start').val();
+            var start = year_start + '-' + month_start + '-' + day_start;
+            var end = year_regist_start + '-' + month_regist_start+ '-' + day_regist_start;
+            var date_start = new Date(start);
+            var date_end = new Date(end);
+            if (date_end >= date_start) {
+                return false;
+            }
+            return true;
+        },
+        "Ngày đăng kí phải nhỏ hơn ngày khai giảng"
+    );
+    $.validator.addMethod(
+        "end_regist",
+        function(value, element) {
+            var year_regist_start = $('#year_regist_start').val();
+            var month_regist_start = $('#month_regist_start').val();
+            var day_regist_start = $('#day_regist_start').val();
+            var year_regist_end = $('#year_regist_end').val();
+            var month_regist_end = $('#month_regist_end').val();
+            var day_regist_end = $('#day_regist_end').val();
+            var end = year_regist_end + '-' + month_regist_end+ '-' + day_regist_end ;
+            var start = year_regist_start + '-' + month_regist_start+ '-' + day_regist_start;
+            var date_start = new Date(start);
+            var date_end = new Date(end);
+            if (date_end <= date_start) {
+                return false;
+            }
+            return true;
+        },
+        "Ngày kết thúc đăng kí phải lớn hơn ngày đăng kí"
+    );
     $("#course_form").validate({
         rules: {
             course_code: "required",
             course_name: "required",
             short_course_name: {
-                required: true,
+                required: true
             },
             max_count: {
                 required: true,
                 number: true,
                 digits: true,
-                min:1,
+                min:1
             },
             left_num: {
                 required: true,
                 number: true
             },
-            type:"required"
+            cost_item_id: "required",
+            rest_item_id: "required",
+            bus_item_id: "required",
+            type:"required",
+            "end[0]":{
+                end_date:true
+            },
+            "end[1]":{
+                end_date:true
+            },
+            "end[2]":{
+                end_date:true
+            },
+
+            "start_regist[0]":{
+                start_regist:true
+            },
+            "start_regist[1]":{
+                start_regist:true
+            },
+            "start_regist[2]":{
+                start_regist:true
+            },
+
+            "end_regist[0]":{
+                end_regist:true
+            },
+            "end_regist[1]":{
+                end_regist:true
+            },
+            "end_regist[2]":{
+                end_regist:true
+            }
         },
+        groups: {
+            end_date: "end[0] end[1] end[2]",
+            start_regist: "start_regist[0] start_regist[1] start_regist[2]",
+            end_regist: "end_regist[0] end_regist[1] end_regist[2]"
+        },
+
         messages: {
             course_code:"この項目は必須です",
             course_name:"この項目は必須です",
             short_course_name:"この項目は必須です",
             max_count:{
-                required:true,
+                required:"この項目は必須です",
+                number: "有効な数値を入力してください。",
+                digits: "数字のみ入力して下さい。",
+                min: "1以上の値を入力してください",
             },
+            cost_item_id: "この項目は必須です",
+            rest_item_id: "この項目は必須です",
+            bus_item_id: "この項目は必須です",
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -93,9 +197,9 @@ $(document).ready(function() {
     });
     $('#course_form input').on('keyup blur', function () {
         if ($('#course_form').valid()) {
-            $('button.btn').prop('disabled', false);
+            // $('button.btn').prop('disabled', false);
         } else {
-            $('button.btn').prop('disabled', 'disabled');
+            // $('button.btn').prop('disabled', 'disabled');
         }
     });
 
@@ -156,7 +260,7 @@ $(document).ready(function() {
                     if (data.status == 1) {
                         $('#popup').click();
                         $('.modal-body').addClass('alert alert-success');
-                        $("#status_update").html("<b>情報を更新しました。 </b>");
+                        $("#status_update").html("<b>練習コースを追加しました。</b>");
                         window.setTimeout(function () {
                             $('#myModal').fadeToggle(300, function () {
                                 $('#myModal').modal('hide');
@@ -198,10 +302,13 @@ function check() {
 }
 function uncheck() {
     document.getElementById("free_practice_radio").checked = false;
-    $("#number_practice_select").val(practice_select);
+    $("#number_practice_select").val(1);
 }
 
 //onchange number practice select
+    $("#number_practice_select").change(function () {
+        document.getElementById("free_practice_radio").checked = false;
+    });
 
 //onchange select start
 $(document).ready(function(){
@@ -391,103 +498,9 @@ $(document).ready(function(){
     })
 });
 
-//check dd/mm/yy end > dd/mm/yy start
-    $(document).ready(function () {
-        $("#day_end").change(function () {
-            var year_start = $('#year_start').val();
-            var month_start = $('#month_start').val();
-            var day_start = $('#day_start').val();
-            var year_end = $('#year_end').val();
-            var month_end = $('#month_end').val();
-            var day_end = $('#day_end').val();
-            var start = year_start + '-' + month_start + '-' + day_start;
-            var end = year_end + '-' + month_end + '-' + day_end;
-            var date_start = new Date(start);
-            var date_end = new Date(end);
-            if (date_end < date_start) {
-                $('#popup').click();
-                $('.modal-body').addClass('alert alert-danger');
-                $("#status_update").html("<b>Ngày kết thúc phải lớn hơn ngày bắt đầu </b>");
-                window.setTimeout(function () {
-                    $('#myModal').fadeToggle(300, function () {
-                        $('#myModal').modal('hide');
-                    });
-                }, 1500);
-                var next_year = parseInt(year_end) + parseInt(1);
-                $("#year_end").val(next_year);
-                return false;
-            }
-            return true;
-        })
-    });
-
-//check dd/mm/yy end > dd/mm/yy regist start
-
-$(document).ready(function () {
-    $("#day_regist_start").change(function () {
-        var year_start = $('#year_start').val();
-        var month_start = $('#month_start').val();
-        var day_start = $('#day_start').val();
-        var year_regist_start = $('#year_regist_start').val();
-        var month_regist_start = $('#month_regist_start').val();
-        var day_regist_start = $('#day_regist_start').val();
-        var start = year_start + '-' + month_start + '-' + day_start;
-        var end = year_regist_start + '-' + month_regist_start+ '-' + day_regist_start;
-        var date_start = new Date(start);
-        var date_end = new Date(end);
-        if (date_end > date_start) {
-            $('#popup').click();
-            $('.modal-body').addClass('alert alert-danger');
-            $("#status_update").html("<b>Ngày kết thúc phải lớn hơn ngày bắt đầu </b>");
-            window.setTimeout(function () {
-                $('#myModal').fadeToggle(300, function () {
-                    $('#myModal').modal('hide');
-                });
-            }, 1500);
-            var next_year = parseInt(year_start) - parseInt(1);
-            $("#year_regist_start").val(next_year);
-            return false;
-        }
-        return true;
-    })
-});
-
-
-//check dd/mm/yy end > dd/mm/yy regist end
-
-$(document).ready(function () {
-    $("#day_regist_end").change(function () {
-        var year_regist_start = $('#year_regist_start').val();
-        var month_regist_start = $('#month_regist_start').val();
-        var day_regist_start = $('#day_regist_start').val();
-        var year_regist_end = $('#year_regist_end').val();
-        var month_regist_end = $('#month_regist_end').val();
-        var day_regist_end = $('#day_regist_end').val();
-        var end = year_regist_end + '-' + month_regist_end+ '-' + day_regist_end ;
-        var start = year_regist_start + '-' + month_regist_start+ '-' + day_regist_start;
-        var date_start = new Date(start);
-        var date_end = new Date(end);
-        if (date_end < date_start) {
-            $('#popup').click();
-            $('.modal-body').addClass('alert alert-danger');
-            $("#status_update").html("<b>Ngày kết thúc phải lớn hơn ngày bắt đầu </b>");
-            window.setTimeout(function () {
-                $('#myModal').fadeToggle(300, function () {
-                    $('#myModal').modal('hide');
-                });
-            }, 1500);
-            var next_year = parseInt(year_regist_end) + parseInt(1);
-            $("#year_regist_end").val(next_year);
-            return false;
-        }
-        return true;
-    })
-});
-
 //onchange check age
 $(document).ready(function(){
     $("#condition_age_from").change(function () {
-        // $('#condition_age_to').removeAttr('disabled');
         var condition_age_from=$('#condition_age_from').val();
         var age_to = parseInt(condition_age_from) + parseInt(1);
         var condition_age_to=$('#condition_age_to').val(age_to);
@@ -507,7 +520,7 @@ $(document).ready(function(){
     $("#condition_age_to").change(function () {
         var condition_age_from=$('#condition_age_from').val();
         var condition_age_to=$('#condition_age_to').val();
-       if (condition_age_to<condition_age_from)
+       if (parseInt(condition_age_to) <= parseInt(condition_age_from))
        {
            var age_from = parseInt(condition_age_to) - parseInt(1);
             $('#condition_age_from').val(age_from);
@@ -515,7 +528,7 @@ $(document).ready(function(){
     })
 });
 
-////onchange check age
+//onchange check grade
 $(document).ready(function(){
     $("#condition_grade_from").change(function () {
         var condition_grade_from=$('#condition_grade_from').val();

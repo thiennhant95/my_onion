@@ -90,12 +90,12 @@ class Subject extends ADMIN_Controller {
                         'subject_name'=>$this->input->post('subject_name')
                     );
                     $this->subject->insert($dataInsert);
-                    echo DATA_ON;
+                    echo json_encode(array('status'=>DATA_ON));
                     die();
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                    echo DATA_OFF;
+                    echo json_encode(array('status'=>DATA_OFF));
                     die();
                 }
             }
@@ -121,7 +121,7 @@ class Subject extends ADMIN_Controller {
                 'delete_date'=>date('Y-m-d H:i:s')
             );
             $this->subject->update_by_id($dataUpdate);
-            echo json_encode(array('status'=>'1'));
+            echo json_encode(array('status'=>DATA_ON));
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

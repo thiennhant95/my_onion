@@ -47,9 +47,9 @@
               </div>
               <div class="col-sm-5">
                   <?php
-                  $class_code = substr_replace($get_class['class_code'], '', 0, 1);
+//                  $class_code = substr_replace($get_class['class_code'], '', 0, 1);
                   ?>
-                <input type="text" class="form-control" name="class_code" value="<?php echo $class_code?>" required placeholder="">
+                <input type="text" class="form-control" name="class_code" value="<?php echo $get_class['class_code'];?>" required placeholder="">
               </div>
             </div>
             <div class="form-group">

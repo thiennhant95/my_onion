@@ -50,7 +50,7 @@
             </div>
             <div class="col-sm-4">
                 <p>
-                    <button class="btn btn-success btn-block" href="<?php echo site_url('admin/bus_stop/create')?>" id="create_bus_stop" disabled="disabled">
+                    <button class="btn btn-success btn-block" href="<?php echo site_url('admin/bus_stop/create')?>" id="create_bus_stop">
                         <span>更新</span>
                     </button>
                 </p>

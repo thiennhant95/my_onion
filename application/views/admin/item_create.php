@@ -88,7 +88,7 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">在庫数</label>
                         <div class="col-sm-3">
-                            <input type="number" class="form-control"name="left_num"  id="left_num" required placeholder="">
+                            <input type="text" class="form-control"name="left_num"  id="left_num" required placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
@@ -121,7 +121,7 @@
             </div>
             <div class="col-sm-4">
                 <p>
-                    <button id="create" class="btn btn-success btn-block" href="<?php echo site_url('admin/item/create')?>" disabled="disabled" >
+                    <button id="create" class="btn btn-success btn-block"    href="<?php echo site_url('admin/item/create')?>">
                         <span>更新</span>
                     </button>
                 </p>

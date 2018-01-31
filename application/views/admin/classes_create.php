@@ -134,7 +134,7 @@
             </div>
             <div class="col-sm-4">
                 <p>
-                    <button class="btn btn-success btn-block" id="create"disabled="disabled">
+                    <button class="btn btn-success btn-block" id="create">
                         <span>更新</span>
                     </button>
                 </p>

@@ -20,6 +20,9 @@ class Distance extends ADMIN_Controller {
         if ($this->error_flg) return;
         try {
             $data['distance_list']= $this->distance->get_list();
+//            $data['avc']=$this->paginationConfig;
+//            print_r($data['avc']);
+//            die();
             $this->viewVar=$data;
             admin_layout_view('distance_index', $this->viewVar);
         } catch (Exception $e) {
