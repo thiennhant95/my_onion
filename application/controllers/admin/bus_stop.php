@@ -7,6 +7,7 @@ class Bus_stop extends ADMIN_Controller {
         parent::__construct();
         $this->load->model('db/m_bus_stop_model','bus_stop');
         $this->load->library('form_validation');
+        $this->load->library("pagination");
     }
     /**
      * バス停マスター
@@ -18,7 +19,15 @@ class Bus_stop extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
-            $data['bus_stop_list']= $this->bus_stop->get_list();
+            $pagin=$this->paginationConfig;
+            $pagin["base_url"] = '/admin/bus_stop/index';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_close']  = '</ul>';
+            $pagin['total_rows'] = count($this->bus_stop->get_list());
+            $this->pagination->initialize($pagin);
+            $data['page'] = ($this->uri->segment(FOUR)) ? $this->uri->segment(FOUR) : DATA_OFF;
+            $data['bus_stop_list']=$this->bus_stop->get_list_bus_stop($pagin["per_page"], $data['page']);
+            $data['pagination'] = $this->pagination->create_links();
             $this->viewVar=$data;
             admin_layout_view('bus_stop_index', $this->viewVar);
         } catch (Exception $e) {

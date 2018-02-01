@@ -105,6 +105,11 @@
           </table>
         </div>
       </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <?php echo $pagination; ?>
+            </div>
+        </div>
       <div class="block-15 text-center row">
         <div class="col-sm-8 col-sm-offset-2">
           <a class="btn btn-info btn-block" href="<?php echo site_url('admin/style/create')?>">

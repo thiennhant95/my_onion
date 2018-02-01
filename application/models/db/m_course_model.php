@@ -80,5 +80,16 @@ class M_course_model extends DB_Model {
         }
     }
 
+    function get_list_course($limit, $start)
+    {
+        $sql = 'select * from m_course
+                where m_course.delete_flg = 0 
+                order by m_course.id ASC 
+                limit ' . $start . ', ' . $limit;
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+
 
 }

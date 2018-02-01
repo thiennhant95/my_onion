@@ -10,6 +10,7 @@ class Course extends ADMIN_Controller {
         $this->load->model('db/m_grade_model','grade');
         $this->load->model('db/m_distance_model','distance');
         $this->load->library('form_validation');
+        $this->load->library("pagination");
     }
 
     /**
@@ -22,9 +23,16 @@ class Course extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
-            $data['course_list']=$this->course->get_list();
+            $pagin=$this->paginationConfig;
+            $pagin["base_url"] = '/admin/course/index';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_close']  = '</ul>';
+            $pagin['total_rows'] = count($this->course->get_list());
+            $this->pagination->initialize($pagin);
+            $data['page'] = ($this->uri->segment(FOUR)) ? $this->uri->segment(FOUR) : DATA_OFF;
+            $data['course_list']=$this->course->get_list_course($pagin["per_page"], $data['page']);
+            $data['pagination'] = $this->pagination->create_links();
             $data['item_list']=$this->item->get_list();
-
             $this->viewVar=$data;
             admin_layout_view('course_index', $this->viewVar);
         } catch (Exception $e) {

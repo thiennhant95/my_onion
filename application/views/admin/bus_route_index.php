@@ -84,7 +84,7 @@
                     <td>
                         <div class="row">
                             <div class="col-xs-4">
-                                <a href="<?php echo site_url('admin/bus_route/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
+                                <a href="<?php echo site_url('admin/bus_route/edit/'.$row['id'])?>" class="btn btn-outline-blue btn-block btn-sm" data_id="<?php echo $row['id']?>">編集</a>
                             </div>
                             <div class="col-xs-4">
                                 <a href="<?php echo site_url('admin/bus_route/delete/'.$row['id'])?>" class="btn btn-default btn-block btn-sm delete-user-row-with-ajax-button" data-type="マスター設定​">削除</a>

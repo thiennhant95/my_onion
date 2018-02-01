@@ -7,8 +7,8 @@ class Distance extends ADMIN_Controller {
         parent::__construct();
         $this->load->model('db/m_distance_model','distance');
         $this->load->library('form_validation');
+        $this->load->library("pagination");
     }
-
     /**
      * 距離マスター
      *
@@ -19,10 +19,15 @@ class Distance extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
-            $data['distance_list']= $this->distance->get_list();
-//            $data['avc']=$this->paginationConfig;
-//            print_r($data['avc']);
-//            die();
+            $pagin=$this->paginationConfig;
+            $pagin["base_url"] = '/admin/distance/index';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_close']  = '</ul>';
+            $pagin['total_rows'] = count($this->distance->get_list());
+            $this->pagination->initialize($pagin);
+            $data['page'] = ($this->uri->segment(FOUR)) ? $this->uri->segment(FOUR) : DATA_OFF;
+            $data['distance_list']=$this->distance->get_list_distance($pagin["per_page"], $data['page']);
+            $data['pagination'] = $this->pagination->create_links();
             $this->viewVar=$data;
             admin_layout_view('distance_index', $this->viewVar);
         } catch (Exception $e) {
@@ -126,6 +131,34 @@ class Distance extends ADMIN_Controller {
             $this->distance->update_by_id($dataUpdate);
             echo json_encode(array('status'=>DATA_ON));
         } catch (Exception $e) {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=10;
+            $count_distance=count($this->distance->get_list());
+            $count_num=ceil($count_distance/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->distance->get_list_distance($limit,$offset);
+            }
+            array_unshift($data[0],array("id","距離コード","距離コード"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'distance_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }

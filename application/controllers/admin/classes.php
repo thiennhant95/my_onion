@@ -8,6 +8,7 @@ class Classes extends ADMIN_Controller {
         $this->load->model('db/m_class_model','class');
         $this->load->model('db/m_course_model','course');
         $this->load->library('form_validation');
+        $this->load->library("pagination");
     }
 
     /**
@@ -20,8 +21,15 @@ class Classes extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
-            $data['class_list']= $this->class->get_list();
-            $data['course_list']=$this->course->get_list();
+            $pagin=$this->paginationConfig;
+            $pagin["base_url"] = '/admin/classes/index';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_close']  = '</ul>';
+            $pagin['total_rows'] = count($this->class->get_list());
+            $this->pagination->initialize($pagin);
+            $data['page'] = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+            $data['class_list']=$this->class->get_list_class($pagin["per_page"], $data['page']);
+            $data['pagination'] = $this->pagination->create_links();
             $this->viewVar=$data;
             admin_layout_view('classes_index', $this->viewVar);
         } catch (Exception $e) {

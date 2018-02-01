@@ -8,6 +8,7 @@ class Subject extends ADMIN_Controller {
         parent::__construct();
         $this->load->model('db/m_subject_model','subject');
         $this->load->library('form_validation');
+        $this->load->library("pagination");
     }
     /**
      * 科目マスター
@@ -19,7 +20,15 @@ class Subject extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
-            $data['subject_list']= $this->subject->get_list();
+            $pagin=$this->paginationConfig;
+            $pagin["base_url"] = '/admin/subject/index';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_close']  = '</ul>';
+            $pagin['total_rows'] = count($this->subject->get_list());
+            $this->pagination->initialize($pagin);
+            $data['page'] = ($this->uri->segment(FOUR)) ? $this->uri->segment(FOUR) : DATA_OFF;
+            $data['subject_list']=$this->subject->get_list_subject($pagin["per_page"], $data['page']);
+            $data['pagination'] = $this->pagination->create_links();
             $this->viewVar=$data;
             admin_layout_view('subject_index', $this->viewVar);
         } catch (Exception $e) {

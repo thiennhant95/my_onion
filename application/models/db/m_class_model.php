@@ -28,4 +28,14 @@ class M_class_model extends DB_Model {
         return $res->row_array();
     }
 
+    function get_list_class($limit, $start)
+    {
+        $sql = 'select m_class.id,m_class.course_id,m_class.class_code,m_class.class_name,m_class.invalid_flg,m_class.grade_manage_flg,m_class.week,m_class.max_count,m_class.use_bus_flg from m_class JOIN m_course ON m_class.course_id = m_course.id 
+                where m_class.delete_flg = 0 
+                order by m_class.id ASC 
+                limit ' . $start . ', ' . $limit;
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
 }

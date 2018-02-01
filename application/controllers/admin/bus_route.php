@@ -21,37 +21,14 @@ class Bus_route extends ADMIN_Controller {
     public function index(  ) {
         if ($this->error_flg) return;
         try {
-            $config = array();
-            $config["base_url"] = 'bus_route/index/';
-//            $config['page_query_string'] = TRUE;
-            $config['total_rows'] = '27522';
-            $config["per_page"] = 8;
-            $config["uri_segment"] = 4;
-            $config['num_links'] = 3;
-            $config['full_tag_open']   = '<ul class="pagination pagination-md">';
-            $config['full_tag_close']  = '</ul>';
-            $config['num_tag_open']    = '<li>';
-            $config['num_tag_close']   = '</li>';
-            $config['cur_tag_open']    = '<li class="active"><a>';
-            $config['cur_tag_close']   = '</a></li>';
-            $config['prev_tag_open']   = '<li>';
-            $config['prev_tag_close']  = '</li>';
-            $config['next_tag_open']   = '<li>';
-            $config['next_tag_close']  = '</li>';
-            $config['first_link']      = '&laquo;';
-            $config['prev_link']       = '&lsaquo;';
-            $config['last_link']       = '&raquo;';
-            $config['next_link']       = '&rsaquo;';
-            $config['first_tag_open']  = '<li>';
-            $config['first_tag_close'] = '</li>';
-            $config['last_tag_open']   = '<li>';
-            $config['last_tag_close']  = '</li>';
-
-
-//            $data['create_pagination']=$this->paginationConfig;
-            $this->pagination->initialize($config);
+            $pagin=$this->paginationConfig;
+            $pagin["base_url"] = '/admin/bus_route/index';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_close']  = '</ul>';
+            $pagin['total_rows'] = count($this->bus_course->get_list());
+            $this->pagination->initialize($pagin);
             $data['page'] = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
-            $data['bus_course_list']=$this->bus_course->get_list_bus_course($config["per_page"], $data['page']);
+            $data['bus_course_list']=$this->bus_course->get_list_bus_course($pagin["per_page"], $data['page']);
             $data['pagination'] = $this->pagination->create_links();
             $this->viewVar=$data;
             admin_layout_view('bus_route_index', $this->viewVar);

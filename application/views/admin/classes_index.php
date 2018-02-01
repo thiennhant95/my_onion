@@ -78,8 +78,6 @@
             <tbody>
             <?php
             foreach ($class_list as $row_class):
-                foreach ($course_list as $row_course):
-                    if ($row_class['course_id']==$row_course['id']) {
                         ?>
                         <tr <?php if($row_class['invalid_flg']==DATA_ON) echo 'class="disabled"' ?>>
                             <td><?php echo $row_class['class_code']?></td>
@@ -133,14 +131,17 @@
                             </td>
                         </tr>
                         <?php
-                    }
-                endforeach;
             endforeach;
             ?>
             </tbody>
           </table>
         </div>
       </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <?php echo $pagination; ?>
+            </div>
+        </div>
       <div class="block-15 text-center row">
         <div class="col-sm-8 col-sm-offset-2">
           <a class="btn btn-info btn-block" href="<?php echo site_url('admin/classes/create') ?>">

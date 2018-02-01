@@ -7,6 +7,7 @@ class Grade extends ADMIN_Controller {
         parent::__construct();
         $this->load->model('db/m_grade_model','grade');
         $this->load->library('form_validation');
+        $this->load->library("pagination");
     }
     /**
      * 級マスター
@@ -18,7 +19,15 @@ class Grade extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
-            $data['grade_list']= $this->grade->get_list();
+            $pagin=$this->paginationConfig;
+            $pagin["base_url"] = '/admin/grade/index';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_close']  = '</ul>';
+            $pagin['total_rows'] = count($this->grade->get_list());
+            $this->pagination->initialize($pagin);
+            $data['page'] = ($this->uri->segment(FOUR)) ? $this->uri->segment(FOUR) : DATA_OFF;
+            $data['grade_list']=$this->grade->get_list_grade($pagin["per_page"], $data['page']);
+            $data['pagination'] = $this->pagination->create_links();
             $this->viewVar=$data;
             admin_layout_view('grade_index', $this->viewVar);
         } catch (Exception $e) {
