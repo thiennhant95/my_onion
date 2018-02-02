@@ -71,7 +71,6 @@ class Course extends ADMIN_Controller {
                     $is_unique_short =  '';
                 }
                 $this->form_validation->set_rules('course_code', 'course_code', 'required|trim|xss_clean'.$is_unique_code);
-//                $this->form_validation->set_rules('short_course_name', 'short_course_name', 'required|trim|xss_clean'.$is_unique_short);
                 if ($this->form_validation->run() == true) {
                     if ($this->input->post('free_practice_radio')==DATA_OFF) {
                         $practice_max = $this->input->post('free_practice_radio');
@@ -126,7 +125,6 @@ class Course extends ADMIN_Controller {
                         'regist_end_date'=>$end_regist,
                         'join_condition'=>$join_condition_json,
                         'invalid_flg'=>$this->input->post('enable'),
-
                     );
                     $this->course->update_by_id($dataUpdate);
                     echo json_encode(array('status'=>DATA_ON));
@@ -245,6 +243,35 @@ class Course extends ADMIN_Controller {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
+
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=1000;
+            $count_course=count($this->course->get_list());
+            $count_num=ceil($count_course/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->course->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("コースコード","コース名","記号","会費","休会費","バス管理費","回数",""));
+            $this->load->helper('csv');
+            array_to_csv($data, 'course_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
 
 }
 

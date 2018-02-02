@@ -156,6 +156,35 @@ class Item extends ADMIN_Controller {
         }
     }
 
+
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=1000;
+            $count_item=count($this->item->get_list());
+            $count_num=ceil($count_item/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->item->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("品名コード","品名","科目","売り単価","仕入単価","在庫数","分類"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'item_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
 }
 
 /* End of file item.php */

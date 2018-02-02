@@ -135,6 +135,35 @@ class Grade extends ADMIN_Controller {
         }
     }
 
+
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=1000;
+            $count_grade=count($this->grade->get_list());
+            $count_num=ceil($count_grade/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->grade->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("級コード","級名"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'grade_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
 }
 
 /* End of file grade.php */

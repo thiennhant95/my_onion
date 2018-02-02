@@ -135,6 +135,34 @@ class Bus_stop extends ADMIN_Controller {
         }
     }
 
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=10;
+            $count_bus_stop=count($this->bus_stop->get_list());
+            $count_num=ceil($count_bus_stop/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->bus_stop->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("乗車場所コード","乗車場所"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'bus_stop_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
 }
 
 /* End of file bus_stop.php */

@@ -135,6 +135,34 @@ class Style extends ADMIN_Controller {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
+
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=1000;
+            $count_style=count($this->style->get_list());
+            $count_num=ceil($count_style/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->style->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("種目コード","種目名"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'style_swimming_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
 }
 
 /* End of file style.php */

@@ -13,7 +13,7 @@
 
       <h1 class="lead-heading h3">
         <span>マスター設定</span>
-        <a href="#0" class="btn btn-default btn-sm pull-right">
+        <a href="<?php echo site_url('admin/classes/export')?>" class="btn btn-default btn-sm pull-right">
           <strong>CSV出力</strong>
         </a>
       </h1>

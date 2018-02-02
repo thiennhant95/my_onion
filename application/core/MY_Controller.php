@@ -530,7 +530,7 @@ class FRONT_Controller extends CI_Controller {
      * @return 
      */
     protected function _doAuthUser() {
-// return;
+return;
         try {
             // 非ログインでもログインページにリダイレクトしないクラス
             $auth_exclude_class = array(

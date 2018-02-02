@@ -290,6 +290,60 @@ class Bus_route extends ADMIN_Controller {
         }
     }
 
+
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=1000;
+            $count_bus_course=count($this->bus_course->get_list());
+            $count_num=ceil($count_bus_course/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->bus_course->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("バスコースコード","バスコース名","クラス","定員"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'bus_course_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+    public function export_bus_route() {
+        if ($this->error_flg) return;
+        try {
+            $limit=10;
+            $count_bus_route=count($this->bus_route->get_list());
+            $count_num=ceil($count_bus_route/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->bus_route->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("品名コード","品名","科目","売り単価","仕入単価","在庫数","分類"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'bus_route_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+
+
+
+
 }
 
 /* End of file bus_route.php */

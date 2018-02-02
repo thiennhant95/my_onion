@@ -33,15 +33,15 @@ if ( ! function_exists('array_to_csv'))
         }
         ob_start();
         $f = fopen('php://output', 'w') or show_error("Can't open php://output");
-            $n = 0;
-        foreach ($array as $line)
+        $n = 0;
+         foreach ($array as $line)
         {
             foreach ($line as $row):
-            $n++;
-            if ( ! fputcsv($f, $row, "\t"))
-            {
-                show_error("Can't write line $n: $row");
-            }
+                $n++;
+                if ( ! fputcsv($f, $row, "\t"))
+                    {
+                    show_error("Can't write line $n: $row");
+                }
             endforeach;
         }
         fclose($f) or show_error("Can't close php://output");
@@ -102,6 +102,10 @@ if ( ! function_exists('query_to_csv'))
         }
 
         echo array_to_csv($array, $download);
+    }
+    function EscapeForCSV($value)
+    {
+        return '"' . str_replace('"', '""', $value) . '"';
     }
 }
 

@@ -136,24 +136,24 @@ class Distance extends ADMIN_Controller {
     }
 
     /**
-     *
-     * export Csv
-     * @param
-     * @return
-     *
-     */
+ *
+ * export Csv
+ * @param
+ * @return
+ *
+ */
     public function export() {
         if ($this->error_flg) return;
         try {
-            $limit=10;
+            $limit=1000;
             $count_distance=count($this->distance->get_list());
             $count_num=ceil($count_distance/$limit);
             for ($i=0;$i<$count_num; $i++)
             {
                 $offset=$i*$limit;
-                $data[]=$this->distance->get_list_distance($limit,$offset);
+                $data[]=$this->distance->export_csv($limit,$offset);
             }
-            array_unshift($data[0],array("id","距離コード","距離コード"));
+            array_unshift($data[0],array("距離コード","距離コード"));
             $this->load->helper('csv');
             array_to_csv($data, 'distance_'.date('Ymd').'.csv');
         }

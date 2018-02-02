@@ -136,6 +136,34 @@ class Subject extends ADMIN_Controller {
         }
     }
 
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=1000;
+            $count_subject=count($this->subject->get_list());
+            $count_num=ceil($count_subject/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->subject->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("科目コード","科目名"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'subject_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
 }
 
 /* End of file subject.php */

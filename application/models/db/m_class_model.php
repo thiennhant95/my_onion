@@ -30,12 +30,49 @@ class M_class_model extends DB_Model {
 
     function get_list_class($limit, $start)
     {
-        $sql = 'select m_class.id,m_class.course_id,m_class.class_code,m_class.class_name,m_class.invalid_flg,m_class.grade_manage_flg,m_class.week,m_class.max_count,m_class.use_bus_flg from m_class JOIN m_course ON m_class.course_id = m_course.id 
+        $sql = 'select m_class.id,m_class.course_id,m_class.class_code,m_class.class_name,m_class.invalid_flg,m_class.grade_manage_flg,m_class.week,m_class.max_count,m_class.use_bus_flg
+                from m_class JOIN m_course ON m_class.course_id = m_course.id 
                 where m_class.delete_flg = 0 
                 order by m_class.id ASC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         return $query->result_array();
     }
+
+    function export_csv($limit, $start)
+    {
+        global $data_class;
+        $sql = 'select m_course.short_course_name,m_class.base_class_sign,m_class.class_code,m_class.class_name,m_class.week,m_class.use_bus_flg,m_class.start_time,m_class.end_time,m_class.max_count
+                from m_class JOIN m_course ON m_class.course_id = m_course.id 
+                where m_class.delete_flg = 0 
+                order by m_class.id ASC 
+                limit ' . $start . ', ' . $limit;
+        $query = $this->db->query($sql);
+       $data=$query->result_array();
+        foreach ($data as $row):
+                $row['week']=explode(',',$row['week']);
+                if (in_array(SUNDAY,$row['week']))
+                    $day[]="日";
+                if (in_array(MONDAY,$row['week']))
+                    $day[]= "月";
+                if (in_array(TUESDAY,$row['week']))
+                    $day[]= "火";
+                if (in_array(WEDNESDAY,$row['week']))
+                    $day[]="水";
+                if (in_array(THURSDAY,$row['week']))
+                    $day[]= "木";
+                if (in_array(FRIDAY,$row['week']))
+                    $day[]= "金";
+                if (in_array(SATURDAY,$row['week']))
+                    $day[]="土";
+                 $row['week']=implode('、',$day);
+                 $row_class['week']=$row['week'];
+                 $row['use_bus_flg']==0?$row['use_bus_flg']='バス利用する':$row['use_bus_flg']='バス利用しない';
+                 $data_class[]=$row;
+                unset($day);
+        endforeach;
+        return $data_class;
+    }
+
 
 }

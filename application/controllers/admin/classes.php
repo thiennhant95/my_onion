@@ -123,6 +123,34 @@ class Classes extends ADMIN_Controller {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
+    /**
+     *
+     * export Csv
+     * @param
+     * @return
+     *
+     */
+    public function export() {
+        if ($this->error_flg) return;
+        try {
+            $limit=10;
+            $count_class=count($this->class->get_list());
+            $count_num=ceil($count_class/$limit);
+            for ($i=0;$i<$count_num; $i++)
+            {
+                $offset=$i*$limit;
+                $data[]=$this->class->export_csv($limit,$offset);
+            }
+            array_unshift($data[0],array("コース記号","クラス記号","クラスコード","クラス名","	授業曜日","開始時刻","バス利用フラグ","終了時刻","	定員"));
+            $this->load->helper('csv');
+            array_to_csv($data, 'class_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
 }
 
 /* End of file class.php */
