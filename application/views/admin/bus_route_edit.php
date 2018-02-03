@@ -66,19 +66,20 @@
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody>
-                  <?php
+                    <input type="hidden" id="route_order_hidden" class="form-control" name="bus_route_order" placeholder="">
+                    <tbody>
+                    <?php
                   if (count($bus_route_list)==0)
                   {
                       $i=0;
                       ?>
                       <tr>
                           <td>
-                              <input type="text" class="form-control"name="route_order[]" id="route_order_id" required placeholder="">
+                              <input type="text" id="route_oder[0]" class="form-control route-order"name="route_order[0]" required placeholder="" data_i="1">
+    <!--                              <input type="text" class="form-control"name="route_order[]" id="route_order_id" required placeholder="">-->
                           </td>
                           <td>
                               <select class="form-control" name="bus_stop_id[]" required>
-<!--                                  <option selected disabled>Choose one</option>-->
                                   <?php
                                   foreach ($bus_stop_list as $row_stop) {
                                       ?>
@@ -110,8 +111,8 @@
                               <td>
                                   <input type="hidden" class="form-control" name="route_id[]" id="route_id"
                                          value="<?php echo $row_route['id'] ?>">
-                                  <input type="text" class="form-control" name="route_order[]"
-                                         value="<?php echo $row_route['route_order'] ?>" required placeholder="">
+                                  <input type="text" class="form-control route-order" id="route_oder[<?php echo $i?>]" name="route_order[<?php echo $i?>]"
+                                         value="<?php echo $row_route['route_order'] ?>" required placeholder="" data_i=<?php echo $i+1 ?>>
                               </td>
                               <td>
                                   <select class="form-control" name="bus_stop_id[]">

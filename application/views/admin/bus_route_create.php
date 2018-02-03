@@ -66,14 +66,14 @@
                                     <th></th>
                                 </tr>
                                 </thead>
+                                <input type="hidden" id="route_order_hidden" class="form-control" name="bus_route_order" placeholder="">
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <input type="text" id="route_oder" class="form-control route-order"name="route_order[]" required placeholder="">
+                                            <input type="number" id="route_oder[0]" class="form-control route-order"name="route_order[0]" required placeholder="" data_i="1">
                                         </td>
                                         <td>
                                             <select class="form-control bus_stop_id" name="bus_stop_id[]" required>
-<!--                                                <option selected disabled>Choose one</option>-->
                                                 <?php
                                                 foreach ($bus_stop_list as $row_stop) {
                                                     ?>

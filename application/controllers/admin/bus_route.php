@@ -75,12 +75,17 @@ class Bus_route extends ADMIN_Controller {
                     $this->bus_course->update_by_id($dataUpdate);
                     //update bus route
                     $route_id =$this->input->post('route_id');
-                    $route_order =$this->input->post('route_order');
+                    $route_order =$this->input->post('bus_route_order');
+                    $route_order=explode(',',$route_order);
                     $bus_stop_id=$this->input->post('bus_stop_id');
+//                    print_r($route_order);
+//                    print_r($bus_stop_id);
+//                    print_r($route_id);
+//                    die();
                     $go_time=$this->input->post('go_time');
                     $ret_time=$this->input->post('ret_time');
 
-                      foreach ($route_order as $key=>$value)
+                      foreach ($route_id as $key=>$value)
                       {
                           //go time
                           $go_time[$key] = explode(':', $go_time[$key]);
@@ -160,7 +165,8 @@ class Bus_route extends ADMIN_Controller {
                     $id=$this->bus_course->get_last_insert_id();
 
                     //update bus route
-                    $route_order =$this->input->post('route_order');
+                    $route_order =$this->input->post('bus_route_order');
+                    $route_order=explode(',',$route_order);
                     $bus_stop_id=$this->input->post('bus_stop_id');
                     $go_time=$this->input->post('go_time');
                     $ret_time=$this->input->post('ret_time');

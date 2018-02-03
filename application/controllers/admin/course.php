@@ -262,7 +262,7 @@ class Course extends ADMIN_Controller {
                 $offset=$i*$limit;
                 $data[]=$this->course->export_csv($limit,$offset);
             }
-            array_unshift($data[0],array("コースコード","コース名","記号","会費","休会費","バス管理費","回数",""));
+            array_unshift($data[0],array("コースコード","コース名","記号","級管理フラグ","会費","休会費	","バス管理費","振替フラグ","練習回数","練習回数 週あたり/月あたり","コース種別","開催開始","開催終了","申込開始","申込終了","	泳力アンケート/参加条件","定員"));
             $this->load->helper('csv');
             array_to_csv($data, 'course_'.date('Ymd').'.csv');
         }

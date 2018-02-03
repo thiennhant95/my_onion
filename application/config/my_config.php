@@ -301,19 +301,31 @@ define('SEVEN',      7);
 define('EIGHT',      8);
 
 //month
+define('JANUARY',           1);
+define('FEBRUARY',          2);
+define('MARCH',             3);
+define('APRIL',             4);
+define('MAY',               5);
+define('JUNE',              6);
+define('JULY',              7);
+define('AUGUST',            8);
+define('SEPTEMBER',         9);
+define('OCTOBER',           10);
+define('NOVEMBER',          11);
+define('DECEMBER',          12);
 $config['month']=array(
-    'JANUARY'   =>'1',
-    'FEBRUARY'  =>'2',
-    'MARCH'     =>'3',
-    'APRIL'     =>'4',
-    'MAY'       =>'5',
-    'JUNE'      =>'6',
-    'JULY'      =>'7',
-    'AUGUST'    =>'8',
-    'SEPTEMBER' =>'9',
-    'OCTOBER'   =>'10',
-    'NOVEMBER'  =>'11',
-    'DECEMBER'  =>'12'
+    JANUARY   =>'1',
+    FEBRUARY  =>'2',
+    MARCH     =>'3',
+    APRIL     =>'4',
+    MAY       =>'5',
+    JUNE      =>'6',
+    JULY      =>'7',
+    AUGUST    =>'8',
+    SEPTEMBER =>'9',
+    OCTOBER   =>'10',
+    NOVEMBER  =>'11',
+    DECEMBER  =>'12'
 );
 
 //day
@@ -351,17 +363,5 @@ $config['day']=array(
     'DAY31'     =>'31',
 );
 
-//distance swinming
-$config['distance']=array(
-    '25m'=>'25m',
-    '50m'=>'50m',
-    '100m'=>'100m',
-    '200m'=>'200m',
-    '400m'=>'400m',
-    '800m'=>'800m',
-    '1500m'=>'1500m',
-    '3000m'=>'3000m',
-);
-//join_condition
 
 
