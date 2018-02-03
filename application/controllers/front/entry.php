@@ -6,6 +6,8 @@ class Entry extends FRONT_Controller {
         parent::__construct(); 
         $this->load->model('db/m_student_model','student_model');
         $this->load->model('db/l_student_meta_model', 'student_meta_model');
+        $this->load->model('db/m_course_model', 'm_course_model');
+        $this->load->model('db/l_student_course_model', 'l_student_course_model');
         $this->load->model('sendmail_model','send_mail');
     }
 
@@ -42,7 +44,7 @@ class Entry extends FRONT_Controller {
                     foreach ( $arr_insert as $key => $value ) {
                         $this->student_meta_model->insert(array('student_id' => $id_auto, 'tag' => $key, 'value' => $value));
                     }
-                    $this->send_mail_register($_POST['email_address'], $_POST['user_name'], $reg_token);
+                    // $this->send_mail_register($_POST['email_address'], $_POST['user_name'], $reg_token);
                     $data['insert'] = 'success';
                 }
                 echo json_encode($data);
@@ -68,9 +70,21 @@ class Entry extends FRONT_Controller {
                 $get_token = $_GET['token'];
                 $token = $this->student_meta_model->check_token( $get_token );
                 if ( count( $token ) != 1 ) {
-                    $this->viewVar['check_error'] = 'error';
+                    $data['check_error'] = 'error';
+                    $this->viewVar = $data;
                     front_layout_view('entry_questionnaire', $this->viewVar);
                 } else {
+                    $course = $this->m_course_model->select_all( 'm_course' );
+                    $course_type_0 = array();
+                    $course_type_1 = array();
+                    $course_type_2 = array();
+
+                    foreach ( $course as $key => $value ) {
+                        if ( $value['type'] == 0 ) $course_type_0[] = $value;
+                        if ( $value['type'] == 1 ) $course_type_1[] = $value;
+                        if ( $value['type'] == 2 ) $course_type_2[] = $value;
+                    }
+
                     $student_id = $token[0]['student_id'];
                     $email_address = $this->student_model->select_student_field( $student_id, 'email' );
                     $metas = $this->student_meta_model->select_student_metas( $student_id );
@@ -80,24 +94,27 @@ class Entry extends FRONT_Controller {
                     }
                     $data['email_address'] = $email_address[0]['email'];
                     $data['student_id'] = $student_id;
-                    // echo '<pre>'; print_r( $data ); echo '</pre>'; die();
-                    $this->viewVar['entry_questionnaire'] = $data;
-                    $this->viewVar['check_error'] = 'success';
+                    $data['course_type_0'] = $course_type_0;
+                    $data['course_type_1'] = $course_type_1;
+                    $data['course_type_2'] = $course_type_2;
+                    $data['check_error'] = 'success';
+                    $this->viewVar = $data;
                     front_layout_view('entry_questionnaire', $this->viewVar);
                 }
             } else {
-                $this->viewVar['check_error'] = 'error';
+                $data['check_error'] = 'error';
+                $this->viewVar = $data;
                 front_layout_view('entry_questionnaire', $this->viewVar);
             }
 
             if(isset($_POST['name_kana']) && isset($_POST['birthday']) && isset($_POST['sex']) && isset($_POST['course_type'])) {
-                $create_id = random_string( 'nozero', CREATE_ID_QUESTIONNAIRE_LENGTH);
                 $arr_insert_meta_required = array( 
                     'name_kana' =>$_POST['name_kana'], 
                     'birthday' => $_POST['birthday'], 
                     'sex' => $_POST['sex'], 
                     'course_type' => $_POST['course_type']
                 );
+                // update l_student_meta
                 foreach ( $arr_insert_meta_required as $key => $value ) {
                     $this->student_meta_model->insert(array('student_id' => $_POST['student_id'], 'tag' => $key, 'value' => $value));
                 }
@@ -110,6 +127,7 @@ class Entry extends FRONT_Controller {
                     'enquete' => isset( $_POST['enquete'] ) ? json_encode( $_POST['enquete'] ) : '',
                     'memo_to_coach' => isset( $_POST['memo_to_coach'] ) ? $_POST['memo_to_coach'] : ''
                 );
+                // update l_student_meta
                 foreach ( $arr_insert_meta as $key => $value ) {
                     if ( $value != '' ) {
                         $this->student_meta_model->insert(array('student_id' => $_POST['student_id'], 'tag' => $key, 'value' => $value));
@@ -118,10 +136,22 @@ class Entry extends FRONT_Controller {
                 $email_address = $this->student_model->select_student_field( $_POST['student_id'], 'email' );
                 $user_name = $this->student_meta_model->select_student_meta( $_POST['student_id'], 'name' );
                 $update_token = $this->student_meta_model->update_student_meta( $_POST['student_id'], 'token', random_string( 'alnum', REGISTER_TOKEN_LENGTH ) );
-                $update_student_info = $this->student_model->update_student_info( $_POST['student_id'], 'create_id', $create_id );
-                // $this->send_mail_questionnaire( $email_address[0]['email'], $user_name[0]['name'], $create_id );
+                // update l_student_course
+                $course_lesson = $_POST['course_lesson'];
+                $course = $this->m_course_model->select_by_id( $course_lesson, 'id', 'm_course' );
+                $this->l_student_course_model->insert( array( 'student_id' => $_POST['student_id'], 'course_id' => $course_lesson, 'start_date' => $course[0]['start_date'], 'end_date' => $course[0]['end_date'] ) );
+                // send mail
+                $today = date('Y-m-d');
+                $diff = date_diff(date_create($_POST['birthday']), date_create($today));
+                $parent_text = '';
+                if ( $diff->format('%y') >= 18 ) {
+                    $parent_text = '■重要■　成人のご入会者様にご案内
+                    ①ご来館前に、本人以外のご家族様に<a href="#">誓約書(要ｸﾘｯｸ)</a> の内容をご確認・同意をお願いします。
+                    ②<a href="#">ライフチェックシート(要ｸﾘｯｸ)</a>を印刷、ご記入いただき、ご来館時にご持参ください。(印刷できない場合は、窓口にてご記入頂けますが、必ず事前にご確認下さい)';
+                }
+                // $this->send_mail_questionnaire( $email_address[0]['email'], $user_name[0]['name'], $_POST['student_id'], $parent_text );
                 $data = array();
-                $data['create_id'] = $create_id;
+                $data['student_id'] = $_POST['student_id'];
                 $data['insert'] = 'success';
                 echo json_encode($data);
                 die();
@@ -131,7 +161,7 @@ class Entry extends FRONT_Controller {
         }
     }
 
-        /**
+    /**
      * Send mail register function
      *
      * @param   
@@ -163,10 +193,10 @@ class Entry extends FRONT_Controller {
      *
     */
 
-    public function send_mail_questionnaire($email_address, $user_name, $create_id)
+    public function send_mail_questionnaire($email_address, $user_name, $student_id, $parent_text)
     {
         $string = $this->get_template_send_mail( 'questionnaire' );
-        $macro = array('create_id' => $create_id, 'user_name' => $user_name);
+        $macro = array('student_id' => $student_id, 'user_name' => $user_name, 'parent_text' => $parent_text);
         foreach ($macro as $key => $value) {
             $string = str_replace("%{$key}%", $value, $string);
         }

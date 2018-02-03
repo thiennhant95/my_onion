@@ -15,7 +15,7 @@
           
           <div class="rounded-corners-1 mb-50">
             <h2 class="title-1 mb-20">新規お申込み</h2>
-            <form class="form-horizontal">
+            <form class="form-horizontal" id="entry-edit">
               <section>
                 <div class="panel panel-card">
                   <div class="panel-heading bg-midnight-Blue align-left pl-30">本日の初日会員一覧（2名）</div>
@@ -24,71 +24,19 @@
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">氏名</th>
                         <td class="bg-white table-border-none">
-                          <input class="form-control w-sm-50per w-xl-60per" value="" placeholder="" type="text">
+                          <input name="user_name" class="form-control w-sm-50per w-xl-60per" value="<?php echo $name; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">フリガナ</th>
                         <td class="bg-white table-border-none">
-                          <input class="form-control w-sm-50per w-xl-60per" value="" placeholder="" type="text">
+                          <input name="name_kana" class="form-control w-sm-50per w-xl-60per" value="<?php echo $name_kana; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">生年月日</th>
                         <td class="bg-white table-border-none">
-
-                          <select class="form-control select-type-2 w-xs-100per w-md-30per">
-                            <option value="">2000年</option>
-                          </select>
-
-                          <select class="form-control select-type-2 w-xs-100per w-md-30per">
-                            <option value="">1月</option>
-                            <option value="">2月</option>
-                            <option value="">3月</option>
-                            <option value="">4月</option>
-                            <option value="">5月</option>
-                            <option value="">6月</option>
-                            <option value="">7月</option>
-                            <option value="">8月</option>
-                            <option value="">9月</option>
-                            <option value="">10月</option>
-                            <option value="">11月</option>
-                            <option value="">12月</option>
-                          </select>
-
-                          <select class="form-control select-type-2 w-xs-100per w-md-30per">
-                            <option value="">1日</option>
-                            <option value="">2日</option>
-                            <option value="">3日</option>
-                            <option value="">4日</option>
-                            <option value="">5日</option>
-                            <option value="">6日</option>
-                            <option value="">7日</option>
-                            <option value="">8日</option>
-                            <option value="">9日</option>
-                            <option value="">10日</option>
-                            <option value="">11日</option>
-                            <option value="">12日</option>
-                            <option value="">13日</option>
-                            <option value="">14日</option>
-                            <option value="">15日</option>
-                            <option value="">16日</option>
-                            <option value="">17日</option>
-                            <option value="">18日</option>
-                            <option value="">19日</option>
-                            <option value="">20日</option>
-                            <option value="">21日</option>
-                            <option value="">22日</option>
-                            <option value="">23日</option>
-                            <option value="">24日</option>
-                            <option value="">25日</option>
-                            <option value="">26日</option>
-                            <option value="">27日</option>
-                            <option value="">28日</option>
-                            <option value="">29日</option>
-                            <option value="">30日</option>
-                            <option value="">31日</option>
-                          </select>
+                          <input name="birthday" class="form-control w-xs-100per w-md-30per" value="<?php echo date_format(date_create($birthday), 'Y-m-d'); ?>" readonly />
                         </td>
                       </tr>
                       <tr>
@@ -96,10 +44,10 @@
                         <td class="bg-white table-border-none">
                           <div class="col-sm-10 text-gray">
                             <label class="radio-inline">
-                              <input name="sex" value="" type="radio"> 男性
+                              <input name="sex" value="male" <?php if( $sex == 'male' ) echo 'checked'; ?> type="radio"> 男性
                             </label>
                             <label class="radio-inline">
-                              <input name="sex" value="" type="radio"> 女性
+                              <input name="sex" value="female" <?php if( $sex == 'female' ) echo 'checked'; ?> type="radio"> 女性
                             </label>
                           </div>
                         </td>
@@ -108,22 +56,26 @@
                         <th class="align-right table-border-none vertical-align-middle">郵便番号</th>
                         <td class="bg-white table-border-none">
                           <div class="row post-input">
+                            <?php
+                              $postal_code = explode('-', $zip);
+                            ?>
                             <div class="col-xs-6 col-md-3 postal-code-line postal-code-line-gray">
-                              <input class="form-control post-input-main" value="" placeholder="" type="number">
+                              <input name="postal_code1" class="form-control post-input-main" value="<?php echo $postal_code[0]; ?>" placeholder="" type="number">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                              <input class="form-control post-input-main" value="" placeholder="" type="number">
+                              <input name="postal_code2" class="form-control post-input-main" value="<?php echo $postal_code[1]; ?>" placeholder="" type="number">
                             </div>
                             <div class="col-xs-12 col-md-3">
-                              <a href="#0" class="btn btn-main">〒 住所に反映</a>
+                              <button type="button" onclick="AjaxZip3.zip2addr('postal_code1','postal_code2','address', 'address');" class="btn btn-main">〒 住所に反映</button>
                             </div>
                           </div>
+                          <div class="msg_postal_code"></div>
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">住所</th>
                         <td class="bg-white table-border-none">
-                          <input class="form-control w-xs-100per" value="" placeholder="" type="text">
+                          <input name="address" class="form-control w-xs-100per" value="<?php echo $address; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
@@ -131,10 +83,10 @@
                         <td class="bg-white table-border-none">
                           <div class="row">
                             <div class="col-sm-6">
-                              <input class="form-control w-xs-100per" value="" placeholder="" type="text">
+                              <input name="email_address" class="form-control w-xs-100per" value="<?php echo $email_address; ?>" placeholder="" type="text">
                             </div>
                             <div class="col-sm-6 text-gray">
-                              <input value="" type="checkbox"> メールアドレスなし
+                              <label><input name="email_flg" value="" type="checkbox"> メールアドレスなし</label>
                             </div>
                           </div>
                         </td>
@@ -142,13 +94,13 @@
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">電話番号</th>
                         <td class="bg-white table-border-none">
-                          <input class="form-control w-sm-50per w-xl-60per" value="" placeholder="" type="text">
+                          <input name="phone_number" class="form-control w-sm-50per w-xl-60per" value="<?php echo $tel; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none">緊急連絡先</th>
                         <td class="bg-white table-border-none">
-                          <input class="form-control w-sm-50per w-xl-60per" value="" placeholder="" type="text">
+                          <input name="emergency_tel" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset( $emergency_tel ) ? $emergency_tel : ''; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                     </table>
@@ -166,20 +118,24 @@
                       <tr>
                         <th class="align-right table-border-none">保護者氏名</th>
                         <td class="bg-white table-border-none">
-                          <input class="form-control w-sm-50per w-xl-60per" value="" placeholder="" type="text">
+                          <input name="parent_name" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset( $parent_name ) ? $parent_name : ''; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none">学校名</th>
                         <td class="bg-white table-border-none">
-                          <input class="form-control w-sm-50per w-xl-60per" value="" placeholder="" type="text">
+                          <input name="school_name" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset( $school_name ) ? $school_name : ''; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none">学年</th>
                         <td class="bg-white table-border-none">
-                          <select class="form-control w-xs-100per w-md-40per">
-                            <option value="">幼稚園</option>
+                          <select name="school_grade" class="form-control w-xs-100per w-md-40per">
+                            <?php
+                              foreach ( $school_grades as $key => $value ) {
+                                echo '<option value="' . $value . '">' . $value . '</option>';
+                              }
+                            ?>
                           </select>
                         </td>
                       </tr>
@@ -204,16 +160,26 @@
                         <th class="align-right bg-plae-lemmon text-gray table-border-none">コースコード<br><span style="font-size:11px">（スタッフ入力欄）</span></th>
                         <td class="bg-white table-border-none">
                           <select class="form-control w-xs-100per">
-                            <option value="">1341　ジュニア週2</option>
+                          <?php
+                            foreach( $courses as $key => $value ) {
+                              $selected = ( $value['id'] == $course_id ) ? 'selected' : '';
+                              echo '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['course_name'] . '</option>';
+                            }
+                          ?>
                           </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th></th>
+                        <td style="display:inline;">
+                          <div class="form-inline display_class"></div>
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none ">クラス早見表</th>
                         <td class="bg-white table-border-none">
-
                           <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-lg table-center">
+                            <table class="table table-bordered table-hover table-lg table-center" id="table-schedule">
                               <thead>
                                 <tr>
                                   <th>　</th>
@@ -227,163 +193,136 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr>
-                                  <td>火</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                </tr>
-                                <tr>
-                                  <td>水</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                </tr>
-                                <tr>
-                                  <td>木</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                </tr>
-                                <tr>
-                                  <td>金</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                </tr>
-                                <tr>
-                                  <td>土</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-plae-lemmon">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                </tr>
-                                <tr>
-                                  <td>　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                </tr>
-                                <tr>
-                                  <td>日</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                  <td class="bg-gainsboro">　</td>
-                                </tr>
+                                  <?php
+                                    $arr_loop = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
+                                    foreach ( $arr_loop as $k => $v ) {
+                                      $check_m = 0; $check_a = 0; $check_b = 0; $check_c = 0; $check_d = 0; $check_e = 0; $check_f = 0;
+                                      foreach ( $classes_week[$k] as $key => $value ) {
+                                        if ( strpos( $value['info'], '-M-' ) !== false ) { $check_m++; $arr_value_m = explode( '-', $value['info'] ); }
+                                        if ( strpos( $value['info'], '-A-' ) !== false ) { $check_a++; $arr_value_a = explode( '-', $value['info'] ); }
+                                        if ( strpos( $value['info'], '-B-' ) !== false ) { $check_b++; $arr_value_b = explode( '-', $value['info'] ); }
+                                        if ( strpos( $value['info'], '-C-' ) !== false ) { $check_c++; $arr_value_c = explode( '-', $value['info'] ); }
+                                        if ( strpos( $value['info'], '-D-' ) !== false ) { $check_d++; $arr_value_d = explode( '-', $value['info'] ); }
+                                        if ( strpos( $value['info'], '-E-' ) !== false ) { $check_e++; $arr_value_e = explode( '-', $value['info'] ); }
+                                        if ( strpos( $value['info'], '-F-' ) !== false ) { $check_f++; $arr_value_f = explode( '-', $value['info'] ); }
+                                      }
+                                      echo '<tr>';
+                                        echo '<td>' . $v . '</td>';
+                                        if ( $check_m == 0 ) echo '<td class="bg-gainsboro">　</td>'; else echo '<td class="bg-plae-lemmon" data-class="' . $arr_value_m[2] . '_week_' . $k . '">' . $arr_value_m[2] . '</td>';
+                                        if ( $check_a == 0 ) echo '<td class="bg-gainsboro">　</td>'; else echo '<td class="bg-plae-lemmon" data-class="' . $arr_value_a[2] . '_week_' . $k . '">' . $arr_value_a[2] . '</td>';
+                                        if ( $check_b == 0 ) echo '<td class="bg-gainsboro">　</td>'; else echo '<td class="bg-plae-lemmon" data-class="' . $arr_value_b[2] . '_week_' . $k . '">' . $arr_value_b[2] . '</td>';
+                                        if ( $check_c == 0 ) echo '<td class="bg-gainsboro">　</td>'; else echo '<td class="bg-plae-lemmon" data-class="' . $arr_value_c[2] . '_week_' . $k . '">' . $arr_value_c[2] . '</td>';
+                                        if ( $check_d == 0 ) echo '<td class="bg-gainsboro">　</td>'; else echo '<td class="bg-plae-lemmon" data-class="' . $arr_value_d[2] . '_week_' . $k . '">' . $arr_value_d[2] . '</td>';
+                                        if ( $check_e == 0 ) echo '<td class="bg-gainsboro">　</td>'; else echo '<td class="bg-plae-lemmon" data-class="' . $arr_value_e[2] . '_week_' . $k . '">' . $arr_value_e[2] . '</td>';
+                                        if ( $check_f == 0 ) echo '<td class="bg-gainsboro">　</td>'; else echo '<td class="bg-plae-lemmon" data-class="' . $arr_value_f[2] . '">' . $arr_value_f[2] . '</td>';
+                                      echo '</tr>';
+                                    }
+                                  ?>
                               </tbody>
                             </table>
                           </div>
                         </td>
                       </tr>
-
-                      <tr>
-                        <th class="align-right bg-plae-lemmon text-gray table-border-none">コースコード<br><span style="font-size:11px">（スタッフ入力欄）</span></th>
-                        <td class="bg-white table-border-none">
-                          <div class="row">
-                            <div class="col-xs-5">
-                              <select class="form-control w-xs-100per">
-                                <option value="">JD2</option>
-                              </select>
-                            </div>
-                            <div class="col-xs-5">
-                              <select class="form-control w-xs-100per">
-                                <option value="">JE3</option>
-                              </select>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-
                       <tr>
                         <th class="align-right table-border-none">申請時の泳力</th>
                         <td class="bg-white table-border-none pl-30">
                           <div class="row text-gray mb-15">
-                            <label class="radio-inline">
-                              <input name="level-manage" value="" type="radio"> 水に顔をつけることができ
-                            </label><br>
-                            <label class="radio-inline">
-                              <input name="level-manage" value="" type="radio"> 水に顔をつけることができない
-                            </label>
-                          </div>
-                          <div class="row text-gray mb-15">
+                          <?php $arr_enquete = json_decode( $enquete, true ); ?>
                             <div class="checkbox">
-                              <label>
-                                <input value="" type="checkbox"> 潜れる
-                              </label>　
-                              <label>
-                                <input value="" type="checkbox"> 浮かべる
+                              <label class="radio-inline">
+                                <input name="face_into_water" value="" type="checkbox" <?php if ( $arr_enquete['face_into_water'] == '1' ) echo 'checked'; ?>> 水に顔をつけることができ
+                              </label><br>
+                              <label class="radio-inline">
+                                <input name="not_face_into_water" value="" type="checkbox" <?php if ( $arr_enquete['not_face_into_water'] == '1' ) echo 'checked'; ?>> 水に顔をつけることができない
+                              </label><br>
+                              <label class="radio-inline">
+                                <input name="dive" value="" type="checkbox" <?php if ( $arr_enquete['dive'] == '1' ) echo 'checked'; ?>> 潜れる
+                              </label><br>
+                              <label class="radio-inline">
+                                <input name="float" value="" type="checkbox" <?php if ( $arr_enquete['float'] == '1' ) echo 'checked'; ?>> 浮かべる
                               </label>
                             </div>
                           </div>
-
+                         
                           <div class="row mb-15">
                             <table>
                               <tr>
                                 <td>バタ足</td>
                                 <td>
-                                  <select class="form-control w-xs-100per">
-                                    <option value="">25M</option>
+                                  <select name="flutter_kick" class="form-control w-xs-100per">
+                                    <?php 
+                                      $arr_m = array('0', '10', '25', '50', '100', '200', '300');
+                                      $selected = '';
+                                      foreach ( $arr_m as $key => $value ) {
+                                        $selected = ( $arr_enquete['style']['flutter_kick'] == $value ) ?  'selected' : '';
+                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
+                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      }
+                                    ?>
                                   </select>
                                 </td>
                                 <td class="pl-30">板キック</td>
                                 <td>
-                                  <select class="form-control w-xs-100per">
-                                    <option value="">25M</option>
+                                  <select name="board_kick" class="form-control w-xs-100per">
+                                    <?php 
+                                      foreach ( $arr_m as $key => $value ) {
+                                        $selected = ( $arr_enquete['style']['board_kick'] == $value ) ?  'selected' : '';
+                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
+                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      }
+                                    ?>
                                   </select>
                                 </td>
                               </tr>
                               <tr>
                                 <td>背泳ぎ</td>
                                 <td>
-                                  <select class="form-control w-xs-100per">
-                                    <option value="">25M</option>
+                                  <select name="backstroke" class="form-control w-xs-100per">
+                                    <?php
+                                      foreach ( $arr_m as $key => $value ) {
+                                        $selected = ( $arr_enquete['style']['backstroke'] == $value ) ?  'selected' : '';
+                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
+                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      }
+                                    ?>
                                   </select>
                                 </td>
                                 <td class="pl-30">クロール</td>
                                 <td>
-                                  <select class="form-control w-xs-100per">
-                                    <option value="">25M</option>
+                                  <select name="crawl" class="form-control w-xs-100per">
+                                    <?php
+                                      foreach ( $arr_m as $key => $value ) {
+                                        $selected = ( $arr_enquete['style']['crawl'] == $value ) ?  'selected' : '';
+                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
+                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      }
+                                    ?>
                                   </select>
                                 </td>
                               </tr>
                               <tr>
                                 <td>平泳ぎ</td>
                                 <td>
-                                  <select class="form-control w-xs-100per">
-                                    <option value="">25M</option>
+                                  <select name="breast_stroke" class="form-control w-xs-100per">
+                                    <?php 
+                                      foreach ( $arr_m as $key => $value ) {
+                                        $selected = ( $arr_enquete['style']['breast_stroke'] == $value ) ?  'selected' : '';
+                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
+                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      }
+                                    ?>
                                   </select>
                                 </td>
                                 <td class="pl-30">バタフライ</td>
                                 <td>
-                                  <select class="form-control w-xs-100per">
-                                    <option value="">25M</option>
+                                  <select name="butterfly" class="form-control w-xs-100per">
+                                    <?php
+                                      foreach ( $arr_m as $key => $value ) {
+                                        $selected = ( $arr_enquete['style']['butterfly'] == $value ) ?  'selected' : '';
+                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
+                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      }
+                                    ?>
                                   </select>
                                 </td>
                               </tr>
@@ -391,41 +330,37 @@
                           </div>
                           
                           <div class="row text-gray mb-15">
-                            備考　
-                              <input class="w-xs-75per" type="text" name="">
-                            
+                            備考　<input name="note" value="<?php echo $arr_enquete['style']['note'] ?>" class="form-control w-xs-75per" type="text">
                           </div>
 
                           <div class="row text-gray mb-15">
                             <div class="checkbox">
                               <label>
-                                <input value="" type="checkbox"> 無料体験に参加したことがある
+                                <input name="free_lesson" value="" type="checkbox" <?php if ( $arr_enquete['free_lesson'] == '1' ) echo 'checked'; ?>> 無料体験に参加したことがある
                               </label>
                             </div>
                             <div class="checkbox">
                               <label>
-                                <input value="" type="checkbox"> 短期水泳教室に参加したことがある
+                                <input name="short_lesson" value="" type="checkbox" <?php if ( $arr_enquete['short_lesson'] == '1' ) echo 'checked'; ?>> 短期水泳教室に参加したことがある
                               </label>
                             </div>
                             <div class="checkbox">
                               <label>
-                                <input value="" type="checkbox"> 当クラブまたは他クラブに通っていたことがある
+                                <input name="status" value="" type="checkbox" <?php if ( $arr_enquete['experience']['status'] == '1' ) echo 'checked'; ?>> 当クラブまたは他クラブに通っていたことがある
                               </label>
                             </div>
                           </div>
 
-
-
                           <div class="text-gray mb-15">
                             <div class="form-group row">
 
-                              クラブ名　<input class="w-xs-20per" type="text" name="">　
+                              クラブ名　<input name="club_name" value="<?php echo $arr_enquete['experience']['club_name']; ?>" class="form-control select-type-1 w-xs-20per" type="text">　
 
-                              <select class="form-control select-type-1 w-xs-20per">
+                              <select name="year" class="form-control select-type-1 w-xs-20per">
                                 <option value="">2000年</option>
                               </select> 年　
 
-                              <select class="form-control select-type-1 w-xs-20per">
+                              <select name="month" class="form-control select-type-1 w-xs-20per">
                                 <option value="">1月</option>
                                 <option value="">2月</option>
                                 <option value="">3月</option>
@@ -448,7 +383,7 @@
                       <tr>
                         <th class="align-right text-gray table-border-none">コーチへの<br>伝達事項</th>
                         <td class="bg-white table-border-none text-gray">
-                          <textarea name="" class="w-xs-100per" rows="1"></textarea>
+                          <textarea name="memo_to_coach" class="form-control w-xs-100per" rows="1"><?php echo isset( $memo_to_coach ) ? $memo_to_coach : ''; ?></textarea>
                         </td>
                       </tr>
 
@@ -456,13 +391,13 @@
                         <th class="align-right text-gray table-border-none">バスの利用</th>
                         <td class="bg-white table-border-none text-gray">
                           <div class="text-gray">
-                            <label class="radio-inline"><input name="level-manage" value="" type="radio"> する</label>　
-                            <label class="radio-inline"><input name="level-manage" value="" type="radio"> しない</label>
+                            <label class="radio-inline"><input name="bus_use_flg" value="0" <?php if ( isset( $bus_use_flg ) && $bus_use_flg == '0' ) echo 'checked'; ?> type="radio"> する</label>　
+                            <label class="radio-inline"><input name="bus_use_flg" value="1" <?php if ( isset( $bus_use_flg ) && $bus_use_flg == '1' ) echo 'checked'; ?> type="radio"> しない</label>
                           </div>
                           <div class="mb-15">
                             <table>
                               <tbody>
-                                <tr>
+                                <tr style="display:none;">
                                   <td>行き</td>
                                   <td>
                                     <select class="form-control w-xs-100per">
@@ -475,7 +410,7 @@
                                     </select>
                                   </td>
                                 </tr>
-                                <tr>
+                                <tr style="display:none;">
                                   <td>帰り</td>
                                   <td>
                                     <select class="form-control w-xs-100per">
@@ -497,7 +432,7 @@
                       <tr>
                         <th class="align-right text-gray table-border-none vertical-align-middle">IC カード番号</th>
                         <td class="bg-white table-border-none text-gray">
-                          <input class="w-xs-50per" name="" type="text">　
+                          <input name="iccard" class="form-control select-type-1 w-xs-50per" value="<?php echo isset( $iccard ) ? $iccard : ''; ?>" type="text">　
                           <a class="button-link-1 bg-deep-green" href="">最新読込カードIDを反映</a>
                         </td>
                       </tr>
@@ -507,7 +442,7 @@
                         <td class="bg-white table-border-none text-gray">
                             <div class="checkbox">
                               <label>
-                                <input value="" type="checkbox">
+                                <input name="life_check_flg" value="" type="checkbox" <?php if ( isset( $life_check_flg ) && $life_check_flg == '1' ) echo 'checked'; ?>>
                               </label>
                             </div>
                         </td>
@@ -516,68 +451,15 @@
                       <tr>
                         <th class="align-right text-gray table-border-none vertical-align-middle">初回レッスン日</th>
                         <td class="bg-white table-border-none">
-
-                          <select class="form-control select-type-1 w-xs-30per">
-                            <option value="">2000年</option>
-                          </select>
-
-                          <select class="form-control select-type-1 w-xs-30per">
-                            <option value="">1月</option>
-                            <option value="">2月</option>
-                            <option value="">3月</option>
-                            <option value="">4月</option>
-                            <option value="">5月</option>
-                            <option value="">6月</option>
-                            <option value="">7月</option>
-                            <option value="">8月</option>
-                            <option value="">9月</option>
-                            <option value="">10月</option>
-                            <option value="">11月</option>
-                            <option value="">12月</option>
-                          </select>
-
-                          <select class="form-control select-type-1 w-xs-30per">
-                            <option value="">1日</option>
-                            <option value="">2日</option>
-                            <option value="">3日</option>
-                            <option value="">4日</option>
-                            <option value="">5日</option>
-                            <option value="">6日</option>
-                            <option value="">7日</option>
-                            <option value="">8日</option>
-                            <option value="">9日</option>
-                            <option value="">10日</option>
-                            <option value="">11日</option>
-                            <option value="">12日</option>
-                            <option value="">13日</option>
-                            <option value="">14日</option>
-                            <option value="">15日</option>
-                            <option value="">16日</option>
-                            <option value="">17日</option>
-                            <option value="">18日</option>
-                            <option value="">19日</option>
-                            <option value="">20日</option>
-                            <option value="">21日</option>
-                            <option value="">22日</option>
-                            <option value="">23日</option>
-                            <option value="">24日</option>
-                            <option value="">25日</option>
-                            <option value="">26日</option>
-                            <option value="">27日</option>
-                            <option value="">28日</option>
-                            <option value="">29日</option>
-                            <option value="">30日</option>
-                            <option value="">31日</option>
-                          </select>
+                        <input name="first_lesson_date" class="form-control w-xs-30per" value="<?php echo isset( $first_lesson_date ) ? $first_lesson_date : ''; ?>" readonly />
                         </td>
                       </tr>
-
 
                       <tr>
                         <th class="align-right bg-plae-lemmon text-gray table-border-none">メモ・特記事項<br>
                         <span style="font-size:11px">（スタッフ用）</span></th>
                         <td class="bg-white table-border-none text-gray">
-                          <textarea name="" class="w-xs-100per" rows="1"></textarea>
+                          <textarea name="" class="form-control w-xs-100per" rows="1"></textarea>
                         </td>
                       </tr>
 
@@ -587,10 +469,10 @@
               </section>
 
               <div class="block-30 align-center">
-                <a href="#0" class="btn bg-light-blue btn-lg btn-long">
+                <button type="button" class="btn bg-light-blue btn-lg btn-long" id="btn-entry-edit">
                   <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                   <span id="button_entry_explain">誓約書へ</span>
-                </a>
+                </button>
               </div>
             </form>
           </div><!-- .rounded-corners-1 -->
@@ -738,6 +620,178 @@
 
 <script>
     $(function() {
+      $( "#table-schedule tr td" ).on( "click", function() {
+        if ( $(this).hasClass( 'bg-plae-lemmon' ) ) {
+          var _class = $(this).attr('data-class');
+          var _class_split = _class.split( '_week_' );
+          if ( $(this).hasClass( 'bg-rouge' ) ) {
+            $(this).removeClass( 'bg-rouge' );
+            $(this).text(_class_split[0]);
+            $(this).css('color', 'black');
+            $(".display_class").find('.each_class').each(function(){
+                if ( $(this).attr('data-class') == _class ) {
+                  $(this).remove();
+                }
+            });
+          } else {
+            $(this).addClass('bg-rouge');
+            $(this).text('選択');
+            $(this).css('color', 'white');
+            $('.display_class').append('<input type="text" data-class="' + _class + '" value="' + _class_split[0] + '" class="form-control w-xs-19per each_class" readonly>');
+          }
+        }
+      });
+
+      var options={
+        format: 'yyyy-mm-dd',
+        todayBtn: "linked",
+        todayHighlight: true,
+        autoclose: true,
+
+      };
+      $('input[name=birthday]').datepicker(options);
+      $('input[name=first_lesson_date]').datepicker(options);
+
+      $('#entry-edit input').on('keyup blur', function () {
+        if ($('#entry-edit').valid()) {
+          $('#btn-entry-edit').prop('disabled', false);
+        } else {
+          $('#btn-entry-edit').prop('disabled', 'disabled');
+        }
+      });
+      $('#entry-edit input').on('click', function () {
+        if ($('#entry-edit').valid()) {
+          $('#btn-entry-edit').prop('disabled', false);
+        } else {
+          $('#btn-entry-edit').prop('disabled', 'disabled');
+        }
+      });
+
+      jQuery.validator.addMethod("onebyte", function(value, element) {
+        return this.optional(element) || !/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/.test(value);
+      }, "Must be 1 byte character");
+
+      jQuery.validator.addMethod("twobyte", function(value, element) {
+        return this.optional(element) || /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/.test(value);
+      }, "Must be 2 byte character");
+
+      jQuery.validator.addMethod("katakana", function(value, element) {
+        return this.optional(element) || /[\u30A0-\u30FF]|\u203B/.test(value);
+      }, "Katakana string");
+
+      $("#entry-edit").validate({
+        rules: {
+          user_name: {
+              required: true,
+              twobyte: true
+          },
+          name_kana: { 
+            required: true,
+            katakana: true
+          },
+          postal_code1: {
+              required: true,
+              number: true
+          },
+          postal_code2: {
+              required: true,
+              number: true
+          },
+          address: { required: true },
+          phone_number: {
+              required: true,
+              number: true,
+              maxlength: 11,
+              onebyte: true
+          },
+          email_address: {
+              required: true,
+              email: true
+          },
+          school_name: {
+            required: function(element) {
+              var school_name_check = $('input[name=birthday]').val();
+              var school_name_return = moment().diff(moment(school_name_check, 'YYYYMMDD'), 'years');
+              return  school_name_return < 18;
+            },
+            twobyte: true
+          },
+          parent_name: { 
+            required: function(element) {
+              var parent_name_check = $('input[name=birthday]').val();
+              var parent_name_return = moment().diff(moment(parent_name_check, 'YYYYMMDD'), 'years');
+              return  parent_name_return < 18;
+            },
+            twobyte: true
+          },
+          school_grade: { 
+            required: function(element) {
+              var school_grade_check = $('input[name=birthday]').val();
+              var school_grade_return = moment().diff(moment(school_grade_check, 'YYYYMMDD'), 'years');
+              return  school_grade_return < 18;
+            }
+          }
+        },
+        groups: {
+            postal_code: "postal_code1 postal_code2"
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "postal_code1" || element.attr("name") == "postal_code2")
+                error.appendTo(".msg_postal_code");
+            else
+                error.insertAfter(element);
+        },
+        messages: {
+          user_name: {
+              required: "Username is required",
+              twobyte: "Username must be 2 byte"
+          },
+          name_kana: { 
+            required: "Name kana is required",
+            katakana: "Name must be katakana"
+          },
+          postal_code1: {
+              required: "Postal code is required",
+              number: "Postal code must be number 1 byte"
+          },
+          postal_code2: {
+              required: "Postal code is required",
+              number: "Postal code must be number 1 byte"
+          },
+          address: { required: "Address is required" },
+          phone_number: {
+              required: "Phone number is required",
+              number: "Phone number must be number",
+              maxlength: "Phone number length is 11",
+              onebyte: "Phone number is 1 byte"
+          },
+          email_address: {
+              required: "Email address is required",
+              email: "Email is invalid"
+          },
+          school_name: { 
+            required: "School name is required",
+            twobyte: "School name must be two byte"
+          },
+          parent_name: { 
+            required: "Parent name is required",
+            twobyte: "Parent name must be 2 byte"
+          },
+          school_grade: { required: "School grade is required" }
+        },
+        errorClass: "label label-danger",
+        highlight: function (element, errorClass, validClass) {
+            return false;
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            return false;
+        }
+    });
+
+
+
+
+
         entry_disp_view('#page_init');
 
         $('main#page_init').on('click', 'span#button_entry_explain', function(event) {

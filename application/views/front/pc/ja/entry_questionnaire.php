@@ -39,7 +39,7 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">ご氏名</label>
               <div class="col-sm-5">
-                <span class="form-send-confirm-display text-light"><?php echo $entry_questionnaire['name']; ?></span>
+                <span class="form-send-confirm-display text-light"><?php echo $name; ?></span>
               </div>
             </div>
 
@@ -54,17 +54,17 @@
               <label for="" class="col-xs-12 col-sm-2 control-label">生年月日</label>
               <div class="col-xs-3 col-sm-2">
                 <select class="form-control" name="year_of_birth">
-                  <option value="1997">1997年</option>
-                  <option value="1998">1998年</option>
-                  <option value="1999">1999年</option>
-                  <option value="2000">2000年</option>
-                  <option value="2001">2001年</option>
-                  <option value="2002">2002年</option>
-                  <option value="2003">2003年</option>
+                  <option value>----</option>
+                  <?php
+                    for ( $i = 1900; $i <= date( 'Y' ); $i++ ) {
+                      echo '<option value="' . $i . '">' . $i . '年</option>';
+                    }
+                  ?>
                 </select>
               </div>
               <div class="col-xs-3 col-sm-2">
                 <select class="form-control" name="month_of_birth">
+                  <option value>----</option>
                   <option value="01">1月</option>
                   <option value="02">2月</option>
                   <option value="03">3月</option>
@@ -81,6 +81,7 @@
               </div>
               <div class="col-xs-3 col-sm-2">
                 <select class="form-control" name="day_of_birth">
+                  <option value>----</option>
                   <option value="01">1日</option>
                   <option value="02">2日</option>
                   <option value="03">3日</option>
@@ -138,7 +139,7 @@
               <label for="" class="col-sm-2 control-label">ご住所</label>
               <div class="col-sm-8">
                 <p class="form-send-confirm-text text-light">
-                  <strong><?php echo '〒' . $entry_questionnaire['zip'] . '　' . $entry_questionnaire['address']; ?></strong>
+                  <strong><?php echo '〒' . $zip . '　' . $address; ?></strong>
                 </p>
               </div>
             </div>
@@ -147,7 +148,7 @@
               <label for="" class="col-sm-2 control-label">電話番号</label>
               <div class="col-sm-5">
                 <p class="form-send-confirm-text text-light">
-                  <strong><?php echo $entry_questionnaire['tel']; ?></strong>
+                  <strong><?php echo $tel; ?></strong>
                 </p>
               </div>
             </div>
@@ -156,7 +157,7 @@
               <label for="" class="col-sm-2 control-label">メールアドレス</label>
               <div class="col-sm-5">
                 <p class="form-send-confirm-text text-light">
-                  <strong><?php echo $entry_questionnaire['email_address']; ?></strong>
+                  <strong><?php echo $email_address; ?></strong>
                 </p>
               </div>
             </div>
@@ -187,9 +188,22 @@
                     </div>
                     <div class="form-group">
                       <label for="" class="col-sm-2 control-label">学年</label>
-                      <div class="col-sm-10">
-                        <input type="text" name="school_grade" class="form-control" value="" placeholder="">
+                      <div class="col-sm-3">
+                        <select class="form-control" name="school_grade">
+                          <option value>----</option>
+                          <option value="幼稚園">幼稚園</option>
+                          <option value="小学1年～6年生">小学1年～6年生</option>
+                          <option value="中学1年～3年生">中学1年～3年生</option>
+                          <option value="高校1年～3年生">高校1年～3年生</option>
+                          <option value="専門学校・高専">専門学校・高専</option>
+                          <option value="大学生">大学生</option>
+                        </select>
                       </div>
+                    </div>
+                    <div class="form-group" style="float:right;padding-right:15px;">
+                      <input type="checkbox" name="check_parent" value="" /><br />
+                      <label>同意の場合、チェック入れてくください↑</label><br />
+                      <label class="msg_check_parent"></label>
                     </div>
                   </div>
                 </div>
@@ -228,134 +242,136 @@
                 <div class="block-15">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="swim_skill_1" value=""> 水に顔をつけることができない
+                      <input type="checkbox" name="face_into_water" value=""> 水に顔をつけることができない
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="swim_skill_2" value=""> 水に顔をつけることができる
+                      <input type="checkbox" name="not_face_into_water" value=""> 水に顔をつけることができる
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="swim_skill_3" value=""> 潜れる
+                      <input type="checkbox" name="dive" value=""> 潜れる
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="swim_skill_4" value=""> 浮かべる
+                      <input type="checkbox" name="float" value=""> 浮かべる
                     </label>
                   </div>
                   <div class="row block-15">
                     <div class="col-xs-6 col-sm-4">
                       <label for="" class=" control-label">バタ足</label>
-                      <select name="swim_skill_5" class="form-control">
-                        <option value="0">0m</option>
-                        <option value="10">10m</option>
-                        <option value="25">25m</option>
-                        <option value="50">50m</option>
-                        <option value="100">100m</option>
-                        <option value="200">200m</option>
-                        <option value="300">300m以上</option>
+                      <select name="flutter_kick" class="form-control">
+                        <option value="0">0M</option>
+                        <option value="10">10M</option>
+                        <option value="25">25M</option>
+                        <option value="50">50M</option>
+                        <option value="100">100M</option>
+                        <option value="200">200M</option>
+                        <option value="300">300M以上</option>
                       </select>
                     </div>
                     <div class="col-xs-6 col-sm-4">
                       <label for="" class=" control-label">板キック</label>
-                      <select name="swim_skill_6" class="form-control">
+                      <select name="board_kick" class="form-control">
                         <option value="0">0m</option>
-                        <option value="10">10m</option>
-                        <option value="25">25m</option>
-                        <option value="50">50m</option>
-                        <option value="100">100m</option>
-                        <option value="200">200m</option>
-                        <option value="300">300m以上</option>
+                        <option value="10">10M</option>
+                        <option value="25">25M</option>
+                        <option value="50">50M</option>
+                        <option value="100">100M</option>
+                        <option value="200">200M</option>
+                        <option value="300">300M以上</option>
                       </select>
                     </div>
                     <div class="col-xs-6 col-sm-4">
                       <label for="" class=" control-label">背泳ぎ</label>
-                      <select name="swim_skill_7" class="form-control">
-                        <option value="0">0m</option>
-                        <option value="10">10m</option>
-                        <option value="25">25m</option>
-                        <option value="50">50m</option>
-                        <option value="100">100m</option>
-                        <option value="200">200m</option>
-                        <option value="300">300m以上</option>
+                      <select name="backstroke" class="form-control">
+                        <option value="0">0M</option>
+                        <option value="10">10M</option>
+                        <option value="25">25M</option>
+                        <option value="50">50M</option>
+                        <option value="100">100M</option>
+                        <option value="200">200M</option>
+                        <option value="300">300M以上</option>
                       </select>
                     </div>
                     <div class="col-xs-6 col-sm-4">
                       <label for="" class=" control-label">クロール</label>
-                      <select name="swim_skill_8" class="form-control">
+                      <select name="crawl" class="form-control">
                         <option value="0">0m</option>
-                        <option value="10">10m</option>
-                        <option value="25">25m</option>
-                        <option value="50">50m</option>
-                        <option value="100">100m</option>
-                        <option value="200">200m</option>
-                        <option value="300">300m以上</option>
+                        <option value="10">10M</option>
+                        <option value="25">25M</option>
+                        <option value="50">50M</option>
+                        <option value="100">100M</option>
+                        <option value="200">200M</option>
+                        <option value="300">300M以上</option>
                       </select>
                     </div>
                     <div class="col-xs-6 col-sm-4">
                       <label for="" class=" control-label">平泳ぎ</label>
-                      <select name="swim_skill_9" class="form-control">
-                        <option value="0">0m</option>
-                        <option value="10">10m</option>
-                        <option value="25">25m</option>
-                        <option value="50">50m</option>
-                        <option value="100">100m</option>
-                        <option value="200">200m</option>
-                        <option value="300">300m以上</option>
+                      <select name="breast_stroke" class="form-control">
+                        <option value="0">0M</option>
+                        <option value="10">10M</option>
+                        <option value="25">25M</option>
+                        <option value="50">50M</option>
+                        <option value="100">100M</option>
+                        <option value="200">200M</option>
+                        <option value="300">300M以上</option>
                       </select>
                     </div>
                     <div class="col-xs-6 col-sm-4">
                       <label for="" class=" control-label">バタフライ</label>
-                      <select name="swim_skill_10" class="form-control">
-                        <option value="0">0m</option>
-                        <option value="10">10m</option>
-                        <option value="25">25m</option>
-                        <option value="50">50m</option>
-                        <option value="100">100m</option>
-                        <option value="200">200m</option>
-                        <option value="300">300m以上</option>
+                      <select name="butterfly" class="form-control">
+                        <option value="0">0M</option>
+                        <option value="10">10M</option>
+                        <option value="25">25M</option>
+                        <option value="50">50M</option>
+                        <option value="100">100M</option>
+                        <option value="200">200M</option>
+                        <option value="300">300M以上</option>
                       </select>
                     </div>
                     <div class="col-xs-12">
                       <label for="" class="control-label">備考</label>
-                      <input type="text" name="swim_skill_11" maxlength="256" class="form-control" value="" placeholder="">
+                      <input type="text" name="note" maxlength="256" class="form-control" value="" placeholder="">
                     </div>
                   </div>
 
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="swim_skill_12" value=""> 無料体験に参加をしたことがある
+                      <input type="checkbox" name="free_lesson" value=""> 無料体験に参加をしたことがある
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="swim_skill_13" value=""> 短期水泳教室に参加をしたことがある
+                      <input type="checkbox" name="short_lesson" value=""> 短期水泳教室に参加をしたことがある
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="swim_skill_14" value=""> 当クラブまたは他クラブに通っていたことがある
+                      <input type="checkbox" name="status" value=""> 当クラブまたは他クラブに通っていたことがある
                     </label>
                   </div>
 
                   <div class="row block-15">
                     <div class="col-sm-6">
                       <label for="" class="control-label">クラブ名</label>
-                      <input type="text" name="swim_skill_15" maxlength="64" class="form-control" value="" placeholder="">
+                      <input type="text" name="club_name" maxlength="64" class="form-control" value="" placeholder="">
                     </div>
                     <div class="col-sm-6">
                       <label for="" class="control-label">退会</label>
                       <div class="row">
                         <div class="col-xs-6">
-                          <select name="swim_skill_16" class="form-control">
+                          <select name="year" class="form-control">
+                            <option value>----</option>
                             <option value="2000">2000年</option>
                           </select>
                         </div>
                         <div class="col-xs-6">
-                          <select name="swim_skill_17" class="form-control">
+                          <select name="month" class="form-control">
+                            <option value>----</option>
                             <option value="1">1月</option>
                             <option value="2">2月</option>
                             <option value="3">3月</option>
@@ -392,14 +408,13 @@
                   </div>
                   <div class="col-sm-9">
                     <div class="row">
-                      <div class="col-xs-5 col-sm-4">
-                        <select class="form-control">
-                          <option value="">ジュニア</option>
-                        </select>
-                      </div>
-                      <div class="col-xs-5 col-sm-4">
-                        <select class="form-control">
-                          <option value="">週2回</option>
+                      <div class="col-xs-10 col-sm-8">
+                        <select class="form-control" name="course_type_0">
+                        <?php
+                          foreach ( $course_type_0 as $key => $value ) {
+                            echo '<option value="' . $value['id'] . '">' . $value['course_name'] . '(' . date_format( date_create( $value['start_date'] ), 'm/d' ) . '～' . date_format( date_create( $value['end_date'] ), 'm/d' ) . ')</option>';
+                          }
+                        ?>
                         </select>
                       </div>
                     </div>
@@ -421,8 +436,12 @@
                   <div class="col-sm-9">
                     <div class="row">
                       <div class="col-xs-10 col-sm-8">
-                        <select class="form-control">
-                          <option value="">春の短期水泳教室(3/25～29)</option>
+                        <select class="form-control" name="course_type_1">
+                          <?php
+                            foreach ( $course_type_1 as $key => $value ) {
+                              echo '<option value="' . $value['id'] . '">' . $value['course_name'] . '(' . date_format( date_create( $value['start_date'] ), 'm/d' ) . '～' . date_format( date_create( $value['end_date'] ), 'm/d' ) . ')</option>';
+                            }
+                          ?>
                         </select>
                       </div>
                     </div>
@@ -443,8 +462,12 @@
                   <div class="col-sm-9">
                     <div class="row">
                       <div class="col-xs-5 col-sm-4">
-                        <select class="form-control">
-                          <option value="">ジュニア　</option>
+                        <select class="form-control" name="course_type_2">
+                          <?php
+                            foreach ( $course_type_2 as $key => $value ) {
+                              echo '<option value="' . $value['id'] . '">' . $value['course_name'] . '</option>';
+                            }
+                          ?>
                         </select>
                       </div>
                     </div>
@@ -474,12 +497,48 @@
         </div>
         <div class="panel-footer text-center">
           <div class="block-30">
-            <button class="btn btn-success btn-lg btn-long" id="questionnaire-btn">
+            <button class="btn btn-success btn-lg btn-long" id="confirm-btn" data-toggle="modal" data-target="#modal-confirm">
               <i class="fa fa-angle-double-right" aria-hidden="true"></i>
               <span id="confirm">送信内容を確認</span>
             </button>
           </div>
         </div>
+
+        <div class="modal fade" id="modal-confirm" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirm register</h4>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure to register?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="questionnaire-btn">Register</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="modal-error" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Error</h4>
+              </div>
+              <div class="modal-body">
+                <p>Đã xảy ra lỗi, vui lòng thử lại</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="block-30 text-center">
@@ -494,7 +553,7 @@
   </main>
 
 
-  <main id="page_complete" class="content content-dark">
+  <main id="page_complete" class="content content-dark" style="display:block !important;">
     <div class="container">
 
       <ol class="step-bar">
@@ -537,6 +596,13 @@
               <span>受付までお申し出ください。</span>
             </strong>
           </div>
+          <div class="text-left parent-text" style="padding: 0 25% 0 25%;display:none;">
+            <strong>
+              <span>■重要■　成人のご入会者様にご案内</span><br />
+              <span>①ご来館前に、本人以外のご家族様に<a href="#">誓約書(要ｸﾘｯｸ)</a> の内容をご確認・同意をお願いします。</span><br />
+                <span>②<a href="#">ライフチェックシート(要ｸﾘｯｸ)</a>を印刷、ご記入いただき、ご来館時にご持参ください。(印刷できない場合は、窓口にてご記入頂けますが、必ず事前にご確認下さい)</span>
+            </strong>
+          </div>
         </div>
       </div>
 
@@ -546,7 +612,7 @@
           <span>TOPへ戻る</span>
         </a>
       </div>
-      <input type="hidden" name="student_id" value="<?php echo $entry_questionnaire['student_id']; ?>" />
+      <input type="hidden" name="student_id" value="<?php echo $student_id; ?>" />
     </div>
   </main>
 
@@ -570,33 +636,33 @@
     }, "Must be 2 byte character");
 
     $('#page_complete').css('display','none');
-    $('#questionnaire-btn').prop('disabled', 'disabled');
+    $('#confirm-btn').prop('disabled', 'disabled');
     $('#questionnaire select').on('change', function () {
         if ($('#questionnaire').valid()) {
-          $('#questionnaire-btn').prop('disabled', false);
+          $('#confirm-btn').prop('disabled', false);
         } else {
-          $('#questionnaire-btn').prop('disabled', 'disabled');
+          $('#confirm-btn').prop('disabled', 'disabled');
         }
     });
     $('#questionnaire input').on('click', function () {
         if ($('#questionnaire').valid()) {
-          $('#questionnaire-btn').prop('disabled', false);
+          $('#confirm-btn').prop('disabled', false);
         } else {
-          $('#questionnaire-btn').prop('disabled', 'disabled');
+          $('#confirm-btn').prop('disabled', 'disabled');
         }
     });
     $('#questionnaire input').on('keyup blur', function () {
         if ($('#questionnaire').valid()) {
-          $('#questionnaire-btn').prop('disabled', false);
+          $('#confirm-btn').prop('disabled', false);
         } else {
-          $('#questionnaire-btn').prop('disabled', 'disabled');
+          $('#confirm-btn').prop('disabled', 'disabled');
         }
     });
     $('#questionnaire textarea').on('click', function () {
         if ($('#questionnaire').valid()) {
-          $('#questionnaire-btn').prop('disabled', false);
+          $('#confirm-btn').prop('disabled', false);
         } else {
-          $('#questionnaire-btn').prop('disabled', 'disabled');
+          $('#confirm-btn').prop('disabled', 'disabled');
         }
     });
     $("#questionnaire").validate({
@@ -636,6 +702,13 @@
               return  school_grade_return < 18;
             }
           },
+          check_parent: { 
+            required: function(element) {
+              var school_check_parent = $('select[name=year_of_birth]').val() + $('select[name=month_of_birth]').val() + $('select[name=day_of_birth]').val();
+              var school_check_parent_return = moment().diff(moment(school_check_parent, 'YYYYMMDD'), 'years');
+              return  school_check_parent_return < 18;
+            }
+          },
           course_type: { required: true }
       },
       groups: {
@@ -648,6 +721,8 @@
           error.appendTo('.msg_birthday');
         else if ( element.attr('name') == 'course_type' )
           error.appendTo('.msg_course_type');
+        else if ( element.attr('name') == 'check_parent' )
+          error.appendTo('.msg_check_parent');
         else
           error.insertAfter(element);
       },
@@ -673,6 +748,7 @@
             twobyte: "Parent name must be 2 byte"
           },
           school_grade: { required: "School grade is required" },
+          check_parent: { required: "Input check is required" },
           course_type: { required: "Course type is required" }
       },
       errorClass: "label label-danger",
@@ -686,28 +762,28 @@
 
     $('#questionnaire-btn').click(function() {
       var name_kana = $('input[name=name_kana]').val();
-      var birthday = $('select[name=year_of_birth]').val() + $('select[name=month_of_birth]').val() + $('select[name=day_of_birth]').val();
+      var birthday = $('select[name=year_of_birth] option:selected').val() + $('select[name=month_of_birth] option:selected').val() + $('select[name=day_of_birth] option:selected').val();
       var sex = $('input[name=sex]').val();
       var emergency_tel = $('input[name=emergency_tel]').val();
       var school_name = $('input[name=school_name]').val();
       var parent_name = $('input[name=parent_name]').val();
-      var school_grade = $('input[name=school_grade]').val();
+      var school_grade = $('select[name=school_grade] option:selected').val();
       var bus_use_flg = "";
       if( $('input[name=bus_use_flg]').is(':checked') ) bus_use_flg = $('input[name=bus_use_flg]:checked').val();
       var face_into_water = 0;
       var not_face_into_water = 0;
       var dive = 0;
       var float = 0;
-      if ( $('input[name=swim_skill_1]').is(":checked") ) face_into_water = 1;
-      if ( $('input[name=swim_skill_2]').is(":checked") ) not_face_into_water = 1;
-      if ( $('input[name=swim_skill_3]').is(":checked") ) dive = 1;
-      if ( $('input[name=swim_skill_4]').is(":checked") ) float = 1;
+      if ( $('input[name=face_into_water]').is(":checked") ) face_into_water = 1;
+      if ( $('input[name=not_face_into_water]').is(":checked") ) not_face_into_water = 1;
+      if ( $('input[name=dive]').is(":checked") ) dive = 1;
+      if ( $('input[name=float]').is(":checked") ) float = 1;
       var free_lesson = 0;
       var short_lesson = 0;
       var status = 0;
-      if ( $('input[name=swim_skill_12]').is(":checked") ) free_lesson = 1;
-      if ( $('input[name=swim_skill_13]').is(":checked") ) short_lesson = 1;
-      if ( $('input[name=swim_skill_14]').is(":checked") ) status = 1;
+      if ( $('input[name=free_lesson]').is(":checked") ) free_lesson = 1;
+      if ( $('input[name=short_lesson]').is(":checked") ) short_lesson = 1;
+      if ( $('input[name=status]').is(":checked") ) status = 1;
 
       var enquete = {
         "face_into_water": face_into_water,
@@ -715,52 +791,82 @@
         "dive": dive,
         "float": float,
         "style": {
-          "flutter_kick": $('select[name=swim_skill_5]').val(),
-          "board_kick": $('select[name=swim_skill_6]').val(),
-          "backstroke": $('select[name=swim_skill_7]').val(),
-          "crawl": $('select[name=swim_skill_8]').val(),
-          "breast_stroke": $('select[name=swim_skill_9]').val(),
-          "butterfly": $('select[name=swim_skill_10]').val(),
-          "note": $('input[name=swim_skill_11]').val()
+          "flutter_kick": $('select[name=flutter_kick]').val(),
+          "board_kick": $('select[name=board_kick]').val(),
+          "backstroke": $('select[name=backstroke]').val(),
+          "crawl": $('select[name=crawl]').val(),
+          "breast_stroke": $('select[name=breast_stroke]').val(),
+          "butterfly": $('select[name=butterfly]').val(),
+          "note": $('input[name=note]').val()
         },
         "free_lesson": free_lesson,
         "short_lesson": short_lesson,
         "experience": {
           "status": status,
-          "club_name": $('input[name=swim_skill_15]').val(),
-          "year": $('select[name=swim_skill_16]').val(),
-          "month": $('select[name=swim_skill_17]').val(),
+          "club_name": $('input[name=club_name]').val(),
+          "year": $('select[name=year]').val(),
+          "month": $('select[name=month]').val(),
         }
       }
       var course_type = $( 'input[name=course_type]:checked' ).val();
+      var course_lesson = '';
+      if ( course_type == 0 ) course_lesson = $( 'select[name=course_type_0] option:selected' ).val();
+      if ( course_type == 1 ) course_lesson = $( 'select[name=course_type_1] option:selected' ).val();
+      if ( course_type == 2 ) course_lesson = $( 'select[name=course_type_2] option:selected' ).val();
+
       var memo_to_coach = $( 'textarea[name=memo_to_coach]' ).val();
       var student_id = $( 'input[name=student_id]' ).val();
-      $.ajax({
-        url: 'https:' + "<?php echo base_url().'entry/questionnaire'?>",
-        data: { 
-          name_kana : name_kana,
-          birthday : birthday,
-          sex : sex,
-          emergency_tel : emergency_tel,
-          school_name : school_name,
-          parent_name : parent_name,
-          school_grade : school_grade,
-          bus_use_flg : bus_use_flg,
-          enquete : enquete,
-          course_type : course_type,
-          memo_to_coach : memo_to_coach,
-          student_id : student_id
-        },
-        method: "POST",
-        dataType: "json",
-        success: function(result) {
-          $('.form-send-confirm-display strong').text(result['create_id']);
-          $('#page_init').css('display','none');
-          $('#page_complete').css('display','block');
-        }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log('error');
-        }
-      });
+
+      var data = { 
+            name_kana : name_kana,
+            birthday : birthday,
+            sex : sex,
+            emergency_tel : emergency_tel,
+            school_name : school_name,
+            parent_name : parent_name,
+            school_grade : school_grade,
+            bus_use_flg : bus_use_flg,
+            enquete : enquete,
+            course_type : course_type,
+            course_lesson : course_lesson,
+            memo_to_coach : memo_to_coach,
+            student_id : student_id
+          }
+          console.log( data );
+
+      var birthday_check = moment().diff(moment(birthday, 'YYYYMMDD'), 'years');
+      if ( name_kana != '' && birthday != '' && course_type != '' ) {
+        $.ajax({
+          url: 'https:' + "<?php echo base_url().'entry/questionnaire'?>",
+          data: { 
+            name_kana : name_kana,
+            birthday : birthday,
+            sex : sex,
+            emergency_tel : emergency_tel,
+            school_name : school_name,
+            parent_name : parent_name,
+            school_grade : school_grade,
+            bus_use_flg : bus_use_flg,
+            enquete : enquete,
+            course_type : course_type,
+            course_lesson : course_lesson,
+            memo_to_coach : memo_to_coach,
+            student_id : student_id
+          },
+          method: "POST",
+          dataType: "json",
+          success: function(result) {
+            $('.form-send-confirm-display strong').text(result['student_id']);
+            $('#page_init').css('display','none');
+            $('#page_complete').css('display','block');
+            if ( birthday_check >= 18 ) $('.parent-text').css('display', 'block');
+          }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log('error');
+          }
+        });
+      } else {
+        $('#modal-error').modal( 'show' );
+      }
     });
   });
 </script>
