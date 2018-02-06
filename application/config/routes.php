@@ -57,6 +57,5 @@ $route['batch/(:any)'] = "batch/$1";
 // その他
 $route['(:any)'] = "front/$1";  // この行は最後に書くこと
 
-
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <?php require_once("head.php"); ?>
 </head>
@@ -10,9 +9,7 @@
 
   <main class="content content-dark">
     <div class="container">
-
       <h1 class="lead-heading lead-heading-icon-calender bg-main h3">欠席･振替申請</h1>
-
       <section>
         <div class="panel panel-dotted">
           <div class="panel-heading">ジュニアコース 週1回</div>
@@ -25,33 +22,33 @@
               </div>
             </div>
 
-            <div class="block-15">
+            <!-- <div class="block-15">
               <div class="row calender-caption align-items-center">
                 <div class="col-xs-12 col-sm-4 text-left">
                   <a class="btn btn-success" href="#0">
                     <i class="fa fa-angle-double-left"></i>
-                    <span>8月</span>
+                    <span>2月</span>
                   </a>
                 </div>
                 <div class="col-xs-12 col-sm-4 text-center">
                   <p class="lead mb-0">
                     <strong class="text-break">
-                      <span>2017年</span>
-                      <span>9月</span>
+                      <span>2015年</span>
+                      <span>8月</span>
                     </strong>
                   </p>
                 </div>
                 <div class="col-xs-12 col-sm-4 text-right">
                   <a class="btn btn-success" href="#0">
-                    <span>10月</span>
+                    <span>3月</span>
                     <i class="fa fa-angle-double-right"></i>
                   </a>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <div class="block-15">
-              <table class="calendar">
+              <!-- <table class="calendar">
                 <tr class="weekdays">
                   <th scope="col">日</th>
                   <th scope="col">月</th>
@@ -207,7 +204,8 @@
                     <div class="date sat">6</div>
                   </td>
                 </tr>
-              </table>
+              </table> -->
+              <div id='calendar'></div>
             </div>
 
             <div class="text-center">
@@ -227,7 +225,6 @@
           </div>
         </div>
       </section>
-
       <!-- モーダルサンプル表示用リンク -->
       <div class="container">
         <h5>
@@ -260,7 +257,6 @@
           </li>
         </ul>
       </div>
-
       <!-- Modal: お休み／振替予定設定 -->
       <section class="modal fade" id="modalTransfer" tabindex="-1" role="dialog" aria-labelledby="modalTransfer">
         <div class="modal-dialog" role="document">
@@ -576,8 +572,160 @@
 
     </div>
   </main>
+  <script>
+    $(document).ready(function () {
 
+      var initialLocaleCode = 'ja';
+
+      function fmt(date) {
+        return date.format("YYYY-MM-DD HH:mm");
+      }
+      function format_month(date){
+        return date.format('M');
+      }
+      function format_year(date){
+        return date.format('YYYY');
+      }
+
+      function get_prev_month() {
+        
+        var current_month_tmp = $('#calendar').fullCalendar('getDate').format('M');
+        var last_month_tmp = current_month_tmp - 1;
+        var next_month_tmp = (+current_month_tmp == 12) ? '' : (+current_month_tmp + 1);
+
+        if(last_month_tmp == 0){
+          $('.fc-pre_event-button').html('< Last year');
+        }else{
+          $('.fc-pre_event-button').html('< ' + last_month_tmp + '月');
+        }
+        
+        if(next_month_tmp == ''){
+          $('.fc-next_event-button').html('Next year >');
+        }else{
+          $('.fc-next_event-button').html(next_month_tmp + '月' + ' >');
+        }
+
+      }
+
+      var date = new Date();
+      var d = date.getDate();
+      var m = date.getMonth();
+      var y = date.getFullYear();
+      var last_month = (m - 1) <= 0 ? 'Last Year' : (m - 1);
+      var next_month = (m == 12) ? 'Next Year' : (m + 2);
+      
+      var calendar = $('#calendar').fullCalendar({
+        editable: true,
+        locale: initialLocaleCode,
+        customButtons: {
+          pre_event: {
+            text: '<' + last_month,
+            click: function() {
+              $('#calendar').fullCalendar('prev');
+              get_prev_month();
+            }
+          },
+          next_event: {
+            text: next_month + '月' + ' >',
+            click: function() {
+              $('#calendar').fullCalendar('next');
+              get_prev_month();
+            }
+          }
+        },
+        header: {
+          left: 'pre_event',
+          center: 'title',
+          right: 'next_event'
+        },
+
+        // events: "events.php",
+
+        // Convert the allDay from string to boolean
+        eventRender: function (event, element, view) {
+          if (event.allDay === 'true') {
+            event.allDay = true;
+          } else {
+            event.allDay = false;
+          }
+        },
+
+        selectable: true,
+        selectHelper: true,
+
+        select: function (start, end, allDay) {
+          var title = prompt('Event Title:');
+          if (title) {
+            var start = fmt(start);
+            var end = fmt(end);
+            $.ajax({
+              url: 'add_events.php',
+              data: 'title=' + title + '&start=' + start + '&end=' + end,
+              type: "POST",
+              success: function (json) {
+                //alert('Added Successfully');
+              }
+            });
+            calendar.fullCalendar('renderEvent',
+                {
+                  title: title,
+                  start: start,
+                  end: end,
+                  allDay: allDay
+                },
+                true // make the event "stick"
+            );
+          }
+          calendar.fullCalendar('unselect');
+        },
+
+        editable: true,
+        eventDrop: function (event, delta) {
+          var start = fmt(event.start);
+          var end = fmt(event.end);
+          $.ajax({
+            url: 'update_events.php',
+            data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
+            type: "POST",
+            success: function (json) {
+              //alert("Updated Successfully");
+            }
+          });
+        },
+        eventClick: function (event) {
+          var decision = confirm("Do you want to remove event?");
+          if (decision) {
+            $.ajax({
+              type: "POST",
+              url: "delete_event.php",
+              data: "&id=" + event.id,
+              success: function (json) {
+                $('#calendar').fullCalendar('removeEvents', event.id);
+                //alert("Updated Successfully");
+              }
+            });
+          }
+        },
+        eventResize: function (event) {
+          var start = fmt(event.start);
+          var end = fmt(event.end);
+          $.ajax({
+            url: 'update_events.php',
+            data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
+            type: "POST",
+            success: function (json) {
+              //alert("Updated Successfully");
+            }
+          });
+        },
+        viewRender: function (event) {
+        }
+      });
+
+    });
+  </script>
   <?php require_once("contents_footer.php"); ?>
+  
 </body>
 
 </html>

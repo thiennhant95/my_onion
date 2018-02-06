@@ -18,14 +18,14 @@
           <span>あなたのメールアドレスへ</span>
           <span>ログインのための仮パスワードを発行します。</span>
         </p>
-        <form action="" method="" id="" autocomplete=off>
+        <form action="" method="" id="forgot_pass_form" autocomplete=off>
           <div class="form-group login-icon login-mail">
             <label>メールアドレス</label>
-            <input type="" name="email_forgot_pass" id = "email_forgot_pass" class="form-control" placeholder="">
+            <input type="email" name="email_forgot_pass" id = "email_forgot_pass" class="form-control" placeholder="">
           </div>
           <div class="err_msg"></div>
           <p class="login-btn-wrapper">
-            <button type="button" id = "send_mail_fgp" class="btn btn-primary btn-lg">送信</button>
+            <button type="button" id = "send_mail_fgp" disabled class="btn btn-primary btn-lg">送信</button>
           </p>
         </form>
       </div>
@@ -62,15 +62,72 @@
 </body>
 
 </html>
-<!-- 
-<script>
-    $(function() {
-        $('#page_complete').css('display','none');
 
-        $('main#page_init').on('click', 'button[type="submit"]', function(event) {
-            event.preventDefault();
-            $('#page_init').css('display','none');
-            $('#page_complete').css('display','block');
-        });
+<script>
+  $(document).ready(function(){
+
+    $('#page_complete').hide();
+
+    function msg_login_alert(text){ 
+      $('.err_msg').text(text);
+      setTimeout(() => {
+        $('.err_msg').text('');
+      }, 2000);
+    }
+
+    $("#forgot_pass_form").validate({
+      rules: {
+        email_forgot_pass: {
+          required: true,
+          email: true
+        }
+      },
+      errorPlacement: function (error, element) {
+          error.appendTo(".err_msg");
+      },
+    });
+
+    $('#forgot_pass_form input').on('keyup blur', function () {
+        if ($('#forgot_pass_form').valid()) {
+            $('button#send_mail_fgp').prop('disabled', false);
+        } else {
+            $('button#send_mail_fgp').prop('disabled', 'disabled');
+        }
+    });
+
+    $('#email_forgot_pass').keydown(function(e) {
+      if(e.keyCode == 13){
+        e.preventDefault();
+      }
     })
-</script> -->
+
+    $('#send_mail_fgp').click(function () {
+      let email_input = $('#email_forgot_pass').val(); 
+      $.ajax({
+        url: "https:" + "<?php echo base_url('auth/forgot_password')?>",
+        method : "POST",
+        data: {
+          email : email_input
+        },
+        dataType: "JSON",
+        success: function(result) {
+          if(result.status == 'OK'){
+            send_pass_success();
+          }else{
+            msg_login_alert('Email not exits!');
+          }
+        },error(XMLHttpRequest, textStatus, errorThrown){
+          msg_login_alert('Change password fail!');
+        }
+      })
+    });
+    
+    function send_pass_success() {
+      $('#page_init').css('display','none');
+      $('#page_complete').css('display','block');
+    }
+
+  })
+
+  
+</script>

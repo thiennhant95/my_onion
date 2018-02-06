@@ -13,7 +13,7 @@ class M_staff_model extends DB_Model {
 
     public function check_account($name, $pwd)
     {
-        $array = array('login_id' => $name, 'password' => $pwd);
+        $array = array('login_id' => $name);
         $this->db->select()
                ->from('m_staff')
                ->where($array);

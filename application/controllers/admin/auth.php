@@ -20,6 +20,7 @@ class Auth extends ADMIN_Controller {
         try 
         {
             $this->login();
+            $this->logout();
             admin_layout_view('auth_index', $this->viewVar);
         } 
         catch (Exception $e) 
@@ -35,28 +36,28 @@ class Auth extends ADMIN_Controller {
             $data = [];
             $user_name = trim($this->input->post('user'));
             $pass = trim($this->input->post('pass'));
+            $this->load->model('db/m_staff_model','staff_model');
+
             if(isset($_SESSION['admin_account']))
             {
                 $this->session->sess_destroy();
             }
-            //hash pass
-            $options = [ 'cost' => 10, 'salt' => 'asdfqwezxcvrtyufghjvbnmuiop123456789'.$user_name ];
-            $pass_hash = password_hash($pass, PASSWORD_BCRYPT, $options);
-
-            $data['pass'] = $pass_hash;
-
-            $this->load->model('db/m_staff_model','staff_model');
-            $data['rel'] = $this->staff_model->check_account($user_name, $pass_hash);
+            $data['rel'] = $this->staff_model->check_account($user_name, $pass);
             $leng_rel = count($data['rel']);
             if($leng_rel === 1)
             {
-                $admin_account_val = array(
-                    'email'     => $user_name,
-                    'logged_in' => TRUE,
-                );
-                $this->session->set_userdata('admin_account',$admin_account_val);
-                
-                $data['status'] = "OK";
+                $pass_hash = $data['rel'][0]['password'];
+                if(password_verify( $pass, $pass_hash)){
+                    $admin_account_val = array(
+                        'email'     => $user_name,
+                        'logged_in' => TRUE,
+                        'id'  =>  (int)$data['rel'][0]['id']
+                    );
+                    $this->session->set_userdata('admin_account',$admin_account_val);
+                    $data['status'] = "OK";
+                }else{
+                    $data['status'] = "FAIL";
+                }
             }
             else
             {
@@ -67,11 +68,18 @@ class Auth extends ADMIN_Controller {
         }
         
     }
+    function secured_hash($input)
+    {    
+        $output = password_hash($input,PASSWORD_DEFAULT);
+        return $output;
+    }
     public function logout(){
-        
-        $this->session->sess_destroy('admin_account');
-        echo json_decode(1);
-        die();
+        if(isset($_POST['flag_logout']))
+        {
+            $this->session->sess_destroy('admin_account');
+            echo json_decode(1);
+            die();
+        }
     }
 
 }

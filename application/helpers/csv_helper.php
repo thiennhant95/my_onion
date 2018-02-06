@@ -20,46 +20,29 @@ if ( ! function_exists('array_to_csv'))
 {
     function array_to_csv($array, $download = "")
     {
-        if ($download != "")
-        {
-            header('Content-Description: File Transfer');
-            header("Content-Type: application/vnd.ms-excel; charset=UTF-16LE");
-            header('Content-Disposition: attachment; filename='.$download);
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            echo "\xFF\xFE"; // UTF-16 LE
-        }
-        ob_start();
-        $f = fopen('php://output', 'w') or show_error("Can't open php://output");
-        $n = 0;
-         foreach ($array as $line)
-        {
-            foreach ($line as $row):
-                $n++;
-                if ( ! fputcsv($f, $row, "\t"))
-                    {
-                    show_error("Can't write line $n: $row");
-                }
+        if(!$array)
+            throw new Exception('ASINがみつかりませんでした。');
+
+        header('Cache-Control: public');
+        header('Pragma: public');
+        header('Content-Type: application/octet-stream');
+        header(sprintf("Content-Disposition: attachment;filename=".$download));
+        header('Content-Transfer-Encoding: binary');
+
+        $fp = fopen('php://temp', 'r+b');
+        foreach($array as $item){
+            $repl = str_replace(array('"', "\n"), array('\"', '\n'), $item);
+            foreach ($repl as $row_array):
+                fputcsv($fp, $row_array);
             endforeach;
         }
-        fclose($f) or show_error("Can't close php://output");
-
-        $str = ob_get_contents();
-
-        ob_end_clean();
-        $str = mb_convert_encoding($str, 'UTF-16LE', 'UTF-8');
-
-        if ($download == "")
-        {
-            return $str;
-        }
-        else
-        {
-            echo $str;
-        }
+        rewind($fp);
+        $temp = str_replace(PHP_EOL, "\r\n", stream_get_contents($fp));
+        echo mb_convert_encoding($temp, 'SJIS-win', 'UTF-8');
+        fclose($fp);
+        exit;
     }
+
 }
 
 // ------------------------------------------------------------------------
@@ -90,7 +73,6 @@ if ( ! function_exists('query_to_csv'))
             }
             $array[] = $line;
         }
-
         foreach ($query->result_array() as $row)
         {
             $line = array();

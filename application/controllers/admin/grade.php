@@ -21,7 +21,7 @@ class Grade extends ADMIN_Controller {
         try {
             $pagin=$this->paginationConfig;
             $pagin["base_url"] = '/admin/grade/index';
-            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md pagination-main">';
             $pagin['full_tag_close']  = '</ul>';
             $pagin['total_rows'] = count($this->grade->get_list());
             $this->pagination->initialize($pagin);

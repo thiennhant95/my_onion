@@ -17,7 +17,7 @@
           <span>詳しくクラブ受付までお問い合わせください。</span>
         </p>
         <p class="text-center">
-          <a href="#0" class="btn btn-default">
+          <a href="<?php echo base_url('/auth')?>" class="btn btn-default">
             <i class="fa fa-caret-right" aria-hidden="true"></i>
             <span class="margin-left">トップへ戻る</span>
           </a>

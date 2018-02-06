@@ -13,7 +13,7 @@ class DB_Model extends CI_Model {
     protected $last_id = 0;
     
     // 使用しているユーザーの情報
-    public $accountVar = array();
+    // public $accountVar = array();
     
     // 設定情報
     public $configVar = array();
@@ -166,7 +166,7 @@ class DB_Model extends CI_Model {
 
         // id は念のため削除しておく
         if (isset($params['id'])) unset($params['id']);
-
+        
         // 新規追加時は、create_dateはNULLにする
         $params['update_date'] = $params['create_date'] = NULL;
         $params['update_id']   = $params['create_id']   = isset($this->accountVar['id']) ? $this->accountVar['id'] : 0;

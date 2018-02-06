@@ -13,23 +13,25 @@
 
       <h1 class="lead-heading lead-heading-icon-school bg-yellow h3">イベント・短期教室参加申請</h1>
 
-      <form class="form-horizontal">
+      <form class="form-horizontal" action="<?php echo  base_url('/request/save_request_event') ?>"  method="POST">
         <section>
           <div class="panel panel-dotted">
             <div class="panel-heading">現在募集中のイベント・短期教室一覧</div>
             <div class="panel-body">
               <div class="row">
                 <div class="col-sm-10 col-sm-offset-2">
-                  <div class="radio">
-                    <label>
-                      <input type="radio" name="event" value="option1" checked> 春の短期水泳教室（3/25～3/29）
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
-                      <input type="radio" name="event" value="option2"> 一日遠足　陸上自衛隊駒門駐屯地（4/28）
-                    </label>
-                  </div>
+                  <?php 
+                  foreach ($Course_Limited as $key => $value) {
+                    $checked = ($key==0?"checked":'');
+                    $html_0='<div class="radio"><label>';
+                    $html_1='';
+                    $html_2='</label></div>';
+                    $start_date = date_create((isset($value['start_date'])?$value['start_date']:''));
+                    $end_date = date_create((isset($value['end_date'])?$value['end_date']:''));
+                    $html_1.= "<input type='radio' name='event' value='".$value['id']."' ".$checked." >".$value['course_name']."(".date_format($start_date,'m/d').'～'.date_format($end_date,'m/d').")";
+                    echo $html_0.$html_1.$html_2;
+                  }
+                  ?>
                 </div>
               </div>
             </div>
@@ -42,7 +44,7 @@
             <div class="panel-body">
               <div class="form-group">
                 <div class="col-sm-8 col-sm-offset-2">
-                  <textarea class="form-control" name="" rows="4"></textarea>
+                  <textarea class="form-control" name="note" rows="4"></textarea>
                 </div>
               </div>
               <div class="block-30">
@@ -63,10 +65,10 @@
         </section>
 
         <div class="block-30 text-center">
-          <a href="#0" class="btn btn-success btn-lg btn-long">
+          <button class="btn btn-success btn-lg btn-long" type="submit"> 
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             <span>申請する</span>
-          </a>
+          </button>
         </div>
       </form>
 

@@ -12,6 +12,7 @@ class Reschedule extends FRONT_Controller {
     public function index($year = NULL, $month = NULL) {
         if ($this->error_flg) return;
         try {
+           
             front_layout_view('reschedule_index', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());

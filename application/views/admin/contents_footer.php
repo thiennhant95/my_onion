@@ -9,13 +9,11 @@
 </footer>
 <script>
     //Biến global url ajax lưu tại đây:
-    var url_login = 'https:' + "<?php echo base_url().'admin/login'?>";
     var url_index = 'https:' + "<?php echo base_url().'admin/auth'?>"; 
-    var url_logout = 'https:' + "<?php echo base_url().'admin/logout'?>"; 
     var url_top = 'https:' + "<?php echo base_url().'admin'?>";
     //end global
 </script>
-
+<script src="<?php echo base_url('js/admin/public.js') ?>"></script>
 <?php
     $segment = $this->uri->segment(1);
     $arr_name_file_js = explode ("_", $js_view); 
@@ -25,6 +23,7 @@
     {
 ?>
       <script src="<?php echo base_url() ?><?php echo"js/".$segment."/".$name_file_js.".js"; ?>"></script>
+      
 <?php
     }
 ?>

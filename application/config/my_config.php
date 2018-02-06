@@ -276,10 +276,9 @@ $config['course_type'] = array(
 );
 
 /* Define Constant */
-define('PASSWORD_SALT', 'asdfqwezxcvrtyufghjvbnmuiop123456789'); // password salt
 define('PASSWORD_LENGTH', 16); // password length
 define('REGISTER_TOKEN_LENGTH', 32); // register token length
-define('CREATE_ID_QUESTIONNAIRE_LENGTH', 9); // create_id questionnaire length
+
 
 // 授業曜日
 define('SUNDAY',        0);
@@ -329,39 +328,127 @@ $config['month']=array(
 );
 
 //day
+define('DAY1'      ,1);
+define('DAY2'      ,2);
+define('DAY3'      ,3);
+define('DAY4'      ,4);
+define('DAY5'      ,5);
+define('DAY6'      ,6);
+define('DAY7'      ,7);
+define('DAY8'      ,8);
+define('DAY9'      ,9);
+define('DAY10'     ,10);
+define('DAY11'     ,11);
+define('DAY12'     ,12);
+define('DAY13'     ,13);
+define('DAY14'     ,14);
+define('DAY15'     ,15);
+define('DAY16'     ,16);
+define('DAY17'     ,17);
+define('DAY18'     ,18);
+define('DAY19'     ,19);
+define('DAY20'     ,20);
+define('DAY21'     ,21);
+define('DAY22'     ,22);
+define('DAY23'     ,23);
+define('DAY24'     ,24);
+define('DAY25'     ,25);
+define('DAY26'     ,26);
+define('DAY27'     ,27);
+define('DAY28'     ,28);
+define('DAY29'     ,29);
+define('DAY30'     ,30);
+define('DAY31'     ,31);
 $config['day']=array(
-    'DAY1'      =>'1',
-    'DAY2'      =>'2',
-    'DAY3'      =>'3',
-    'DAY4'      =>'4',
-    'DAY5'      =>'5',
-    'DAY6'      =>'6',
-    'DAY7'      =>'7',
-    'DAY8'      =>'8',
-    'DAY9'      =>'9',
-    'DAY10'     =>'10',
-    'DAY11'     =>'11',
-    'DAY12'     =>'12',
-    'DAY13'     =>'13',
-    'DAY14'     =>'14',
-    'DAY15'     =>'15',
-    'DAY16'     =>'16',
-    'DAY17'     =>'17',
-    'DAY18'     =>'18',
-    'DAY19'     =>'19',
-    'DAY20'     =>'20',
-    'DAY21'     =>'21',
-    'DAY22'     =>'22',
-    'DAY23'     =>'23',
-    'DAY24'     =>'24',
-    'DAY25'     =>'25',
-    'DAY26'     =>'26',
-    'DAY27'     =>'27',
-    'DAY28'     =>'28',
-    'DAY29'     =>'29',
-    'DAY30'     =>'30',
-    'DAY31'     =>'31',
+    DAY1      =>'1',
+    DAY2      =>'2',
+    DAY3     =>'3',
+    DAY4      =>'4',
+    DAY5      =>'5',
+    DAY6      =>'6',
+    DAY7      =>'7',
+    DAY8      =>'8',
+    DAY9      =>'9',
+    DAY10     =>'10',
+    DAY11     =>'11',
+    DAY12     =>'12',
+    DAY13     =>'13',
+    DAY14     =>'14',
+    DAY15     =>'15',
+    DAY16     =>'16',
+    DAY17     =>'17',
+    DAY18     =>'18',
+    DAY19     =>'19',
+    DAY20     =>'20',
+    DAY21     =>'21',
+    DAY22     =>'22',
+    DAY23     =>'23',
+    DAY24     =>'24',
+    DAY25     =>'25',
+    DAY26     =>'26',
+    DAY27     =>'27',
+    DAY28     =>'28',
+    DAY29     =>'29',
+    DAY30     =>'30',
+    DAY31     =>'31',
 );
 
+define('VALUE_NUMBER_RESULT', 1);
+define('LENGTH_PASS_RAMDOM', 10);
+define('HAVE_RESULT', 1);
+define('NONE_RESULT', 0);
+define('ONLY_ONE_RELSULT', 1);
+define('OK', 1);
+define('NOT_OK', 0);
 
+//define day of week
+define('NUMBER_DAY_OF_WEEK', 7);
+define('NUMBER_DATE_OF_MONTH', 31);
+define('EVERY_MONDAY', '毎週月曜日'); // mon 
+define('EVERY_TUESDAY', '毎週火曜日');
+define('EVERY_WENDAY', '毎週水曜日');
+define('EVERY_THUSDAY', '毎週木曜日');
+define('EVERY_FRIDAY', '毎週金曜日');
+define('EVERY_SATUDAY', '毎週土曜日');
+define('EVERY_SUNDAY', '毎週日曜日');// sun
 
+define('IS_CLOSED', 1);
+define('UN_CLOSED', 0);
+
+define('IS_TEST', 1);
+define('UN_TEST', 0);
+
+define('DATE_CLOSED','休館');
+define('DATE_TEST', 'テスト');
+
+define('ID_FROM_AND_TO_NULL', 0);
+define('ID_FROM_AND_TO_NOT_NULL', 1);
+define('ID_FROM_NOT_NULL_AND_TO_NULL', 2);
+define('ID_FROM_NULL_AND_TO_NOT_NULL', 3);
+
+$config['week_num'] = array(
+    SUNDAY        => '日',
+    MONDAY        => '月',
+    TUESDAY        => '火',
+    WEDNESDAY        => '水',
+    THURSDAY        => '木',
+    FRIDAY        => '金',
+    SATURDAY        => '土',
+
+);
+//type of request
+define('BUS_CHANGE_ONCE','bus_change_once');
+define('BUS_CHANGE_ETERNAL','bus_change_eternal');
+define('COURSE_CHANGE','course_change');
+define('RECESS','recess');
+define('QUIT','quit');
+define('EVENT_TRY','event_entry');
+define('ADDRESS_CHANGE','address_change');
+
+// status student reserve change
+define('ABSENCE','欠席');
+define('TRANSFER','振替');
+define('ABSENCE_TRANSFER','欠席＆振替');
+define('ABSENCE_CANCELED','欠席キャンセル');
+define('TRANSFER_CANCELLATION','振替キャンセル');
+define('ABSENCE_TRANSFER_CANCELLATION','欠席＆振替');

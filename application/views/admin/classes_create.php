@@ -19,10 +19,11 @@
             <div class="panel-body">
 
                 <form class="form-horizontal"id="class_form" method="post">
+                    <input type="hidden" class="form-control" name="class_id" id="class_id" value="-1">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">コース記号</label>
                         <div class="col-sm-5">
-                            <select class="form-control" name="short_course_name" required>
+                            <select id="short_course_name" class="form-control" name="short_course_name" required>
                                 <?php
                                 foreach ($course_list as $row_course):
                                     ?>
@@ -36,7 +37,7 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">クラスコード</label>
                         <div class="col-sm-5">
-                            <select class="form-control" name="base_class_sign" required>
+                            <select class="form-control" name="base_class_sign" id="base_class_sign" required>
                                <option value="M">M</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -46,13 +47,19 @@
                                 <option value="F">F</option>
                             </select>
                         </div>
+                        <?php
+                        $short_course_name=$course_list[1]['short_course_name'];
+                        $base_class_sign="M";
+                        $class_code=$short_course_name.$base_class_sign;
+                        ?>
                         <div class="col-sm-5">
-                            <input type="text" class="form-control" name="class_code" required placeholder="">
+                            <input type="text" onkeydown="return ValidateInput(this);" id="class_code" class="form-control class_code" name="class_code" value="<?php echo $class_code?>" required placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">クラス名</label>
                         <div class="col-sm-10">
+
                             <input type="text" class="form-control" name="class_name" required placeholder="">
                         </div>
                     </div>
@@ -82,25 +89,25 @@
                         <label for="" class="col-sm-2 control-label">授業曜日</label>
                         <div class="col-sm-10">
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="week[]" value="<?php echo MONDAY?>"> 月
+                                <input type="checkbox" name="week[]" id="week" value="<?php echo MONDAY?>"> 月
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="week[]" value="<?php echo TUESDAY?>"> 火
+                                <input type="checkbox" name="week[]" id="week" value="<?php echo TUESDAY?>"> 火
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="week[]" value="<?php echo WEDNESDAY?>"> 水
+                                <input type="checkbox" name="week[]" id="week" value="<?php echo WEDNESDAY?>"> 水
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="week[]" value="<?php echo THURSDAY?>"> 木
+                                <input type="checkbox" name="week[]" id="week" value="<?php echo THURSDAY?>"> 木
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="week[]" value="<?php echo FRIDAY?>"> 金
+                                <input type="checkbox" name="week[]" id="week" value="<?php echo FRIDAY?>"> 金
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="week[]" value="<?php echo SATURDAY?>"> 土
+                                <input type="checkbox" name="week[]" id="week" value="<?php echo SATURDAY?>"> 土
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="week[]" value="<?php echo SUNDAY?>"> 日
+                                <input type="checkbox" name="week[]" id="week" value="<?php echo SUNDAY?>"> 日
                             </label>
                             <label id="week[]-error"class="label label-danger" for="week[]" style=" display: none">一個以上のチェックボックスにチェックを入れてください</label>
                         </div>

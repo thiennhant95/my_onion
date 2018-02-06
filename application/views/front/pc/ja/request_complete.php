@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="block-30 text-center">
-        <a href="#0" class="btn btn-main btn-long">
+        <a href="<?php echo base_url('/request/') ?>" class="btn btn-main btn-long">
           <span>各種申請TOPへ</span>
         </a>
       </div>

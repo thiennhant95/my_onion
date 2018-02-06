@@ -126,3 +126,82 @@ $("#create").click(function(e) {
         });
     }
 });
+function ValidateInput(ctrl) {
+    if (event.keyCode == 8 ||event.keyCode == 46 ||event.keyCode==65) {
+        var short_course = $('#short_course_name').val();
+        var class_sign = $('#base_class_sign').val();
+        var class_code =short_course+class_sign;
+        //check whether the user is trying to delete the fixed text
+        if (ctrl.selectionStart <=class_code.length) return false;
+    }
+    return true;
+}
+// onchange short code name
+$(document).ready(function(){
+    $("#short_course_name").change(function () {
+        var value = $('#short_course_name').val();
+        // var code=$('#class_code').val();
+        // var lastChar = code.substr(code.length - 1);
+        var base = $('#base_class_sign').val();
+        $.ajax({
+            dataType : "json",
+            type: 'GET',
+            url: url_top + '/classes/get_short_course_name/'+value,
+            success: function (data) {
+                console.log(data.short_course_name);
+                $('input#class_code').val(data.short_course_name+base);
+            }
+        })
+    })
+});
+
+//onchange base_class_sign
+$(document).ready(function(){
+    $("#base_class_sign").change(function () {
+        var short_name = $('#short_course_name').val();
+        $.ajax({
+            dataType : "json",
+            type: 'GET',
+            url: url_top + '/classes/get_short_course_name/'+short_name,
+            success: function (data) {
+                console.log(data.short_course_name);
+                var value = $('#base_class_sign').val();
+                var class_code=data.short_course_name+value;
+                $('input#class_code').val(class_code);
+            }
+        })
+    })
+})
+
+//check week
+$("input[type=checkbox]").change( function() {
+    if($(this).is(":checked")){
+        var week= $(this).val();
+        var short_course=$('#short_course_name').val();
+        var class_id=$('#class_id').val();
+        var class_sign=$('#base_class_sign').val();
+        $.ajax({
+            dataType : "json",
+            type: 'GET',
+            url: url_top + '/classes/check_week/'+short_course+'/'+class_sign+'/'+week+'/'+class_id,
+            success: function (data) {
+                console.log(data);
+                if (data.status==1)
+                {
+                    $('#popup').click();
+                    $('.modal-body').addClass('alert alert-danger');
+                    $("#status_update").html("<b>Bạn không thể chọn</b>");
+                    // window.setTimeout(function () {
+                    //     $('#myModal').fadeToggle(300, function () {
+                    //         $('#myModal').modal('hide');
+                    //     });
+                    // }, 5000);
+                    $("input[value="+week+"]:checked").removeAttr('checked');
+                }
+            }
+        });
+    }
+});
+
+
+

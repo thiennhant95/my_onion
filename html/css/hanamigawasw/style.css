@@ -3053,8 +3053,62 @@ a.label-outline-blue:hover
   padding: 0 30px;
 }
 
-.err_msg{
+.err_msg, .err_user, .err_pass, .err_msg_id, .err_msg_pass{
   color: red;
   font-size: 14px;
-  text-align: center;
+  text-align: left;
+  height: 14px;
+  margin-bottom: 5px;
+  margin-top: -10px;
+}
+.err_msg{
+  text-align: center
+}
+
+.fc-day-number{
+  font-weight: bold
+}
+
+.fc-other-month{
+  color: #acacac;
+  background: #f2f2f2;
+}
+.fc-row .fc-content-skeleton td{
+  padding: 5px;
+}
+tbody tr .fc-sun{
+  color: #e60012;
+}
+tbody tr .fc-sat{
+  color: #0f74bb;
+}
+.fc-left button, .fc-right button{
+  background: #97c731;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 15px;
+  width: 95px;
+}
+
+/* Admin Entry Edit */
+#table-schedule tr td { cursor: pointer; }
+input[readonly] { background: white !important; }
+.display_class .each_class { margin-bottom: 4px; margin-right: 4px; text-align: center; }
+.w-xs-19per { width: 19% !important; }
+
+#second_postalcode,#first_postalcode{
+  width: 120px;
+}
+#table_member_schedule>tbody>tr>td:hover{
+cursor: pointer;
+}
+#classnameforbus{
+  margin-top: 17px;
+  position: absolute;
+}
+#class_member_Join{
+  margin-left: -15px;
+}
+#fa-calendar-start,#fa-calendar-end,#fa-calendar-quick,input#start_date_request_leave,input#end_date_request_leave,input#quit_date_request_with_dra:hover{
+  cursor: pointer;
 }

@@ -29,6 +29,8 @@ class Student_model extends DB_Model {
         $this->load->model('db/l_student_class_model');
         $this->load->model('db/l_student_bus_route_model');
         $this->load->model('db/m_course_model');
+        $this->load->model('db/m_bus_course_model');
+        $this->load->model('db/m_distance_model');
     }
 
     /**
@@ -234,5 +236,157 @@ class Student_model extends DB_Model {
 
         return $result;
     }
+    private function get_nearest($array){
+        if(array_key_exists('start_date',$array[0])&&array_key_exists('end_date',$array[0]))
+        {
+            $now = date_create(date('Y-m-d'));
+            $maxstartdate = date_create('0000-00-00');
+            $k = 0;
+            foreach ($array as $key => $row) {
 
+                $startdate = date_create($row['start_date']);
+                if($startdate >= $maxstartdate && $startdate <= $now )
+                {
+                    $maxstartdate = $startdate ;
+                    $k=$key;
+                }
+                    
+            }
+            return $k;
+        }
+        return -1;     
+    }
+    private function new_is_valid_date($startdate,$enddate){
+        $startdate = strtotime($startdate);
+        $enddate = strtotime($enddate);
+        if($startdate < $enddate && $enddate > strtotime(date('Y-m-d')))
+            return TRUE;
+        return FALSE;
+    }
+    public function get_student_data_detail($student_id) {
+
+        $this->student = array(
+            'info'      => array(), 
+            'meta'      => array(), 
+            'family'    => array(), 
+            'course'    => array(  
+                'all'=>  array(), 
+                'nearest'   => array(),
+
+            ), 
+            'class'     => array(   
+                'all'       => array(),
+                'valid'     => array(),
+            ),
+            'bus_route' => array(   
+                'all'       => array(),
+                'valid'     => array(),
+            ),
+            'distance'=>array(),
+        );
+
+        if ($student_id == $this->student_id) {
+            return $this->student_copy;
+        }
+        $this->student_id = $student_id;
+
+        //data info basic
+        $result = $this->m_student_model->select_by_id($student_id);
+        if (empty($result)) return $this->student;
+        $this->student['info'] = $result[0];
+        //data meta
+        $result = $this->l_student_meta_model->select_by_id($student_id, 'student_id');
+        foreach ($result as $row) {
+            $this->student['meta'][ $row['tag'] ] = $row['value'];
+        }
+        //data family
+        $result = $this->m_student_model->get_family_detail($student_id);
+        foreach ($result as $row) {
+            $this->student['family'][] = $row;
+        }
+
+        //get data course
+        $allcourse = $this->m_course_model->getData_Course_valid();
+        $this->student['course']['all'] = $allcourse;
+        $course = $this->l_student_course_model->getData_course_by_studentid($student_id);
+        $Course_nearest_index = $this->get_nearest( $course );
+        if($Course_nearest_index >= 0)
+        {
+            $this->student['course']['nearest'] = $course[$Course_nearest_index];
+            $class = $this->m_course_model->getData_class_by_id($course[$Course_nearest_index]['course_id']);
+            $this->student['course']['nearest']['class'] = $class;
+            // foreach ($class as $key => $value)
+            // {
+               
+            // }
+            $this->student['course']['nearest']['classjoin'] = $this->l_student_course_model->getData_student_class_by_studentcourse_id($course[$Course_nearest_index]['student_course'],$student_id);
+        }      
+
+        //data class
+        $student_course_id = $this->student['course']['nearest']['course_id'];
+        $class = $this->l_student_class_model->select_by_id($student_id, 'student_id');
+        foreach ($class as $row) {
+            $this->student['class']['all'][] = $row;
+            if( $row['student_course_id']==$student_course_id && $row['student_id']==$student_id)
+            {
+                 $this->student['class']['nearest']['class_info']=$this->m_class_model->select_by_id($row['class_id'],'id');
+                 $this->student['class']['nearest']['student_class_info']=$row;
+            }
+        }
+
+        
+        //data bus
+
+        $bus_route = $this->l_student_bus_route_model->select_by_id($student_id, 'student_id');
+        foreach ($bus_route as $row) {
+            $this->student['bus_route']['all'][] = $row;
+        }
+
+        foreach ($bus_route as $key => $row) {
+            if ($this->new_is_valid_date( $row['start_date'], $row['end_date'])) {
+
+                $this->student['bus_route']['valid'][$key] = $row;
+                $data_l_student_class = $this->l_student_class_model->get_student_class_detail_by_id($row['student_class_id']);
+                $bus_course = $this->m_bus_course_model->select_by_id($data_l_student_class[0]['class_id'],'class_id');
+
+                $this->student['bus_route']['valid'][$key]['classinfo']=$data_l_student_class;
+                $i=0;
+                foreach ($bus_course as  $subrow) {
+                    $this->student['bus_route']['valid'][$key]['bus_course'][$i] =  $subrow ;
+                    $bus_stop = $this->m_bus_course_model->getData_Bus_stop_by_class_id($subrow['class_id']);
+                    foreach ($bus_stop as  $value) {
+                        $this->student['bus_route']['valid'][$key]['bus_course'][$i]['bus_stop'][]= $value ;
+                    }
+                }
+                $i++;    
+            }
+        }
+
+        //data distance
+        $distance = $this->m_distance_model->select_all();
+        $this->student['distance'] = $distance;
+
+        return $this->student;
+    }
+
+    public function get_limit_list_user($limit, $started){
+        $this->db->select()
+            ->from('m_student')
+            ->where('status', NOT_OK)
+            ->order_by('create_date', 'DESC')
+            ->limit($limit, $started);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+
+    public function get_total_user_inactive($condition)
+    {
+        # code...
+        $this->db->select()
+            ->from('m_student')
+            ->where($condition);
+        $query = count($this->db->get()->result_array());
+        return $query;
+
+    }
 }

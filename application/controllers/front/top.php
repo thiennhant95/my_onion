@@ -12,12 +12,14 @@ class Top extends FRONT_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
+
+            // echo '<pre>'; print_r($this->session->all_userdata()); echo '</pre>'; die();
             front_layout_view('top_index', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
-
+   
 }
 
 /* End of file auth.php */

@@ -36,4 +36,18 @@ class L_student_meta_model extends DB_Model {
             return 'error';
         } else return 'success';
     }
+    public function update_tagMeta($arrayDataMeta,$student_id=NULL)
+    {
+        $query = " REPLACE INTO ".$this->tbl." (student_id,tag, value,orderby,update_id,update_date,delete_flg)VALUES(?,?,?,?,?,?,?) ";
+        foreach ($arrayDataMeta as $key => $value) {
+            if($key=='enquete') $value = json_encode($value);
+            $params=[$student_id,$key,$value,'0','0', date('Y-m-d H:i:s') ,'0'];
+
+            if (FALSE === $this->db->query($query,$params)) {
+                logerr($query);
+                throw new Exception();
+            }
+        }
+        return true;
+    }
 }

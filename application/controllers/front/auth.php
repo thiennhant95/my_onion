@@ -20,6 +20,8 @@ class Auth extends FRONT_Controller {
         if ($this->error_flg) return;
         try
         {
+            $this->login();
+            $this->logout();
             front_layout_view('auth_index', $this->viewVar);
         }
         catch (Exception $e)
@@ -34,35 +36,46 @@ class Auth extends FRONT_Controller {
         {
             $user = trim($this->input->post('user'));
             $pass = trim($this->input->post('pass'));
-            
             $check_save = trim($this->input->post('check_save'));
-            //hash pass
-            $options = [ 'cost' => 10, 'salt' => 'asdfqwezxcvrtyufghjvbnmuiop123456789'.$user  ];
-            $pass_hash = password_hash($pass, PASSWORD_BCRYPT, $options);
-            $data['pass'] = $pass_hash;
+            $this->load->model('db/m_student_model','student_model');
 
             if(isset($_SESSION['user_account']))
             {
                 $this->session->sess_destroy();
             }
-
-            $this->load->model('db/m_student_model','student_model');
-            $data['rel'] = $this->student_model->check_account($user, $pass_hash);
+            $data['rel'] = $this->student_model->check_account($user);
             $leng_rel = count($data['rel']);
-
-            if($leng_rel === 1)
+            if($leng_rel >= VALUE_NUMBER_RESULT)
             {
-                $user_account_val = array(
-                    'email'     => $user,
-                    'logged_in' => TRUE,
-                );
-                $this->session->set_userdata('user_account',$user_account_val);
-                $data['status'] = "OK";
-                if($check_save)
+                $hash_pass = $data['rel'][0]['password'];
+                $lock_flag = $data['rel'][0]['lock_flg'];
+                if(password_verify( $pass, $hash_pass))
                 {
-                    setcookie("info_user", $user, time()+60*60*2);
-                    setcookie("info_pass", $pass_hash , time()+60*60*2);
-                    setcookie("info_remember", 1, time()+60*60*2);
+                    if(($lock_flag == 0) ){
+                        $id_user = $data['rel'][0]['id'];
+                        $user_account_val = array(
+                            'id'  => $id_user,
+                            'email'     => $user,
+                            'logged_in' => TRUE,
+                        );
+                        $this->session->set_userdata('user_account',$user_account_val);
+                        
+                        if($check_save)
+                        {
+                            setcookie("info_user", $user, time()+60*60*2);
+                            setcookie("info_pass", $hash_pass , time()+60*60*2);
+                            setcookie("info_remember", 1, time()+60*60*2);
+                            setcookie("info_user_id", $id_user, time() + 60*60*2 );
+                        }
+                    }else{
+                        $data['status'] = "OK";
+                        $data['lock_flag'] = $lock_flag;
+                    }
+                    
+                }
+                else
+                {
+                    $data['status'] = "FAIL";
                 }
             }
             else
@@ -71,20 +84,19 @@ class Auth extends FRONT_Controller {
             }
             echo json_encode($data);
             die();
-
         }
     }
 
     public function logout()
     {
-        if(isset($_POST['flag']))
+        if(isset($_POST['flag_logout']))
         {
-            $this->session->sess_destroy('user_account');
-            echo json_decode(1);
+            $data = [];
+            $this->session->sess_destroy();
+            echo json_encode(1);
             die();
         }
     }
-
     /**
      * パスワードを忘れたら
      *
@@ -107,16 +119,17 @@ class Auth extends FRONT_Controller {
                 $data['rel'] = $this->student_model->check_email_exits($email);
                 $leng_rel = count($data['rel']);
                
-                if($leng_rel == 1)
+                if($leng_rel == VALUE_NUMBER_RESULT)
                 {
                     $user_name = $data['rel']['0']['email'];
-                    $password_tmp = random_string('alnum', 10);
+                    $password_tmp = random_string('alnum', LENGTH_PASS_RAMDOM);
                     //khi regeister hoan thanh se lay thong ten khach hang de dua vao thay bang email
-                    $pass_new = $this->hash_pass_new($password_tmp, $email);
-
+                    $pass_new = $this->secured_hash($password_tmp, $email);
                     $this->edit_password_db($email, $pass_new);
                     $this->send_mail_pass($email, $user_name, $password_tmp);
-                   
+
+                    $data['pass_enter'] = $password_tmp;
+                    $data['pass_new'] = $pass_new;
                     $data['status'] = "OK";
                 }
                 else
@@ -137,8 +150,7 @@ class Auth extends FRONT_Controller {
     public function send_mail_pass($email_user, $user_name, $pass_new)
     {
         $string = $this->get_template_forget_pass();
-        $macro =
-                array(
+        $macro = array(
                     'name_user' => $user_name,
                     'pass_new' => $pass_new,
         );
@@ -162,19 +174,16 @@ class Auth extends FRONT_Controller {
         return $content;
     }
 
-    public function hash_pass_new($pass, $email)
-    {
-        
-        $options = [ 'cost' => 10, 'salt' => 'asdfqwezxcvrtyufghjvbnmuiop123456789'.$email];
-        $pass_hash = password_hash($pass, PASSWORD_BCRYPT, $options);
-
-        return $pass_hash;
+    function secured_hash($input)
+    {    
+        $output = password_hash($input,PASSWORD_DEFAULT);
+        return $output;
     }
 
     public function edit_password_db($email, $pass_new)
     {
-        # code...
-        //luu pass moi trong db 
+        $status = $this->student_model->edit_forgot_pass($email, $pass_new);
+        return $status;
     }
     /**
      * ロック

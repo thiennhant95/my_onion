@@ -47,4 +47,20 @@
       <a class="btn btn-default center-block" id = "btn_logout_user" href="#">ログアウト</a>
     </div>
   </nav>
+  <script>
+    $('#btn_logout_user').click(function() {
+      $.ajax({
+        url: "https:" + "<?php echo base_url('auth');?>",
+        method: "POST",
+        data: {flag_logout: 1},
+        dataType: "JSON",
+        success:function(result) {
+          window.location.href = "/"; 
+        },error(XMLHttpRequest, textStatus ,errorThrown){
+          console.log('err');
+        }
+      })
+    });
+  </script>
 </header>
+  

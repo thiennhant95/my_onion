@@ -225,7 +225,7 @@
             return this.optional(element) || /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/.test(value);
         }, "Must be 2 byte character");
 
-        // $('#register-btn').prop('disabled', 'disabled');
+        $('#register-btn').prop('disabled', 'disabled');
         $('.msg_email_address').css('display', 'none');
         $("#register").validate({
             rules: {
@@ -300,19 +300,16 @@
             }
         });
 
-        // $('#register input').on('click', function () {
-        //     if ($('#register').valid()) {
-        //         $('#register-btn').prop('disabled', false);
-        //     } else {
-        //         $('#register-btn').prop('disabled', 'disabled');
-        //     }
-        // });
+        $('#register input').on('click', function () {
+            if ($('#register').valid()) {
+                $('#register-btn').prop('disabled', false);
+            } else {
+                $('#register-btn').prop('disabled', 'disabled');
+            }
+        });
 
         $('#page_complete').css('display','none');
-    });
-
-    $('#register-btn').click(function() {
-        if ($('#register').valid()) {
+        $('#register-btn').click(function() {
             var user_name = $('input[name=user_name]').val();
             var postal_code1 = $('input[name=postal_code1]').val();
             var postal_code2 = $('input[name=postal_code2]').val();
@@ -320,32 +317,32 @@
             var phone_number = $('input[name=phone_number]').val();
             var email_address = $('input[name=email_address]').val();
             $.ajax({
-                url: 'https:' + "<?php echo base_url() . 'entry'?>",
+                url: 'https:' + "<?php echo base_url().'entry'?>",
                 data: {
-                    user_name: user_name,
-                    postal_code: postal_code1 + '-' + postal_code2,
-                    address: address,
-                    phone_number: phone_number,
-                    email_address: email_address
+                    user_name : user_name,
+                    postal_code :  postal_code1 + '-' + postal_code2,
+                    address : address,
+                    phone_number : phone_number,
+                    email_address : email_address
                 },
                 method: "POST",
                 dataType: "json",
-                success: function (result) {
+                success: function(result) {
                     console.log('success ok');
                     if (result['insert'] == 'email_exists') {
                         console.log('email exit');
                         $('.msg_email_address').text('This email already exists');
                         $('.msg_email_address').css('display', 'inline');
                     } else {
-                        console.log('hien thi');
+                        console.log( 'hien thi' );
                         $('.form-send-confirm-display strong').text(email_address);
-                        $('#page_init').css('display', 'none');
-                        $('#page_complete').css('display', 'block');
+                        $('#page_init').css('display','none');
+                        $('#page_complete').css('display','block');
                     }
                 }, error: function (XMLHttpRequest, textStatus, errorThrown) {
                     console.log('error');
                 }
             });
-        }
+        });
     });
 </script>

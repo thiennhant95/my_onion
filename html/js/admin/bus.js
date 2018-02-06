@@ -82,7 +82,9 @@ $("body").on("click", ".insert-more", function () {
 });
 
 
-
+jQuery.extend(jQuery.validator.messages, {
+    required: "この項目は必須です",
+});
 //  validate edit/ create bus course-route
 $(document).ready(function() {
     $("#bus_couse").validate({

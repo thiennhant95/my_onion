@@ -14,16 +14,16 @@ class Classes extends ADMIN_Controller {
     /**
      * クラスマスター
      *
-     * @param   
-     * @return  
+     * @param
+     * @return
      *
-    */
+     */
     public function index() {
         if ($this->error_flg) return;
         try {
             $pagin=$this->paginationConfig;
             $pagin["base_url"] = '/admin/classes/index';
-            $pagin['full_tag_open']   = '<ul class="pagination pagination-md">';
+            $pagin['full_tag_open']   = '<ul class="pagination pagination-md pagination-main">';
             $pagin['full_tag_close']  = '</ul>';
             $pagin['total_rows'] = count($this->class->get_list());
             $this->pagination->initialize($pagin);
@@ -40,10 +40,10 @@ class Classes extends ADMIN_Controller {
     /**
      * クラス登録編集
      *
-     * @param   
-     * @return  
+     * @param
+     * @return
      *
-    */
+     */
     public function edit($id = NULL) {
         if ($this->error_flg) return;
         try {
@@ -71,7 +71,7 @@ class Classes extends ADMIN_Controller {
                 }
                 else if ($this->form_validation->run() == false)
                 {
-                   echo json_encode(array('fail'=>DATA_OFF));
+                    echo json_encode(array('fail'=>DATA_OFF));
                     die();
                 }
             }
@@ -94,7 +94,7 @@ class Classes extends ADMIN_Controller {
         try {
             $data['course_list']=$this->course->get_list();
             if ($this->input->post()) {
-                    $this->form_validation->set_rules('class_code', 'class_code', 'required|trim|xss_clean');
+                $this->form_validation->set_rules('class_code', 'class_code', 'required|trim|xss_clean');
                 if ($this->form_validation->run() == true) {
                     $dataInsert = array(
                         'course_id'=>$this->input->post('short_course_name'),
@@ -144,6 +144,49 @@ class Classes extends ADMIN_Controller {
             array_unshift($data[0],array("コース記号","クラス記号","クラスコード","クラス名","	授業曜日","開始時刻","バス利用フラグ","終了時刻","	定員"));
             $this->load->helper('csv');
             array_to_csv($data, 'class_'.date('Ymd').'.csv');
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+    public function get_short_course_name($id)
+    {
+        if ($this->error_flg) return;
+        try {
+            $data=$this->course->select_by_id($id)[0];
+            echo json_encode($data);
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+    public function check_week($id_course,$class_sign,$week,$id_class=NULL)
+    {
+        if ($this->error_flg) return;
+        try {
+            $list_class=$this->class->get_list(array('course_id'=>'='.$id_course,'base_class_sign'=>'="'.$class_sign.'"'));
+            if ($list_class!=null) {
+                if (array_key_exists($id_class,$list_class))
+                {
+                    unset($list_class[$id_class]);
+                }
+                foreach ($list_class as $row_class):
+                    $row_class['week'] = explode(',', $row_class['week']);
+                    if (in_array($week, $row_class['week'])) {
+                        echo json_encode(array('status' => DATA_ON));
+                         die();
+                    }
+                endforeach;
+            }
+            else
+            {
+                echo json_encode(array('status' => DATA_OFF));
+                die();
+            }
         }
         catch (Exception $e)
         {

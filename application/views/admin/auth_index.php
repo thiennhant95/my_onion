@@ -19,18 +19,20 @@
             <div class="form-group login-icon login-user">
               <label>会員番号</label>
               <input type="email" maxlength = "80" id="username" name = "username" minlength = "3"  class="form-control" placeholder="">
-              <div class="err"></div>
+              
               <?php echo form_error('username'); ?>
             </div>
+            <div class="err_msg_id"></div>
             <div class="form-group login-icon login-password">
               <label>パスワード</label>
               <input type="password" id="pwd" name="pwd"  class="form-control" placeholder="">
               <?php echo form_error('pwd'); ?>
             </div>
-            <div class="row err_msg">
+            <div class="err_msg_pass">
             </div>
+            <div class = "err_msg" ></div>
             <p class="login-btn-wrapper">
-              <button type="button" id = "login_btn" class="btn btn-main btn-lg">ログイン</button>
+              <button type="button" id = "login_btn" disable class="btn btn-main btn-lg">ログイン</button>
             </p>
           </form><!-- .form-wrapper -->
         </div>

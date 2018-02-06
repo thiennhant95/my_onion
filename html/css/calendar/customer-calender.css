@@ -1,0 +1,19 @@
+.test_class_btn{
+     background: #450076;
+}
+
+.closed_class_btn{
+     background: #333;
+}
+.closed_class_btn , .test_class_btn{
+     color: #fff;
+     max-width: 50%;
+     width: 120px;
+     height: 40px;
+     line-height: 3;
+     font-weight: bold;
+     text-align: center;
+     border-radius: 0;
+     outline: none;
+     border: 1px solid #fff;
+}

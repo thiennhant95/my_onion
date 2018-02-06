@@ -6,7 +6,7 @@
 </head>
 
 <body>
-  <?php require_once("contents_header_admin.php"); ?>
+  <?php require_once("contents_header_admin.php");?>
 
 
   <main class="content content-dark">
@@ -26,51 +26,93 @@
       <div class="panel panel-dotted">
         <div class="panel-heading">基本契約情報</div>
         <div class="panel-body">
-
-          <div class="alert alert-info text-center">
-            <i class="fa fa-pause" aria-hidden="true"></i>
-            <strong>休会中</strong>
-          </div>
-          <div class="alert alert-danger text-center">
-            <i class="fa fa-user-times" aria-hidden="true"></i>
-            <strong>会員機能ロック</strong>
-          </div>
-          <div class="alert alert-glay text-center">
-            <i class="fa fa-window-close-o" aria-hidden="true"></i>
-            <strong>退会</strong>
-          </div>
-
+        <?php 
+           $config = $this->config->item('my_config');
+              switch (isset($info['rest_flg'])?$info['rest_flg']:'0') {
+                  case 1:
+                      echo '<div class="alert alert-info text-center">
+                              <i class="fa fa-pause" aria-hidden="true"></i>
+                              <strong>'.($config['student_rest_status'])[VALUE_STUDENT_REST_WATING].'</strong>
+                            </div>';
+                      break;
+                  case 2:
+                      echo '<div class="alert alert-info text-center">
+                              <i class="fa fa-window-close-o" aria-hidden="true"></i>
+                              <strong>'.($config['student_rest_status'])[VALUE_STUDENT_REST_DONE].'</strong>
+                            </div>';
+                      break;
+              }
+              switch (isset($info['lock_flg'])?$info['lock_flg']:'0') {
+                  case 1:
+                      echo '<div class="alert alert-danger text-center">
+                              <i class="fa fa-user-times" aria-hidden="true"></i>
+                              <strong>'.($config['student_lock_status'])[VALUE_STUDENT_LOCK_ON].'</strong>
+                            </div>';
+                      break;
+               }
+              switch (isset($info['status'])?$info['status']:'1') {
+                  case 0:
+                      echo '<div class="alert  alert-glay text-center">
+                              <i class="fa fa-hourglass-1" aria-hidden="true"></i>
+                              <strong>'.($config['student_status'])[VALUE_STUDENT_STATUS_WATING].'</strong>
+                            </div>';
+                      break;
+                  case 2:
+                      echo '<div class="alert  alert-glay text-center">
+                              <i class="fa fa-hourglass-half" aria-hidden="true"></i>
+                              <strong>'.($config['student_status'])[VALUE_STUDENT_STATUS_QUIT_WAIT].'</strong>
+                            </div>';
+                      break;
+                  case 3:
+                  echo '<div class="alert  alert-glay text-center">
+                          <i class="fa fa-window-close-o" aria-hidden="true"></i>
+                          <strong>'.($config['student_status'])[VALUE_STUDENT_STATUS_QUIT].'</strong>
+                        </div>';
+                  break;
+            }
+          
+        ?>
           <section>
             <div class="table-responsive">
               <table class="table table-outline">
                 <tbody>
                   <tr>
                     <th>氏名</th>
-                    <td>花見川　太郎</td>
+                    <td><?php  echo $meta['name']?></td>
                     <th>会員番号</th>
-                    <td>xxxxxxxxxxx</td>
+                    <td><?php  echo $info['id']?></td>
                   </tr>
                   <tr>
                     <th>コース</th>
-                    <td>JC木　JC金</td>
+                    <td><?php  echo isset($course['nearest']['course_name'])?$course['nearest']['course_name']:''?></td>
                     <th>級</th>
-                    <td>7級</td>
+                    <td><?php echo  isset($course['nearest']['classjoin_nearest']['class_name'])?$course['nearest']['classjoin_nearest']['class_name']:''?></td>
                   </tr>
                   <tr>
                     <th>指導開始日</th>
-                    <td>xxxx年xx月xx日（xx年xヶ月）</td>
+                    <td><?php 
+                    if(isset($course['nearest']['classjoin_nearest']['start_date'])&&$course['nearest']['classjoin_nearest']['start_date']!='')
+                    {
+                      echo  date_format(date_create($course['nearest']['classjoin_nearest']['start_date']),'Y年m月d日(y年M月)');
+                    }
+                      ?></td>
                     <th>生年月日</th>
-                    <td>xxxx年xx月xx日（xx歳）</td>
+                    <td><?php
+                        $today = date_create(date('Y-m-d'));
+                        $birthday = date_create($meta['birthday']);
+                        $diff = date_diff($birthday,$today);                     
+                        echo  date_format($birthday,'Y年m月d日').'('.$diff->format('%y').'歳）';
+                     ?></td>
                   </tr>
                   <tr>
                     <th>健康管理連絡事項</th>
-                    <td class="text-red" colspan="3">皮膚が弱いのでシャワー念入り</td>
+                    <td class="text-red" colspan="3"><?php echo isset($meta['memo_health'])?$meta['memo_health']:'' ?></td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="block-15 text-center">
-              <a href="#0" class="btn btn-warning btn-long">
+              <a href="<?php echo base_url('admin/member/edit').'/'.$info['id'] ?>" class="btn btn-warning btn-long">
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 <span>詳細確認・編集</span>
               </a>
@@ -93,50 +135,51 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th>12345</th>
-                    <td>花見川　太郎</td>
-                    <td>ベビー</td>
-                    <td>A</td>
-                    <td>パンダ</td>
-                    <td></td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-block btn-sm">詳細</a>
-                    </td>
-                  </tr>
-                  <tr class="complete">
-                    <th>12345</th>
-                    <td>花見川　太郎</td>
-                    <td>フラワー</td>
-                    <td>C</td>
-                    <td>6級</td>
-                    <td>退会</td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-block btn-sm">詳細</a>
-                    </td>
-                  </tr>
-                  <tr class="bg-info">
-                    <th>12345</th>
-                    <td>花見川　太郎</td>
-                    <td>一般</td>
-                    <td>C</td>
-                    <td>6級</td>
-                    <td>休会中</td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-block btn-sm">詳細</a>
-                    </td>
-                  </tr>
-                  <tr class="bg-danger">
-                    <th>12345</th>
-                    <td>花見川　太郎</td>
-                    <td>一般</td>
-                    <td>C</td>
-                    <td>6級</td>
-                    <td>会員機能ロック</td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-block btn-sm">詳細</a>
-                    </td>
-                  </tr>
+                </tbody>
+                <?php 
+                    $class = array('','complete','bg-info','bg-danger');
+                    $i = 0;
+                    if(!count($family) >0 )
+                    {
+                      echo '<tr><td colspan="7">No body  !</td></tr>'; 
+                    }
+                    else {
+                      foreach ($family as $key => $value) {
+                        $config = $this->config->item('my_config');
+                        $status = "";
+                        switch ($info['status']) {
+                                case '0':
+                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_WATING];
+                                  break;
+                                case '1':
+                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_MEMBER];
+                                  break;
+                                case '2':
+                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_QUIT_WAIT];
+                                  break;
+                                case '3':
+                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_QUIT];
+                                  break;
+                         }
+                         $name = isset($value['meta']['name'])?$value['meta']['name']:'';
+                         $course_name = isset($value['info'][0]['course_name'])?$value['info'][0]['course_name']:'';
+                         $base_class_sign = isset($value['info'][0]['base_class_sign'])?$value['info'][0]['base_class_sign']:'';
+                         $class_name = isset($value['info'][0]['class_name'])?$value['info'][0]['class_name']:'';
+                          echo  '<tr class='. $class[$i++].'>'.
+                                  '<th>'.$value['id'].'</th>'.
+                                  '<td>'.$name.'</td>'.
+                                  '<td>'.$course_name.'</td>'.
+                                  '<td>'.$base_class_sign.'</td>'.
+                                  '<td>'.$class_name.'</td>'.
+                                  '<td>'.$status.'</td>'.
+                                  '<td>'.
+                                    '<a href=" '.base_url('admin/member/detail/').'/'.$value['id'].'" class="btn btn-success btn-block btn-sm">'.'詳細'.'</a>'.
+                                  '</td>'.
+                                '</tr>';
+                          if($i>3) $i=0;
+                       }
+                    }
+                ?>
                 </tbody>
               </table>
             </div>
@@ -148,7 +191,14 @@
         <div class="panel-heading">最新出席状況</div>
         <div class="panel-body">
           <div class="block-15">
-            <span>2017/09/01 18:32 現在</span>
+            <span><?php 
+                    $now = new \DateTime();
+                    $date = $now->format('Y年m月d日');
+                    $time = $now->format('H:i 現在');
+                    $weekday = getDayofWeek($now->format('Y/m/d H:i'));
+                      echo  $date.'('.$weekday.')'.$time;
+                  ?> 
+           </span>
           </div>
           <div class="row row-table-wrapper text-center">
             <div class="col-sm-4">
@@ -160,11 +210,11 @@
                 </thead>
                 <tbody data-mh="assign-table">
                   <tr>
-                    <th>バス乗車</th>
+                    <th>バス乗車 </th>
                     <td>00:00</td>
                   </tr>
                   <tr>
-                    <th>バス降車</th>
+                    <th>バス降車 </th>
                     <td>00:00</td>
                   </tr>
                   <tr>

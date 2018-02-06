@@ -28,42 +28,27 @@
                 <th></th>
               </thead>
               <tbody>
+              <?php if(!empty($result)){ ?>
+                <?php foreach ($result as $key => $value) {?>
+                  <tr>
+                    <td><?php echo  $value['id']?></td>
+                    <td><?php echo $value['date_register']?></td>
+                    <td><?php echo $value['tag_name']?></td>
+                    <td><?php echo $value['tag_type_course']?></td>
+                    <td><?php echo $value['course_name']?></td>
+                    <td>
+                      <a href="<?php echo base_url('admin/entry/edit/'.$value['id'])?>" class="btn btn-success">
+                        <span>処理</span>
+                      </a>
+                    </td>
+                  </tr>
+                <?php }?>
+              <?php }else{?>
                 <tr>
-                  <td>12345</td>
-                  <td>2017/09/01 21：59</td>
-                  <td>玉葱　太郎</td>
-                  <td>入会</td>
-                  <td>一般</td>
-                  <td>
-                    <a href="#0" class="btn btn-success">
-                      <span>処理</span>
-                    </a>
-                  </td>
+                  <td colspan = 6 center><center><?php echo 'データなし';?></center></td>
                 </tr>
-                <tr>
-                  <td>12345</td>
-                  <td>2017/09/01 21：59</td>
-                  <td>玉葱　太郎</td>
-                  <td>入会</td>
-                  <td>一般</td>
-                  <td>
-                    <a href="#0" class="btn btn-success">
-                      <span>処理</span>
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>12345</td>
-                  <td>2017/09/01 21：59</td>
-                  <td>玉葱　太郎</td>
-                  <td>入会</td>
-                  <td>一般</td>
-                  <td>
-                    <a href="#0" class="btn btn-success">
-                      <span>処理</span>
-                    </a>
-                  </td>
-                </tr>
+              <?php }?>
+                
               </tbody>
             </table>
           </div>
@@ -73,33 +58,9 @@
       <div class="block-15 text-center">
         <nav>
           <ul class="pagination pagination-main">
-            <li class="disabled">
-              <a href="#" aria-label="Previous">
-                <span aria-hidden="true">«</span>
-              </a>
-            </li>
-            <li class="active">
-              <a href="#0">1
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
-            <li>
-              <a href="#0">2</a>
-            </li>
-            <li>
-              <a href="#0">3</a>
-            </li>
-            <li>
-              <a href="#0">4</a>
-            </li>
-            <li>
-              <a href="#0">5</a>
-            </li>
-            <li>
-              <a href="#" aria-label="Next">
-                <span aria-hidden="true">»</span>
-              </a>
-            </li>
+            <?php if (isset($links)) { ?>
+                <?php echo $links ?>
+            <?php } ?>
           </ul>
         </nav>
       </div>

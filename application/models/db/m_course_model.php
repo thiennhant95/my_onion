@@ -79,6 +79,55 @@ class M_course_model extends DB_Model {
             return FALSE;
         }
     }
+        public function getData_Course_valid(){   
+        $query ="SELECT a.id,a.course_code,a.course_name,a.start_date,a.end_date,a.regist_start_date,
+                         a.regist_end_date,a.type,a.join_condition
+                  FROM m_course  a
+                  WHERE a.end_date > NOW() ";
+        $res = $this->db->query($query);
+        if($res === FALSE )
+        {
+            logerr($params, $sql);
+            throw new Exception();
+        }
+        $result = $res->result_array();
+        $this->found_rows = count($result);
+        return $result;
+    }
+    public function get_Info_by_type($type){
+        $params = array(
+            $type,
+            DATA_NOT_DELETED,
+        );
+        $query =  'SELECT * FROM m_course ';
+        $query .= 'WHERE  `type` = ? AND delete_flg = ? ';
+        $res = $this->db->query($query,$params);
+        if($res === FALSE )
+        {
+            logerr($params, $sql);
+            throw new Exception();
+        }
+        $result = $res->result_array();
+        $this->found_rows = count($result);
+        return $result;
+    }
+    public function getData_class_by_id($id = NULL){   
+        if($id == NULL) return '';
+
+        $query =" SELECT a.id as course_id ,
+           b.id as class_id,b.base_class_sign,b.class_code,b.class_name,b.`week`
+                FROM m_course a LEFT JOIN m_class b ON a.id=b.course_id 
+                WHERE a.id='".$id."'";
+        $res = $this->db->query($query);
+        if($res === FALSE )
+        {
+            logerr($params, $sql);
+            throw new Exception();
+        }
+        $result = $res->result_array();
+        $this->found_rows = count($result);
+        return $result;
+    }
 
     function get_list_course($limit, $start)
     {
@@ -187,7 +236,14 @@ class M_course_model extends DB_Model {
         return $data_course;
     }
 
-
+    public function get_info_course($id)
+    {
+        $this->db->select()
+            ->from('m_course')
+            ->where('id', $id);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
 
 
 
