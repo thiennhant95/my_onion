@@ -445,10 +445,17 @@ define('QUIT','quit');
 define('EVENT_TRY','event_entry');
 define('ADDRESS_CHANGE','address_change');
 
-// status student reserve change
+// type student reserve change
 define('ABSENCE','欠席');
 define('TRANSFER','振替');
 define('ABSENCE_TRANSFER','欠席＆振替');
 define('ABSENCE_CANCELED','欠席キャンセル');
 define('TRANSFER_CANCELLATION','振替キャンセル');
 define('ABSENCE_TRANSFER_CANCELLATION','欠席＆振替');
+
+//type student request
+define('PRACTICE_COURSE','練習コース');
+define('BATH_COURSE','バスコース');
+define('NOTICE_OF_ABSENCE','休会届');
+define('NOTICE_OF_WITHDRAWAL',' 退会届');
+define('CHANGE_BASIC_INFORMATION','基本情報変更');

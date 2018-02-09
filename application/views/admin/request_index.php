@@ -26,17 +26,13 @@
               <div class="form-group">
                 <div class="col-sm-1"></div>
                 <div class="col-xs-4 col-sm-3">
-                  <select class="form-control">
-                    <option name="class" value="">xxxx/xx/xx</option>
-                  </select>
+                    <input type="jp-date1" name="date_start" class="form-control">
                 </div>
                 <div class="col-xs-1 sub-label">
                   <p class="text-center">〜</p>
                 </div>
                 <div class="col-xs-4 col-sm-3">
-                  <select class="form-control">
-                    <option name="class" value="">xxxx/xx/xx</option>
-                  </select>
+                    <input type="jp-date2" name="date_end" class="form-control">
                 </div>
                 <div class="col-xs-9 col-sm-3">
                   <select class="form-control">
@@ -44,10 +40,15 @@
                   </select>
                 </div>
               </div>
+
               <div class="form-group">
                 <div class="col-sm-10 col-sm-offset-1">
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="フリーワード検索">
+<!--                      <form method="post">-->
+                      <input type="hidden" name="verify_submit" id="verify_submit" minlength="4" >
+<!--                          <input type="submit">dsdsd</input>-->
+<!--                      </form>-->
+                      <input type="text" id="search" class="form-control" placeholder="フリーワード検索">
                     <span class="input-group-btn">
                       <button class="btn btn-main btn-long" type="button">
                         <i class="fa fa-search" aria-hidden="true"></i>
@@ -227,3 +228,40 @@
 </body>
 
 </html>
+
+<script>
+    //format datetime
+    $(function () {
+        var month = (new Date()).getMonth() + 1;
+        var year  = (new Date()).getFullYear();
+        $('input[type=eu-date]').w2field('date',  { format: 'd.m.yyyy' });
+        $('input[type=eu-dateA]').w2field('date', { format: 'd.m.yyyy', start:  '5.' + month + '.' + year, end: '25.' + month + '.' + year });
+        $('input[type=jp-date1]').w2field('date', { format: 'yyyy/mm/dd', end: $('input[type=jp-date2]') });
+        $('input[type=jp-date2]').w2field('date', { format: 'yyyy/mm/dd', start: $('input[type=jp-date1]') });
+        $('input[type=eu-time]').w2field('time',  { format: 'h24' });
+        $('input[type=eu-timeA]').w2field('time', { format: 'h24', start: '8:00 am', end: '4:30 pm' });});
+
+    // load data reschedule
+    function load_request_data(page)
+    {
+        $.ajax({
+            url:"<?php echo base_url(); ?>admin/request/ajax_load_list/"+page,
+            method:"POST",
+            dataType:"json",
+            data:$('#reschedule').serialize(),
+            success:function(data)
+            {
+                // if (!$('#verify_submit').val()) {
+                //     $('#course_id').html('');
+                //     $('#course_id').html(data.course_list);
+                // }
+                // $('#reschedule_search').html('');
+                // $('#reschedule_search').html(data.list);
+                // $('#pagination').html('');
+                // $('#pagination').html(data.pagination);
+            }
+        });
+    }
+
+    load_request_data(0);
+</script>
