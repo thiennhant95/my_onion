@@ -37,21 +37,60 @@
                   </tr>
                 </thead>
                 <tbody>
+                <?php
+                $contents=json_decode($get_request['contents'],true);
+                switch ($get_request['type'])
+                {
+                    case 'bus_change_once':
+                        $get_request['type']='バス乗降連絡';
+                    case 'bus_change_eternal':
+                        $get_request['type']='バスコース変更';
+                    case 'course_change':
+                        $get_request['type']='練習コース変更';
+                    case 'recess':
+                        $get_request['type']='休会届';
+                    case 'quit':
+                        $get_request['type']='退会届';
+                    case 'event_entry':
+                        $get_request['type']='イベント・短期教室参加申請';
+                    case 'address_change':
+                        $get_request['type']='住所変更申請 ';
+                }
+                switch ($get_request['status'])
+                {
+                    case '0':
+                        $get_request['status']='未処理/未確認';
+                    case '1':
+                        $get_request['status']='承認/処理済み/確認済み';
+                    case '2':
+                        $get_request['status']='保留';
+                }
+                switch ($get_request['comission_flg'])
+                {
+                    case '0': $get_request['comission_flg']='無し';
+                    case '1': $get_request['comission_flg']='手数料発生';
+                    case '2': $get_request['comission_flg']='免除';
+                }
+                switch ($get_request['melody_flg'])
+                {
+                    case '0': $get_request['melody_flg']='未';
+                    case '1':$get_request['melody_flg']='済';
+                }
+                ?>
                   <tr>
-                    <th>12345</th>
-                    <td><a href="#0" class="btn btn-default">玉葱　太郎</a></td>
-                    <td>2017/9/1</td>
-                    <td>バス変更</td>
-                    <td>未処理</td>
-                    <td>---</td>
-                    <td></td>
-                    <td></td>
+                    <th><?php echo $get_request['student_id']?></th>
+                    <td><a href="<?php ?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
+                    <td><?php echo $contents['date_change']?></td>
+                    <td><?php echo $get_request['type']?></td>
+                    <td><?php echo $get_request['status']?></td>
+                    <td><?php  echo $get_request['process_date']?:'---'?></td>
+                    <td><?php echo $get_request['comission_flg']?></td>
+                    <td><?php echo $get_request['melody_flg']?></td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </section>
-
           <form>
             <section>
               <div class="block-30">

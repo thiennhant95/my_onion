@@ -476,6 +476,7 @@ class FRONT_Controller extends CI_Controller {
         $this->_doAuthUser();
     }
 
+    
     /**
      * 処理開始時のもろものの処理
      * @param
@@ -786,6 +787,7 @@ class ADMIN_Controller extends CI_Controller {
         $this->_check_privilage();
     }
 
+    
     /**
      * 処理開始時のもろものの処理
      * @param

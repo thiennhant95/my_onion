@@ -20,8 +20,6 @@ class Auth extends FRONT_Controller {
         if ($this->error_flg) return;
         try
         {
-            $this->login();
-            $this->logout();
             front_layout_view('auth_index', $this->viewVar);
         }
         catch (Exception $e)
@@ -30,6 +28,38 @@ class Auth extends FRONT_Controller {
         }
     }
 
+    public function get_familly()
+    {
+        $data = [];
+        $user_session = $this->session->userdata('user_account');
+        if(!empty($user_session['id'])){
+
+            $list_id_family = [];
+            $this->load->model('db/m_student_model','m_student_model');
+            $user_info = $this->m_student_model->select_by_id($user_session['id'], $key = 'id', $tbl = 'm_student');
+            $tel_number = !empty($user_info[0]['tel_normalize']) ? (string)$user_info[0]['tel_normalize'] : '';
+            $data['family'] =  $this->get_list_family($tel_number);
+            
+            foreach ($data['family'] as $key => $value) {
+                array_push($list_id_family,$value['student_id']);
+            }
+            $data_family = $this->m_student_model->get_name_family($list_id_family);
+            $newdata = array(
+                'list_family'  => $data_family
+        );
+            $this->session->set_userdata($newdata);
+            $data_session = $this->session->userdata('list_family');
+        }
+    }
+    public function get_list_family($tel_number)
+    {
+        $tel_number = ' = '.$tel_number;
+        $tel_tag = ' = '."'tel'";
+        $this->load->model('db/m_student_model','m_student_model');
+        $where = array('value' => $tel_number, 'tag' => $tel_tag);
+        $data = $this->m_student_model->get_list($where, $order = NULL, $tbl = 'l_student_meta');
+        return $data;
+    }
     public function login()
     {
         if(isset($_POST['user']) && isset($_POST['pass']))
@@ -59,7 +89,7 @@ class Auth extends FRONT_Controller {
                             'logged_in' => TRUE,
                         );
                         $this->session->set_userdata('user_account',$user_account_val);
-                        
+                        $this->get_familly();
                         if($check_save)
                         {
                             setcookie("info_user", $user, time()+60*60*2);
@@ -67,11 +97,11 @@ class Auth extends FRONT_Controller {
                             setcookie("info_remember", 1, time()+60*60*2);
                             setcookie("info_user_id", $id_user, time() + 60*60*2 );
                         }
+                        $data['status'] = "OK";
                     }else{
                         $data['status'] = "OK";
                         $data['lock_flag'] = $lock_flag;
                     }
-                    
                 }
                 else
                 {
@@ -83,17 +113,6 @@ class Auth extends FRONT_Controller {
                 $data['status'] = "FAIL";
             }
             echo json_encode($data);
-            die();
-        }
-    }
-
-    public function logout()
-    {
-        if(isset($_POST['flag_logout']))
-        {
-            $data = [];
-            $this->session->sess_destroy();
-            echo json_encode(1);
             die();
         }
     }

@@ -14,22 +14,29 @@
       <section>
         <div class="row">
           <div class="col-xs-6 text-break">
-            <span class="label label-info label-lg">6級</span>
-            <span><strong>2017年1月23日合格</strong></span>
+            <?php if(!empty($class_pass)){?>
+              
+              <span class="label label-info label-lg"><?php echo $name_class ?> 級</span>
+              <span><strong><?php echo $class_pass['end_date']?> 合格</strong></span>
+            <?php }else{?>
+              <span><strong>Don't completed any class</strong></span>
+            <?php }?>
           </div>
           <div class="col-xs-6 text-break">
-            <span class="label label-success label-lg">2年6ヶ月</span>
-            <span><strong>2014年7月入会</strong></span>
+            <span class="label label-success label-lg"><?php echo $time_join['long_time'];?></span>
+            <?php if(!empty($time_join['date_stated'])){?>
+              <span><strong>(<?php echo $time_join['date_stated'];?> 入会)</strong></span>
+            <?php }?>
           </div>
         </div>
       </section>
 
       <section>
+        <?php if(isset($message_nofication)){?>
         <div class="block-30" role="alert">
           <h2 class="h3 text-primary">お知らせ</h2>
           <p class="content03-text-2 mb-xs-30">
-            本日、悪天候のため送迎バスの到着に遅れが生じております。
-            <br> ご迷惑をおかけしますがよろしくお願い致します。
+            <?php echo $message_nofication['body'];?>
           </p>
         </div>
         <div class="center-block text-center block-15">
@@ -37,6 +44,8 @@
             新しいメッセージがあります！
           </div>
         </div>
+        <?php }?>
+
         <div class="alert alert-danger text-center" role="alert">
           <h3 class="lead">
             <strong>現在休会中です。</strong>
@@ -54,10 +63,10 @@
 
             <div class="row btn-list-row block-15">
               <div class="col-sm-6">
-                <a class="btn-icon btn-icon-calender bg-red" href="#0">
+                <a class="btn-icon btn-icon-calender bg-red" href="<?php echo base_url('/reschedule');?>">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
-                      <span>練習コース振替申請</span>
+                      <span>欠席・振替申請</span>
                       <small>Markup</small>
                     </span>
                   </div>
@@ -67,7 +76,7 @@
                 <a class="btn-icon btn-icon-swim bg-light-blue" href="#0">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
-                      <span>練習コース振替申請</span>
+                      <span>出席記録</span>
                       <small>Markup</small>
                     </span>
                   </div>
@@ -84,10 +93,10 @@
                 </a>
               </div>
               <div class="col-sm-6">
-                <a class="btn-icon btn-icon-memo bg-green" href="#0">
+                <a class="btn-icon btn-icon-memo bg-green" href="<?php echo base_url('/request');?>">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
-                      <span>練習コース振替申請</span>
+                      <span>基本情報変更</span>
                       <small>Markup</small>
                     </span>
                   </div>
@@ -96,7 +105,7 @@
             </div>
 
             <p class="text-center">
-              <a href="" class="btn btn-link">
+              <a href="<?php echo base_url('/help')?>" class="btn btn-link">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                 <span>ヘルプ・お困りのときはこちら</span>
               </a>

@@ -48,7 +48,7 @@ class L_student_reserve_change_model extends DB_Model {
         }
         else
         {
-            $date_start='1970/01/01';
+            $date_start='1970-01-01';
         }
         if ($this->input->post('date_end'))
         {
@@ -138,7 +138,7 @@ class L_student_reserve_change_model extends DB_Model {
             }
             else
             {
-                $date_start='1970/01/01';
+                $date_start='1970-01-01';
             }
             if ($this->input->post('date_end'))
             {
@@ -218,7 +218,27 @@ class L_student_reserve_change_model extends DB_Model {
                 return $total;
             }
             else if ($count==FALSE) {
-                return $student_reserve;
+                foreach ($student_reserve as $row_student_reserve)
+                {
+                    $data_return['id']=$row_student_reserve['id'];
+                    $data_return['student_id']=$row_student_reserve['student_id'];
+                    $data_return['name']=$row_student_reserve['name'];
+                    $data_return['type']=$row_student_reserve['type'];
+                    $data_return['course_name']=$row_student_reserve['course_name'];
+                    $data_return['class_name']=$row_student_reserve['class_name'];
+                    $data_return['dist_class_name']=$row_student_reserve['dist_class_name'];
+                    $data_return['contents']=json_decode($row_student_reserve['contents'],true)['contents'];
+                    $data_return['reason']=$row_student_reserve['reason'];
+                    $data_return['reason_text']=$row_student_reserve['reason_text'];
+                    $data_return['reason']=$row_student_reserve['reason'];
+                    $data_return['test']=$row_student_reserve['test'];
+                    $data_return['status']=$row_student_reserve['status'];
+                    $data_return_reserve[]=$data_return;
+
+                }
+//                print_r($data_return_reserve);
+//                die();
+                return  $data_return_reserve;
             }
     }
 }

@@ -1072,7 +1072,7 @@ table .disabled
 {
   font-size: 14px;
   font-weight: bold;
-  content: "選択";
+  /* content: "選択"; */
 }
 
 .date-selector tbody td:not(.disabled):not(.selected):hover
@@ -3088,6 +3088,17 @@ tbody tr .fc-sat{
   border-radius: 5px;
   font-size: 15px;
   width: 95px;
+}
+.hidden_tr{
+  display: none;
+}
+.show_tr{
+  display: table-row;
+}
+.fix_css_btn_action{
+  width: 120px;
+  margin: 0 auto;
+  border: 1px solid #97c7;
 }
 
 /* Admin Entry Edit */

@@ -12,7 +12,7 @@
     <?php
         if ( $check_error == 'error' ) { ?>
           <div class="container">
-            <p class="text-center">Đã có lỗi xảy ra, vui lòng thử lại</p>
+            <p class="text-center">There was an error, please try again</p>
           </div>
         <?php } else { ?>
     <div class="container">
@@ -39,7 +39,7 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">ご氏名</label>
               <div class="col-sm-5">
-                <span class="form-send-confirm-display text-light"><?php echo $name; ?></span>
+                <span class="form-send-confirm-display text-light"><?php echo $s_info['meta']['name']; ?></span>
               </div>
             </div>
 
@@ -49,76 +49,11 @@
                 <input type="text" name="name_kana" maxlength="64" class="form-control" value="" placeholder="">
               </div>
             </div>
-
             <div class="form-group"  style="margin-bottom:0px;">
               <label for="" class="col-xs-12 col-sm-2 control-label">生年月日</label>
-              <div class="col-xs-3 col-sm-2">
-                <select class="form-control" name="year_of_birth">
-                  <option value>----</option>
-                  <?php
-                    for ( $i = 1900; $i <= date( 'Y' ); $i++ ) {
-                      echo '<option value="' . $i . '">' . $i . '年</option>';
-                    }
-                  ?>
-                </select>
+              <div class="col-sm-2">
+                <input name="birthday" class="form-control year_month" value=""/>
               </div>
-              <div class="col-xs-3 col-sm-2">
-                <select class="form-control" name="month_of_birth">
-                  <option value>----</option>
-                  <option value="01">1月</option>
-                  <option value="02">2月</option>
-                  <option value="03">3月</option>
-                  <option value="04">4月</option>
-                  <option value="05">5月</option>
-                  <option value="06">6月</option>
-                  <option value="07">7月</option>
-                  <option value="08">8月</option>
-                  <option value="09">9月</option>
-                  <option value="10">10月</option>
-                  <option value="11">11月</option>
-                  <option value="12">12月</option>
-                </select>
-              </div>
-              <div class="col-xs-3 col-sm-2">
-                <select class="form-control" name="day_of_birth">
-                  <option value>----</option>
-                  <option value="01">1日</option>
-                  <option value="02">2日</option>
-                  <option value="03">3日</option>
-                  <option value="04">4日</option>
-                  <option value="05">5日</option>
-                  <option value="06">6日</option>
-                  <option value="07">7日</option>
-                  <option value="08">8日</option>
-                  <option value="09">9日</option>
-                  <option value="10">10日</option>
-                  <option value="11">11日</option>
-                  <option value="12">12日</option>
-                  <option value="13">13日</option>
-                  <option value="14">14日</option>
-                  <option value="15">15日</option>
-                  <option value="16">16日</option>
-                  <option value="17">17日</option>
-                  <option value="18">18日</option>
-                  <option value="19">19日</option>
-                  <option value="20">20日</option>
-                  <option value="21">21日</option>
-                  <option value="22">22日</option>
-                  <option value="23">23日</option>
-                  <option value="24">24日</option>
-                  <option value="25">25日</option>
-                  <option value="26">26日</option>
-                  <option value="27">27日</option>
-                  <option value="28">28日</option>
-                  <option value="29">29日</option>
-                  <option value="30">30日</option>
-                  <option value="31">31日</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="" class="col-xs-12 col-sm-2 control-label"></label>
-              <div class="msg_birthday col-sm-3"></div>
             </div>
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">性別</label>
@@ -139,7 +74,7 @@
               <label for="" class="col-sm-2 control-label">ご住所</label>
               <div class="col-sm-8">
                 <p class="form-send-confirm-text text-light">
-                  <strong><?php echo '〒' . $zip . '　' . $address; ?></strong>
+                  <strong><?php echo '〒' . $s_info['meta']['zip'] . '　' . $s_info['meta']['address']; ?></strong>
                 </p>
               </div>
             </div>
@@ -148,7 +83,7 @@
               <label for="" class="col-sm-2 control-label">電話番号</label>
               <div class="col-sm-5">
                 <p class="form-send-confirm-text text-light">
-                  <strong><?php echo $tel; ?></strong>
+                  <strong><?php echo $s_info['meta']['tel']; ?></strong>
                 </p>
               </div>
             </div>
@@ -157,7 +92,7 @@
               <label for="" class="col-sm-2 control-label">メールアドレス</label>
               <div class="col-sm-5">
                 <p class="form-send-confirm-text text-light">
-                  <strong><?php echo $email_address; ?></strong>
+                  <strong><?php echo $s_info['info']['email']; ?></strong>
                 </p>
               </div>
             </div>
@@ -190,13 +125,11 @@
                       <label for="" class="col-sm-2 control-label">学年</label>
                       <div class="col-sm-3">
                         <select class="form-control" name="school_grade">
-                          <option value>----</option>
-                          <option value="幼稚園">幼稚園</option>
-                          <option value="小学1年～6年生">小学1年～6年生</option>
-                          <option value="中学1年～3年生">中学1年～3年生</option>
-                          <option value="高校1年～3年生">高校1年～3年生</option>
-                          <option value="専門学校・高専">専門学校・高専</option>
-                          <option value="大学生">大学生</option>
+                          <?php
+                            foreach ( $school_grades as $k => $v ) {
+                              echo '<option value="' . $v . '">' .  $v . '</option>';
+                            }
+                          ?>
                         </select>
                       </div>
                     </div>
@@ -360,32 +293,10 @@
                       <label for="" class="control-label">クラブ名</label>
                       <input type="text" name="club_name" maxlength="64" class="form-control" value="" placeholder="">
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
                       <label for="" class="control-label">退会</label>
                       <div class="row">
-                        <div class="col-xs-6">
-                          <select name="year" class="form-control">
-                            <option value>----</option>
-                            <option value="2000">2000年</option>
-                          </select>
-                        </div>
-                        <div class="col-xs-6">
-                          <select name="month" class="form-control">
-                            <option value>----</option>
-                            <option value="1">1月</option>
-                            <option value="2">2月</option>
-                            <option value="3">3月</option>
-                            <option value="4">4月</option>
-                            <option value="5">5月</option>
-                            <option value="6">6月</option>
-                            <option value="7">7月</option>
-                            <option value="8">8月</option>
-                            <option value="9">9月</option>
-                            <option value="10">10月</option>
-                            <option value="11">11月</option>
-                            <option value="12">12月</option>
-                          </select>
-                        </div>
+                        <input name="year_month" class="form-control year_month" value=""/>
                       </div>
                     </div>
                   </div>
@@ -530,7 +441,7 @@
                 <h4 class="modal-title">Error</h4>
               </div>
               <div class="modal-body">
-                <p>Đã xảy ra lỗi, vui lòng thử lại</p>
+                <p>There was an error, please try again</p>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -612,7 +523,7 @@
           <span>TOPへ戻る</span>
         </a>
       </div>
-      <input type="hidden" name="student_id" value="<?php echo $student_id; ?>" />
+      <input type="hidden" name="student_id" value="<?php echo $s_info['info']['id']; ?>" />
     </div>
   </main>
 
@@ -623,6 +534,38 @@
 </html>
 <script>
   $(document).ready(function() {
+    var options = {
+      format: 'yyyy-mm-dd',
+      todayBtn: "linked",
+      todayHighlight: true,
+      autoclose: true,
+      language:'jp'
+    };
+
+    $.fn.datepicker.dates['jp'] = {
+        days: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        daysShort: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        daysMin: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        months:  ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+        monthsShort:  ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+        today: "今日",
+        clear: "クリア",
+        weekStart: 0
+    };
+    var options_year_month={
+        isRTL: false,
+        format: 'yyyy-mm',
+        minViewMode: 'months',
+        todayHighlight: true,
+        autoclose: true,
+        language:'jp',
+        orientation: "auto right",
+    };
+
+    $('input[name=year_month]').datepicker(options_year_month);
+
+    $('input[name=birthday]').datepicker(options);
+
     jQuery.validator.addMethod("katakana", function(value, element) {
       return this.optional(element) || /[\u30A0-\u30FF]|\u203B/.test(value);
     }, "Katakana string");
@@ -644,14 +587,15 @@
           $('#confirm-btn').prop('disabled', 'disabled');
         }
     });
-    $('#questionnaire input').on('click', function () {
+    $('#questionnaire input:not(.year_month)').on('click', function () {
         if ($('#questionnaire').valid()) {
           $('#confirm-btn').prop('disabled', false);
         } else {
           $('#confirm-btn').prop('disabled', 'disabled');
         }
     });
-    $('#questionnaire input').on('keyup blur', function () {
+    $("input:not(:empty)")
+    $('#questionnaire input:not(.year_month)').on('keyup blur', function () {
         if ($('#questionnaire').valid()) {
           $('#confirm-btn').prop('disabled', false);
         } else {
@@ -665,15 +609,14 @@
           $('#confirm-btn').prop('disabled', 'disabled');
         }
     });
+    
     $("#questionnaire").validate({
       rules: {
           name_kana: { 
             required: true,
             katakana: true
           },
-          year_of_birth: { required: true },
-          month_of_birth: { required: true },
-          day_of_birth: { required: true },
+          birthday: { required: true },
           sex: { required: true },
           emergency_tel: { 
             onebyte: true,
@@ -681,44 +624,39 @@
           },
           school_name: {
             required: function(element) {
-              var school_name_check = $('select[name=year_of_birth]').val() + $('select[name=month_of_birth]').val() + $('select[name=day_of_birth]').val();
-              var school_name_return = moment().diff(moment(school_name_check, 'YYYYMMDD'), 'years');
+              var school_name_check = $('input[name=birthday]').val();
+              var school_name_return = moment().diff(moment(school_name_check, 'YYYY-MM-DD'), 'years');
               return  school_name_return < 18;
             },
             twobyte: true
           },
           parent_name: { 
             required: function(element) {
-              var parent_name_check = $('select[name=year_of_birth]').val() + $('select[name=month_of_birth]').val() + $('select[name=day_of_birth]').val();
-              var parent_name_return = moment().diff(moment(parent_name_check, 'YYYYMMDD'), 'years');
+              var parent_name_check = $('input[name=birthday]').val();
+              var parent_name_return = moment().diff(moment(parent_name_check, 'YYYY-MM-DD'), 'years');
               return  parent_name_return < 18;
             },
             twobyte: true
           },
           school_grade: { 
             required: function(element) {
-              var school_grade_check = $('select[name=year_of_birth]').val() + $('select[name=month_of_birth]').val() + $('select[name=day_of_birth]').val();
-              var school_grade_return = moment().diff(moment(school_grade_check, 'YYYYMMDD'), 'years');
+              var school_grade_check = $('input[name=birthday]').val();
+              var school_grade_return = moment().diff(moment(school_grade_check, 'YYYY-MM-DD'), 'years');
               return  school_grade_return < 18;
             }
           },
           check_parent: { 
             required: function(element) {
-              var school_check_parent = $('select[name=year_of_birth]').val() + $('select[name=month_of_birth]').val() + $('select[name=day_of_birth]').val();
-              var school_check_parent_return = moment().diff(moment(school_check_parent, 'YYYYMMDD'), 'years');
+              var school_check_parent = $('input[name=birthday]').val();
+              var school_check_parent_return = moment().diff(moment(school_check_parent, 'YYYY-MM-DD'), 'years');
               return  school_check_parent_return < 18;
             }
           },
           course_type: { required: true }
       },
-      groups: {
-        birthday: "year_of_birth month_of_birth day_of_birth"
-      },
       errorPlacement: function (error, element) {
         if ( element.attr('name') == 'sex' )
           error.appendTo('.msg_sex');
-        else if ( element.attr('name') == 'year_of_birth' || element.attr('name') == 'month_of_birth' || element.attr('name') == 'day_of_birth' )
-          error.appendTo('.msg_birthday');
         else if ( element.attr('name') == 'course_type' )
           error.appendTo('.msg_course_type');
         else if ( element.attr('name') == 'check_parent' )
@@ -731,9 +669,7 @@
             required: "Name kana is required",
             katakana: "Name must be katakana"
           },
-          year_of_birth: { required: "Birthday is required" },
-          month_of_birth: { required: "Birthday is required" },
-          day_of_birth: { required: "Birthday is required" },
+          birthday: { required: "Birthday is required" },
           sex: { required: "Sex is required" },
           emergency_tel: { 
             onebyte: "Emergency tel must be 1 byte",
@@ -762,7 +698,7 @@
 
     $('#questionnaire-btn').click(function() {
       var name_kana = $('input[name=name_kana]').val();
-      var birthday = $('select[name=year_of_birth] option:selected').val() + $('select[name=month_of_birth] option:selected').val() + $('select[name=day_of_birth] option:selected').val();
+      var birthday = $('input[name=birthday]').val();
       var sex = $('input[name=sex]').val();
       var emergency_tel = $('input[name=emergency_tel]').val();
       var school_name = $('input[name=school_name]').val();
@@ -784,7 +720,16 @@
       if ( $('input[name=free_lesson]').is(":checked") ) free_lesson = 1;
       if ( $('input[name=short_lesson]').is(":checked") ) short_lesson = 1;
       if ( $('input[name=status]').is(":checked") ) status = 1;
+      var year_month = '';
+      if ( $('input[name=year_month]').val() != '' ) {
+        year_month = $('input[name=year_month]').val();
+        year_month = year_month.split('-');
+      } else {
+        year_month = ['', ''];
+      }
 
+
+     
       var enquete = {
         "face_into_water": face_into_water,
         "not_face_into_water": not_face_into_water,
@@ -804,8 +749,8 @@
         "experience": {
           "status": status,
           "club_name": $('input[name=club_name]').val(),
-          "year": $('select[name=year]').val(),
-          "month": $('select[name=month]').val(),
+          "year": year_month[0],
+          "month": year_month[1],
         }
       }
       var course_type = $( 'input[name=course_type]:checked' ).val();
@@ -834,39 +779,39 @@
           }
           console.log( data );
 
-      var birthday_check = moment().diff(moment(birthday, 'YYYYMMDD'), 'years');
-      if ( name_kana != '' && birthday != '' && course_type != '' ) {
-        $.ajax({
-          url: 'https:' + "<?php echo base_url().'entry/questionnaire'?>",
-          data: { 
-            name_kana : name_kana,
-            birthday : birthday,
-            sex : sex,
-            emergency_tel : emergency_tel,
-            school_name : school_name,
-            parent_name : parent_name,
-            school_grade : school_grade,
-            bus_use_flg : bus_use_flg,
-            enquete : enquete,
-            course_type : course_type,
-            course_lesson : course_lesson,
-            memo_to_coach : memo_to_coach,
-            student_id : student_id
-          },
-          method: "POST",
-          dataType: "json",
-          success: function(result) {
-            $('.form-send-confirm-display strong').text(result['student_id']);
-            $('#page_init').css('display','none');
-            $('#page_complete').css('display','block');
-            if ( birthday_check >= 18 ) $('.parent-text').css('display', 'block');
-          }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-            console.log('error');
-          }
-        });
-      } else {
-        $('#modal-error').modal( 'show' );
-      }
+        var birthday_check = moment().diff(moment(birthday, 'YYYYMMDD'), 'years');
+        if ( name_kana != '' && birthday != '' && course_type != '' ) {
+          $.ajax({
+            url: 'https:' + "<?php echo base_url().'entry/questionnaire'?>",
+            data: { 
+              name_kana : name_kana,
+              birthday : birthday,
+              sex : sex,
+              emergency_tel : emergency_tel,
+              school_name : school_name,
+              parent_name : parent_name,
+              school_grade : school_grade,
+              bus_use_flg : bus_use_flg,
+              enquete : enquete,
+              course_type : course_type,
+              course_lesson : course_lesson,
+              memo_to_coach : memo_to_coach,
+              student_id : student_id
+            },
+            method: "POST",
+            dataType: "json",
+            success: function(result) {
+              $('.form-send-confirm-display strong').text(result['student_id']);
+              $('#page_init').css('display','none');
+              $('#page_complete').css('display','block');
+              if ( birthday_check >= 18 ) $('.parent-text').css('display', 'block');
+            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+              console.log('error');
+            }
+          });
+        } else {
+          $('#modal-error').modal( 'show' );
+        }
     });
   });
 </script>

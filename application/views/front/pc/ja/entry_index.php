@@ -117,14 +117,49 @@
             </div>
             <div class="panel-footer text-center">
               <div class="block-30">
-                <button type="button" class="btn btn-success btn-lg btn-long" id="register-btn">
+                <button type="button" class="btn btn-success btn-lg btn-long" id="confirm-btn" data-toggle="modal" data-target="#modal-confirm">
                   <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                   <span id="confirm">送信内容を確認</span>
                 </button>
               </div>
             </div>
-            <div class="err_msg"><!-- message -->
+
+            <div class="modal fade" id="modal-confirm" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Confirm register</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure to register?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="register-btn">Register</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
               </div>
+            </div>
+
+            <div class="modal fade" id="modal-error" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Error</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>There was an error, please try again</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="err_msg"><!-- message --></div>
           </form>
 
         </div>
@@ -225,7 +260,7 @@
             return this.optional(element) || /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/.test(value);
         }, "Must be 2 byte character");
 
-        $('#register-btn').prop('disabled', 'disabled');
+        $('#confirm-btn').prop('disabled', 'disabled');
         $('.msg_email_address').css('display', 'none');
         $("#register").validate({
             rules: {
@@ -294,17 +329,17 @@
 
         $('#register input').on('keyup blur', function () {
             if ($('#register').valid()) {
-                $('#register-btn').prop('disabled', false);
+                $('#confirm-btn').prop('disabled', false);
             } else {
-                $('#register-btn').prop('disabled', 'disabled');
+                $('#confirm-btn').prop('disabled', 'disabled');
             }
         });
 
         $('#register input').on('click', function () {
             if ($('#register').valid()) {
-                $('#register-btn').prop('disabled', false);
+                $('#confirm-btn').prop('disabled', false);
             } else {
-                $('#register-btn').prop('disabled', 'disabled');
+                $('#confirm-btn').prop('disabled', 'disabled');
             }
         });
 
@@ -316,33 +351,38 @@
             var address = $('input[name=address]').val();
             var phone_number = $('input[name=phone_number]').val();
             var email_address = $('input[name=email_address]').val();
-            $.ajax({
-                url: 'https:' + "<?php echo base_url().'entry'?>",
-                data: {
-                    user_name : user_name,
-                    postal_code :  postal_code1 + '-' + postal_code2,
-                    address : address,
-                    phone_number : phone_number,
-                    email_address : email_address
-                },
-                method: "POST",
-                dataType: "json",
-                success: function(result) {
-                    console.log('success ok');
-                    if (result['insert'] == 'email_exists') {
-                        console.log('email exit');
-                        $('.msg_email_address').text('This email already exists');
-                        $('.msg_email_address').css('display', 'inline');
-                    } else {
-                        console.log( 'hien thi' );
-                        $('.form-send-confirm-display strong').text(email_address);
-                        $('#page_init').css('display','none');
-                        $('#page_complete').css('display','block');
-                    }
-                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log('error');
-                }
-            });
+            var data = {
+                user_name : user_name,
+                postal_code :  postal_code1 + '-' + postal_code2,
+                address : address,
+                phone_number : phone_number,
+                email_address : email_address
+            }
+            if ( user_name != '' && postal_code1 != '' && postal_code2 != '' && address != '' && phone_number != '' && email_address != '' ) {
+              $.ajax({
+                  url: 'https:' + "<?php echo base_url().'entry'?>",
+                  data: data,
+                  method: "POST",
+                  dataType: "json",
+                  success: function(result) {
+                      console.log('success ok');
+                      if (result['insert'] == 'email_exists') {
+                          console.log('email exit');
+                          $('.msg_email_address').text('This email already exists');
+                          $('.msg_email_address').css('display', 'inline');
+                      } else {
+                          console.log( 'hien thi' );
+                          $('.form-send-confirm-display strong').text(email_address);
+                          $('#page_init').css('display','none');
+                          $('#page_complete').css('display','block');
+                      }
+                  }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                      console.log('error');
+                  }
+              });
+            } else {
+              $('#modal-error').modal( 'show' );
+            }
         });
     });
 </script>

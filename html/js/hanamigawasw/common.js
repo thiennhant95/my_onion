@@ -118,32 +118,32 @@
   /**
    *  date-table selected
    */
-  Common.dateTableSelected = $(function () {
-    var TABLE = 'table.date-selector';
-    var SELECTED_CLASS = 'selected';
-    var DISABLED_CLASS = 'disabled';
-    var CLICKED_CELL = 'tbody td:not(.' + DISABLED_CLASS + '):not(.' + SELECTED_CLASS + ')';
+  // Common.dateTableSelected = $(function () {
+  //   var TABLE = 'table.date-selector';
+  //   var SELECTED_CLASS = 'selected';
+  //   var DISABLED_CLASS = 'disabled';
+  //   var CLICKED_CELL = 'tbody td:not(.' + DISABLED_CLASS + '):not(.' + SELECTED_CLASS + ')';
 
-    var countCell = function ($table) {
-      var counterID = $table.attr('data-counter');
-      if (counterID && $(counterID).length) {
-        $(counterID).text($table.find(CLICKED_CELL).length);
-      }
-    };
-    var toggleSelected = function (e) {
-      if ($(e.target).hasClass(SELECTED_CLASS)) {
-        $(e.target).removeClass(SELECTED_CLASS);
-      } else {
-        $(e.target).addClass(SELECTED_CLASS);
-      }
-      countCell($(e.target).closest(TABLE));
-    };
+  //   var countCell = function ($table) {
+  //     var counterID = $table.attr('data-counter');
+  //     if (counterID && $(counterID).length) {
+  //       $(counterID).text($table.find(CLICKED_CELL).length);
+  //     }
+  //   };
+  //   var toggleSelected = function (e) {
+  //     if ($(e.target).hasClass(SELECTED_CLASS)) {
+  //       $(e.target).removeClass(SELECTED_CLASS);
+  //     } else {
+  //       $(e.target).addClass(SELECTED_CLASS);
+  //     }
+  //     countCell($(e.target).closest(TABLE));
+  //   };
 
-    $(TABLE).each(function () {
-      $(this).find(CLICKED_CELL).on('click', toggleSelected);
-      countCell($(this));
-    });
-  });
+  //   $(TABLE).each(function () {
+  //     $(this).find(CLICKED_CELL).on('click', toggleSelected);
+  //     countCell($(this));
+  //   });
+  // });
 
 
   /**

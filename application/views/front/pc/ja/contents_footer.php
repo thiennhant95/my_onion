@@ -7,3 +7,4 @@
     <p class="footer-copy">&copy; Hanamigawa Swimming Club. All Rights Reserved.</p>
   </div>
 </footer>
+

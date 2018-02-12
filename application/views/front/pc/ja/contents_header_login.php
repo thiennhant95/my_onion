@@ -11,7 +11,7 @@
         <span class="header-hd-main">ホエールくん</span>
       </div>
       <div class="header-cell">
-        <p class="header-login-badge">会員専用</p>
+        <a href="<?php echo base_url(); ?>entry"><p class="header-login-badge">会員専用</p></a>
       </div>
     </div>
   </div>

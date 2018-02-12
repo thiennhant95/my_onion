@@ -59,4 +59,22 @@ class L_student_class_model extends DB_Model {
         return $res->result_array();
     }
 
+    public function get_class_pass_student($where)
+    {
+        $this->db->select()
+            ->from('l_student_class')
+            ->where($where);
+        $this->db->order_by('start_date', 'DESC');
+        $data = $this->db->get()->row_array();
+        return $data;
+    }
+
+    public function get_name_class($id_class){
+        $this->db->select('class_name')
+        ->from('m_class')
+        ->where('id', $id_class);
+        $data = $this->db->get()->row_array();
+        return $data;
+    }
+
 }

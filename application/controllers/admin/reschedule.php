@@ -143,6 +143,10 @@ class Reschedule extends ADMIN_Controller {
                 $offset=$i*$limit;
                 $data[]=$this->student_reserve->export_csv($limit,$offset,FALSE);
             }
+//            echo "<pre>";
+//            print_r($data);
+//            print_r($count_reschedule);
+//            die();
             array_unshift($data[0],array("級コード","級名"));
             $this->load->helper('csv');
             array_to_csv($data, 'reschedule_'.date('Ymd').'.csv');

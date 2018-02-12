@@ -8,21 +8,20 @@
 <body>
   <?php require_once("contents_header_admin.php"); ?>
 
-
+  <form class="form-horizontal" id="request" method="post" action="<?php echo site_url('admin/request/export_csv') ?>">
   <main class="content content-dark">
     <div class="container">
 
       <div class="panel panel-dotted">
         <div class="panel-heading">
           <span class="text-violet">契約変更申請一覧</span>
-          <a href="#0" class="btn btn-primary btn-sm pull-right">
+          <a onclick="document.getElementById('request').submit();" class="btn btn-primary btn-sm pull-right">
             <strong>CSV出力</strong>
           </a>
         </div>
         <div class="panel-body">
 
           <section>
-            <form class="form-horizontal">
               <div class="form-group">
                 <div class="col-sm-1"></div>
                 <div class="col-xs-4 col-sm-3">
@@ -35,48 +34,48 @@
                     <input type="jp-date2" name="date_end" class="form-control">
                 </div>
                 <div class="col-xs-9 col-sm-3">
-                  <select class="form-control">
-                    <option name="class" value="">申請内容</option>
+                  <select class="form-control" name="type">
+                      <option  value="1">申請内容</option>
+                      <option  value="<?php echo PRACTICE_COURSE?>"><?php echo PRACTICE_COURSE?></option>
+                      <option value="<?php echo BUS_COURSE?>"><?php echo BUS_COURSE?></option>
+                      <option value="<?php echo NOTICE_OF_ABSENCE?>"><?php echo NOTICE_OF_ABSENCE?></option>
+                      <option value="<?php echo NOTICE_OF_WITHDRAWAL?>"><?php echo NOTICE_OF_WITHDRAWAL?></option>
+                      <option value="<?php echo CHANGE_BASIC_INFORMATION?>"><?php echo CHANGE_BASIC_INFORMATION?></option>
                   </select>
                 </div>
               </div>
-
               <div class="form-group">
                 <div class="col-sm-10 col-sm-offset-1">
                   <div class="input-group">
-<!--                      <form method="post">-->
-                      <input type="hidden" name="verify_submit" id="verify_submit" minlength="4" >
-<!--                          <input type="submit">dsdsd</input>-->
-<!--                      </form>-->
-                      <input type="text" id="search" class="form-control" placeholder="フリーワード検索">
+                      <input type="hidden" name="verify_submit" id="verify_submit">
+                      <input type="text" name="free_text_search" id="search" class="form-control" placeholder="フリーワード検索">
                     <span class="input-group-btn">
-                      <button class="btn btn-main btn-long" type="button">
+                      <button class="btn btn-main btn-long" type="button" id="search_request">
                         <i class="fa fa-search" aria-hidden="true"></i>
                       </button>
                     </span>
                   </div>
                 </div>
               </div>
-            </form>
           </section>
 
           <hr class="hr-dashed">
 
           <section>
-
+            <input type="hidden" name="status" id="status" value="list_all">
             <div class="block-30">
               <nav class="master-nav">
                 <ul class="nav nav-pills" role="group">
-                  <li role="presentation">
+                  <li role="presentation" id="not_confirm">
                     <a href="#0">未処理</a>
                   </li>
-                  <li role="presentation">
+                  <li role="presentation" id="confirm">
                     <a href="#0">処理済み</a>
                   </li>
-                  <li role="presentation">
+                  <li role="presentation" id="reserve">
                     <a href="#0">保留</a>
                   </li>
-                  <li role="presentation" class="active">
+                  <li role="presentation" class="active" id="list_all">
                     <a href="#0">全て</a>
                   </li>
                 </ul>
@@ -98,87 +97,7 @@
                     <th>確認</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <th>12345</th>
-                    <td>玉葱　太郎</td>
-                    <td>2017/9/1</td>
-                    <td>バス変更</td>
-                    <td>未処理</td>
-                    <td>---</td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-sm btn-block">確認</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>12345</th>
-                    <td>玉葱　太郎</td>
-                    <td>2017/9/1</td>
-                    <td>住所変更</td>
-                    <td>未処理</td>
-                    <td>---</td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-sm btn-block">確認</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>12345</th>
-                    <td>玉葱　太郎</td>
-                    <td>2017/9/1</td>
-                    <td>コース変更</td>
-                    <td>処理済み</td>
-                    <td>2017/9/1</td>
-                    <td>無</td>
-                    <td></td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-sm btn-block">確認</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>12345</th>
-                    <td>玉葱　太郎</td>
-                    <td>2017/9/1</td>
-                    <td>休会</td>
-                    <td>処理済み</td>
-                    <td>2017/9/1</td>
-                    <td>無</td>
-                    <td></td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-sm btn-block">確認</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>12345</th>
-                    <td>玉葱　太郎</td>
-                    <td>2017/9/1</td>
-                    <td>コース変更</td>
-                    <td>保留</td>
-                    <td>2017/9/1</td>
-                    <td>発生</td>
-                    <td>済</td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-sm btn-block">確認</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>12345</th>
-                    <td>玉葱　太郎</td>
-                    <td>2017/9/1</td>
-                    <td>バス変更</td>
-                    <td>処理済み</td>
-                    <td>2017/9/1</td>
-                    <td>
-                      <span class="text-red">免除</span>
-                    </td>
-                    <td>済</td>
-                    <td>
-                      <a href="#0" class="btn btn-success btn-sm btn-block">確認</a>
-                    </td>
-                  </tr>
+                <tbody id="request_table">
                 </tbody>
               </table>
             </div>
@@ -187,41 +106,10 @@
       </div>
 
 
-      <div class="block-15 text-center">
-        <nav>
-          <ul class="pagination pagination-main">
-            <li class="disabled">
-              <a href="#" aria-label="Previous">
-                <span aria-hidden="true">«</span>
-              </a>
-            </li>
-            <li class="active">
-              <a href="#0">1
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
-            <li>
-              <a href="#0">2</a>
-            </li>
-            <li>
-              <a href="#0">3</a>
-            </li>
-            <li>
-              <a href="#0">4</a>
-            </li>
-            <li>
-              <a href="#0">5</a>
-            </li>
-            <li>
-              <a href="#" aria-label="Next">
-                <span aria-hidden="true">»</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+        <div class="block-15 text-center" id="pagination">
+        </div>
     </div>
-
+      </form>
   </main>
 
   <?php require_once("contents_footer.php"); ?>
@@ -241,6 +129,71 @@
         $('input[type=eu-time]').w2field('time',  { format: 'h24' });
         $('input[type=eu-timeA]').w2field('time', { format: 'h24', start: '8:00 am', end: '4:30 pm' });});
 
+
+    //load data request rerseve
+    $(document).ready(function(){
+        $("#reserve").click(function (e) {
+            e.preventDefault();
+            $('#reserve').addClass('active');
+            $('#confirm').removeClass('active');
+            $('#not_confirm').removeClass('active');
+            $('#list_all').removeClass('active');
+            $('#status').val('2');
+            $('#verify_submit').val('');
+            load_request_data(0);
+        });
+    });
+
+    //load data request confirm
+    $(document).ready(function(){
+        $("#confirm").click(function (e) {
+            e.preventDefault();
+            $('#reserve').removeClass('active');
+            $('#confirm').addClass('active');
+            $('#not_confirm').removeClass('active');
+            $('#list_all').removeClass('active');
+            $('#status').val('0');
+            $('#verify_submit').val('');
+            load_request_data(0);
+        });
+    });
+    $(document).ready(function(){
+        $("#not_confirm").click(function (e) {
+            e.preventDefault();
+            $('#reserve').removeClass('active');
+            $('#confirm').removeClass('active');
+            $('#not_confirm').addClass('active');
+            $('#list_all').removeClass('active');
+            $('#status').val('1');
+            $('#verify_submit').val('');
+            load_request_data(0);
+        });
+    });
+
+    $(document).ready(function(){
+        $("#list_all").click(function (e) {
+            e.preventDefault();
+            $('#reserve').removeClass('active');
+            $('#confirm').removeClass('active');
+            $('#not_confirm').removeClass('active');
+            $('#list_all').addClass('active');
+            $('#status').val('list_all');
+            $('#verify_submit').val('');
+            load_request_data(0);
+        });
+    });
+
+    // search
+    $(document).ready(function(){
+        $("#search_request").click(function (e) {
+            e.preventDefault();
+            $('html,body').animate({
+                    scrollTop: $(".table-responsive").offset().top},
+                'slow');
+            $('#verify_submit').val('verify_submit');
+            load_request_data(0);
+        });
+    });
     // load data reschedule
     function load_request_data(page)
     {
@@ -248,20 +201,30 @@
             url:"<?php echo base_url(); ?>admin/request/ajax_load_list/"+page,
             method:"POST",
             dataType:"json",
-            data:$('#reschedule').serialize(),
+            data:$('#request').serialize(),
             success:function(data)
             {
-                // if (!$('#verify_submit').val()) {
-                //     $('#course_id').html('');
-                //     $('#course_id').html(data.course_list);
-                // }
-                // $('#reschedule_search').html('');
-                // $('#reschedule_search').html(data.list);
-                // $('#pagination').html('');
-                // $('#pagination').html(data.pagination);
+                $('#request_table').html('');
+                $('#request_table').html(data.list);
+                $('#pagination').html('');
+                $('#pagination').html(data.pagination);
             }
         });
     }
 
     load_request_data(0);
+
+    $(document).ready(function(){
+
+        $(document).on("click", ".pagination-main li a", function(event){
+            event.preventDefault();
+            var href = $(this).attr("href");
+            var page =$(this).attr("href").match(/\d+$/);
+            if (page==null)
+            {
+                page=0;
+            }
+            load_request_data(page);
+        });
+    });
 </script>

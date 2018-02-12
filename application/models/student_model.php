@@ -31,6 +31,7 @@ class Student_model extends DB_Model {
         $this->load->model('db/m_course_model');
         $this->load->model('db/m_bus_course_model');
         $this->load->model('db/m_distance_model');
+        $this->load->model('db/m_class_model');
     }
 
     /**
@@ -237,24 +238,28 @@ class Student_model extends DB_Model {
         return $result;
     }
     private function get_nearest($array){
-        if(array_key_exists('start_date',$array[0])&&array_key_exists('end_date',$array[0]))
-        {
-            $now = date_create(date('Y-m-d'));
-            $maxstartdate = date_create('0000-00-00');
-            $k = 0;
-            foreach ($array as $key => $row) {
+        if(!empty($array)){
+            if(array_key_exists('start_date',$array[0])&&array_key_exists('end_date',$array[0]))
+            {
+                $now = date_create(date('Y-m-d'));
+                $maxstartdate = date_create('0000-00-00');
+                $k = 0;
+                foreach ($array as $key => $row) {
 
-                $startdate = date_create($row['start_date']);
-                if($startdate >= $maxstartdate && $startdate <= $now )
-                {
-                    $maxstartdate = $startdate ;
-                    $k=$key;
+                    $startdate = date_create($row['start_date']);
+                    if($startdate >= $maxstartdate && $startdate <= $now )
+                    {
+                        $maxstartdate = $startdate ;
+                        $k=$key;
+                    }
+                        
                 }
-                    
+                return $k;
             }
-            return $k;
+            return -1;
         }
-        return -1;     
+        return -1; 
+            
     }
     private function new_is_valid_date($startdate,$enddate){
         $startdate = strtotime($startdate);
@@ -309,7 +314,9 @@ class Student_model extends DB_Model {
         $allcourse = $this->m_course_model->getData_Course_valid();
         $this->student['course']['all'] = $allcourse;
         $course = $this->l_student_course_model->getData_course_by_studentid($student_id);
+    
         $Course_nearest_index = $this->get_nearest( $course );
+        
         if($Course_nearest_index >= 0)
         {
             $this->student['course']['nearest'] = $course[$Course_nearest_index];
@@ -323,17 +330,18 @@ class Student_model extends DB_Model {
         }      
 
         //data class
-        $student_course_id = $this->student['course']['nearest']['course_id'];
-        $class = $this->l_student_class_model->select_by_id($student_id, 'student_id');
-        foreach ($class as $row) {
-            $this->student['class']['all'][] = $row;
-            if( $row['student_course_id']==$student_course_id && $row['student_id']==$student_id)
-            {
-                 $this->student['class']['nearest']['class_info']=$this->m_class_model->select_by_id($row['class_id'],'id');
-                 $this->student['class']['nearest']['student_class_info']=$row;
+        if(!empty($this->student['course']['nearest'])){
+            $student_course_id = $this->student['course']['nearest']['course_id'];
+            $class = $this->l_student_class_model->select_by_id($student_id, 'student_id');
+            foreach ($class as $row) {
+                $this->student['class']['all'][] = $row;
+                if( $row['student_course_id']==$student_course_id && $row['student_id']==$student_id)
+                {
+                    $this->student['class']['nearest']['class_info']=$this->m_class_model->select_by_id($row['class_id'],'id');
+                    $this->student['class']['nearest']['student_class_info']=$row;
+                }
             }
         }
-
         
         //data bus
 

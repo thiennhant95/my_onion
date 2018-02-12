@@ -20,7 +20,6 @@ class Auth extends ADMIN_Controller {
         try 
         {
             $this->login();
-            $this->logout();
             admin_layout_view('auth_index', $this->viewVar);
         } 
         catch (Exception $e) 
@@ -73,14 +72,7 @@ class Auth extends ADMIN_Controller {
         $output = password_hash($input,PASSWORD_DEFAULT);
         return $output;
     }
-    public function logout(){
-        if(isset($_POST['flag_logout']))
-        {
-            $this->session->sess_destroy('admin_account');
-            echo json_decode(1);
-            die();
-        }
-    }
+    
 
 }
 

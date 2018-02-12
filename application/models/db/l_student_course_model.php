@@ -53,6 +53,17 @@ class L_student_course_model extends DB_Model {
 		$result = $res->result_array();
 		$this->found_rows = count($result);
         return $result;
-    }
+	}
+	
+	public function get_time_join_course($id_student)
+	{
+		$arr = array('student_id' => $id_student, 'end_date ' => END_DATE_DEFAULT);
+		$this->db->select('start_date')
+            ->from('l_student_course')
+            ->where($arr);
+        $this->db->order_by('start_date', 'ASC');
+        $data = $this->db->get()->row_array();
+        return $data;
+	}
 
 }

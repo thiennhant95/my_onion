@@ -104,7 +104,6 @@ if ( ! function_exists('csv_format_item'))
 
         // ダブルクォーテーションで囲み、カンマ区切りで結合
         $string = '"' . implode('","', $repl) . '"' . "\r\n";
-        print_r($string);
         return mb_convert_encoding($string, "SJIS-win", "UTF-8");
     }
 }

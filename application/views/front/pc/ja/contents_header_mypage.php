@@ -7,10 +7,16 @@
         </a>
       </div>
       <div class="header-cell text-break">
-        <select class="form-control header-mypage-select">
-          <option value="1">花見川　太郎</option>
-          <option value="2">花見川　太郎</option>
-          <option value="3">花見川　太郎</option>
+        <?php 
+          $data_familly = $this->session->userdata("list_family");
+          $user_current = $this->session->userdata('user_account');
+        ?>
+        <select class="form-control header-mypage-select" id="change_id_family">
+          <?php if(!empty($data_familly)){?>
+            <?php foreach ($data_familly as $key => $value) {?>
+              <option <?php if($user_current['id'] == $value['student_id']){ echo "selected";}?> value="<?php echo $value['student_id']?>"><?php echo $value['value']?></option>
+            <?php }?>
+          <?php }?> 
         </select>
         <span>さんのマイページ</span>
       </div>
@@ -28,10 +34,10 @@
     <h3 class="nav-sp-title">MENU</h3>
     <ul class="nav-sp-list">
       <li>
-        <a href="#0">マイページTOP</a>
+        <a href="<?php echo base_url('/');?>">マイページTOP</a>
       </li>
       <li>
-        <a href="#0">練習コース振替申請</a>
+        <a href="<?php echo base_url('/request/change_course');?>">練習コース振替申請</a>
       </li>
       <li>
         <a href="#0">練習コース出席記録</a>
@@ -40,7 +46,7 @@
         <a href="#0">指導状況・泳力認定書</a>
       </li>
       <li>
-        <a href="#0">会員情報変更申請</a>
+        <a href="<?php echo base_url('/request/change_base_info');?>">会員情報変更申請</a>
       </li>
     </ul>
     <div class="nav-sp-logout">
@@ -48,19 +54,39 @@
     </div>
   </nav>
   <script>
-    $('#btn_logout_user').click(function() {
-      $.ajax({
-        url: "https:" + "<?php echo base_url('auth');?>",
-        method: "POST",
-        data: {flag_logout: 1},
-        dataType: "JSON",
-        success:function(result) {
-          window.location.href = "/"; 
-        },error(XMLHttpRequest, textStatus ,errorThrown){
-          console.log('err');
-        }
+    $(document).on('ready', function () {
+        $('#btn_logout_user').click(function() {
+        $.ajax({
+          url: "https:" + "<?php echo base_url('api/logout/logout_user');?>",
+          method: "POST",
+          data: {flag_logout: 1},
+          dataType: "JSON",
+          success:function(result) {
+            window.location.href = "/"; 
+          },error(XMLHttpRequest, textStatus ,errorThrown){
+            console.log('err');
+          }
+        })
+      });
+
+      $('#change_id_family').on('change', function() {
+        var id_current = $('#change_id_family').val();
+        $.ajax({
+          url: "https:" + "<?php echo base_url('api/change_account_user/set_session_user');?>",
+          dataType: "JSON",
+          method: "POST",
+          data:{
+            id_post : id_current
+          },
+          success:function(result) {
+            location.reload();
+          },error(XMLHttpRequest, textStatus ,errorThrown){
+            console.log('err');
+          }
+        })
       })
-    });
+    })
+    
   </script>
 </header>
   

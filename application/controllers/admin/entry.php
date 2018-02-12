@@ -7,10 +7,15 @@ class Entry extends ADMIN_Controller {
         $this->load->helper('url');
         $this->load->model('student_model', 'student_data');
         $this->load->model('db/m_course_model', 'm_course_model');
-        $this->load->model('db/m_student_model','student_model');
+        $this->load->model('db/m_student_model','m_student_model');
         $this->load->model('db/m_class_model','m_class_model');
-        $this->load->model('db/l_student_meta_model', 'student_meta_model');
+        $this->load->model('db/m_bus_course_model','m_bus_course_model');
+        $this->load->model('db/m_bus_route_model','m_bus_route_model');
+        $this->load->model('db/m_bus_stop_model','m_bus_stop_model');
+        $this->load->model('db/l_student_meta_model', 'l_student_meta_model');
         $this->load->model('db/l_student_course_model', 'l_student_course_model');
+        $this->load->model('db/l_student_class_model', 'l_student_class');
+        $this->load->model('db/l_student_bus_route_model', 'l_student_bus_route_model');
         $this->load->model('sendmail_model','send_mail');
         $this->load->library('pagination');
         
@@ -70,44 +75,243 @@ class Entry extends ADMIN_Controller {
     public function edit($id = NULL) {
         if ($this->error_flg) return;
         try {
-            $metas = $this->student_meta_model->select_student_metas( $id );
-            $data = array();
-            foreach ( $metas as $key => $value ) {
-                $data[$value['tag']] = $value['value'];
-            }
-            $email_address = $this->student_model->select_student_field( $id, 'email' );
-            $course = $this->l_student_course_model->select_by_id( $id, 'student_id', 'l_student_course' );
-            $course_id = $course[0]['course_id'];
-            $classes = $this->m_class_model->select_by_id($course_id, 'course_id', 'm_class');
-            $classes_week = array();
-            foreach ( $classes as $key => $value ) {
-                for ( $i = 0; $i < 7; $i++ ) {
-                    if ( strpos( $value['week'], $i . '' ) !== false ) $classes_week[$i][]['info'] = $value['id'] . '-' . $value['base_class_sign'] . '-' . $value['class_code'];
+            $admin_account = ( $this->session->userdata( 'admin_account' ) ) ? ( $this->session->userdata( 'admin_account' ) ) : '';
+            $check_student = $this->m_student_model->select_by_id( $id, 'id', 'm_student' );
+            if ( $admin_account == '' ) {
+                redirect('/admin/auth');
+            } else if ( count( $check_student ) == 0 ) {
+                redirect('/admin/entry');
+            } else {
+                $student_info = $this->student_data->get_student_data_detail( $id );
+                $data = array();
+                $data['html'] = $this->create_html( $student_info['course']['nearest']['course_id'] );
+                $data['school_grades'] = $this->configVar['school_grades'];
+                $data['s_info'] = $student_info;
+                if ( isset( $_POST['change_course'] ) && isset( $_POST['course_id'] ) ) {
+                    $html = $this->create_html( $_POST['course_id'] );
+                    die( json_encode( $html ) );
                 }
+                if ( isset( $_POST['data_class'] ) && isset( $_POST['class_id'] ) && isset( $_POST['course_id'] ) ) {
+                    $html_bus_default = $this->create_html_bus_default( $_POST['data_class'], $_POST['class_id'], $student_info, $_POST['course_id'] );
+                    die( json_encode( $html_bus_default ) );
+                }
+                if ( isset( $_POST['bus_course_id'] ) ) {
+                    $html_change_bus_course = $this->create_html_change_bus_course( $_POST['bus_course_id'] );
+                    die( json_encode( $html_change_bus_course ) );
+                }
+                if ( isset( $_POST['user_name'] ) && isset( $_POST['name_kana'] ) && isset( $_POST['birthday'] ) && isset( $_POST['sex'] ) && isset( $_POST['address'] ) && isset( $_POST['email_address'] ) && isset( $_POST['phone_number'] ) && isset( $_POST['postal_code']) ) {
+                    $password = random_string('alnum', LENGTH_PASS_RAMDOM);
+                    $arr_update = array(
+                        'email' => $_POST['email_address'],
+                        'password' => password_hash( $password, PASSWORD_DEFAULT ),
+                        'tel_normalize' => $_POST['phone_number'],
+                        'status' => '1'
+                    );
+                    // update m_student
+                    foreach ( $arr_update as $k => $v ) {
+                        if ( $v != '' ) $this->m_student_model->update_student_info( $_POST['student_id'], $k, $v );
+                    }
+                    $arr_update_meta = array(
+                        'user_name' => $_POST['user_name'],
+                        'name_kana' => $_POST['name_kana'],
+                        'birthday' => $_POST['birthday'],
+                        'sex' => $_POST['sex'],
+                        'address' => $_POST['address'],
+                        'email' => $_POST['email_address'],
+                        'tel' => $_POST['phone_number'],
+                        'zip' => $_POST['postal_code'],
+                        'email_flg' => $_POST['email_flg'],
+                        'emergency_tel' => isset( $_POST['emergency_tel'] ) ? $_POST['emergency_tel'] : '', 
+                        'school_name' => isset( $_POST['school_name'] ) ? $_POST['school_name'] : '', 
+                        'parent_name' => isset( $_POST['parent_name'] ) ? $_POST['parent_name'] : '', 
+                        'school_grade' => isset( $_POST['school_grade'] ) ? $_POST['school_grade'] : '', 
+                        'bus_use_flg' => isset( $_POST['bus_use_flg'] ) ? $_POST['bus_use_flg'] : '',
+                        'life_check_flg' => isset( $_POST['life_check_flg'] ) ? $_POST['life_check_flg'] : '',
+                        'enquete' => isset( $_POST['enquete'] ) ? json_encode( $_POST['enquete'] ) : '',
+                        'memo_to_coach' => isset( $_POST['memo_to_coach'] ) ? $_POST['memo_to_coach'] : '',
+                        'first_lesson_date' => isset( $_POST['first_lesson_date'] ) ? $_POST['first_lesson_date'] : '',
+                        'memo_special' => isset( $_POST['memo_special'] ) ? $_POST['memo_special'] : ''
+                    );
+                    // update l_student_meta
+                    foreach ( $arr_update_meta as $k => $v ) {
+                        if ( count( $this->l_student_meta_model->select_student_meta( $_POST['student_id'], $k ) ) == 1 ) {
+                            if ( $v != '' ) $this->l_student_meta_model->update_student_meta( $_POST['student_id'], $k, $v );
+                        } else {
+                            if ( $v != '' ) $this->l_student_meta_model->insert( array( 'student_id' => $_POST['student_id'], 'tag' => $k, 'value' => $v ) );
+                        }
+                    }
+                    // update l_student_class
+                    $class_choose = ( isset( $_POST['class_choose'] ) && count( $_POST['class_choose'] ) > 0 ) ? $_POST['class_choose'] : '';
+                    if ( $class_choose != '' ) { 
+                        foreach ( $class_choose as $k => $v ) {
+                            $current_class = explode( '_', $v );
+                            $start_date = '';
+                            foreach ( $student_info['course']['all'] as $k1 => $v1 ) {
+                                if ( $v1['id'] == $_POST['course_id'] ) $start_date = $v1['start_date'];
+                            }
+                            $this->l_student_class_model->insert( 
+                                array( 
+                                    'student_course_id' => $_POST['course_id'], 
+                                    'student_id' => $_POST['student_id'], 
+                                    'class_id' => $current_class[0], 
+                                    'week_num' => $current_class[3],
+                                    'start_date' => $start_date
+                                ) 
+                            );
+                        }
+                    }
+                    // update l_student_bus_route
+                    $class_route = ( isset( $_POST['class_route'] ) && count( $_POST['class_route'] ) > 0 ) ? $_POST['class_route'] : '';
+                    if ( $class_route != '' ) {
+                        foreach ( $class_route as $k => $v ) {
+                            $current_route = explode( '_', $v );
+                            $this->l_student_bus_route_model->insert(
+                                array(
+                                    'student_id' => $current_route[0],
+                                    'student_class_id' => $current_route[1],
+                                    'bus_route_go_id' => $current_route[3],
+                                    'bus_route_ret_id' => $current_route[4],
+                                    'start_date' => $current_route[2]
+                                )
+                            );
+                        }
+                    }
+                    $data['update'] = 'success';
+                    $data['temporary_pw'] = $password;
+                    die( json_encode( $data ) );
+                }
+                $this->viewVar = $data;
+                admin_layout_view('entry_edit', $this->viewVar);
             }
-            $all_course = $this->m_course_model->select_all('m_course');
-            $data['email_address'] = $email_address[0]['email'];
-            $data['school_grades'] = $this->configVar['school_grades'];
-            $class_week_sort = array();
-            $class_week_sort[2] = $classes_week[2];
-            $class_week_sort[3] = $classes_week[3];
-            $class_week_sort[4] = $classes_week[4];
-            $class_week_sort[5] = $classes_week[5];
-            $class_week_sort[6] = $classes_week[6];
-            $class_week_sort[0] = $classes_week[0];
-            $class_week_sort[1] = $classes_week[1];
-            $data['classes_week'] = $class_week_sort;
-            $data['course_id'] = $course_id;
-            $data['courses'] = $all_course;
-            $this->viewVar = $data;
-            admin_layout_view('entry_edit', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
 
+    public function create_html( $course_id ) {
+        $html = '';
+        $classes = $this->m_class_model->select_by_id( $course_id, 'course_id', 'm_class');
+        foreach ( $classes as $k => $v ) {
+            $current_student = $this->l_student_class->select_by_id( $v['id'], 'class_id', 'l_student_class');
+            $classes[$k]['current_student'] = count($current_student);
+        }
+        $classes_week = array();
+        foreach ( $classes as $k => $v ) {
+            for ( $i = 0; $i < 7; $i++ ) {
+                if ( strpos( $v['week'], $i . '' ) !== false ) $classes_week[$i][]['info'] = $v['id'] . '-' . $v['base_class_sign'] . '-' . $v['class_code'] . '-' . $v['current_student'] . '-' . $v['max_count'];
+            }
+        }
+        $class_week_sort = array();
+        $arr_sort = array('2', '3', '4', '5', '6', '0', '1');
+        foreach ( $arr_sort as $k => $v ) {
+            $class_week_sort[$v] = isset( $classes_week[$v] ) ? $classes_week[$v] : array();
+        }
+        $arr_loop = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
+        $arr_class = array('M', 'A', 'B', 'C', 'D', 'E', 'F');
+        foreach ( $arr_loop as $k => $v ) {
+            $check_M = 0; $check_A = 0; $check_B = 0; $check_C = 0; $check_D = 0; $check_E = 0; $check_F = 0;
+            foreach ( $class_week_sort[$k] as $k1 => $v1 ) {
+                foreach ( $arr_class as $k2 => $v2 ) {
+                    if ( strpos( $v1['info'], '-' . $v2 . '-' ) !== false ) { ${'check_' . $v2}++; ${'arr_value_' . $v2} = explode( '-', $v1['info'] ); }
+                }
+            }
+            $html .= '<tr>';
+            $html .= '<td >' . $v . '</td>';
+            foreach ( $arr_class as $k3 => $v3 ) {
+                if ( ${'check_'. $v3} == 0 ) $html .= '<td  class="bg-gainsboro">　</td>'; 
+                else if ( ${'arr_value_' . $v3}[3] >= ${'arr_value_' . $v3}[4] ) $html .= '<td  class="bg-lightpink">' . ${'arr_value_' . $v3}[2] . '(' . ${'arr_value_' . $v3}[3] . '/' . ${'arr_value_' . $v3}[4] . ')</td>'; 
+                else $html .= '<td  class="bg-plae-lemmon" data-id="' . ${'arr_value_' . $v3}[0] . '" data-class="' . ${'arr_value_' . $v3}[2] . '_week_' . $k . '_' . ${'arr_value_' . $v3}[3] . '_' . ${'arr_value_' . $v3}[4] . '">' . ${'arr_value_' . $v3}[2] . '(' . ${'arr_value_' . $v3}[3] . '/' . ${'arr_value_' . $v3}[4] . ')</td>';
+            }
+            $html .= '</tr>';
+        }
+        return $html;
+    }
+
+    public function create_html_bus_default( $data_class, $class_id, $student_info, $course_id ) {
+        $start_date = '';
+        foreach ( $student_info['course']['all'] as $k => $v ) {
+            if ( $v['id'] == $course_id ) $start_date = $v['start_date'];
+        }
+        $bus_course = $this->m_bus_course_model->select_all( 'm_bus_course' );
+        $bus_route_default = $this->m_bus_route_model->select_by_id( $bus_course[0]['id'], 'bus_course_id', 'm_bus_route' );
+        $bus_stop_default = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
+        $arr_date = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
+        $split = explode( '_', $data_class );
+        $id_bus_route_1 = random_string( 'alnum', RANDOM_STRING_LENGTH );
+        $id_bus_route_2 = random_string ( 'alnum', RANDOM_STRING_LENGTH );
+        $html_bus = '';
+        $html_bus .= '<div class="main_bus_route" style="display:flex;" id="' . $data_class . '">';
+            $html_bus .= '<div style="height:100px;padding-top:40px;">';
+                $html_bus .= $arr_date[$split[2]] . '曜日（' . $split[0] . '）';
+            $html_bus .= '</div>';
+            $html_bus .= '<div>';
+                $html_bus .= '<table>';
+                    $html_bus .= '<tbody>';
+                        $html_bus .= '<tr>';
+                        $html_bus .= '<td>行き(乗車)</td>';
+                        $html_bus .= '<td>';
+                        $html_bus .= '<input type="hidden" class="data_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" />';
+                            $html_bus .= '<select class="form-control w-xs-100per change_bus_course" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_1 . "'" . ')">';
+                                foreach ( $bus_course as $k => $v ) {
+                                    $html_bus .= '<option value="' . $v['id'] . '">' . $v['bus_course_name'] . '</option>';
+                                }
+                            $html_bus .= '</select>';
+                        $html_bus .= '</td>';
+                        $html_bus .= '<td>';
+                            $html_bus .= '<select class="form-control w-xs-100per each_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_1 . '">';
+                                foreach ( $bus_route_default as $k => $v ) {
+                                    $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
+                                        foreach ( $bus_stop_default as $k1 => $v1 ) {
+                                            if ( $v1['id'] == $v['bus_stop_id'] ) $html_bus .= $v1['bus_stop_name'];
+                                        }
+                                    $html_bus .= '</option>';
+                                }
+                            $html_bus .= '</select>';
+                        $html_bus .= '</td>';
+                    $html_bus .= '</tr>';
+                        $html_bus .= '<tr>';
+                            $html_bus .= '<td>帰り(降車)</td>';
+                            $html_bus .= '<td>';
+                                $html_bus .= '<select class="form-control w-xs-100per change_bus_course" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_2 . "'" . ')">';
+                                    foreach ( $bus_course as $k => $v ) {
+                                        $html_bus .= '<option value="' . $v['id'] . '">' . $v['bus_course_name'] . '</option>';
+                                    }
+                                $html_bus .= '</select>';
+                            $html_bus .= '</td>';
+                            $html_bus .= '<td>';
+                                $html_bus .= '<select class="form-control w-xs-100per each_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_2 . '">';
+                                    foreach ( $bus_route_default as $k => $v ) {
+                                        $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
+                                            foreach ( $bus_stop_default as $k1 => $v1 ) {
+                                                if ( $v1['id'] == $v['bus_stop_id'] ) $html_bus .= $v1['bus_stop_name'];
+                                            }
+                                        $html_bus .= '</option>';
+                                    }
+                                $html_bus .= '</select>';
+                            $html_bus .= '</td>';
+                        $html_bus .= '</tr>';
+                    $html_bus .= '</tbody>';
+                $html_bus .= '</table>';
+            $html_bus .= '</div>';
+        $html_bus .= '</div>';
+        return $html_bus;
+    }
+
+    public function create_html_change_bus_course( $bus_course_id) {
+        $bus_route = $this->m_bus_route_model->select_by_id( $bus_course_id, 'bus_course_id', 'm_bus_route' );
+        $bus_stop = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
+        $html_change_bus_course = '';
+        foreach ( $bus_route as $k => $v ) {
+            $html_change_bus_course .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
+                foreach ( $bus_stop as $k1 => $v1 ) {
+                    if ( $v1['id'] == $v['bus_stop_id'] ) $html_change_bus_course .= $v1['bus_stop_name'];
+                }
+            $html_change_bus_course .= '</option>';
+        }
+        return $html_change_bus_course;
+    }
+
     public function get_list_users_inactive($limit,  $stated){
-       
         $data = $this->student_data->get_limit_list_user($limit, $stated);
         return $data;
     }

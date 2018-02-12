@@ -190,4 +190,25 @@ class M_student_model extends DB_Model {
         }
         return true;
     }
+
+    public function get_name_family($list_id)
+    {
+        $data = [];
+        if(!empty($list_id)){
+            $this->db->select('student_id, tag, value, delete_flg');
+            $this->db->from('l_student_meta');
+            foreach ($list_id as $key => $value) {
+                $this->db->or_where('student_id', $value);
+            }
+            $this->db->having('tag','name_kana'); 
+            $data = $this->db->get()->result_array();
+            return $data;
+        }
+    }
+
+    public function get_user_course_free()
+    {
+        
+    }
+
 }

@@ -115,7 +115,7 @@ class M_course_model extends DB_Model {
         if($id == NULL) return '';
 
         $query =" SELECT a.id as course_id ,
-           b.id as class_id,b.base_class_sign,b.class_code,b.class_name,b.`week`
+           b.id as class_id,b.base_class_sign,b.class_code,b.class_name,b.`week`, b.max_count
                 FROM m_course a LEFT JOIN m_class b ON a.id=b.course_id 
                 WHERE a.id='".$id."'";
         $res = $this->db->query($query);

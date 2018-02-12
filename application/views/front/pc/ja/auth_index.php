@@ -79,7 +79,7 @@
       var check_save = $("input[name='checkbox_save']").is(':checked');
 
       $.ajax({
-        url: "https:" + "<?php echo base_url('auth');?>",
+        url: "https:" + "<?php echo base_url('/auth/login');?>",
         data: { 
           user : user_name,
           pass :  pass,
@@ -92,7 +92,7 @@
             if(result.lock_flag == 1){
               window.location.href = "https:" + "<?php echo base_url('/auth/lock');?>"; 
             }else{
-              window.location.href = '/auth'; 
+              window.location.href = "https:" + "<?php echo base_url('/');?>"; 
             }
           }
           else{

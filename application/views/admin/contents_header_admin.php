@@ -20,4 +20,19 @@
       </div>
     </div>
   </div>
+  <script>
+    $('#logout_admin').click(function() {
+      $.ajax({
+        url: "https:" + "<?php echo base_url('api/logout/logout_admin');?>",
+        method: "POST",
+        data: {flag_logout: 1},
+        dataType: "JSON",
+        success:function(result) {
+          window.location.href = "<?php echo base_url('admin/auth');?>"; 
+        },error(XMLHttpRequest, textStatus ,errorThrown){
+          console.log('err');
+        }
+      })
+    });
+  </script>
 </header>

@@ -2,7 +2,7 @@
 
 花見川スイミングクラブへのお申込み、ありがとうございます。
 
-https://onion-2017.jp/entry/questionnaire/?token=%reg_token%
+%base_url%entry/questionnaire/?token=%reg_token%
 
 引き続き、上記のページへアクセス戴きまして、お申込みアンケートのご記入をお願いいたします。
 

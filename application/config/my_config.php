@@ -276,8 +276,8 @@ $config['course_type'] = array(
 );
 
 /* Define Constant */
-define('PASSWORD_LENGTH', 16); // password length
 define('REGISTER_TOKEN_LENGTH', 32); // register token length
+define('RANDOM_STRING_LENGTH', 16); // random string length
 
 
 // 授業曜日
@@ -394,7 +394,7 @@ $config['day']=array(
 );
 
 define('VALUE_NUMBER_RESULT', 1);
-define('LENGTH_PASS_RAMDOM', 10);
+define('LENGTH_PASS_RAMDOM', 8);
 define('HAVE_RESULT', 1);
 define('NONE_RESULT', 0);
 define('ONLY_ONE_RELSULT', 1);
@@ -445,6 +445,9 @@ define('QUIT','quit');
 define('EVENT_TRY','event_entry');
 define('ADDRESS_CHANGE','address_change');
 
+define("END_DATE_DEFAULT", '2199-12-31');
+define("START_DATE_DEFAULT",'1970-01-01');
+
 // type student reserve change
 define('ABSENCE','欠席');
 define('TRANSFER','振替');
@@ -453,9 +456,9 @@ define('ABSENCE_CANCELED','欠席キャンセル');
 define('TRANSFER_CANCELLATION','振替キャンセル');
 define('ABSENCE_TRANSFER_CANCELLATION','欠席＆振替');
 
-//type student request
+//type search student request
 define('PRACTICE_COURSE','練習コース');
-define('BATH_COURSE','バスコース');
+define('BUS_COURSE','バスコース');
 define('NOTICE_OF_ABSENCE','休会届');
-define('NOTICE_OF_WITHDRAWAL',' 退会届');
+define('NOTICE_OF_WITHDRAWAL','退会届');
 define('CHANGE_BASIC_INFORMATION','基本情報変更');

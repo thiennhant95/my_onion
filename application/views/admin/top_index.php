@@ -18,10 +18,10 @@
           <div class="col-sm-10 col-sm-offset-1">
             <div class="row btn-list-row block-15">
               <div class="col-sm-6">
-                <a class="button-large bg-rouge" href="">新規お申し込み</a>
+                <a class="button-large bg-rouge" href="<?php echo base_url('/entry')?>">新規お申し込み</a>
               </div>
               <div class="col-sm-6">
-                <a class="button-large bg-midnight-Blue" href="">新入会員の皆様へ</a>
+                <a class="button-large bg-midnight-Blue" href="<?php echo base_url('admin/entry')?>">新入会員の皆様へ</a>
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@
           <div class="col-sm-10 col-sm-offset-1">
             <div class="row btn-list-row block-15">
               <div class="col-sm-4">
-                <a class="btn-icon btn-icon-2 lead-heading-icon-men bg-blue-green" href="#0">
+                <a class="btn-icon btn-icon-2 lead-heading-icon-men bg-blue-green" href="<?php echo base_url('/admin/member')?>">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
                       <span>会員一覧</span>
@@ -84,7 +84,7 @@
                 </a>
               </div>
               <div class="col-sm-4">
-                <a class="btn-icon btn-icon-2 btn-icon-memo-2 bg-violet" href="#0">
+                <a class="btn-icon btn-icon-2 btn-icon-memo-2 bg-violet" href="<?php echo base_url('/admin/request')?>">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
                       <span>契約変更<br>申請一覧</span>
@@ -102,7 +102,7 @@
                 </a>
               </div>
               <div class="col-sm-4">
-                <a class="btn-icon btn-icon-2 btn-icon-calender-2 bg-carnation-pink" href="#0">
+                <a class="btn-icon btn-icon-2 btn-icon-calender-2 bg-carnation-pink" >
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
                       <span>レッスン<br>出欠管理</span>
@@ -111,7 +111,7 @@
                 </a>
               </div>
               <div class="col-sm-4">
-                <a class="btn-icon btn-icon-2 btn-icon-bus-02 bg-deep-green" href="#0">
+                <a class="btn-icon btn-icon-2 btn-icon-bus-02 bg-deep-green" href="<?php echo base_url('/admin/bus_route')?>">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
                       <span>送迎バス<br>乗降管理</span>
