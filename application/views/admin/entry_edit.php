@@ -659,7 +659,7 @@
             method: "POST",
             dataType: "json",
             beforeSend: function() {
-              // $('#change-course').prop('disabled', 'disabled');
+              // $('td[data-class='+_class+']').removeClass('bg-plae-lemmon');
             },
             success: function(result) {
               // console.log( result );
@@ -668,7 +668,7 @@
                 console.log('error');
             },
             complete: function() {
-              // $('#change-course').prop('disabled', '');
+                // $('td[data-class='+_class+']').addClass('bg-plae-lemmon');
             }
           });
         }

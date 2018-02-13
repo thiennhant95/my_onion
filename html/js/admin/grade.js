@@ -13,7 +13,7 @@ $( document ).ready( function( )
                         dataType: 'json',
                         success: function(data)
                         {
-                            console.log(data);
+                            // console.log(data);
                             if(data.status==1)
                             {
                                 var button = event.data.originalObject;

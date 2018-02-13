@@ -98,7 +98,7 @@ class Reschedule extends ADMIN_Controller {
                             <td>' . $row['reason'] . '</td> 
                             <td>' . $row['dist_date'] . '</td> 
                             <td><span class="text-danger">' . $row['test'] . '</span></td> 
-                            <td>' . $row['status'] . '</td>                  
+                            <td>' . 'キャンセル' . '</td>
                          </tr>
                     ';
                     }
@@ -112,7 +112,7 @@ class Reschedule extends ADMIN_Controller {
                             <td>' . $row['reason'] . '</td> 
                             <td>' . $row['dist_date'] . '</td> 
                             <td><span class="text-danger">' . $row['test'] . '</span></td> 
-                            <td>' . $row['status'] . '</td>                  
+                            <td>' . $row['status']='' . '</td>                  
                          </tr>
                     ';
                     }
@@ -135,7 +135,7 @@ class Reschedule extends ADMIN_Controller {
     {
         if ($this->error_flg) return;
         try {
-            $limit=1000;
+            $limit=LIMIT_CSV;
             $count_reschedule=$this->student_reserve->export_csv(0,0,TRUE);
             $count_num=ceil($count_reschedule/$limit);
             for ($i=0;$i<$count_num; $i++)
@@ -143,13 +143,15 @@ class Reschedule extends ADMIN_Controller {
                 $offset=$i*$limit;
                 $data[]=$this->student_reserve->export_csv($limit,$offset,FALSE);
             }
-//            echo "<pre>";
-//            print_r($data);
-//            print_r($count_reschedule);
-//            die();
-            array_unshift($data[0],array("級コード","級名"));
-            $this->load->helper('csv');
-            array_to_csv($data, 'reschedule_'.date('Ymd').'.csv');
+            if (isset($data)) {
+                array_unshift($data[0], array("ID", "生徒ID", "学生の名前", "申請タイプ", "コース名", "クラス名", "級名", "振替日", "振替先クラス名", "申請内容", "理由", "理由その他", "テスト", "ステータス"));
+                $this->load->helper('csv');
+                array_to_csv($data, 'reschedule_' . date('Ymd') . '.csv');
+            }
+            else
+            {
+                redirect('admin/reschedule');
+            }
         }
         catch (Exception $e)
         {
@@ -158,6 +160,8 @@ class Reschedule extends ADMIN_Controller {
     }
 
 }
+
+
 
 /* End of file reschedule.php */
 /* Location: ./application/controllers/admin/reschedule.php */

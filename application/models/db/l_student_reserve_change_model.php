@@ -48,7 +48,7 @@ class L_student_reserve_change_model extends DB_Model {
         }
         else
         {
-            $date_start='1970-01-01';
+            $date_start=START_DATE_DEFAULT;
         }
         if ($this->input->post('date_end'))
         {
@@ -56,12 +56,13 @@ class L_student_reserve_change_model extends DB_Model {
         }
         else
         {
-            $date_end='2100-01-01';
+            $date_end=END_DATE_DEFAULT;
         }
         $this->db->select("SQL_CALC_FOUND_ROWS l_student_reserve_change.*,l_student_course.course_id,m_class.base_class_sign",FALSE);
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
         $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_class.class_id');
+        //search course
         $course=$this->input->post('course');
         if ($this->input->post('course')!=NULL)
         {
@@ -70,6 +71,8 @@ class L_student_reserve_change_model extends DB_Model {
                 $this->db->or_like('l_student_course.course_id',$row_course);
             }
         }
+
+        //search class
         $class=$this->input->post('class');
         if ($this->input->post('class')!=NULL)
         {
@@ -78,25 +81,17 @@ class L_student_reserve_change_model extends DB_Model {
                 $this->db->or_having('m_class.base_class_sign',$row_class);
             }
         }
+        //search date
         $this->db->where('target_date >=',$date_start);
         $this->db->where('target_date <=',$date_end);
+        //search type
         $type=$this->input->post('type');
         if ($type!=DATA_ON){$this->db->where('type', $type);}
-        if ($this->input->post('content')!=NULL) {
-            $free_text_search = $this->input->post('content');
-            $this->db->or_like('contents', $free_text_search, 'none');
-            $this->db->or_like('reason', $free_text_search, 'none');
-            $this->db->or_like('reason_text', $free_text_search, 'none');
-            $this->db->or_like('dist_class_name', $free_text_search, 'none');
-            $this->db->or_like('l_student_reserve_change.student_id', $free_text_search, 'none');
-        }
         $this->db->order_by("id", "desc");
-//        $this->db->limit($limit, $start);
         $query = $this->db->get('l_student_reserve_change');
         global $student_reserve;
-//        $query_total = $this->db->query('SELECT FOUND_ROWS() AS `count`');
-//        $total=$query_total->row()->count;
         $data=$query->result_array();
+        //search grade name
         global $data_search;
         $grade=$this->input->post('rank');
         if ($this->input->post('rank')!=NULL) {
@@ -118,126 +113,198 @@ class L_student_reserve_change_model extends DB_Model {
             $data_search=$data;
         }
 
-        $total=count($data_search);
-        $data_search=array_slice( $data_search, $start, $limit);
+        //join name student_meta
         $this->load->model('student_model','student');
         foreach ($data_search as $row):
             $data_student=$this->student->get_student_data($row['student_id'])['meta'];
             $row['name']=$data_student['name'];
             $student_reserve[]=$row;
         endforeach;
-        return array('0'=>$student_reserve,'1'=>$total);
+        if ($student_reserve==null)
+        {
+            $student_reserve=array();
+        }
+
+        //free text search
+        global $data_return;
+        $free_text_search=$this->input->post('content');
+        if ($this->input->post('content')!=NULL) {
+            foreach ($student_reserve as $row_data) {
+                if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
+                {
+                    $data_return[]=$row_data;
+                }
+                if (strlen(strstr($row_data['reason'], $free_text_search)) > 0)
+                {
+                    $data_return[]=$row_data;
+                }
+                if (strlen(strstr($row_data['student_id'], $free_text_search)) > 0)
+                {
+                    $data_return[]=$row_data;
+                }
+            }
+            if ($data_return==NULL)
+            {
+                $data_return=array();
+            }
+        }
+        else if ($this->input->post('content')==NULL)
+        {
+            $data_return=$student_reserve;
+        }
+        //count and limit return
+        $total=count($data_return);
+        $data_change=array_slice( $data_return, $start, $limit);
+
+        $data_return=null;
+        $data_search=null;
+        $student_reserve=null;
+        return array('0'=>$data_change,'1'=>$total);
     }
 
 
     public function export_csv($limit=NULL,$start=NULL,$count=FALSE)
     {
-            if ($this->input->post('date_start'))
+        if ($this->input->post('date_start'))
+        {
+            $date_start=date("Y-m-d",strtotime($this->input->post('date_start')));
+        }
+        else
+        {
+            $date_start=START_DATE_DEFAULT;
+        }
+        if ($this->input->post('date_end'))
+        {
+            $date_end=date("Y-m-d",strtotime($this->input->post('date_end')));
+        }
+        else
+        {
+            $date_end=END_DATE_DEFAULT;
+        }
+        $this->db->select("SQL_CALC_FOUND_ROWS l_student_reserve_change.*,l_student_course.course_id,m_class.base_class_sign",FALSE);
+        $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
+        $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
+        $this->db->join('m_class','m_class.id=l_student_class.class_id');
+        //search course
+        $course=$this->input->post('course');
+        if ($this->input->post('course')!=NULL)
+        {
+            foreach ($course as $row_course)
             {
-                $date_start=date("Y-m-d",strtotime($this->input->post('date_start')));
+                $this->db->or_like('l_student_course.course_id',$row_course);
             }
-            else
+        }
+
+        //search class
+        $class=$this->input->post('class');
+        if ($this->input->post('class')!=NULL)
+        {
+            foreach ($class as $row_class)
             {
-                $date_start='1970-01-01';
+                $this->db->or_having('m_class.base_class_sign',$row_class);
             }
-            if ($this->input->post('date_end'))
-            {
-                $date_end=date("Y-m-d",strtotime($this->input->post('date_end')));
-            }
-            else
-            {
-                $date_end='2100-01-01';
-            }
-            $this->db->select("SQL_CALC_FOUND_ROWS l_student_reserve_change.id,l_student_reserve_change.student_id,l_student_reserve_change.type,l_student_reserve_change.course_name,l_student_reserve_change.class_name,l_student_reserve_change.grade_name,
-                    l_student_reserve_change.target_date,l_student_reserve_change.dist_date,l_student_reserve_change.dist_class_name,l_student_reserve_change.contents,l_student_reserve_change.reason,l_student_reserve_change.reason_text,l_student_reserve_change.test,l_student_reserve_change.status,m_class.base_class_sign",FALSE);
-            $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
-            $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
-            $this->db->join('m_class','m_class.id=l_student_class.class_id');
-            $course=$this->input->post('course');
-            if ($this->input->post('course')!=NULL)
-            {
-                foreach ($course as $row_course)
-                {
-                    $this->db->or_like('l_student_course.course_id',$row_course);
-                }
-            }
-            $class=$this->input->post('class');
-            if ($this->input->post('class')!=NULL)
-            {
-                foreach ($class as $row_class)
-                {
-                    $this->db->or_having('m_class.base_class_sign',$row_class);
-                }
-            }
-            $this->db->where('target_date >=',$date_start);
-            $this->db->where('target_date <=',$date_end);
-            $type=$this->input->post('type');
-            if ($type!=DATA_ON){$this->db->where('type', $type);}
-            if ($this->input->post('content')!=NULL) {
-                $free_text_search = $this->input->post('content');
-                $this->db->or_like('contents', $free_text_search, 'none');
-                $this->db->or_like('reason', $free_text_search, 'none');
-                $this->db->or_like('reason_text', $free_text_search, 'none');
-                $this->db->or_like('dist_class_name', $free_text_search, 'none');
-                $this->db->or_like('l_student_reserve_change.student_id', $free_text_search, 'none');
-            }
-            $this->db->order_by("id", "desc");
-            $query = $this->db->get('l_student_reserve_change');
-            global $student_reserve;
-            $data=$query->result_array();
-            global $data_search;
-            $grade=$this->input->post('rank');
-            if ($this->input->post('rank')!=NULL) {
-                foreach ($data as $row_data) {
-                    foreach ($grade as $row_grade) {
-                        if ($row_data['grade_name']==$row_grade)
-                        {
-                            $data_search[]=$row_data;
-                        }
+        }
+        //search date
+        $this->db->where('target_date >=',$date_start);
+        $this->db->where('target_date <=',$date_end);
+        //search type
+        $type=$this->input->post('type');
+        if ($type!=DATA_ON){$this->db->where('type', $type);}
+        $this->db->order_by("id", "desc");
+        $query = $this->db->get('l_student_reserve_change');
+        global $student_reserve;
+        $data=$query->result_array();
+        //search grade name
+        global $data_search;
+        $grade=$this->input->post('rank');
+        if ($this->input->post('rank')!=NULL) {
+            foreach ($data as $row_data) {
+                foreach ($grade as $row_grade) {
+                    if ($row_data['grade_name']==$row_grade)
+                    {
+                        $data_search[]=$row_data;
                     }
                 }
-                if ($data_search==NULL)
+            }
+            if ($data_search==NULL)
+            {
+                $data_search=array();
+            }
+        }
+        else if ($this->input->post('rank')==NULL)
+        {
+            $data_search=$data;
+        }
+
+        //join name student_meta
+        $this->load->model('student_model','student');
+        foreach ($data_search as $row):
+            $data_student=$this->student->get_student_data($row['student_id'])['meta'];
+            $row['name']=$data_student['name'];
+            $student_reserve[]=$row;
+        endforeach;
+        if ($student_reserve==null)
+        {
+            $student_reserve=array();
+        }
+
+        //free text search
+        global $data_return;
+        $free_text_search=$this->input->post('content');
+        if ($this->input->post('content')!=NULL) {
+            foreach ($student_reserve as $row_data) {
+                if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
                 {
-                    $data_search=array();
+                    $data_return[]=$row_data;
+                }
+                if (strlen(strstr($row_data['reason'], $free_text_search)) > 0)
+                {
+                    $data_return[]=$row_data;
+                }
+                if (strlen(strstr($row_data['student_id'], $free_text_search)) > 0)
+                {
+                    $data_return[]=$row_data;
                 }
             }
-            else if ($this->input->post('rank')==NULL)
+            if ($data_return==NULL)
             {
-                $data_search=$data;
+                $data_return=array();
             }
-            $total=count($data_search);
-            $data_search=array_slice( $data_search, $start, $limit);
-            $this->load->model('student_model','student');
-            foreach ($data_search as $row):
-                $data_student=$this->student->get_student_data($row['student_id'])['meta'];
-                $row['name']=$data_student['name'];
-                $student_reserve[]=$row;
-            endforeach;
+        }
+        else if ($this->input->post('content')==NULL)
+        {
+            $data_return=$student_reserve;
+        }
+        //count and limit return
+        $total=count($data_return);
+        $data_change=array_slice( $data_return, $start, $limit);
+        $data_return=null;
+        $data_search=null;
+        $student_reserve=null;
             if($count==TRUE)
             {
                 return $total;
             }
             else if ($count==FALSE) {
-                foreach ($student_reserve as $row_student_reserve)
+                foreach ($data_change as $row_student_reserve)
                 {
-                    $data_return['id']=$row_student_reserve['id'];
-                    $data_return['student_id']=$row_student_reserve['student_id'];
-                    $data_return['name']=$row_student_reserve['name'];
-                    $data_return['type']=$row_student_reserve['type'];
-                    $data_return['course_name']=$row_student_reserve['course_name'];
-                    $data_return['class_name']=$row_student_reserve['class_name'];
-                    $data_return['dist_class_name']=$row_student_reserve['dist_class_name'];
-                    $data_return['contents']=json_decode($row_student_reserve['contents'],true)['contents'];
-                    $data_return['reason']=$row_student_reserve['reason'];
-                    $data_return['reason_text']=$row_student_reserve['reason_text'];
-                    $data_return['reason']=$row_student_reserve['reason'];
-                    $data_return['test']=$row_student_reserve['test'];
-                    $data_return['status']=$row_student_reserve['status'];
-                    $data_return_reserve[]=$data_return;
-
+                    $last_data['id']=$row_student_reserve['id'];
+                    $last_data['student_id']=$row_student_reserve['student_id'];
+                    $last_data['name']=$row_student_reserve['name'];
+                    $last_data['type']=$row_student_reserve['type'];
+                    $last_data['course_name']=$row_student_reserve['course_name'];
+                    $last_data['class_name']=$row_student_reserve['class_name'];
+                    $last_data['grade_name']=$row_student_reserve['grade_name'];
+                    $last_data['dist_date']=$row_student_reserve['dist_date'];
+                    $last_data['dist_class_name']=$row_student_reserve['dist_class_name'];
+                    $last_data['contents']=json_decode($row_student_reserve['contents'],true)['contents'];
+                    $last_data['reason']=$row_student_reserve['reason'];
+                    $last_data['reason_text']=$row_student_reserve['reason_text'];
+                    $last_data['reason']=$row_student_reserve['reason'];
+                    $last_data['test']=$row_student_reserve['test'];
+                    $last_data['status']=$row_student_reserve['status'];
+                    $data_return_reserve[]=$last_data;
                 }
-//                print_r($data_return_reserve);
-//                die();
                 return  $data_return_reserve;
             }
     }

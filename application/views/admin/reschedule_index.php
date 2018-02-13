@@ -165,6 +165,19 @@
 
 </html>
 
+<div class="bg_load" style="display: none" id="bg_load"></div>
+<div class="wrapper" style="display: none" id="wrapper">
+    <div class="inner">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
 <script>
 
     //format datetime
@@ -182,10 +195,14 @@
     $(document).ready(function(){
         $("#display_list").click(function (e) {
             e.preventDefault();
-                $('html,body').animate({
-                        scrollTop: $(".table-responsive").offset().top},
-                    'slow');
+            $("#bg_load").css('display','block');
+            $("#wrapper").css('display','block');
+            $('html,body').animate({
+                    scrollTop: $(".table-responsive").offset().top},
+                'slow');
             $('#verify_submit').val('verify_submit');
+            $(".bg_load").fadeOut("slow");
+            $(".wrapper").fadeOut("slow");
             load_reschedule_data(0);
         });
     });

@@ -25,13 +25,15 @@
               <div class="form-group">
                 <div class="col-sm-1"></div>
                 <div class="col-xs-4 col-sm-3">
-                    <input type="jp-date1" name="date_start" class="form-control">
+                    <input class="form-control " type="text" id="start_date_request_change" name="date_start" placeholder="YYYY-MM">
+<!--                    <input type="jp-date1" name="date_start" class="form-control">-->
                 </div>
                 <div class="col-xs-1 sub-label">
                   <p class="text-center">〜</p>
                 </div>
                 <div class="col-xs-4 col-sm-3">
-                    <input type="jp-date2" name="date_end" class="form-control">
+                    <input class="form-control " type="text" id="end_date_request_change" name="date_end" placeholder="YYYY-MM">
+                    <!--                    <input type="jp-date2" name="date_end" class="form-control">-->
                 </div>
                 <div class="col-xs-9 col-sm-3">
                   <select class="form-control" name="type">
@@ -116,6 +118,18 @@
 </body>
 
 </html>
+<div class="bg_load" style="display: none" id="bg_load"></div>
+<div class="wrapper" style="display: none" id="wrapper">
+    <div class="inner">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
 
 <script>
     //format datetime
@@ -187,9 +201,13 @@
     $(document).ready(function(){
         $("#search_request").click(function (e) {
             e.preventDefault();
+            $("#bg_load").css('display','block');
+            $("#wrapper").css('display','block');
             $('html,body').animate({
                     scrollTop: $(".table-responsive").offset().top},
                 'slow');
+            $(".bg_load").fadeOut("slow");
+            $(".wrapper").fadeOut("slow");
             $('#verify_submit').val('verify_submit');
             load_request_data(0);
         });
@@ -226,5 +244,34 @@
             }
             load_request_data(page);
         });
+    });
+
+    $.fn.datepicker.dates['jp'] = {
+        days: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        daysShort: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        daysMin: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        months:  ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        monthsShort:  ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        today: "今日",
+        clear: "クリア",
+        weekStart: 0
+    };
+    var options={
+        isRTL: false,
+        format: 'yyyy-mm',
+        minViewMode: 'months',
+        todayHighlight: true,
+        autoclose: true,
+        language:'jp',
+        orientation: "auto right",
+    };
+
+    $('#start_date_request_change').datepicker(options).on('changeDate', function(ev){
+        var startVal = $('#start_date_request_change').val();
+        $('#end_date_request_change').data('datepicker').setStartDate(startVal);
+    });
+    $('#end_date_request_change').datepicker(options).on('changeDate', function(ev){
+        var endVal = $('#end_date_request_change').val();
+        $('#start_date_request_change').data('datepicker').setEndDate(endVal );
     });
 </script>

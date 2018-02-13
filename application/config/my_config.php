@@ -290,6 +290,7 @@ define('FRIDAY',        5);
 define('SATURDAY',      6);
 
 //回数
+define('ZERO',       0);
 define('ONE',        1);
 define('TWO',        2);
 define('THREE',      3);
@@ -462,3 +463,6 @@ define('BUS_COURSE','バスコース');
 define('NOTICE_OF_ABSENCE','休会届');
 define('NOTICE_OF_WITHDRAWAL','退会届');
 define('CHANGE_BASIC_INFORMATION','基本情報変更');
+
+//config limit csv
+define('LIMIT_CSV',1000);

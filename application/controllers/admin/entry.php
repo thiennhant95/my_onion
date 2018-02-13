@@ -75,13 +75,13 @@ class Entry extends ADMIN_Controller {
     public function edit($id = NULL) {
         if ($this->error_flg) return;
         try {
-            $admin_account = ( $this->session->userdata( 'admin_account' ) ) ? ( $this->session->userdata( 'admin_account' ) ) : '';
-            $check_student = $this->m_student_model->select_by_id( $id, 'id', 'm_student' );
-            if ( $admin_account == '' ) {
-                redirect('/admin/auth');
-            } else if ( count( $check_student ) == 0 ) {
-                redirect('/admin/entry');
-            } else {
+//            $admin_account = ( $this->session->userdata( 'admin_account' ) ) ? ( $this->session->userdata( 'admin_account' ) ) : '';
+//            $check_student = $this->m_student_model->select_by_id( $id, 'id', 'm_student' );
+//            if ( $admin_account == '' ) {
+//                redirect('/admin/auth');
+//            } else if ( count( $check_student ) == 0 ) {
+//                redirect('/admin/entry');
+//            } else {
                 $student_info = $this->student_data->get_student_data_detail( $id );
                 $data = array();
                 $data['html'] = $this->create_html( $student_info['course']['nearest']['course_id'] );
@@ -182,7 +182,7 @@ class Entry extends ADMIN_Controller {
                 }
                 $this->viewVar = $data;
                 admin_layout_view('entry_edit', $this->viewVar);
-            }
+//            }
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

@@ -336,7 +336,78 @@ class L_student_request_model extends DB_Model {
             return $total;
         }
         else if ($count==FALSE) {
-            return $data_search_return;
+            foreach ($data_search_return as $row_return)
+            {
+                switch ($row_return['type'])
+                {
+                    case 'bus_change_once':
+                        $row_return['type']='バス乗降連絡';
+                        break;
+                    case 'bus_change_eternal':
+                        $row_return['type']='バスコース変更';
+                        break;
+                    case 'course_change':
+                        $row_return['type']='練習コース変更';
+                        break;
+                    case 'recess':
+                        $row_return['type']='休会届';
+                        break;
+                    case 'quit':
+                        $row_return['type']='退会届';
+                        break;
+                    case 'event_entry':
+                        $row_return['type']='イベント・短期教室参加申請';
+                        break;
+                    case 'address_change':
+                        $row_return['type']='住所変更申請 ';
+                        break;
+                }
+                switch ($row_return['status'])
+                {
+                    case '0':
+                        $row_return['status']='未処理/未確認';
+                        break;
+                    case '1':
+                        $row_return['status']='承認/処理済み/確認済み';
+                        break;
+                    case '2':
+                        $row_return['status']='保留';
+                        break;
+                }
+                switch ($row_return['comission_flg'])
+                {
+                    case '0':
+                        $row_return['comission_flg']='無し';
+                        break;
+                    case '1':
+                        $row_return['comission_flg']='手数料発生';
+                        break;
+                    case '2':
+                        $row_return['comission_flg']='免除';
+                        break;
+                }
+                switch ($row_return['melody_flg'])
+                {
+                    case '0':
+                        $row_return['melody_flg']='未';
+                        break;
+                    case '1':
+                        $row_return['melody_flg']='済';
+                        break;
+                }
+                $contents=json_decode($row_return['contents'],true);
+                $last_data['id']=$row_return['id'];
+                $last_data['student_id']=$row_return['student_id'];
+                $last_data['name']=$row_return['name'];
+                $last_data['date_change']=$contents['date_change'];
+                $last_data['type']=$row_return['type'];
+                $last_data['status']=$row_return['status'];
+                $last_data['process_date']=$row_return['process_date']!=null?$row_return['process_date']:'---';
+                $last_data['comission_flg']=$row_return['comission_flg'];
+                $last_data['melody_flg']=$row_return['melody_flg'];
+                $last_data_return[]=$last_data;
+            }
+            return $last_data_return;
         }
     }
 
