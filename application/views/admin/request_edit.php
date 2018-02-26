@@ -43,38 +43,48 @@
                 {
                     case 'bus_change_once':
                         $get_request['type']='バス乗降連絡';
+                        break;
                     case 'bus_change_eternal':
                         $get_request['type']='バスコース変更';
+                        break;
                     case 'course_change':
                         $get_request['type']='練習コース変更';
+                        break;
                     case 'recess':
                         $get_request['type']='休会届';
+                        break;
                     case 'quit':
                         $get_request['type']='退会届';
+                        break;
                     case 'event_entry':
                         $get_request['type']='イベント・短期教室参加申請';
+                        break;
                     case 'address_change':
-                        $get_request['type']='住所変更申請 ';
+                        $get_request['type']='住所変更申請';
+                        break;
                 }
                 switch ($get_request['status'])
                 {
                     case '0':
                         $get_request['status']='未処理/未確認';
+                        break;
                     case '1':
                         $get_request['status']='承認/処理済み/確認済み';
+                        break;
                     case '2':
                         $get_request['status']='保留';
+                        break;
                 }
                 switch ($get_request['comission_flg'])
                 {
-                    case '0': $get_request['comission_flg']='無し';
-                    case '1': $get_request['comission_flg']='手数料発生';
-                    case '2': $get_request['comission_flg']='免除';
+                    case '0': $get_request['comission_flg']='無し'; break;
+                    case '1': $get_request['comission_flg']='手数料発生'; break;
+                    case '2': $get_request['comission_flg']='免除'; break;
                 }
                 switch ($get_request['melody_flg'])
                 {
-                    case '0': $get_request['melody_flg']='未';
-                    case '1':$get_request['melody_flg']='済';
+                    case '0': $get_request['melody_flg']='未'; break;
+                    case '1':$get_request['melody_flg']='済'; break;
                 }
                 ?>
                   <tr>
@@ -91,13 +101,13 @@
               </table>
             </div>
           </section>
-          <form>
+          <form method="post" id="request_form">
             <section>
               <div class="block-30">
                 <div class="panel panel-dotted panel-red">
                   <div class="panel-body text-center">
                       <?php
-                      if($get_request['old_course']) {
+                      if(isset($get_request['old_course'])) {
                           ?>
                           <h3 class="h4">
                               <strong>
@@ -139,6 +149,28 @@
                           </h3>
                           <?php
                       }
+                      if ($get_request['type']=='住所変更申請')
+                      {
+                          ?>
+                          <h3 class="h4">
+                              <strong>
+                                  <?php
+                                  echo $get_request['address_before'];
+                                  ?>
+                              </strong>
+                          </h3>
+                          <p>
+                              <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                          </p>
+                          <h3 class="text-red">
+                              <strong>
+                                  <?php
+                                  echo $get_request['address_after'];
+                                  ?>
+                              </strong>
+                          </h3>
+                          <?php
+                      }
                       ?>
                   </div>
                 </div>
@@ -154,7 +186,7 @@
                     <input type="radio" name="status" value="<?php echo TWO?>"  <?php if ($get_request['status']==TWO) echo "checked"?>> 保留
                   </label>
                 </div>
-                <textarea class="form-control" rows="3" placeholder="保留時の会員へのメッセージ（受付にて直接手続きする等）"><?php
+                <textarea class="form-control" rows="3" name="message" placeholder="保留時の会員へのメッセージ（受付にて直接手続きする等）"><?php
                     if ($get_request['message']!=NULL)
                     {
                         echo $get_request['message'];
@@ -170,7 +202,7 @@
                 </div>
                 <div class="block-15 text-center">
                   <label class="checkbox-inline">
-                    <input type="checkbox" name="" value=""> MEDLEY入力
+                    <input type="checkbox" name="medley" value="<?php echo ONE?>"> MEDLEY入力
                   </label>
 
                 </div>
@@ -184,16 +216,16 @@
       <div class="block-15 text-center row">
         <div class="col-sm-4 col-sm-offset-2">
           <p>
-            <a class="btn btn-default btn-block" href="#0">
+            <a class="btn btn-default btn-block" href="<?php echo site_url('admin/request')?>">
               <span>戻る</span>
             </a>
           </p>
         </div>
         <div class="col-sm-4">
           <p>
-            <a class="btn btn-success btn-block" href="#0">
+            <button id="update_request" class="btn btn-success btn-block" href="<?php echo site_url('admin/request/edit/'.$get_request['id'])?>">
               <span>更新</span>
-            </a>
+            </button>
           </p>
         </div>
       </div>
@@ -232,15 +264,65 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <?php
+                                    $contents=json_decode($get_bus_course['contents'],true);
+                                    switch ($get_bus_course['type'])
+                                    {
+                                        case 'bus_change_once':
+                                            $get_bus_course['type']='バス乗降連絡';
+                                            break;
+                                        case 'bus_change_eternal':
+                                            $get_bus_course['type']='バスコース変更';
+                                            break;
+                                        case 'course_change':
+                                            $get_bus_course['type']='練習コース変更';
+                                            break;
+                                        case 'recess':
+                                            $get_bus_course['type']='休会届';
+                                            break;
+                                        case 'quit':
+                                            $get_bus_course['type']='退会届';
+                                            break;
+                                        case 'event_entry':
+                                            $get_bus_course['type']='イベント・短期教室参加申請';
+                                            break;
+                                        case 'address_change':
+                                            $get_bus_course['type']='住所変更申請 ';
+                                            break;
+                                    }
+                                    switch ($get_bus_course['status'])
+                                    {
+                                        case '0':
+                                            $get_bus_course['status']='未処理/未確認';
+                                            break;
+                                        case '1':
+                                            $get_bus_course['status']='承認/処理済み/確認済み';
+                                            break;
+                                        case '2':
+                                            $get_bus_course['status']='保留';
+                                            break;
+                                    }
+                                    switch ($get_bus_course['comission_flg'])
+                                    {
+                                        case '0': $get_bus_course['comission_flg']='無し'; break;
+                                        case '1': $get_bus_course['comission_flg']='手数料発生'; break;
+                                        case '2': $get_bus_course['comission_flg']='免除'; break;
+                                    }
+                                    switch ($get_bus_course['melody_flg'])
+                                    {
+                                        case '0': $get_bus_course['melody_flg']='未'; break;
+                                        case '1':$get_bus_course['melody_flg']='済'; break;
+                                    }
+                                    ?>
                                     <tr>
-                                        <th>12345</th>
-                                        <td><a href="#0" class="btn btn-default">玉葱　太郎</a></td>
-                                        <td>2017/9/1</td>
-                                        <td>バス変更</td>
-                                        <td>未処理</td>
-                                        <td>---</td>
-                                        <td></td>
-                                        <td></td>
+                                        <th><?php echo $get_bus_course['student_id']?></th>
+                                        <td><a href="<?php ?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
+                                        <td><?php echo $contents['date_change']?></td>
+                                        <td><?php echo $get_bus_course['type']?></td>
+                                        <td><?php echo $get_bus_course['status']?></td>
+                                        <td><?php  echo $get_bus_course['process_date']?:'---'?></td>
+                                        <td><?php echo $get_bus_course['comission_flg']?></td>
+                                        <td><?php echo $get_bus_course['melody_flg']?></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -287,7 +369,7 @@
                 <div class="block-15 text-center row">
                     <div class="col-sm-4 col-sm-offset-2">
                         <p>
-                            <a class="btn btn-default btn-block" href="#0">
+                            <a class="btn btn-default btn-block" href="<?php echo site_url('admin/request')?>">
                                 <span>戻る</span>
                             </a>
                         </p>
@@ -312,3 +394,40 @@
 </body>
 
 </html>
+
+<script type="text/javascript">
+    //update data
+    $("#update_request").click(function(e) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+            $.ajax({
+                type: 'POST',
+                data: $('#request_form').serialize(),
+                url: url,
+                dataType:'json',
+                success: function (data) {
+                    if (data.status  == 1) {
+                        $('#popup').click();
+                        $('.modal-body').addClass('alert alert-success');
+                        $("#status_update").html("<b>情報を更新しました。 </b>");
+                        window.setTimeout(function () {
+                            $('#myModal').fadeToggle(300, function () {
+                                $('#myModal').modal('hide');
+                                window.location = url_top + '/style';
+                            });
+                        }, 1000);
+                    }
+                    else if (data.status  == 0) {
+                        $('#popup').click();
+                        $('.modal-body').addClass('alert alert-danger');
+                        $("#status_update").html("<b>この種目コードは既存しています。他の種目コードを入力してください。 </b>");
+                        window.setTimeout(function () {
+                            $('#myModal').fadeToggle(300, function () {
+                                $('#myModal').modal('hide');
+                            });
+                        }, 10000);
+                    }
+                }
+            });
+    });
+</script>

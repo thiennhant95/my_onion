@@ -466,3 +466,19 @@ define('CHANGE_BASIC_INFORMATION','基本情報変更');
 
 //config limit csv
 define('LIMIT_CSV',1000);
+
+//start time and time class
+define('START_TIME_M',1100);
+define('START_TIME_A',1330);
+define('START_TIME_B',1440);
+define('START_TIME_C',1555);
+define('START_TIME_D',1705);
+define('START_TIME_E',1805);
+define('START_TIME_F',1920);
+define('END_TIME_M',1330);
+define('END_TIME_A',1440);
+define('END_TIME_B',1555);
+define('END_TIME_C',1705);
+define('END_TIME_D',1805);
+define('END_TIME_E',1920);
+define('END_TIME_F',2100);

@@ -181,11 +181,11 @@ $(document).ready(function() {
                 required:"この項目は必須です",
                 number: "有効な数値を入力してください。",
                 digits: "数字のみ入力して下さい。",
-                min: "1以上の値を入力してください",
+                min: "1以上の値を入力してください"
             },
             cost_item_id: "この項目は必須です",
             rest_item_id: "この項目は必須です",
-            bus_item_id: "この項目は必須です",
+            bus_item_id: "この項目は必須です"
         },
         errorClass: "label label-danger",
         highlight: function (element, errorClass, validClass) {
@@ -217,7 +217,6 @@ $(document).ready(function() {
                     data: $('#course_form').serialize(),
                     url: url_top + '/course/edit/' + id,
                     success: function (data) {
-                        console.log(data);
                         if (data.status == 1) {
                             $('#popup').click();
                             $('.modal-body').addClass('alert alert-success');

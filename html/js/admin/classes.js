@@ -1,8 +1,38 @@
 //validate form class
+var isSuccess;
+var message;
 $(document).ready(function() {
     // jQuery.validator.addMethod("math", function(value, element, params) {
     //     return this.optional(element) ||/^[M|A|B|C|D,E|F].*/.test(value);
     // }, jQuery.validator.format("ký tự đầu là 1 trong M,A,B,C,D,E,F"));
+    $.validator.addMethod(
+        "max_class",
+        function(value, element) {
+            var course_id=$('#short_course_name').val();
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                data: $('#class_form').serialize(),
+                url: url_top + '/classes/check_max_count/' +course_id,
+                success: function (data) {
+                    if (data.status==1)
+                    {
+                        isSuccess=1;
+                        message=data.total;
+                    }
+                    if (data.status==0)
+                    {
+                        isSuccess=0;
+                    }
+                }
+            });
+            if (isSuccess==1) {
+                return false;
+            }
+            return true;
+        },
+        "sỉ số tổng các lớp của khóa học phải nhỏ hơn hoặc bằng sỉ số khóa học"
+    );
     $("#class_form").validate({
         rules: {
             class_code: {
@@ -16,7 +46,8 @@ $(document).ready(function() {
                     required: true,
                     number: true,
                     digits: true,
-                    min:1
+                    min:1,
+                    max_class:true,
                 }
         },
         messages: {
@@ -63,7 +94,6 @@ $("#update").click(function(e) {
             data: $('#class_form').serialize(),
             url: url_top + '/classes/edit/' + id,
             success: function (data) {
-                console.log(data);
                 if (data.success == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -83,7 +113,7 @@ $("#update").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });
@@ -100,7 +130,6 @@ $("#create").click(function(e) {
             data: $('#class_form').serialize(),
             url: url_top + '/classes/create/',
             success: function (data) {
-                console.log(data.success);
                 if (data.success == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -120,7 +149,7 @@ $("#create").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });

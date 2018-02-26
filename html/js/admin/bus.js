@@ -186,7 +186,6 @@ $("#update").click(function(e) {
             data: $('#bus_couse').serialize(),
             url: url_top + '/bus_route/edit/' + data_id,
             success: function (data) {
-                console.log(data);
                 if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -206,7 +205,7 @@ $("#update").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });
@@ -234,7 +233,6 @@ $("#create").click(function(e) {
             data: $('#bus_couse').serialize(),
             url: url_top + '/bus_route/create/',
             success: function (data) {
-                console.log(data);
                 if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -254,7 +252,7 @@ $("#create").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });
@@ -306,7 +304,6 @@ $("#create_bus_stop").click(function(e) {
             data: $('#bus_stop_form').serialize(),
             url: url,
             success: function (data) {
-                console.log(data);
                 if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -326,7 +323,7 @@ $("#create_bus_stop").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });
@@ -344,7 +341,6 @@ $("#update_bus_stop").click(function(e) {
             data: $('#bus_stop_form').serialize(),
             url: url,
             success: function (data) {
-                console.log(data);
                 if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -364,7 +360,7 @@ $("#update_bus_stop").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });
@@ -382,7 +378,6 @@ $("#mytable").on("click", ".copy", function (e) {
             dataType: 'json',
             url: url_top + '/bus_route/copy/'+id,
             success: function (data) {
-                // console.log(data);
                 $('#popup').click();
                 $('.modal-body').addClass('alert alert-success');
                 $("#status_update").html("<b>正常にコピーされた。 </b>");

@@ -203,7 +203,7 @@
               $get_regist_end_day=explode('-',$get_course['regist_end_date']);
               $year_curent=date("Y");
               $year[]= $year_curent-1;
-              for ($i=0;$i<=20;$i++)
+              for ($i=0;$i<=50;$i++)
               {
                   $year[]=$year_curent++;
               }

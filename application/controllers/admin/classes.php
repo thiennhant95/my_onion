@@ -107,6 +107,37 @@ class Classes extends ADMIN_Controller {
                         'max_count'=>$this->input->post('max_count'),
                         'invalid_flg'=>$this->input->post('enable'),
                     );
+                    switch ($this->input->post('base_class_sign'))
+                    {
+                        case 'M':
+                            $dataInsert['start_time']=START_TIME_M;
+                            $dataInsert['end_time']=END_TIME_M;
+                            break;
+                        case 'A':
+                            $dataInsert['start_time']=START_TIME_A;
+                            $dataInsert['end_time']=END_TIME_A;
+                            break;
+                        case 'B':
+                            $dataInsert['start_time']=START_TIME_B;
+                            $dataInsert['end_time']=END_TIME_B;
+                            break;
+                        case 'C':
+                            $dataInsert['start_time']=START_TIME_C;
+                            $dataInsert['end_time']=END_TIME_C;
+                            break;
+                        case 'D':
+                            $dataInsert['start_time']=START_TIME_D;
+                            $dataInsert['end_time']=END_TIME_D;
+                            break;
+                        case 'E':
+                            $dataInsert['start_time']=START_TIME_E;
+                            $dataInsert['end_time']=END_TIME_E;
+                            break;
+                        case 'F':
+                            $dataInsert['start_time']=START_TIME_F;
+                            $dataInsert['end_time']=END_TIME_F;
+                            break;
+                    }
                     $this->class->insert($dataInsert);
                     echo json_encode(array('success'=>DATA_ON));
                     die();
@@ -185,6 +216,34 @@ class Classes extends ADMIN_Controller {
             else
             {
                 echo json_encode(array('status' => DATA_OFF));
+                die();
+            }
+        }
+        catch (Exception $e)
+        {
+            $this->_show_error($e->getMessage(), $e->getTraceAsString());
+        }
+    }
+
+    public function check_max_count($course_id)
+    {
+
+        if ($this->error_flg) return;
+        try {
+            $this->input->post('max_count');
+            $max_count_db=$this->class->number_of_pupils($course_id)[0]['count_total'];
+            $max_course=$this->course->select_by_id($course_id)[0];
+            $max_count=$this->input->post('max_count')+$max_count_db;
+            if ($max_count < $max_course['max_count'])
+            {
+                $total=$max_course['max_count']-$max_count_db;
+                echo json_encode(array('status'=>'0','total'=>$total));
+                die();
+            }
+            else
+            {
+                $total=$max_course['max_count']-$max_count_db;
+                echo json_encode(array('status'=>'1','total'=>$total));
                 die();
             }
         }

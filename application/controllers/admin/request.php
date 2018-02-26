@@ -226,7 +226,7 @@ class Request extends ADMIN_Controller {
             $contents=json_decode($data['get_request']['contents'],true);
 
             //get change course
-            if (isset($contents['course_id_old']))
+            if ($data['get_request']['type']==COURSE_CHANGE)
             {
                 $data['get_request']['old_course']=$this->course->select_by_id($contents['course_id_old'])[0]['course_name'];
                 $data['get_request']['new_course']=$this->course->select_by_id($contents['course_id_new'])[0]['course_name'];
@@ -256,9 +256,10 @@ class Request extends ADMIN_Controller {
                 $data['get_request']['class_new']=$class_new;
             }
 
-            if (isset($contents['address_change']))
+            if ($data['get_request']['type']==ADDRESS_CHANGE)
             {
-                $data['get_request']['address_change']=$contents['address_change']['address_change'];
+                $data['get_request']['address_before']=$contents['address_before'];
+                $data['get_request']['address_after']=$contents['address_after'];
             }
             if (isset($contents['event_entry']))
             {
@@ -280,6 +281,8 @@ class Request extends ADMIN_Controller {
             {
 
             }
+//            print_r($data['get_request']);
+//            die();
 //            echo "<pre>";
 //            print_r($data);
 //            die();
@@ -300,9 +303,20 @@ class Request extends ADMIN_Controller {
 //                case 'address_change':
 //                    $get_request['type']='住所変更申請 ';
 //            }
-            if ($data['get_request']['type']=COURSE_CHANGE)
+
+            if ($data['get_request']['type']==COURSE_CHANGE)
             {
-                $data['get_bus_course']=$this->request->get_where(array('student_id'=>$data['get_request']['student_id'],'type'=>BUS_CHANGE_ETERNAL))[0];
+                    $get_bus_course = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => BUS_CHANGE_ETERNAL));
+                    if ($get_bus_course!=null) {
+                        $contents = json_decode($get_bus_course[0]['contents'], true);
+                        if ($get_bus_course[0] != NULL && empty($contents['class_id'])) {
+                            $data['get_bus_course'] = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => BUS_CHANGE_ETERNAL))[0];
+                        }
+                    }
+            }
+            if ($this->input->post())
+            {
+
             }
             $this->viewVar=$data;
             admin_layout_view('request_edit', $this->viewVar);

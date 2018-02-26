@@ -74,5 +74,10 @@ class M_class_model extends DB_Model {
         return $data_class;
     }
 
-
+    public function number_of_pupils($course_id)
+    {
+       $sql='select  sum(m_class.max_count) as count_total from m_class where m_class.course_id='.$course_id;
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
 }

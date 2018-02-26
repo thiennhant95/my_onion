@@ -163,7 +163,7 @@
                         <label for="" class="col-sm-2 control-label">コース種別</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="course-type" value="<?php echo DATA_OFF?>" checked> 通常
+                                <input type="radio" name="course-type" id="course_type" value="<?php echo DATA_OFF?>" checked> 通常
                             </label>
                             <label class="radio-inline">
                                 <input type="radio" name="course-type" value="<?php echo DATA_ON?>"> 短期

@@ -75,7 +75,6 @@ $("#create").click(function(e) {
             data: $('#distance_form').serialize(),
             url: url,
             success: function (data) {
-                console.log(data);
                 if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -95,7 +94,7 @@ $("#create").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });
@@ -113,7 +112,6 @@ $("#update").click(function(e) {
             data: $('#distance_form').serialize(),
             url: url,
             success: function (data) {
-                console.log(data);
                 if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -133,7 +131,7 @@ $("#update").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 2000);
+                    }, 10000);
                 }
             }
         });

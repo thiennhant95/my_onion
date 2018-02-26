@@ -71,7 +71,6 @@ $("#create").click(function(e) {
             url: url,
             dataType:'json',
             success: function (data) {
-                console.log(data);
                 if (data.status == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -91,7 +90,7 @@ $("#create").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 1900);
+                    }, 10000);
                 }
             }
         });
@@ -109,7 +108,6 @@ $("#update").click(function(e) {
             url: url,
             dataType:'json',
             success: function (data) {
-                console.log(data);
                 if (data.status  == 1) {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-success');
@@ -129,7 +127,7 @@ $("#update").click(function(e) {
                         $('#myModal').fadeToggle(300, function () {
                             $('#myModal').modal('hide');
                         });
-                    }, 1900);
+                    }, 10000);
                 }
             }
         });
