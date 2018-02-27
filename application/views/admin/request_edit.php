@@ -42,60 +42,68 @@
                 switch ($get_request['type'])
                 {
                     case 'bus_change_once':
-                        $get_request['type']='バス乗降連絡';
+                        $get_request['type_jp']='バス乗降連絡';
                         break;
                     case 'bus_change_eternal':
-                        $get_request['type']='バスコース変更';
+                        $get_request['type_jp']='バスコース変更';
                         break;
                     case 'course_change':
-                        $get_request['type']='練習コース変更';
+                        $get_request['type_jp']='練習コース変更';
                         break;
                     case 'recess':
-                        $get_request['type']='休会届';
+                        $get_request['type_jp']='休会届';
                         break;
                     case 'quit':
-                        $get_request['type']='退会届';
+                        $get_request['type_jp']='退会届';
                         break;
                     case 'event_entry':
-                        $get_request['type']='イベント・短期教室参加申請';
+                        $get_request['type_jp']='イベント・短期教室参加申請';
                         break;
                     case 'address_change':
-                        $get_request['type']='住所変更申請';
+                        $get_request['type_jp']='住所変更申請';
                         break;
                 }
                 switch ($get_request['status'])
                 {
                     case '0':
-                        $get_request['status']='未処理/未確認';
+                        $get_request['status_jp']='未処理/未確認';
                         break;
                     case '1':
-                        $get_request['status']='承認/処理済み/確認済み';
+                        $get_request['status_jp']='承認/処理済み/確認済み';
                         break;
                     case '2':
-                        $get_request['status']='保留';
+                        $get_request['status_jp']='保留';
                         break;
                 }
                 switch ($get_request['comission_flg'])
                 {
-                    case '0': $get_request['comission_flg']='無し'; break;
-                    case '1': $get_request['comission_flg']='手数料発生'; break;
-                    case '2': $get_request['comission_flg']='免除'; break;
+                    case '0': $get_request['comission_flg_jp']='無し'; break;
+                    case '1': $get_request['comission_flg_jp']='手数料発生'; break;
+                    case '2': $get_request['comission_flg_jp']='免除'; break;
                 }
                 switch ($get_request['melody_flg'])
                 {
-                    case '0': $get_request['melody_flg']='未'; break;
-                    case '1':$get_request['melody_flg']='済'; break;
+                    case '0': $get_request['melody_flg_jp']='未'; break;
+                    case '1':$get_request['melody_flg_jp']='済'; break;
+                }
+                if ($get_request['process_date']==NULL)
+                {
+                    $get_request['process_date']='---';
+                }
+                else
+                {
+                    $get_request['process_date'] = date('Y-m-d', strtotime($get_request['process_date']));
                 }
                 ?>
                   <tr>
                     <th><?php echo $get_request['student_id']?></th>
                     <td><a href="<?php ?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
-                    <td><?php echo $contents['date_change']?></td>
-                    <td><?php echo $get_request['type']?></td>
-                    <td><?php echo $get_request['status']?></td>
-                    <td><?php  echo $get_request['process_date']?:'---'?></td>
-                    <td><?php echo $get_request['comission_flg']?></td>
-                    <td><?php echo $get_request['melody_flg']?></td>
+                    <td><?php echo date('Y-m-d',strtotime($get_request['create_date']))?></td>
+                    <td><?php echo $get_request['type_jp']?></td>
+                    <td><?php echo $get_request['status_jp']?></td>
+                    <td><?php echo $get_request['process_date']?></td>
+                    <td><?php echo $get_request['comission_flg_jp']?></td>
+                    <td><?php echo $get_request['melody_flg_jp']?></td>
                   </tr>
                 </tbody>
               </table>
@@ -149,7 +157,7 @@
                           </h3>
                           <?php
                       }
-                      if ($get_request['type']=='住所変更申請')
+                      if ($get_request['type']==ADDRESS_CHANGE)
                       {
                           ?>
                           <h3 class="h4">
@@ -167,6 +175,72 @@
                                   <?php
                                   echo $get_request['address_after'];
                                   ?>
+                                  <input type="hidden" name="address_after" value="<?php echo $get_request['address_after']?>">
+                              </strong>
+                          </h3>
+                          <?php
+                      }
+                      if ($get_request['type']==QUIT)
+                      {
+                          ?>
+                          <h3 class="text-red">
+                              <strong>
+                                  <?php
+                                  echo '退会理由：';
+                                  foreach ($get_request['reason'] as $row_reason)
+                                  {
+                                      if ($row_reason==end($get_request['reason']))
+                                      {
+                                          echo $row_reason;
+                                      }
+                                      if ($row_reason!=end($get_request['reason'])) {
+                                          echo $row_reason . " - ";
+                                      }
+                                  }
+                                  if ($get_request['memo']!=null) {
+                                      echo "<br>" . 'その他：' . $get_request['memo'];
+                                  }
+                                  ?>
+                                  <input type="hidden" name="quit_date" value="<?php echo $get_request['quit_date']?>">
+                                  <input type="hidden" name="reason" value="<?php echo implode(',',$get_request['reason'])?>">
+                                  <input type="hidden" name="memo" value="<?php echo $get_request['memo']?>">
+                              </strong>
+                          </h3>
+                          <?php
+                      }
+                      if ($get_request['type']==RECESS)
+                      {
+                          ?>
+                          <h3 class="text-red">
+                              <strong>
+                                  <?php
+                                  echo '開始日：'.$get_request['start_date'];
+                                  echo '<br>'.'終了日：'.$get_request['end_date'];
+                                  if ($get_request['reason']!=null) {
+                                      echo "<br>" . '理由：' . $get_request['reason'];
+                                  }
+                                  ?>
+                                  <input type="hidden" name="start_date" value="<?php echo $get_request['start_date']?>">
+                                  <input type="hidden" name="end_date" value="<?php echo $get_request['end_date']?>">
+                                  <input type="hidden" name="reason" value="<?php echo $get_request['reason']?>">
+                              </strong>
+                          </h3>
+                      <?php
+                      }
+
+                      if ($get_request['type']==EVENT_TRY)
+                      {
+                          ?>
+                          <h3 class="text-red">
+                              <strong>
+                                  <?php
+                                  echo 'コース名：'.$get_request['course_name'];
+                                  if ($get_request['memo']!=null) {
+                                      echo "<br>" . '理由：' . $get_request['memo'];
+                                  }
+                                  ?>
+                                  <input type="hidden" name="event_course_id" value="<?php echo $get_request['course_id']?>">
+                                  <input type="hidden" name="memo" value="<?php echo $get_request['memo']?>">
                               </strong>
                           </h3>
                           <?php
@@ -202,14 +276,12 @@
                 </div>
                 <div class="block-15 text-center">
                   <label class="checkbox-inline">
-                    <input type="checkbox" name="medley" value="<?php echo ONE?>"> MEDLEY入力
+                    <input type="checkbox" name="medley" value="<?php echo ONE?>" <?php if ($get_request['melody_flg']==DATA_ON) echo "checked"?>> MEDLEY入力
                   </label>
 
                 </div>
               </div>
             </section>
-          </form>
-
         </div>
       </div>
 
@@ -229,6 +301,7 @@
           </p>
         </div>
       </div>
+        </form>
     </div>
 
   </main>
@@ -394,10 +467,30 @@
 </body>
 
 </html>
+<button style=" visibility: hidden;" type="button" id="popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+</button>
+
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="status_update"></p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px;border: 0px solid }
+</style>
 
 <script type="text/javascript">
     //update data
-    $("#update_request").click(function(e) {
+    $(document).ready(function() {
+        $("#update_request").click(function(e) {
             e.preventDefault();
             var url = $(this).attr("href");
             $.ajax({
@@ -413,21 +506,12 @@
                         window.setTimeout(function () {
                             $('#myModal').fadeToggle(300, function () {
                                 $('#myModal').modal('hide');
-                                window.location = url_top + '/style';
+                                window.location = url_top + '/request';
                             });
                         }, 1000);
                     }
-                    else if (data.status  == 0) {
-                        $('#popup').click();
-                        $('.modal-body').addClass('alert alert-danger');
-                        $("#status_update").html("<b>この種目コードは既存しています。他の種目コードを入力してください。 </b>");
-                        window.setTimeout(function () {
-                            $('#myModal').fadeToggle(300, function () {
-                                $('#myModal').modal('hide');
-                            });
-                        }, 10000);
-                    }
                 }
             });
+    });
     });
 </script>

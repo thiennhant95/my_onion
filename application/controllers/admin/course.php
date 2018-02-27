@@ -72,13 +72,13 @@ class Course extends ADMIN_Controller {
                 }
                 $this->form_validation->set_rules('course_code', 'course_code', 'required|trim|xss_clean'.$is_unique_code);
                 if ($this->form_validation->run() == true) {
-                    if ($this->input->post('free_practice_radio')==DATA_OFF) {
-                        $practice_max = $this->input->post('free_practice_radio');
-                    }
-                    if (!isset($_POST['free_practice_radio']))
-                    {
+//                    if ($this->input->post('free_practice_radio')==DATA_OFF) {
+//                        $practice_max = $this->input->post('free_practice_radio');
+//                    }
+//                    if (!isset($_POST['free_practice_radio']))
+//                    {
                         $practice_max=$this->input->post('number_practice_select');
-                    }
+//                    }
 
                     $start_date=implode('-',$this->input->post('start'));
                     $end_date=implode('-',$this->input->post('end'));
@@ -160,13 +160,13 @@ class Course extends ADMIN_Controller {
             {
                 $this->form_validation->set_rules('course_code', 'course_code', 'required|trim|xss_cleanis_unique[m_course#course_code]');
                 if ($this->form_validation->run() == true) {
-                    if ($this->input->post('free_practice_radio')==DATA_OFF) {
-                        $practice_max = $this->input->post('free_practice_radio');
-                    }
-                    if (!isset($_POST['free_practice_radio']))
-                    {
+//                    if ($this->input->post('free_practice_radio')==DATA_OFF) {
+//                        $practice_max = $this->input->post('free_practice_radio');
+//                    }
+//                    if (!isset($_POST['free_practice_radio']))
+//                    {
                         $practice_max=$this->input->post('number_practice_select');
-                    }
+//                    }
 
                     $start_date=implode('-',$this->input->post('start'));
                     $end_date=implode('-',$this->input->post('end'));

@@ -107,6 +107,8 @@ class L_student_request_model extends DB_Model {
             {
                 case PRACTICE_COURSE:
                     $this->db->or_where('type',COURSE_CHANGE);
+                    break;
+                case EVENT_ENTRY:
                     $this->db->or_where('type',EVENT_TRY);
                     break;
                 case BUS_COURSE:
@@ -178,7 +180,7 @@ class L_student_request_model extends DB_Model {
 
         if ($this->input->post('date_start'))
         {
-            $date_start=date("Y-m",strtotime($this->input->post('date_start')));
+            $date_start=date("Y-m-d",strtotime($this->input->post('date_start')));
         }
         else
         {
@@ -186,7 +188,7 @@ class L_student_request_model extends DB_Model {
         }
         if ($this->input->post('date_end'))
         {
-            $date_end=date("Y-m",strtotime($this->input->post('date_end')));
+            $date_end=date("Y-m-d",strtotime($this->input->post('date_end')));
         }
         else
         {
@@ -196,7 +198,7 @@ class L_student_request_model extends DB_Model {
         foreach ($data_search as $data_date)
         {
             $data_content=json_decode($data_date['contents'],true);
-            if ($date_start<=$data_content['date_change'] && $data_content['date_change']<=$date_end)
+            if ($date_start<=$data_date['create_date'] && $data_date['create_date']<=$date_end)
             {
                 $request_data[]=$data_date;
             }
@@ -227,6 +229,8 @@ class L_student_request_model extends DB_Model {
             {
                 case PRACTICE_COURSE:
                     $this->db->or_where('type',COURSE_CHANGE);
+                    break;
+                case EVENT_ENTRY:
                     $this->db->or_where('type',EVENT_TRY);
                     break;
                 case BUS_COURSE:
@@ -299,7 +303,7 @@ class L_student_request_model extends DB_Model {
         //date search
         if ($this->input->post('date_start'))
         {
-            $date_start=date("Y-m",strtotime($this->input->post('date_start')));
+            $date_start=date("Y-m-d",strtotime($this->input->post('date_start')));
         }
         else
         {
@@ -307,7 +311,7 @@ class L_student_request_model extends DB_Model {
         }
         if ($this->input->post('date_end'))
         {
-            $date_end=date("Y-m",strtotime($this->input->post('date_end')));
+            $date_end=date("Y-m-d",strtotime($this->input->post('date_end')));
         }
         else
         {
@@ -318,7 +322,7 @@ class L_student_request_model extends DB_Model {
         foreach ($data_search as $data_date)
         {
             $data_content=json_decode($data_date['contents'],true);
-            if ($date_start<=$data_content['date_change'] && $data_content['date_change']<=$date_end)
+            if ($date_start<=$data_date['create_date'] && $data_date['create_date']<=$date_end)
             {
                 $request_data[]=$data_date;
             }
@@ -364,34 +368,34 @@ class L_student_request_model extends DB_Model {
                 }
                 switch ($row_return['status'])
                 {
-                    case '0':
+                    case ZERO:
                         $row_return['status']='未処理/未確認';
                         break;
-                    case '1':
+                    case ONE:
                         $row_return['status']='承認/処理済み/確認済み';
                         break;
-                    case '2':
+                    case TWO:
                         $row_return['status']='保留';
                         break;
                 }
                 switch ($row_return['comission_flg'])
                 {
-                    case '0':
+                    case ZERO:
                         $row_return['comission_flg']='無し';
                         break;
-                    case '1':
+                    case ONE:
                         $row_return['comission_flg']='手数料発生';
                         break;
-                    case '2':
+                    case TWO:
                         $row_return['comission_flg']='免除';
                         break;
                 }
                 switch ($row_return['melody_flg'])
                 {
-                    case '0':
+                    case ZERO:
                         $row_return['melody_flg']='未';
                         break;
-                    case '1':
+                    case ONE:
                         $row_return['melody_flg']='済';
                         break;
                 }
@@ -399,7 +403,7 @@ class L_student_request_model extends DB_Model {
                 $last_data['id']=$row_return['id'];
                 $last_data['student_id']=$row_return['student_id'];
                 $last_data['name']=$row_return['name'];
-                $last_data['date_change']=$contents['date_change'];
+                $last_data['date_change']=$row_return['create_date'];
                 $last_data['type']=$row_return['type'];
                 $last_data['status']=$row_return['status'];
                 $last_data['process_date']=$row_return['process_date']!=null?$row_return['process_date']:'---';

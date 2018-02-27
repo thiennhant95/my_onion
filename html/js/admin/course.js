@@ -70,7 +70,9 @@ $(document).ready(function() {
             var date_start = new Date(start);
             var date_end = new Date(end);
             if (date_end <= date_start) {
-                return false;
+                if(!$("#nomal_type").is(':checked')) {
+                    return false;
+                }
             }
             return true;
         },
@@ -79,22 +81,24 @@ $(document).ready(function() {
     $.validator.addMethod(
         "start_regist",
         function(value, element) {
-            var year_start = $('#year_start').val();
-            var month_start = $('#month_start').val();
-            var day_start = $('#day_start').val();
+            var year_end = $('#year_end').val();
+            var month_end = $('#month_end').val();
+            var day_end = $('#day_end').val();
             var year_regist_start = $('#year_regist_start').val();
             var month_regist_start = $('#month_regist_start').val();
             var day_regist_start = $('#day_regist_start').val();
-            var start = year_start + '-' + month_start + '-' + day_start;
+            var start = year_end + '-' + month_end + '-' + day_end;
             var end = year_regist_start + '-' + month_regist_start+ '-' + day_regist_start;
             var date_start = new Date(start);
             var date_end = new Date(end);
             if (date_end >= date_start) {
-                return false;
+                if(!$("#nomal_type").is(':checked')) {
+                    return false;
+                }
             }
             return true;
         },
-        "Ngày đăng kí phải nhỏ hơn ngày khai giảng"
+        "Ngày đăng kí phải nhỏ hơn ngày kết thúc"
     );
     $.validator.addMethod(
         "end_regist",
@@ -110,7 +114,9 @@ $(document).ready(function() {
             var date_start = new Date(start);
             var date_end = new Date(end);
             if (date_end <= date_start) {
-                return false;
+                if(!$("#nomal_type").is(':checked')) {
+                    return false;
+                }
             }
             return true;
         },
@@ -203,6 +209,64 @@ $(document).ready(function() {
         }
     });
 
+});
+
+$(document).ready(function() {
+  $("#nomal_type").click(function (e) {
+      if($("#year_end").val('2199'))
+      {
+          $("#year_end option[value=2199]").remove();
+      }
+      if($("#month_end").val('00'))
+      {
+          $("#month_end option[value=00]").remove();
+      }
+      if($("#day_end").val('2199'))
+      {
+          $("#year_end option[value=2199]").remove();
+      }
+      if($("#year_start").val('0000'))
+      {
+          $("#year_start option[value=0000]").remove();
+      }
+      if($("#month_start").val('00'))
+      {
+          $("#month_start option[value=00]").remove();
+      }
+      if($("#day_end").val('00'))
+      {
+          $("#year_end option[value=00]").remove();
+      }
+
+      $("#year_end").append("<option value='2199' selected>不要</option>");
+      $("#month_end").append("<option value='12' selected>不要</option>");
+      $("#day_end").append("<option value='31' selected>不要</option>");
+      $("#year_start").append("<option value='0000' selected>不要</option>");
+      $("#month_start").append("<option value='00' selected>不要</option>");
+      $("#day_start").append("<option value='00' selected>不要</option>");
+  })
+});
+
+$(document).ready(function() {
+    $("#short_type").click(function (e) {
+        $("#year_start option[value=0000]").remove();
+        $("#month_start option[value=00]").remove();
+        $("#day_start option[value=00]").remove();
+        $("#year_end option[value=2199]").remove();
+        $("#month_end option[value=12]").remove();
+        $("#day_end option[value=31]").remove();
+    })
+});
+
+$(document).ready(function() {
+    $("#free_type").click(function (e) {
+        $("#year_start option[value=0000]").remove();
+        $("#month_start option[value=00]").remove();
+        $("#day_start option[value=00]").remove();
+        $("#year_end option[value=2199]").remove();
+        $("#month_end option[value=12]").remove();
+        $("#day_end option[value=31]").remove();
+    })
 });
 
 //update course
@@ -305,9 +369,9 @@ function uncheck() {
 }
 
 //onchange number practice select
-    $("#number_practice_select").change(function () {
-        document.getElementById("free_practice_radio").checked = false;
-    });
+//     $("#number_practice_select").change(function () {
+//         document.getElementById("free_practice_radio").checked = false;
+//     });
 
 //onchange select start
 $(document).ready(function(){

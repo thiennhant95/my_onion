@@ -363,7 +363,7 @@ define('DAY31'     ,31);
 $config['day']=array(
     DAY1      =>'1',
     DAY2      =>'2',
-    DAY3     =>'3',
+    DAY3      =>'3',
     DAY4      =>'4',
     DAY5      =>'5',
     DAY6      =>'6',
@@ -463,6 +463,7 @@ define('BUS_COURSE','バスコース');
 define('NOTICE_OF_ABSENCE','休会届');
 define('NOTICE_OF_WITHDRAWAL','退会届');
 define('CHANGE_BASIC_INFORMATION','基本情報変更');
+define('EVENT_ENTRY','イベント・短期教');
 
 //config limit csv
 define('LIMIT_CSV',1000);

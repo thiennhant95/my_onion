@@ -7,9 +7,12 @@ class Request extends ADMIN_Controller {
         parent::__construct();
         $this->load->model('db/l_student_request_model','request');
         $this->load->model('student_model','student');
+        $this->load->model('db/l_student_meta_model','student_meta');
         $this->load->model('db/m_bus_course_model','bus_course');
         $this->load->model('db/m_course_model','course');
         $this->load->model('db/m_class_model','class');
+        $this->load->model('db/m_student_model','student_model');
+        $this->load->model('db/l_student_event_model','event_model');
         $this->load->library("pagination");
     }
 
@@ -113,6 +116,10 @@ class Request extends ADMIN_Controller {
                     {
                         $row['process_date']='---';
                     }
+                    else
+                    {
+                        $row['process_date'] = date('Y-m-d', strtotime($row['process_date']));
+                    }
                     switch ($row['comission_flg'])
                     {
                         case '0':
@@ -139,7 +146,7 @@ class Request extends ADMIN_Controller {
                           <tr>
                             <th>' . $row['student_id'] . '</th>
                             <td>' . $row['name'] . '</td> 
-                            <td>' . $row_content['date_change'] . '</td> 
+                            <td>' . date('Y-m-d',strtotime($row['create_date'])). '</td> 
                             <td>' . $row['type'] . '</td> 
                             <td>' . $row['status'] . '</td> 
                             <td>' . $row['process_date'] . '</td> 
@@ -154,10 +161,10 @@ class Request extends ADMIN_Controller {
                           <tr>
                             <th>' . $row['student_id'] . '</th>
                             <td>' . $row['name'] . '</td> 
-                            <td>' . $row_content['date_change'] . '</td> 
+                            <td>' . date('Y-m-d',strtotime($row['create_date'])). '</td> 
                             <td>' . $row['type'] . '</td> 
                             <td>' . $row['status'] . '</td> 
-                            <td>' . $row['process_date'] . '</td> 
+                            <td>' . $row['process_date']. '</td> 
                             <td>' . $row['comission_flg'] . '</td> 
                             <td>' . $row['melody_flg'] . '</td>
                             <td><a href="' . site_url('admin/request/edit/' . $row['id']) . '" class="btn btn-success btn-sm btn-block">確認</a></td>                     
@@ -256,22 +263,33 @@ class Request extends ADMIN_Controller {
                 $data['get_request']['class_new']=$class_new;
             }
 
+            //get change  address
             if ($data['get_request']['type']==ADDRESS_CHANGE)
             {
                 $data['get_request']['address_before']=$contents['address_before'];
                 $data['get_request']['address_after']=$contents['address_after'];
             }
-            if (isset($contents['event_entry']))
+            if ($data['get_request']['type']==EVENT_TRY)
             {
-
+                $data['get_request']['course_id']=$contents['course_id'];
+                $data['get_request']['course_name']=$this->course->select_by_id($contents['course_id'])[0]['course_name'];
+                $data['get_request']['memo']=$contents['memo'];
             }
-            if (isset($contents['quit']))
-            {
 
+            //get quit
+            if ($data['get_request']['type']==QUIT)
+            {
+                $data['get_request']['quit_date']=$contents['quit_date'];
+                $data['get_request']['reason']=$contents['reason'];
+                $data['get_request']['memo']=isset($contents['memo'])?$contents['memo']:'';
             }
-            if (isset($contents['recess']))
-            {
 
+            //get recess
+            if ($data['get_request']['type']==RECESS)
+            {
+                $data['get_request']['start_date']=$contents['start_date'];
+                $data['get_request']['end_date']=$contents['end_date'];
+                $data['get_request']['reason']=$contents['reason'];
             }
             if (isset($contents['bus_change_eternal']))
             {
@@ -281,28 +299,6 @@ class Request extends ADMIN_Controller {
             {
 
             }
-//            print_r($data['get_request']);
-//            die();
-//            echo "<pre>";
-//            print_r($data);
-//            die();
-//            switch (['get_request']['type'])
-//            {
-//                case 'bus_change_once':
-//                    $get_request['type']='バス乗降連絡';
-//                case 'bus_change_eternal':
-//                    $get_request['type']='バスコース変更';
-//                case 'course_change':
-//                    $get_request['type']='練習コース変更';
-//                case 'recess':
-//                    $get_request['type']='休会届';
-//                case 'quit':
-//                    $get_request['type']='退会届';
-//                case 'event_entry':
-//                    $get_request['type']='イベント・短期教室参加申請';
-//                case 'address_change':
-//                    $get_request['type']='住所変更申請 ';
-//            }
 
             if ($data['get_request']['type']==COURSE_CHANGE)
             {
@@ -314,9 +310,65 @@ class Request extends ADMIN_Controller {
                         }
                     }
             }
+
+            //update data
             if ($this->input->post())
             {
+                $dataUpdate=array(
+                    'id'=>$id,
+                    'message'=>$this->input->post('message'),
+                    'status'=>$this->input->post('status'),
+                    'comission_flg'=>$this->input->post('comission_flg'),
+                    'melody_flg'=>$this->input->post('medley')?:DATA_OFF,
+                    'process_date'=>date('Y-m-d'),
+                );
+                $this->request->update_by_id($dataUpdate);
+                if ($this->input->post('status')==ONE) {
+                    //update address new
+                    if (isset($_POST['address_after'])) {
+                        $this->student_meta->update_student_meta($data['get_request']['student_id'], 'address', $this->input->post('address_after'));
+                    }
 
+                    //update quit
+                    if (isset($_POST['quit_date'])) {
+                        $quit_meta = $this->student_meta->get_list(array('student_id' => '=' . $data['get_request']['student_id'], 'tag' => '=' . "'quit_date'"));
+                        if ($quit_meta != null) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'quit_date', $this->input->post('quit_date'));
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'reason', $this->input->post('quit_date'));
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'memo', $this->input->post('memo'));
+                        } else {
+                            $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'quit_date', 'value' => $this->input->post('quit_date')));
+                            $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'reason', 'value' => $this->input->post('reason')));
+                            if ($this->input->post('memo')!=null) {
+                                $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'memo', 'value' => $this->input->post('memo')));
+                            }
+                        }
+                        $this->student_model->update_by_id(array('id'=>$data['get_request']['student_id'],'status'=>THREE));
+                    }
+                    //update recess
+                    if (isset($_POST['start_date'])) {
+                        $recess_meta = $this->student_meta->get_list(array('student_id' => '=' . $data['get_request']['student_id'], 'tag' => '=' . "'rest_start_date'"));
+                        if ($recess_meta != null) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'rest_start_date', $this->input->post('start_date'));
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'rest_end_date', $this->input->post('end_date'));
+                        } else {
+                            $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'rest_start_date', 'value' => $this->input->post('start_date')));
+                            $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'rest_end_date', 'value' => $this->input->post('end_date')));
+                        }
+                        $this->student_model->update_by_id(array('id'=>$data['get_request']['student_id'],'rest_flg'=>TWO));
+                    }
+
+                    //update event entry
+                    if (isset($_POST['event_course_id'])) {
+                        $check_event=$this->event_model->get_list(array('course_id'=>'='.$this->input->post('event_course_id'),'student_id'=>'='.$data['get_request']['student_id']));
+                        if ($check_event==null) {
+                            $this->event_model->insert(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('event_course_id')));
+                        }
+                    }
+                }
+
+                echo json_encode(array('status'=>DATA_ON));
+                die();
             }
             $this->viewVar=$data;
             admin_layout_view('request_edit', $this->viewVar);

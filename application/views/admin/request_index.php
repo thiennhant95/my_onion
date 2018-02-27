@@ -25,21 +25,20 @@
               <div class="form-group">
                 <div class="col-sm-1"></div>
                 <div class="col-xs-4 col-sm-3">
-                    <input class="form-control " type="text" id="start_date_request_change" name="date_start" placeholder="YYYY-MM">
-<!--                    <input type="jp-date1" name="date_start" class="form-control">-->
+                    <input class="form-control " type="text" id="start_date_request_change" name="date_start" placeholder="YYYY-MM-DD">
                 </div>
                 <div class="col-xs-1 sub-label">
                   <p class="text-center">〜</p>
                 </div>
                 <div class="col-xs-4 col-sm-3">
-                    <input class="form-control " type="text" id="end_date_request_change" name="date_end" placeholder="YYYY-MM">
-                    <!--                    <input type="jp-date2" name="date_end" class="form-control">-->
+                    <input class="form-control " type="text" id="end_date_request_change" name="date_end" placeholder="YYYY-MM-DD">
                 </div>
                 <div class="col-xs-9 col-sm-3">
                   <select class="form-control" name="type">
                       <option  value="1">申請内容</option>
                       <option  value="<?php echo PRACTICE_COURSE?>"><?php echo PRACTICE_COURSE?></option>
                       <option value="<?php echo BUS_COURSE?>"><?php echo BUS_COURSE?></option>
+                      <option value="<?php echo EVENT_ENTRY?>"><?php echo EVENT_ENTRY?></option>
                       <option value="<?php echo NOTICE_OF_ABSENCE?>"><?php echo NOTICE_OF_ABSENCE?></option>
                       <option value="<?php echo NOTICE_OF_WITHDRAWAL?>"><?php echo NOTICE_OF_WITHDRAWAL?></option>
                       <option value="<?php echo CHANGE_BASIC_INFORMATION?>"><?php echo CHANGE_BASIC_INFORMATION?></option>
@@ -258,8 +257,8 @@
     };
     var options={
         isRTL: false,
-        format: 'yyyy-mm',
-        minViewMode: 'months',
+        format: 'yyyy-mm-dd',
+        minViewMode: 'days',
         todayHighlight: true,
         autoclose: true,
         language:'jp',

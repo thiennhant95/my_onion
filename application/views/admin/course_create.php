@@ -141,7 +141,9 @@
                                     <option value="<?php echo EIGHT?>"><?php echo EIGHT?></option>
                                 </select>
                                 <label class="radio-inline">
-                                    <input type="radio" id="free_practice_radio" onclick="test(this)" name="free_practice_radio" value="<?php echo DATA_OFF ?>"> フリー
+<!--                                    <input type="radio" id="free_practice_radio" onclick="test(this)" name="free_practice_radio" value="--><?php //echo TWO ?><!--"> フリー-->
+                                    <input type="radio" id="free_practice_radio" name="number" value="<?php echo TWO ?>"> フリー
+
                                 </label>
                             </div>
                         </div>
@@ -163,13 +165,13 @@
                         <label for="" class="col-sm-2 control-label">コース種別</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="course-type" id="course_type" value="<?php echo DATA_OFF?>" checked> 通常
+                                <input type="radio" name="course-type" id="nomal_type" value="<?php echo DATA_OFF?>" checked> 通常
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="course-type" value="<?php echo DATA_ON?>"> 短期
+                                <input type="radio" name="course-type" id="short_type" value="<?php echo DATA_ON?>"> 短期
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="course-type" value="<?php echo THREE?>">無料
+                                <input type="radio" name="course-type" id="free_type" value="<?php echo THREE?>">無料
                             </label>
                         </div>
                     </div>
@@ -187,10 +189,11 @@
                         <label for="" class="col-xs-12 col-sm-2 control-label">開催開始</label>
                         <div class="col-xs-3">
                             <select class="form-control" name="start[]" id="year_start">
+                                <option value="0000" selected>不要</option>
                                 <?php
                                 foreach ($year as $row_year):
                                     ?>
-                                    <option value="<?php echo $row_year ?>" <?php if ($row_year==date('Y')) echo "selected"?>><?php echo $row_year?>年</option>
+                                    <option value="<?php echo $row_year ?>"><?php echo $row_year?>年</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -198,10 +201,11 @@
                         </div>
                         <div class="col-xs-3">
                             <select class="form-control" name="start[]" id="month_start">
+                                <option value="00" selected>不要</option>
                                 <?php
                                 foreach ($config['month'] as $row_month):
                                     ?>
-                                    <option value="<?php echo $row_month?>" <?php if ($row_month==date('m')) echo "selected"?>><?php echo $row_month?>月</option>
+                                    <option value="<?php echo $row_month?>"><?php echo $row_month?>月</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -209,10 +213,11 @@
                         </div>
                         <div class="col-xs-3">
                             <select class="form-control" name="start[]" id="day_start">
+                                <option value="00" selected>不要</option>
                                 <?php
                                 foreach ($config['day'] as $row_day):
                                     ?>
-                                    <option value="<?php echo $row_day?>" <?php if ($row_day==date('d')) echo "selected"?>><?php echo $row_day?>日</option>
+                                    <option value="<?php echo $row_day?>"><?php echo $row_day?>日</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -225,10 +230,11 @@
                         <label for="" class="col-xs-12 col-sm-2 control-label">開催終了</label>
                         <div class="col-xs-3">
                             <select class="form-control" name="end[0]" id="year_end">
+                                <option value="2199" selected>不要</option>
                                 <?php
                                 foreach ($year as $row_year):
                                     ?>
-                                    <option value="<?php echo $row_year ?>" <?php if ($row_year==date('Y')) echo "selected"?>><?php echo $row_year?>年</option>
+                                    <option value="<?php echo $row_year ?>"><?php echo $row_year?>年</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -236,10 +242,11 @@
                         </div>
                         <div class="col-xs-3">
                             <select class="form-control" name="end[1]" id="month_end">
+                                <option value="12" selected>不要</option>
                                 <?php
                                 foreach ($config['month'] as $row_month):
                                     ?>
-                                    <option value="<?php echo $row_month?>" <?php if ($row_month==date('m')) echo "selected"?>><?php echo $row_month?>月</option>
+                                    <option value="<?php echo $row_month?>"><?php echo $row_month?>月</option>
                                 <?php
                                 endforeach;
                                 ?>
@@ -247,10 +254,11 @@
                         </div>
                         <div class="col-xs-3">
                             <select class="form-control" name="end[2]" id="day_end">
+                                <option value="31" selected>不要</option>
                                 <?php
                                 foreach ($config['day'] as $row_day):
                                     ?>
-                                    <option value="<?php echo $row_day?>" <?php if ($row_day==date('d')) echo "selected"?>><?php echo $row_day?>日</option>
+                                    <option value="<?php echo $row_day?>"><?php echo $row_day?>日</option>
                                 <?php
                                 endforeach;
                                 ?>
