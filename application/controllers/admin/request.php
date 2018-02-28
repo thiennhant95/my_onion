@@ -269,6 +269,8 @@ class Request extends ADMIN_Controller {
                 $data['get_request']['address_before']=$contents['address_before'];
                 $data['get_request']['address_after']=$contents['address_after'];
             }
+
+            //get event-short course
             if ($data['get_request']['type']==EVENT_TRY)
             {
                 $data['get_request']['course_id']=$contents['course_id'];
@@ -291,13 +293,19 @@ class Request extends ADMIN_Controller {
                 $data['get_request']['end_date']=$contents['end_date'];
                 $data['get_request']['reason']=$contents['reason'];
             }
+
+            //get change bus
             if (isset($contents['bus_change_eternal']))
             {
+                $get_change_course = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => COURSE_CHANGE));
+                if ($get_change_course!=null)
+                {
+                    $data['get_request'][''];
+                }
+                else if ($get_change_course==null)
+                {
 
-            }
-            if (isset($contents['bus_change_once']))
-            {
-
+                }
             }
 
             if ($data['get_request']['type']==COURSE_CHANGE)
@@ -311,7 +319,7 @@ class Request extends ADMIN_Controller {
                     }
             }
 
-            //update data
+            //update data request
             if ($this->input->post())
             {
                 $dataUpdate=array(
@@ -324,6 +332,7 @@ class Request extends ADMIN_Controller {
                 );
                 $this->request->update_by_id($dataUpdate);
                 if ($this->input->post('status')==ONE) {
+
                     //update address new
                     if (isset($_POST['address_after'])) {
                         $this->student_meta->update_student_meta($data['get_request']['student_id'], 'address', $this->input->post('address_after'));
@@ -345,6 +354,7 @@ class Request extends ADMIN_Controller {
                         }
                         $this->student_model->update_by_id(array('id'=>$data['get_request']['student_id'],'status'=>THREE));
                     }
+
                     //update recess
                     if (isset($_POST['start_date'])) {
                         $recess_meta = $this->student_meta->get_list(array('student_id' => '=' . $data['get_request']['student_id'], 'tag' => '=' . "'rest_start_date'"));
@@ -365,6 +375,9 @@ class Request extends ADMIN_Controller {
                             $this->event_model->insert(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('event_course_id')));
                         }
                     }
+
+                    //update change bus
+
                 }
 
                 echo json_encode(array('status'=>DATA_ON));
