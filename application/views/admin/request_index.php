@@ -59,7 +59,13 @@
                 </div>
               </div>
           </section>
-
+            <p class="login-box-msg">
+                <?php
+                if($this->session->flashdata('message')){
+                    echo $this->session->flashdata('message');
+                }
+                ?>
+            </p>
           <hr class="hr-dashed">
 
           <section>
@@ -165,7 +171,7 @@
             $('#confirm').addClass('active');
             $('#not_confirm').removeClass('active');
             $('#list_all').removeClass('active');
-            $('#status').val('0');
+            $('#status').val('1');
             $('#verify_submit').val('');
             load_request_data(0);
         });
@@ -177,7 +183,7 @@
             $('#confirm').removeClass('active');
             $('#not_confirm').addClass('active');
             $('#list_all').removeClass('active');
-            $('#status').val('1');
+            $('#status').val('0');
             $('#verify_submit').val('');
             load_request_data(0);
         });

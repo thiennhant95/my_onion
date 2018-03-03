@@ -1,6 +1,5 @@
 //validate form class
 var isSuccess;
-var message;
 $(document).ready(function() {
     // jQuery.validator.addMethod("math", function(value, element, params) {
     //     return this.optional(element) ||/^[M|A|B|C|D,E|F].*/.test(value);
@@ -18,7 +17,8 @@ $(document).ready(function() {
                     if (data.status==1)
                     {
                         isSuccess=1;
-                        message=data.total;
+                       var message=data.total;
+                       // $('#amount').html('コースの学生数：'+message).css('display','block');
                     }
                     if (data.status==0)
                     {
@@ -30,8 +30,7 @@ $(document).ready(function() {
                 return false;
             }
             return true;
-        },
-        "sỉ số tổng các lớp của khóa học phải nhỏ hơn hoặc bằng sỉ số khóa học"
+        }
     );
     $("#class_form").validate({
         rules: {
@@ -63,6 +62,7 @@ $(document).ready(function() {
                     number: "有効な数値を入力してください。",
                     digits: "有効な数値を入力してください。 ",
                     min: "1以上の値を入力してください",
+                    max_class:"クラスのサイズは、コースのサイズを超えていません"
                 }
         },
         errorClass: "label label-danger",
@@ -219,7 +219,7 @@ $("input[type=checkbox]").change( function() {
                 {
                     $('#popup').click();
                     $('.modal-body').addClass('alert alert-danger');
-                    $("#status_update").html("<b>Bạn không thể chọn</b>");
+                    $("#status_update").html("<b>あなたは選べません。 もう一度選択してください</b>");
                     // window.setTimeout(function () {
                     //     $('#myModal').fadeToggle(300, function () {
                     //         $('#myModal').modal('hide');

@@ -18,7 +18,7 @@ class Notice extends ADMIN_Controller {
         try {
             if ($this->input->post())
             {
-                if (strlen($_POST['contents'])<100)
+                if (strlen($_POST['contents'])<100 && strlen($_POST['contents'])!=0)
                 {
                     echo json_encode(array('status'=>DATA_OFF));
                     die();

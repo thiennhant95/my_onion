@@ -151,6 +151,11 @@ class L_student_request_model extends DB_Model {
             $row['name']=$data_student['name'];
             $student_request[]=$row;
         endforeach;
+        if ($student_request==null)
+        {
+            $student_request=array();
+        }
+
         global $data_search;
         $free_text_search=$this->input->post('free_text_search');
         if ($this->input->post('free_text_search')!=NULL) {
@@ -273,6 +278,10 @@ class L_student_request_model extends DB_Model {
             $row['name']=$data_student['name'];
             $student_request[]=$row;
         endforeach;
+        if ($student_request==null)
+        {
+            $student_request=array();
+        }
         //search free text
         global $data_search;
         $free_text_search=$this->input->post('free_text_search');
@@ -403,10 +412,10 @@ class L_student_request_model extends DB_Model {
                 $last_data['id']=$row_return['id'];
                 $last_data['student_id']=$row_return['student_id'];
                 $last_data['name']=$row_return['name'];
-                $last_data['date_change']=$row_return['create_date'];
+                $last_data['date_change']=date('Y-m-d',strtotime($row_return['create_date']));
                 $last_data['type']=$row_return['type'];
                 $last_data['status']=$row_return['status'];
-                $last_data['process_date']=$row_return['process_date']!=null?$row_return['process_date']:'---';
+                $last_data['process_date']=$row_return['process_date']!=null?date('Y-m-d',strtotime($row_return['process_date'])):'---';
                 $last_data['comission_flg']=$row_return['comission_flg'];
                 $last_data['melody_flg']=$row_return['melody_flg'];
                 $last_data_return[]=$last_data;
@@ -434,6 +443,24 @@ class L_student_request_model extends DB_Model {
         }
         $this->db->where('delete_flg','0');
         return $this->db->get('l_student_request')->result_array();
+    }
+
+    /**
+     * Function edit
+     * Update information of an object by its ID
+     * @param int $id the object ID
+     * @param array $information object information
+     * @return boolean
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
+    public function edit_by_where($whereclause, $information,$table=NULL)
+    {
+        if($table == NULL)
+            $table = 'l_student_request';
+        $this->db->where($whereclause);
+        $this->db->update($table, $information);
+        return $this->db->affected_rows() !== false;
     }
 
 }

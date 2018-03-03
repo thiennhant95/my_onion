@@ -182,6 +182,10 @@ class Classes extends ADMIN_Controller {
         }
     }
 
+    /** Get short course name
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     public function get_short_course_name($id)
     {
         if ($this->error_flg) return;
@@ -195,6 +199,10 @@ class Classes extends ADMIN_Controller {
         }
     }
 
+    /** Check week duplicate
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     public function check_week($id_course,$class_sign,$week,$id_class=NULL)
     {
         if ($this->error_flg) return;
@@ -225,6 +233,10 @@ class Classes extends ADMIN_Controller {
         }
     }
 
+    /** Check check max count of class
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     public function check_max_count($course_id)
     {
 

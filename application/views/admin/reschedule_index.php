@@ -13,19 +13,25 @@
       <div class="panel panel-dotted">
         <div class="panel-heading">欠席・振替申請一覧</div>
         <div class="panel-body">
-
+            <p class="login-box-msg">
+                <?php
+                if($this->session->flashdata('message')){
+                    echo $this->session->flashdata('message');
+                }
+                ?>
+            </p>
           <section>
             <form class="form-horizontal" id="reschedule" method="post" action="<?php echo site_url('admin/reschedule/export_csv')?>">
               <div class="form-group">
                 <div class="col-sm-1"></div>
                 <div class="col-xs-4 col-sm-3">
-                    <input type="jp-date1" name="date_start" class="form-control">
+                    <input type="jp-date1" name="date_start" class="form-control" placeholder="YYYY/MM/DD">
                 </div>
                 <div class="col-xs-1 sub-label">
                   <p class="text-center">〜</p>
                 </div>
                 <div class="col-xs-4 col-sm-3">
-                    <input type="jp-date2" name="date_end" class="form-control">
+                    <input type="jp-date2" name="date_end" class="form-control" placeholder="YYYY/MM/DD">
                 </div>
                 <div class="col-xs-9 col-sm-3">
                   <select class="form-control" name="type">

@@ -116,6 +116,7 @@
                         <label for="" class="col-sm-2 control-label">定員</label>
                         <div class="col-sm-5">
                             <input type="number" class="form-control" id="max_count" name="max_count" required placeholder="">
+                            <strong style="display: none" id="amount"></strong>
                         </div>
                     </div>
                     <div class="form-group">

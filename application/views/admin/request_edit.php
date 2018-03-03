@@ -15,7 +15,7 @@
       <div class="panel panel-dotted">
         <div class="panel-heading">
           <span class="text-violet">契約変更詳細</span>
-          <a href="#0" class="btn btn-primary btn-sm pull-right">
+          <a style="display: none" href="#0" class="btn btn-primary btn-sm pull-right">
             <strong>CSV出力</strong>
           </a>
         </div>
@@ -97,7 +97,7 @@
                 ?>
                   <tr>
                     <th><?php echo $get_request['student_id']?></th>
-                    <td><a href="<?php ?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
+                    <td><a href="<?php echo  site_url('admin/member/detail/'.$get_request['student_id'])?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
                     <td><?php echo date('Y-m-d',strtotime($get_request['create_date']))?></td>
                     <td><?php echo $get_request['type_jp']?></td>
                     <td><?php echo $get_request['status_jp']?></td>
@@ -126,9 +126,11 @@
                                       if ($row_class_old==end($get_request['class_old']))
                                       {
                                           echo $row_class_old;
+                                          $data_old_class[]=$row_class_old;
                                       }
                                       if ($row_class_old!=end($get_request['class_old'])) {
                                           echo $row_class_old . "・";
+                                          $data_old_class[]=$row_class_old;
                                       }                                  }
                                   echo "】";
                                   ?>
@@ -146,15 +148,35 @@
                                       if ($row_class_new==end($get_request['class_new']))
                                       {
                                           echo $row_class_new;
+                                          $data_new_class[]=$row_class_new;
                                       }
                                       if ($row_class_new!=end($get_request['class_new'])) {
                                           echo $row_class_new . "・";
+                                          $data_new_class[]=$row_class_new;
                                       }
                                   }
                                   echo "】";
                                   ?>
                               </strong>
                           </h3>
+                          <input type="hidden" name="course_old" value="<?php echo $get_request['old_course_id']?>">
+                          <input type="hidden" name="course_new" value="<?php echo $get_request['new_course_id']?>">
+                          <?php
+                          foreach ($get_request['class_new_id'] as $n) {
+                              ?>
+                              <input type="hidden" name="class_new[]" value="<?php echo $n?>">
+                              <?php
+                          }
+
+                          //
+                          foreach ($get_request['class_old_id']as $l)
+                          {
+                              ?>
+                              <input type="hidden" name="class_old[]" value="<?php echo $l?>">
+                              <?php
+                          }
+                              ?>
+                          <input type="hidden" name="type_course" value="<?php echo COURSE_CHANGE?>">
                           <?php
                       }
                       if ($get_request['type']==ADDRESS_CHANGE)
@@ -245,6 +267,80 @@
                           </h3>
                           <?php
                       }
+                      if ($get_request['type']==BUS_CHANGE_ETERNAL)
+                      {
+                          ?>
+                          <input type="hidden" name="type_bus" value="<?php echo BUS_CHANGE_ETERNAL?>">
+                      <?php
+                          if ($get_request['bus_use_flg']==DATA_OFF)
+                            {
+                                  ?>
+                                  <h3 class="text-red">
+                                      <strong>バスを使わない</strong>
+                                  </h3>
+                                <input type="hidden" name="not_use_bus" value="<?php echo ZERO ?>">
+                                  <?php
+                            }
+                            elseif ($get_request['bus_use_flg']==DATA_ON)
+                              {
+                                  $postvalue = base64_encode(serialize($get_request['body_content']));
+                                  ?>
+                                  <input type="hidden" name="use_bus" value="<?php echo ONE ?>">
+                                  <input type="hidden" name="body_content" value="<?php echo $postvalue?>">
+                                  <?php
+                                      foreach ($get_request['content'] as $key_content=> $row_content) {
+                                          echo "<h3><strong>"."クラス：".$key_content."</strong></h3>";
+                                          foreach ($row_content as $bus_key=> $bus_row)
+                                          {
+                                              if ($bus_key==ZERO)
+                                              {
+                                                  ?>
+                                                  <h4>
+                                                      行きの乗車場所：
+                                                  </h4>
+                                                  <?php
+                                              }
+                                              if ($bus_key==TWO)
+                                              {
+                                                  ?>
+                                                  <h4>
+                                                      帰りの降車場所：
+                                                  </h4>
+                                                  <?php
+                                              }
+                                                  ?>
+                                              <?php
+                                              if ($bus_key==ZERO || $bus_key==TWO)
+                                              {
+                                                  ?>
+                                                  <h3 class="h4">
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                  </h3>
+                                                  <?php
+                                              }
+                                              ?>
+                                              <p  class="arrow_down_<?php echo $bus_key?>">
+                                                  <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                                              </p>
+                                              <?php
+                                              if ($bus_key==ONE || $bus_key==THREE)
+                                              {
+                                                  ?>
+                                                  <h3 class="text-red">
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                  </h3>
+                                                  <br>
+                                                  <?php
+                                              }
+                                          }
+                                              ?>
+                                              <hr>
+                                              <?php
+                                      }
+                                  ?>
+                                  <?php
+                              }
+                      }
                       ?>
                   </div>
                 </div>
@@ -278,14 +374,13 @@
                   <label class="checkbox-inline">
                     <input type="checkbox" name="medley" value="<?php echo ONE?>" <?php if ($get_request['melody_flg']==DATA_ON) echo "checked"?>> MEDLEY入力
                   </label>
-
                 </div>
               </div>
             </section>
         </div>
       </div>
-
-      <div class="block-15 text-center row">
+        <?php if (!isset($get_bus_course)) {?>
+        <div class="block-15 text-center row">
         <div class="col-sm-4 col-sm-offset-2">
           <p>
             <a class="btn btn-default btn-block" href="<?php echo site_url('admin/request')?>">
@@ -300,8 +395,10 @@
             </button>
           </p>
         </div>
+            <?php
+            }
+            ?>
       </div>
-        </form>
     </div>
 
   </main>
@@ -315,7 +412,7 @@
                 <div class="panel panel-dotted">
                     <div class="panel-heading">
                         <span class="text-violet">契約変更詳細</span>
-                        <a href="#0" class="btn btn-primary btn-sm pull-right">
+                        <a style="display: none" href="#0" class="btn btn-primary btn-sm pull-right">
                             <strong>CSV出力</strong>
                         </a>
                     </div>
@@ -342,100 +439,166 @@
                                     switch ($get_bus_course['type'])
                                     {
                                         case 'bus_change_once':
-                                            $get_bus_course['type']='バス乗降連絡';
+                                            $get_bus_course['type_jp']='バス乗降連絡';
                                             break;
                                         case 'bus_change_eternal':
-                                            $get_bus_course['type']='バスコース変更';
+                                            $get_bus_course['type_jp']='バスコース変更';
                                             break;
                                         case 'course_change':
-                                            $get_bus_course['type']='練習コース変更';
+                                            $get_bus_course['type_jp']='練習コース変更';
                                             break;
                                         case 'recess':
-                                            $get_bus_course['type']='休会届';
+                                            $get_bus_course['type_jp']='休会届';
                                             break;
                                         case 'quit':
-                                            $get_bus_course['type']='退会届';
+                                            $get_bus_course['type_jp']='退会届';
                                             break;
                                         case 'event_entry':
-                                            $get_bus_course['type']='イベント・短期教室参加申請';
+                                            $get_bus_course['type_jp']='イベント・短期教室参加申請';
                                             break;
                                         case 'address_change':
-                                            $get_bus_course['type']='住所変更申請 ';
+                                            $get_bus_course['type_jp']='住所変更申請';
                                             break;
                                     }
                                     switch ($get_bus_course['status'])
                                     {
                                         case '0':
-                                            $get_bus_course['status']='未処理/未確認';
+                                            $get_bus_course['status_jp']='未処理/未確認';
                                             break;
                                         case '1':
-                                            $get_bus_course['status']='承認/処理済み/確認済み';
+                                            $get_bus_course['status_jp']='承認/処理済み/確認済み';
                                             break;
                                         case '2':
-                                            $get_bus_course['status']='保留';
+                                            $get_bus_course['status_jp']='保留';
                                             break;
                                     }
                                     switch ($get_bus_course['comission_flg'])
                                     {
-                                        case '0': $get_bus_course['comission_flg']='無し'; break;
-                                        case '1': $get_bus_course['comission_flg']='手数料発生'; break;
-                                        case '2': $get_bus_course['comission_flg']='免除'; break;
+                                        case '0': $get_bus_course['comission_flg_jp']='無し'; break;
+                                        case '1': $get_bus_course['comission_flg_jp']='手数料発生'; break;
+                                        case '2': $get_bus_course['comission_flg_jp']='免除'; break;
                                     }
                                     switch ($get_bus_course['melody_flg'])
                                     {
-                                        case '0': $get_bus_course['melody_flg']='未'; break;
-                                        case '1':$get_bus_course['melody_flg']='済'; break;
+                                        case '0': $get_bus_course['melody_flg_jp']='未'; break;
+                                        case '1':$get_bus_course['melody_flg_jp']='済'; break;
+                                    }
+                                    if ($get_bus_course['process_date']==NULL)
+                                    {
+                                        $get_bus_course['process_date']='---';
+                                    }
+                                    else
+                                    {
+                                        $get_bus_course['process_date'] = date('Y-m-d', strtotime($get_bus_course['process_date']));
                                     }
                                     ?>
                                     <tr>
                                         <th><?php echo $get_bus_course['student_id']?></th>
-                                        <td><a href="<?php ?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
-                                        <td><?php echo $contents['date_change']?></td>
-                                        <td><?php echo $get_bus_course['type']?></td>
-                                        <td><?php echo $get_bus_course['status']?></td>
-                                        <td><?php  echo $get_bus_course['process_date']?:'---'?></td>
-                                        <td><?php echo $get_bus_course['comission_flg']?></td>
-                                        <td><?php echo $get_bus_course['melody_flg']?></td>
+                                        <td><a href="<?php echo  site_url('admin/member/detail/'.$get_bus_course['student_id'])?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
+                                        <td><?php echo date('Y-m-d',strtotime($get_bus_course['create_date']))?></td>
+                                        <td><?php echo $get_bus_course['type_jp']?></td>
+                                        <td><?php echo $get_bus_course['status_jp']?></td>
+                                        <td><?php echo $get_bus_course['process_date']?></td>
+                                        <td><?php echo $get_bus_course['comission_flg_jp']?></td>
+                                        <td><?php echo $get_bus_course['melody_flg_jp']?></td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </section>
-
-                        <form>
                             <section>
                                 <div class="block-30">
                                     <div class="panel panel-dotted panel-red">
                                         <div class="panel-body text-center">
-                                            <h3 class="h4">
-                                                <strong>変更前：千葉市花見川区xxx-xxx</strong>
-                                            </h3>
-                                            <p>
-                                                <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
-                                            </p>
-                                            <h3 class="text-red">
-                                                <strong>変更後：八千代市八千代台xx-xxxx</strong>
-                                            </h3>
+                                            <input type="hidden" name="request_bus_id" value="<?php echo $get_bus_course['id']?>">
+                                            <?php
+                                            if ($get_request['bus_use_flg']==DATA_OFF)
+                                            {
+                                                ?>
+                                                <h3 class="text-red">
+                                                    <strong>バスを使わない</strong>
+                                                </h3>
+                                                <input type="hidden" name="not_use_bus" value="<?php echo ZERO ?>">
+                                                <?php
+                                            }
+                                            elseif ($get_request['bus_use_flg']==DATA_ON)
+                                            {
+                                                $postvalue = base64_encode(serialize($get_request['body_content']));
+                                                ?>
+                                                <input type="hidden" name="use_bus" value="<?php echo ONE ?>">
+                                                <input type="hidden" name="body_content" value="<?php echo $postvalue?>">
+                                                <?php
+                                                foreach ($get_request['content'] as $key_content=> $row_content) {
+                                                    echo "<h3><strong>"."クラス：".$key_content."</strong></h3>";
+                                                    foreach ($row_content as $bus_key=> $bus_row)
+                                                    {
+                                                        if ($bus_key==ZERO)
+                                                        {
+                                                            ?>
+                                                            <h4>
+                                                                行きの乗車場所：
+                                                            </h4>
+                                                            <?php
+                                                        }
+                                                        if ($bus_key==TWO)
+                                                        {
+                                                            ?>
+                                                            <h4>
+                                                                帰りの降車場所：
+                                                            </h4>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                        <?php
+                                                        if ($bus_key==ZERO || $bus_key==TWO)
+                                                        {
+                                                            ?>
+                                                            <h3 class="h4">
+                                                                <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                            </h3>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                        <p  class="arrow_down_<?php echo $bus_key?>">
+                                                            <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                                                        </p>
+                                                        <?php
+                                                        if ($bus_key==ONE || $bus_key==THREE)
+                                                        {
+                                                            ?>
+                                                            <h3 class="text-red">
+                                                                <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                            </h3>
+                                                            <br>
+                                                            <?php
+                                                        }
+                                                    }
+                                                    ?>
+                                                    <hr>
+                                                    <?php
+                                                }
+                                                ?>
+                                                <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="type_bus_course" value="<?php echo BUS_CHANGE_ETERNAL?>">
                                     <div class="block-15 text-center">
                                         <label class="radio-inline">
-                                            <input type="radio" name="" value="option1"> 未確認
+                                            <input type="radio" name="comission_flg_bus" value="<?php echo ONE?>" <?php if ($get_bus_course['comission_flg']==ONE) echo "checked"?>> 手数料発生
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="" value="option2"> 確認済み
+                                            <input type="radio" name="comission_flg_bus" value="<?php echo TWO?>" <?php if ($get_bus_course['comission_flg']==TWO) echo "checked"?>> 手数料免除
                                         </label>
                                     </div>
                                     <div class="block-15 text-center">
                                         <label class="checkbox-inline">
-                                            <input type="checkbox" name="" value=""> MEDLEY入力
+                                            <input type="checkbox" name="medley_bus" value="<?php echo ONE?>" <?php if ($get_bus_course['melody_flg']==DATA_ON) echo "checked"?>> MEDLEY入力
                                         </label>
-
                                     </div>
                                 </div>
                             </section>
-                        </form>
-
                     </div>
                 </div>
 
@@ -449,14 +612,14 @@
                     </div>
                     <div class="col-sm-4">
                         <p>
-                            <a class="btn btn-success btn-block" href="#0">
+                            <button id="update_request" class="btn btn-success btn-block" href="<?php echo site_url('admin/request/edit/'.$get_request['id'])?>">
                                 <span>更新</span>
-                            </a>
+                            </button>
                         </p>
                     </div>
                 </div>
             </div>
-
+            </form>
         </main>
         <?php
     }
@@ -513,5 +676,16 @@
                 }
             });
     });
+    });
+
+    //
+    $(document).ready(function() {
+        $('.arrow_down_1').css('display','none');
+        $('.arrow_down_3').css('display','none');
+        $('.arrow_down_5').css('display','none');
+        $('.arrow_down_7').css('display','none');
+        $('.arrow_down_9').css('display','none');
+        $('.arrow_down_11').css('display','none');
+        $('.arrow_down_13').css('display','none');
     });
 </script>

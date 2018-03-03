@@ -32,4 +32,21 @@ class L_student_bus_route_model extends DB_Model {
         $this->db->query($query, $params);
     }
 
+    /**
+     * Function edit
+     * Update information of an object by its ID
+     * @param int $id the object ID
+     * @param array $information object information
+     * @return boolean
+     * @access public
+     */
+    public function edit_by_where($whereclause, $information,$table=NULL)
+    {
+        if($table == NULL)
+            $table = 'l_student_bus_route';
+        $this->db->where($whereclause);
+        $this->db->update($table, $information);
+        return $this->db->affected_rows() !== false;
+    }
+
 }

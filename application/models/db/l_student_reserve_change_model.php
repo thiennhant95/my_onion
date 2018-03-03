@@ -59,6 +59,7 @@ class L_student_reserve_change_model extends DB_Model {
             $date_end=END_DATE_DEFAULT;
         }
         $this->db->select("SQL_CALC_FOUND_ROWS l_student_reserve_change.*,l_student_course.course_id,m_class.base_class_sign",FALSE);
+        $this->db->from('l_student_reserve_change');
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
         $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_class.class_id');
@@ -68,34 +69,51 @@ class L_student_reserve_change_model extends DB_Model {
         {
             foreach ($course as $row_course)
             {
-                $this->db->or_like('l_student_course.course_id',$row_course);
+                $this->db->or_having('l_student_course.course_id',$row_course);
             }
         }
 
-        //search class
-        $class=$this->input->post('class');
-        if ($this->input->post('class')!=NULL)
-        {
-            foreach ($class as $row_class)
-            {
-                $this->db->or_having('m_class.base_class_sign',$row_class);
-            }
-        }
         //search date
         $this->db->where('target_date >=',$date_start);
         $this->db->where('target_date <=',$date_end);
+
         //search type
         $type=$this->input->post('type');
         if ($type!=DATA_ON){$this->db->where('type', $type);}
         $this->db->order_by("id", "desc");
-        $query = $this->db->get('l_student_reserve_change');
+        $query = $this->db->get();
         global $student_reserve;
         $data=$query->result_array();
+
+        //search class
+        global $data_search_class;
+        $class=$this->input->post('class');
+        if ($this->input->post('class')!=NULL)
+        {
+            foreach ($data as $row_data) {
+                foreach ($class as $row_class)
+                {
+                    if ($row_data['base_class_sign']==$row_class)
+                    {
+                        $data_search_class[]=$row_data;
+                    }
+                }
+            }
+            if ($data_search_class==NULL)
+            {
+                $data_search_class=array();
+            }
+        }
+        else if ($this->input->post('class')==NULL)
+        {
+            $data_search_class=$data;
+        }
+
         //search grade name
         global $data_search;
         $grade=$this->input->post('rank');
         if ($this->input->post('rank')!=NULL) {
-            foreach ($data as $row_data) {
+            foreach ($data_search_class as $row_data) {
                 foreach ($grade as $row_grade) {
                     if ($row_data['grade_name']==$row_grade)
                     {
@@ -110,7 +128,7 @@ class L_student_reserve_change_model extends DB_Model {
         }
         else if ($this->input->post('rank')==NULL)
         {
-            $data_search=$data;
+            $data_search=$data_search_class;
         }
 
         //join name student_meta
@@ -157,12 +175,18 @@ class L_student_reserve_change_model extends DB_Model {
         $data_change=array_slice( $data_return, $start, $limit);
 
         $data_return=null;
+        $data_search_class=null;
         $data_search=null;
         $student_reserve=null;
         return array('0'=>$data_change,'1'=>$total);
     }
 
 
+    /**
+     * Export CSV
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     public function export_csv($limit=NULL,$start=NULL,$count=FALSE)
     {
         if ($this->input->post('date_start'))
@@ -191,19 +215,10 @@ class L_student_reserve_change_model extends DB_Model {
         {
             foreach ($course as $row_course)
             {
-                $this->db->or_like('l_student_course.course_id',$row_course);
+                $this->db->or_having('l_student_course.course_id',$row_course);
             }
         }
 
-        //search class
-        $class=$this->input->post('class');
-        if ($this->input->post('class')!=NULL)
-        {
-            foreach ($class as $row_class)
-            {
-                $this->db->or_having('m_class.base_class_sign',$row_class);
-            }
-        }
         //search date
         $this->db->where('target_date >=',$date_start);
         $this->db->where('target_date <=',$date_end);
@@ -214,11 +229,36 @@ class L_student_reserve_change_model extends DB_Model {
         $query = $this->db->get('l_student_reserve_change');
         global $student_reserve;
         $data=$query->result_array();
+
+        //search class
+        global $data_search_class;
+        $class=$this->input->post('class');
+        if ($this->input->post('class')!=NULL)
+        {
+            foreach ($data as $row_data) {
+                foreach ($class as $row_class)
+                {
+                    if ($row_data['base_class_sign']==$row_class)
+                    {
+                        $data_search_class[]=$row_data;
+                    }
+                }
+            }
+            if ($data_search_class==NULL)
+            {
+                $data_search_class=array();
+            }
+        }
+        else if ($this->input->post('class')==NULL)
+        {
+            $data_search_class=$data;
+        }
+
         //search grade name
         global $data_search;
         $grade=$this->input->post('rank');
         if ($this->input->post('rank')!=NULL) {
-            foreach ($data as $row_data) {
+            foreach ($data_search_class as $row_data) {
                 foreach ($grade as $row_grade) {
                     if ($row_data['grade_name']==$row_grade)
                     {
@@ -233,7 +273,7 @@ class L_student_reserve_change_model extends DB_Model {
         }
         else if ($this->input->post('rank')==NULL)
         {
-            $data_search=$data;
+            $data_search=$data_search_class;
         }
 
         //join name student_meta
@@ -279,6 +319,7 @@ class L_student_reserve_change_model extends DB_Model {
         $total=count($data_return);
         $data_change=array_slice( $data_return, $start, $limit);
         $data_return=null;
+        $data_search_class=null;
         $data_search=null;
         $student_reserve=null;
             if($count==TRUE)
@@ -302,7 +343,7 @@ class L_student_reserve_change_model extends DB_Model {
                     $last_data['reason_text']=$row_student_reserve['reason_text'];
                     $last_data['reason']=$row_student_reserve['reason'];
                     $last_data['test']=$row_student_reserve['test'];
-                    $last_data['status']=$row_student_reserve['status'];
+                    $last_data['status']=$row_student_reserve['status']==DATA_ON?'キャンセル':'';
                     $data_return_reserve[]=$last_data;
                 }
                 return  $data_return_reserve;

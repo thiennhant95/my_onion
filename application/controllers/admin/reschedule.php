@@ -38,6 +38,7 @@ class Reschedule extends ADMIN_Controller {
     {
         if ($this->error_flg) return;
         try {
+            //load reschedule list
             if (!$this->input->post('verify_submit')) {
                 $data['course_list'] = $this->course->get_list();
                 global $course_list;
@@ -60,6 +61,8 @@ class Reschedule extends ADMIN_Controller {
                 $list_search = $this->result_html($data['student_reserve_list']);
                 echo json_encode(array('list' => $list_search, 'pagination' => $data['pagination'], 'course_list' => $course_list, 'class_list' => $data['class_list']));
                 die();
+
+                //load reschedule list search
             } else if ($this->input->post('verify_submit')) {
                 $pagin = $this->paginationConfig;
                 $pagin["base_url"] = '/admin/reschedule/index';
@@ -80,6 +83,11 @@ class Reschedule extends ADMIN_Controller {
         }
     }
 
+    /**
+     * Return html
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     public function result_html($data=NULL)
     {
         if ($this->error_flg) return;
@@ -92,7 +100,7 @@ class Reschedule extends ADMIN_Controller {
                         $html .= '
                           <tr class="disabled">
                             <th>' . $row['student_id'] . '</th>
-                            <td><a class="btn btn-default" href="#0">' . $row['name'] . '</a>(' . $row['course_name'] . ')' . $row['class_name'] . '</td> 
+                            <td><a class="btn btn-default" href="'.site_url('admin/member/detail/'.$row['student_id']).'">' . $row['name'] . '</a>(' . $row['course_name'] . ')' . $row['class_name'] . '</td> 
                             <td>' . $row['target_date'] . '</td> 
                             <td>' . $row_content['contents'] . '</td> 
                             <td>' . $row['reason'] . '</td> 
@@ -106,7 +114,7 @@ class Reschedule extends ADMIN_Controller {
                         $html .= '
                           <tr>
                             <th>' . $row['student_id'] . '</th>
-                            <td><a class="btn btn-default" href="#0">' . $row['name'] . '</a>(' . $row['course_name'] . ')' . $row['class_name'] . '</td> 
+                            <td><a class="btn btn-default" href="'.site_url('admin/member/detail/'.$row['student_id']).'">' . $row['name'] . '</a>(' . $row['course_name'] . ')' . $row['class_name'] . '</td> 
                             <td>' . $row['target_date'] . '</td> 
                             <td>' . $row_content['contents'] . '</td> 
                             <td>' . $row['reason'] . '</td> 
@@ -121,7 +129,7 @@ class Reschedule extends ADMIN_Controller {
             else {
                 $html .= '
                           <tr>
-                            <td colspan="8"><b>見つからない</b></td>       
+                            <td colspan="8"><b>見つからない。</b></td>       
                          </tr>';
             }
             return $html;
@@ -131,6 +139,11 @@ class Reschedule extends ADMIN_Controller {
             }
     }
 
+    /**
+     * Export CSV
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     public function export_csv()
     {
         if ($this->error_flg) return;
@@ -150,6 +163,7 @@ class Reschedule extends ADMIN_Controller {
             }
             else
             {
+                $this->session->set_flashdata('message', "<div class='alert alert-danger'>空のCSVをエクスポートすることはできません。</div>");
                 redirect('admin/reschedule');
             }
         }
@@ -160,8 +174,6 @@ class Reschedule extends ADMIN_Controller {
     }
 
 }
-
-
 
 /* End of file reschedule.php */
 /* Location: ./application/controllers/admin/reschedule.php */

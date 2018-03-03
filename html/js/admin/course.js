@@ -76,7 +76,7 @@ $(document).ready(function() {
             }
             return true;
         },
-        "Ngày kết thúc phải lớn hơn ngày bắt đầu"
+        "開催終了は開催開始の値以降で入力してください。"
     );
     $.validator.addMethod(
         "start_regist",
@@ -120,7 +120,7 @@ $(document).ready(function() {
             }
             return true;
         },
-        "Ngày kết thúc đăng kí phải lớn hơn ngày đăng kí"
+        "申込終了は申込開始の値以降で入力してください。"
     );
     $("#course_form").validate({
         rules: {
@@ -152,16 +152,16 @@ $(document).ready(function() {
             "end[2]":{
                 end_date:true
             },
-
-            "start_regist[0]":{
-                start_regist:true
-            },
-            "start_regist[1]":{
-                start_regist:true
-            },
-            "start_regist[2]":{
-                start_regist:true
-            },
+            //
+            // "start_regist[0]":{
+            //     start_regist:true
+            // },
+            // "start_regist[1]":{
+            //     start_regist:true
+            // },
+            // "start_regist[2]":{
+            //     start_regist:true
+            // },
 
             "end_regist[0]":{
                 end_regist:true
