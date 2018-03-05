@@ -65,8 +65,8 @@ class Item extends ADMIN_Controller {
                         'item_code' => $this->input->post('item_code'),
                         'item_name' => $this->input->post('item_name'),
                         'subject_id'=>$this->input->post('subject_id'),
-                        'sell_price'=>$this->input->post('sell_price'),
-                        'buy_price'=>$this->input->post('buy_price'),
+                        'sell_price'=>intval(preg_replace('/[^\d.]/', '', $this->input->post('sell_price'))),
+                        'buy_price'=>intval(preg_replace('/[^\d.]/', '', $this->input->post('buy_price'))),
                         'tax_flg'=>$this->input->post('tax'),
                         'manage_flg'=>$this->input->post('stock'),
                         'left_num'=>$this->input->post('left_num'),
@@ -110,7 +110,8 @@ class Item extends ADMIN_Controller {
                         'item_name' => $this->input->post('item_name'),
                         'subject_id'=>$this->input->post('subject_id'),
                         'sell_price'=>$this->input->post('sell_price'),
-                        'buy_price'=>$this->input->post('buy_price'),
+                        'sell_price'=>intval(preg_replace('/[^\d.]/', '', $this->input->post('sell_price'))),
+                        'buy_price'=>intval(preg_replace('/[^\d.]/', '', $this->input->post('buy_price'))),
                         'tax_flg'=>$this->input->post('tax'),
                         'manage_flg'=>$this->input->post('stock'),
                         'left_num'=>$this->input->post('left_num'),
@@ -167,7 +168,7 @@ class Item extends ADMIN_Controller {
     public function export() {
         if ($this->error_flg) return;
         try {
-            $limit=1000;
+            $limit=LIMIT_CSV;
             $count_item=count($this->item->get_list());
             $count_num=ceil($count_item/$limit);
             for ($i=0;$i<$count_num; $i++)

@@ -38,16 +38,24 @@ class L_student_meta_model extends DB_Model {
     }
     public function update_tagMeta($arrayDataMeta,$student_id=NULL)
     {
-        $query = " REPLACE INTO ".$this->tbl." (student_id,tag, value,orderby,update_id,update_date,delete_flg)VALUES(?,?,?,?,?,?,?) ";
+        if($student_id==NULL) return '';
         foreach ($arrayDataMeta as $key => $value) {
-            if($key=='enquete') $value = json_encode($value);
-            $params=[$student_id,$key,$value,'0','0', date('Y-m-d H:i:s') ,'0'];
+            $query = $this->db->select('id')->from( 'l_student_meta' )->where(['student_id'=>$student_id,'tag'=>$key]);
+            $result = $this->db->get()->result_array();
+            if(count($result)>0)
+            {
+              if($key==='enquete') $value = json_encode($value);
 
-            if (FALSE === $this->db->query($query,$params)) {
-                logerr($query);
-                throw new Exception();
+              if($this->db->update('l_student_meta', array( 'value' => $value ), array('student_id' => $student_id, 'tag' => $key))===FALSE)
+                {
+                    return FALSE;
+                }
+            }
+            else
+            {
+                $this->db->insert('l_student_meta', array('student_id' => $student_id, 'tag' => $key,'value'=>$value));
             }
         }
-        return true;
+        return TRUE;
     }
 }

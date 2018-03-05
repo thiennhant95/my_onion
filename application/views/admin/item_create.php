@@ -50,14 +50,14 @@
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">売り単価</label>
                         <div class="col-sm-3">
-                            <input type="text" name="sell_price" id="sell_price" class="form-control" required placeholder="">
+                            <input type="text" onkeyup="reformatText(this)" name="sell_price" id="sell_price" class="form-control" required placeholder="">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">仕入単価</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" name="buy_price" id="buy_price" required placeholder="">
+                            <input type="text" onkeyup="reformatText(this)" class="form-control" name="buy_price" id="buy_price" required placeholder="">
                         </div>
                     </div>
 

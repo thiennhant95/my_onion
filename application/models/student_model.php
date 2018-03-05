@@ -32,6 +32,7 @@ class Student_model extends DB_Model {
         $this->load->model('db/m_bus_course_model');
         $this->load->model('db/m_distance_model');
         $this->load->model('db/m_class_model');
+        $this->load->model('db/m_bus_route_model');
     }
 
     /**
@@ -268,7 +269,7 @@ class Student_model extends DB_Model {
             return TRUE;
         return FALSE;
     }
-    public function get_student_data_detail($student_id) {
+    public function get_student_data_detail_back_up($student_id) {
 
         $this->student = array(
             'info'      => array(), 
@@ -374,6 +375,83 @@ class Student_model extends DB_Model {
         $distance = $this->m_distance_model->select_all();
         $this->student['distance'] = $distance;
 
+        return $this->student;
+    }
+
+    public function get_student_data_detail($student_id) {
+
+        $this->student = array(
+            'info'      => array(), 
+            'meta'      => array(), 
+            'family'    => array(), 
+            'course'    => array(  
+                'all'=>  array(), 
+                'nearest'   => array(),
+
+            ), 
+            'class'     => array(   
+                'all'       => array(),
+                'valid'     => array(),
+            ),
+            'bus_course' => array(   
+            ),
+            'bus_route' => array(   
+                // 'all'       => array(),
+                // 'valid'     => array(),
+            )
+        );
+
+        if ($student_id == $this->student_id) {
+            return $this->student_copy;
+        }
+        $this->student_id = $student_id;
+
+        //data info basic
+        $result = $this->m_student_model->select_by_id($student_id);
+        if (empty($result)) return $this->student;
+        $this->student['info'] = $result[0];
+
+        //data meta
+        $result = $this->l_student_meta_model->select_by_id($student_id, 'student_id');
+        foreach ($result as $row) {
+            $this->student['meta'][ $row['tag'] ] = $row['value'];
+        }
+        //data family
+        $result = $this->m_student_model->get_family_detail($student_id);
+        foreach ($result as $row) {
+            $this->student['family'][] = $row;
+        }
+
+        //get data course
+        $all_course = $this->student['course']['all'] = $this->m_course_model->getData_Course_valid();
+
+        $course = $this->l_student_course_model->getData_course_valid_by_studentid($student_id);
+        
+        if($course)
+        {
+            $this->student['course']['nearest'] = $course;
+            $class = $this->m_course_model->getData_class_by_id($course[0]['course_id']);
+            $this->student['course']['nearest']['class'] = $class;
+
+            $this->student['course']['nearest']['classjoin'] = $this->l_student_course_model->getData_class_by_id($course[0]['student_course']);
+        }  
+        if(isset($this->student['course']['nearest']['classjoin']))
+        {
+            foreach ($this->student['course']['nearest']['classjoin'] as $key => $item) {
+                $this->student['bus_course']['all'][$key]['vaible'] = $this->m_bus_course_model->get_data_class_and_bus_course($item['class_id']);
+
+                foreach ($this->student['bus_course']['all'][$key]['vaible'] as $subkey => $value) {
+                   $this->student['bus_course']['all'][$key]['vaible'][$subkey]['bus_stop'] = $this->m_bus_course_model->getData_Bus_stop_by_id($value['id']);
+                }
+                 $this->student['bus_course']['all'][$key]['student_join'] = $this->l_student_bus_route_model->get_data_student_class($item['student_class_id']);
+                 if($this->student['bus_course']['all'][$key]['student_join'])
+                 {
+                    $this->student['bus_course']['all'][$key]['student_join'][0]['bus_go'] = $this->m_bus_route_model->select_by_id($this->student['bus_course']['all'][$key]['student_join'][0]['bus_route_go_id'],'id');
+                    $this->student['bus_course']['all'][$key]['student_join'][0]['bus_ret'] = $this->m_bus_route_model->select_by_id($this->student['bus_course']['all'][$key]['student_join'][0]['bus_route_ret_id'],'id');
+                 }
+                 
+            }
+        }
         return $this->student;
     }
 

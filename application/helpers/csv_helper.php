@@ -93,3 +93,35 @@ if ( ! function_exists('query_to_csv'))
 
 /* End of file csv_helper.php */
 /* Location: ./system/helpers/csv_helper.php */
+
+//export CSV member : dev: TRÍ_PHP
+
+if ( ! function_exists('export_csv_member'))
+{
+    function export_csv_member($array, $download = "")
+    {
+        if(!$array)
+            throw new Exception('ASINがみつかりませんでした。');
+
+        header('Cache-Control: public');
+        header('Pragma: public');
+        header('Content-Type: application/octet-stream');
+        header(sprintf("Content-Disposition: attachment;filename=".$download));
+        header('Content-Transfer-Encoding: binary');
+
+        $fp = fopen('php://temp', 'r+b');
+        // foreach($array as $item){
+        //     $repl = str_replace(array('"', "\n"), array('\"', '\n'), $item);
+            foreach ($array as $row_array):
+                $tmp_arr = str_replace(array('"', "\n"), array('\"', '\n'), $row_array);
+                fputcsv($fp, $tmp_arr);
+            endforeach;
+        // }
+        rewind($fp);
+        $temp = str_replace(PHP_EOL, "\r\n", stream_get_contents($fp));
+        echo mb_convert_encoding($temp, 'SJIS-win', 'UTF-8');
+        fclose($fp);
+        exit;
+    }
+
+}

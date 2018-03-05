@@ -106,4 +106,17 @@ class M_config_calendar_model extends DB_Model {
 		$query = $this->db->get()->result_array();
 		return $query;
     }
+
+    
+    public function check_date_selected()
+    {
+        $date_selected = $this->input->post('start_date_selected');
+        $cover_date = strtotime($date_selected);
+        $my_array = array('target_date' => $date_selected);
+        $this->db->select()
+                ->from('schedule_system')
+                ->where($my_array);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
 }

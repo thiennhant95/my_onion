@@ -62,7 +62,6 @@ class dBug {
 
 	function __construct()
     {
-
     }
 
     //constructor

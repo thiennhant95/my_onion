@@ -18,11 +18,14 @@ $(document).ready(function() {
                     {
                         isSuccess=1;
                        var message=data.total;
-                       // $('#amount').html('コースの学生数：'+message).css('display','block');
+                       var max_count=data.max_count;
+                       $('#amount').html('入力した定員数は'+max_count+'員でございますので、現在入力出来る最大の定員数は'+message+'員のみでございます.').css('display','block');
                     }
                     if (data.status==0)
                     {
                         isSuccess=0;
+                        $('#amount').css('display','none');
+
                     }
                 }
             });

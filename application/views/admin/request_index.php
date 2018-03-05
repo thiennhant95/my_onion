@@ -220,19 +220,19 @@
     // load data reschedule
     function load_request_data(page)
     {
-        $.ajax({
-            url:"<?php echo base_url(); ?>admin/request/ajax_load_list/"+page,
-            method:"POST",
-            dataType:"json",
-            data:$('#request').serialize(),
-            success:function(data)
-            {
-                $('#request_table').html('');
-                $('#request_table').html(data.list);
-                $('#pagination').html('');
-                $('#pagination').html(data.pagination);
-            }
-        });
+      $.ajax({
+          url:"<?php echo base_url(); ?>admin/request/ajax_load_list/"+page,
+          method:"POST",
+          dataType:"json",
+          data:$('#request').serialize(),
+          success:function(data)
+          {
+              $('#request_table').html('');
+              $('#request_table').html(data.list);
+              $('#pagination').html('');
+              $('#pagination').html(data.pagination);
+          }
+      });
     }
 
     load_request_data(0);
@@ -252,9 +252,9 @@
     });
 
     $.fn.datepicker.dates['jp'] = {
-        days: ["日", "月", "火", "水", "木", "金", "土", "日"],
-        daysShort: ["日", "月", "火", "水", "木", "金", "土", "日"],
-        daysMin: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        days: [ "月", "火", "水", "木", "金", "土", "日"],
+        daysShort: ["月", "火", "水", "木", "金", "土", "日"],
+        daysMin: ["月", "火", "水", "木", "金", "土", "日"],
         months:  ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
         monthsShort:  ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
         today: "今日",

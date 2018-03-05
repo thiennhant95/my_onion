@@ -15,197 +15,16 @@
           <div class="panel-heading">ジュニアコース 週1回</div>
           <div class="panel-body">
 
-            <div class="block-30">
+            <div class="block-30" id="waring-msg">
               <div class="alert alert-danger text-center text-block">
-                <span><i class="fa fa-info-circle" aria-hidden="true"></i> 13日のCクラスは定員オーバーのため振替できません。</span>
-                <span><i class="fa fa-info-circle" aria-hidden="true"></i> 無連絡欠席日があります。お休み申請しないと振替できません。</span>
+                <span><i class="fa fa-info-circle fix-left-reschedule" aria-hidden="true"></i><span>
+                <!-- <span><i class="fa fa-info-circle" aria-hidden="true"></i> 13日のCクラスは定員オーバーのため振替できません。</span>
+                <span><i class="fa fa-info-circle" aria-hidden="true"></i> 無連絡欠席日があります。お休み申請しないと振替できません。</span> -->
               </div>
             </div>
 
-            <!-- <div class="block-15">
-              <div class="row calender-caption align-items-center">
-                <div class="col-xs-12 col-sm-4 text-left">
-                  <a class="btn btn-success" href="#0">
-                    <i class="fa fa-angle-double-left"></i>
-                    <span>2月</span>
-                  </a>
-                </div>
-                <div class="col-xs-12 col-sm-4 text-center">
-                  <p class="lead mb-0">
-                    <strong class="text-break">
-                      <span>2015年</span>
-                      <span>8月</span>
-                    </strong>
-                  </p>
-                </div>
-                <div class="col-xs-12 col-sm-4 text-right">
-                  <a class="btn btn-success" href="#0">
-                    <span>3月</span>
-                    <i class="fa fa-angle-double-right"></i>
-                  </a>
-                </div>
-              </div>
-            </div> -->
-
             <div class="block-15">
-              <!-- <table class="calendar">
-                <tr class="weekdays">
-                  <th scope="col">日</th>
-                  <th scope="col">月</th>
-                  <th scope="col">火</th>
-                  <th scope="col">水</th>
-                  <th scope="col">木</th>
-                  <th scope="col">金</th>
-                  <th scope="col">土</th>
-                </tr>
-                <tr class="days">
-                  <td class="day other-month">
-                    <div class="date sun">27</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">28</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">29</div>
-                    <div class="label label-calender label-alert">無連絡欠席</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">30</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">31</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">1</div>
-                  </td>
-                  <td class="day">
-                    <div class="date sat">2</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="day">
-                    <div class="date sun">3</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">4</div>
-                    <div class="label label-calender label-success">休館</div>
-                    <div class="label label-calender label-warning">テスト</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">5</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">6</div>
-                    <div class="label label-calender label-primary">出</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">7</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">8</div>
-                  </td>
-                  <td class="day">
-                    <div class="date sat">9</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="day">
-                    <div class="date sun">10</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">11</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">12</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">13</div>
-                    <div class="label label-calender label-danger">欠</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">14</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">15</div>
-                  </td>
-                  <td class="day">
-                    <div class="date sat">16</div>
-                    <a class="label label-calender label-outline-blue" href="#0">振替可能</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="day">
-                    <div class="date sun">17</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">18</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">19</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">20</div>
-                    <div class="label label-calender label-outline-orange">休</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">21</div>
-                    <div class="label label-calender label-main">振</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">22</div>
-                  </td>
-                  <td class="day">
-                    <div class="date sat">23</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="day">
-                    <div class="date sun">24</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">25</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">26</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">27</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">28</div>
-                  </td>
-                  <td class="day">
-                    <div class="date">29</div>
-                  </td>
-                  <td class="day">
-                    <div class="date sat">30</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="day">
-                    <div class="date sun">31</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">1</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">2</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">3</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">4</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date">5</div>
-                  </td>
-                  <td class="day other-month">
-                    <div class="date sat">6</div>
-                  </td>
-                </tr>
-              </table> -->
-              <div id='calendar'></div>
+              <div id='calendar_recheduce'></div>
             </div>
 
             <div class="text-center">
@@ -255,11 +74,12 @@
           <li>
             <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#modalFurikaeCancelDone2">P5: 振替キャンセル設定（休み予定をキャンセルしました。）</button>
           </li>
+          
         </ul>
       </div>
       <!-- Modal: お休み／振替予定設定 -->
-      <section class="modal fade" id="modalTransfer" tabindex="-1" role="dialog" aria-labelledby="modalTransfer">
-        <div class="modal-dialog" role="document">
+      <section class="modal fade" id="modalTransfer" role="dialog" aria-labelledby="modalTransfer">
+        <div class="modal-dialog" >
           <div class="modal-content">
             <div class="modal-header bg-blue text-center">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -337,7 +157,6 @@
           </div>
         </div>
       </section>
-
       <!-- Modal: お休みにしました -->
       <section class="modal fade" id="modalCompleteOyasumi" tabindex="-1" role="dialog" aria-labelledby="modalCompleteOyasumi">
         <div class="modal-dialog modal-sm" role="document">
@@ -569,66 +388,86 @@
           </div>
         </div>
       </section>
+      <!-- dev TRI VV-JSC custome page-->
+      
+      <button id="show_list_select" type="button" style = "display:none" class="btn btn-link btn-sm" data-toggle="modal" data-target="#modalSelectOption">show list option</button>
+          
+      <section class="modal fade" id="modalSelectOption" role="dialog" aria-labelledby="modalSelectOption">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4 class="text-center">
+                <i class="fa fa-info-circle text-primary" aria-hidden="true"></i>
+                <strong>LIST ACTION</strong>
+              </h4>
+            </div>
+            <div class="modal-footer">
+              <div class="modal-btns row">
+                <div class="col-sm-8 col-sm-offset-2">
+                  
+                      <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#modalTransfer" data-dismiss="modal">お休み／振替予定設定</button>
+                     
+                      <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#modalTransfer2" data-dismiss="modal">振替予定設定</button>
+                    
+                      <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#modalFurikaeCancel" data-dismiss="modal">振替キャンセル設定</button>
+                    
+                      <button type="button" class="btn btn-default btn-block" data-toggle="modal" data-target="#modalFurikaeCancel2" data-dismiss="modal"> 振替キャンセル設定</button>
+                     
+                    <!-- <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+                      <span aria-hidden="true">&times;</span>
+                      <span></span>
+                    </button>-->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      msg
+      <!-- end custome page -->
 
     </div>
   </main>
   <script>
-    $(document).ready(function () {
-
-      var initialLocaleCode = 'ja';
-
-      function fmt(date) {
-        return date.format("YYYY-MM-DD HH:mm");
-      }
-      function format_month(date){
-        return date.format('M');
-      }
-      function format_year(date){
-        return date.format('YYYY');
-      }
-
-      function get_prev_month() {
-        
-        var current_month_tmp = $('#calendar').fullCalendar('getDate').format('M');
-        var last_month_tmp = current_month_tmp - 1;
-        var next_month_tmp = (+current_month_tmp == 12) ? '' : (+current_month_tmp + 1);
-
-        if(last_month_tmp == 0){
-          $('.fc-pre_event-button').html('< Last year');
-        }else{
-          $('.fc-pre_event-button').html('< ' + last_month_tmp + '月');
-        }
-        
-        if(next_month_tmp == ''){
-          $('.fc-next_event-button').html('Next year >');
-        }else{
-          $('.fc-next_event-button').html(next_month_tmp + '月' + ' >');
-        }
-
-      }
+    $(document).on('ready',function () {    
+      var MONDAY = "<?php echo EVERY_MONDAY ?>",
+          TUESDAY = "<?php echo EVERY_TUESDAY ?>",
+          WENDAY = "<?php echo EVERY_WENDAY ?>",
+          THUSDAY = "<?php echo EVERY_THUSDAY ?>",
+          FRIDAY = "<?php echo EVERY_FRIDAY ?>",
+          SATUDAY = "<?php echo EVERY_SATUDAY ?>",
+          SUNDAY = "<?php echo EVERY_SUNDAY ?>",
+          DATE_TEST = "<?php echo DATE_TEST ?>",
+          DATE_CLOSED = "<?php echo DATE_CLOSED ?>";
 
       var date = new Date();
+      var initialLocaleCode = 'ja';
       var d = date.getDate();
-      var m = date.getMonth();
+      var m = date.getMonth() + 1;
       var y = date.getFullYear();
-      var last_month = (m - 1) <= 0 ? 'Last Year' : (m - 1);
-      var next_month = (m == 12) ? 'Next Year' : (m + 2);
-      
-      var calendar = $('#calendar').fullCalendar({
-        editable: true,
+      var tmp_m = m - 1;
+      var last_month = tmp_m <= 0 ? 'Last Year' : tmp_m + '月';
+      var next_month = (m == 12) ? 'Next Year' : (m + 1);
+      var start_date_selected = "";
+      var calendar = $('#calendar_recheduce').fullCalendar({
+
         locale: initialLocaleCode,
+        displayEventTime: false,
+        unselectAuto: false,
         customButtons: {
           pre_event: {
-            text: '<' + last_month,
+            text: '< ' + last_month,
             click: function() {
-              $('#calendar').fullCalendar('prev');
+              $('#calendar_recheduce').fullCalendar('prev');
               get_prev_month();
             }
           },
           next_event: {
             text: next_month + '月' + ' >',
             click: function() {
-              $('#calendar').fullCalendar('next');
+              $('#calendar_recheduce').fullCalendar('next');
               get_prev_month();
             }
           }
@@ -638,90 +477,189 @@
           center: 'title',
           right: 'next_event'
         },
-
         // events: "events.php",
-
-        // Convert the allDay from string to boolean
         eventRender: function (event, element, view) {
-          if (event.allDay === 'true') {
-            event.allDay = true;
-          } else {
-            event.allDay = false;
-          }
+          // console.log(event);
+          // console.log(element);
+          // console.log(view);
+          // if (event.allDay === 'true') {
+          //   event.allDay = true;
+          // } 
+          // else {
+          //   event.allDay = false;
+          // }
         },
-
         selectable: true,
         selectHelper: true,
-
         select: function (start, end, allDay) {
-          var title = prompt('Event Title:');
-          if (title) {
-            var start = fmt(start);
-            var end = fmt(end);
-            $.ajax({
-              url: 'add_events.php',
-              data: 'title=' + title + '&start=' + start + '&end=' + end,
-              type: "POST",
-              success: function (json) {
-                //alert('Added Successfully');
-              }
-            });
-            calendar.fullCalendar('renderEvent',
-                {
-                  title: title,
-                  start: start,
-                  end: end,
-                  allDay: allDay
-                },
-                true // make the event "stick"
-            );
-          }
-          calendar.fullCalendar('unselect');
+          start_date_selected = fmt_date(start);
+          // end_date_selected = fmt(end);
+          check_type_date();
+          
         },
-
-        editable: true,
         eventDrop: function (event, delta) {
-          var start = fmt(event.start);
-          var end = fmt(event.end);
-          $.ajax({
-            url: 'update_events.php',
-            data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
-            type: "POST",
-            success: function (json) {
-              //alert("Updated Successfully");
-            }
-          });
+          // var start = fmt(event.start);
+          // var end = fmt(event.end);
+          // $.ajax({
+          // });
         },
         eventClick: function (event) {
-          var decision = confirm("Do you want to remove event?");
-          if (decision) {
-            $.ajax({
-              type: "POST",
-              url: "delete_event.php",
-              data: "&id=" + event.id,
-              success: function (json) {
-                $('#calendar').fullCalendar('removeEvents', event.id);
-                //alert("Updated Successfully");
-              }
-            });
-          }
+          // var decision = confirm("Do you want to remove event?");
+          // var id_date_current;
+          // if (decision) {
+          //   if($(this).hasClass('closed_class_btn')){
+          //     id_date_current = event.id;
+          //     remove_closed_date(id_date_current);
+          //   }
+          //   if($(this).hasClass('test_class_btn')){
+          //     id_date_current = event.id;
+          //     remove_test_date(id_date_current);
+          //   }
+          // }
+          // alert(1);
+          // $('#modalSelectOption').click();
         },
         eventResize: function (event) {
-          var start = fmt(event.start);
-          var end = fmt(event.end);
-          $.ajax({
-            url: 'update_events.php',
-            data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
-            type: "POST",
-            success: function (json) {
-              //alert("Updated Successfully");
-            }
-          });
         },
         viewRender: function (event) {
+          // console.log(list_modays);
+          month_current_select = $('#calendar_recheduce').fullCalendar('getDate').format('M');
+          year_current_select = $('#calendar_recheduce').fullCalendar('getDate').format('YYYY');
+          
+          get_list_date_test();
+          get_list_date_absent();
         }
       });
 
+      function get_list_date_absent() {
+        $.ajax({
+          type: "POST",
+          url: "https:" + "<?php echo base_url('reschedule/load_data_absent');?>",
+          data: {
+            month_post: month_current_select,
+            year_post: year_current_select
+          },
+          dataType: 'JSON',
+          success: function (result) {
+            if(result['list_data']){
+              result['list_data'].forEach(element => {
+                calendar.fullCalendar('renderEvent',
+                  {
+                    id: element.id,
+                    title: DATE_CLOSED,
+                    start: element.target_date,
+                    end: element.target_date,
+                    className : "closed_class_btn",
+                  },
+                  false // make the event "stick"
+                );
+              });
+            }
+          }
+        });
+      }
+
+      function get_list_date_test() {
+        $.ajax({
+          type: "POST",
+          url: "https:" + "<?php echo base_url('reschedule/load_data_test');?>",
+          data: {
+            month_post_test: month_current_select,
+            year_post_test: year_current_select
+          },
+          dataType: 'JSON',
+          success: function (result) {
+            if(result['list_data_test']){
+              result['list_data_test'].forEach(element => {
+                calendar.fullCalendar('renderEvent',
+                    {
+                      id: element.id,
+                      title: DATE_TEST,
+                      start: element.target_date,
+                      end: element.target_date,
+                      className : "test_class_btn"
+                    },
+                    false // make the event "stick"
+                );
+              });
+            }
+          }
+        });
+      }
+
+      function check_type_date() {
+        $.ajax({
+          type: "POST",
+          url: "https:" + "<?php echo base_url('reschedule/check_type_date');?>",
+          data: {
+            start_date_selected : start_date_selected
+          },
+          dataType: 'JSON',
+          success: function (result) {
+            switch (result.type_date) {
+              case 1:
+                srcoll_to_div('.header-mypage',' CLOSED DATE, can not register');
+                break;
+              case 2:
+                srcoll_to_div('.header-mypage',' TEST DATE, can not register');
+                break;
+              case 3:
+                srcoll_to_div('.header-mypage',' NOTRANSFER DATE, can not register');
+                break;
+              case 4:
+                srcoll_to_div('.header-mypage',' CONSTRUCTION DATE, can not register');
+                break;
+              default:
+                hiden_waring();
+                $( "#show_list_select" ).trigger( "click" ); 
+                break;
+            }
+          }
+        });
+      }
+
+      function fmt(date) {
+        return date.format("YYYY-MM-DD HH:mm");
+      }
+      function fmt_date(date) {
+        return date.format("YYYY-MM-DD");
+      }
+      function format_month(date){
+        return date.format('M');
+      }
+      function format_year(date){
+        return date.format('YYYY');
+      }
+      function srcoll_to_div(id_div, msg) {
+        $('html,body').animate({
+                  scrollTop: $(id_div).offset().top},
+              'slow');
+        $('#waring-msg').css('display', 'block');
+        $('.alert-danger span').find('span').text(msg);
+      }
+      function hiden_waring(){
+        $('#waring-msg').css('display', 'none');
+      }
+
+      function get_prev_month() {
+        
+        var current_month_tmp = $('#calendar_recheduce').fullCalendar('getDate').format('M');
+        var last_month_tmp = current_month_tmp - 1;
+        var next_month_tmp = (+current_month_tmp == 12) ? '' : (+current_month_tmp + 1);
+
+        (last_month_tmp == 0) ? $('.fc-pre_event-button').html('< Last year') : $('.fc-pre_event-button').html('< ' + last_month_tmp + '月');
+        (next_month_tmp == '') ? $('.fc-next_event-button').html('Next year >') : $('.fc-next_event-button').html(next_month_tmp + '月' + ' >');
+
+      }
+
+      $('#modalTransfer').on('show.bs.modal', function (e) {
+        $('body').css('padding-right', '0px');
+      });
+
+      $('#modalSelectOption').on('show.bs.modal', function (e) {
+        $('body').css('padding-right', '0px');
+      });
+      
     });
   </script>
   <?php require_once("contents_footer.php"); ?>

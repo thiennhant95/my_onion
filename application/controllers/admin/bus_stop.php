@@ -145,7 +145,7 @@ class Bus_stop extends ADMIN_Controller {
     public function export() {
         if ($this->error_flg) return;
         try {
-            $limit=10;
+            $limit=LIMIT_CSV;
             $count_bus_stop=count($this->bus_stop->get_list());
             $count_num=ceil($count_bus_stop/$limit);
             for ($i=0;$i<$count_num; $i++)

@@ -75,15 +75,20 @@ class Entry extends ADMIN_Controller {
     public function edit($id = NULL) {
         if ($this->error_flg) return;
         try {
-//            $admin_account = ( $this->session->userdata( 'admin_account' ) ) ? ( $this->session->userdata( 'admin_account' ) ) : '';
-//            $check_student = $this->m_student_model->select_by_id( $id, 'id', 'm_student' );
-//            if ( $admin_account == '' ) {
-//                redirect('/admin/auth');
-//            } else if ( count( $check_student ) == 0 ) {
-//                redirect('/admin/entry');
-//            } else {
+            // $course_valid = $this->m_course_model->getData_Course_valid( 1 );
+            // echo '<pre>'; print_r( $course_valid ); echo '</pre>'; die();
+
+            $admin_account = ( $this->session->userdata( 'admin_account' ) ) ? ( $this->session->userdata( 'admin_account' ) ) : '';
+            $check_student = $this->m_student_model->select_by_id( $id, 'id', 'm_student' );
+            if ( $admin_account == '' ) {
+                redirect('/admin/auth');
+            } else if ( count( $check_student ) == 0 ) {
+                redirect('/admin/entry');
+            } else {
                 $student_info = $this->student_data->get_student_data_detail( $id );
+                $course_valid = $this->m_course_model->getData_Course_valid( $id );
                 $data = array();
+                $data['course_valid'] = $course_valid;
                 $data['html'] = $this->create_html( $student_info['course']['nearest']['course_id'] );
                 $data['school_grades'] = $this->configVar['school_grades'];
                 $data['s_info'] = $student_info;
@@ -182,7 +187,7 @@ class Entry extends ADMIN_Controller {
                 }
                 $this->viewVar = $data;
                 admin_layout_view('entry_edit', $this->viewVar);
-//            }
+            }
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
@@ -232,8 +237,10 @@ class Entry extends ADMIN_Controller {
         foreach ( $student_info['course']['all'] as $k => $v ) {
             if ( $v['id'] == $course_id ) $start_date = $v['start_date'];
         }
-        $bus_course = $this->m_bus_course_model->select_all( 'm_bus_course' );
-        $bus_route_default = $this->m_bus_route_model->select_by_id( $bus_course[0]['id'], 'bus_course_id', 'm_bus_route' );
+        $bus_use_flg = ( isset( $student_info['meta']['bus_use_flg'] ) ) ? $student_info['meta']['bus_use_flg'] : '';
+        if ( $bus_use_flg == 1 ) $disabled = ''; else $disabled = 'disabled';
+        $bus_course = $this->m_bus_course_model->get_bus_course_by_class_id( $class_id );
+        if ( count( $bus_course ) > 0 ) $bus_route_default = $this->m_bus_route_model->select_by_id( $bus_course[0]['id'], 'bus_course_id', 'm_bus_route' );
         $bus_stop_default = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
         $arr_date = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
         $split = explode( '_', $data_class );
@@ -248,47 +255,85 @@ class Entry extends ADMIN_Controller {
                 $html_bus .= '<table>';
                     $html_bus .= '<tbody>';
                         $html_bus .= '<tr>';
-                        $html_bus .= '<td>行き(乗車)</td>';
-                        $html_bus .= '<td>';
-                        $html_bus .= '<input type="hidden" class="data_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" />';
-                            $html_bus .= '<select class="form-control w-xs-100per change_bus_course" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_1 . "'" . ')">';
-                                foreach ( $bus_course as $k => $v ) {
-                                    $html_bus .= '<option value="' . $v['id'] . '">' . $v['bus_course_name'] . '</option>';
-                                }
-                            $html_bus .= '</select>';
-                        $html_bus .= '</td>';
-                        $html_bus .= '<td>';
-                            $html_bus .= '<select class="form-control w-xs-100per each_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_1 . '">';
-                                foreach ( $bus_route_default as $k => $v ) {
-                                    $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
-                                        foreach ( $bus_stop_default as $k1 => $v1 ) {
-                                            if ( $v1['id'] == $v['bus_stop_id'] ) $html_bus .= $v1['bus_stop_name'];
-                                        }
-                                    $html_bus .= '</option>';
-                                }
-                            $html_bus .= '</select>';
-                        $html_bus .= '</td>';
-                    $html_bus .= '</tr>';
-                        $html_bus .= '<tr>';
-                            $html_bus .= '<td>帰り(降車)</td>';
+                        $html_bus .= '<td>行き（乗車）</td>';
+                        if ( count( $bus_course ) > 0 ) {
                             $html_bus .= '<td>';
-                                $html_bus .= '<select class="form-control w-xs-100per change_bus_course" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_2 . "'" . ')">';
+                                $html_bus .= '<input type="hidden" class="data_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" />';
+                                $html_bus .= '<select class="form-control w-xs-100per change_bus_course ' . $disabled . '_bus" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_1 . "'" . ')"  ' . $disabled . '>';
                                     foreach ( $bus_course as $k => $v ) {
                                         $html_bus .= '<option value="' . $v['id'] . '">' . $v['bus_course_name'] . '</option>';
                                     }
                                 $html_bus .= '</select>';
                             $html_bus .= '</td>';
                             $html_bus .= '<td>';
-                                $html_bus .= '<select class="form-control w-xs-100per each_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_2 . '">';
-                                    foreach ( $bus_route_default as $k => $v ) {
-                                        $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
-                                            foreach ( $bus_stop_default as $k1 => $v1 ) {
-                                                if ( $v1['id'] == $v['bus_stop_id'] ) $html_bus .= $v1['bus_stop_name'];
-                                            }
-                                        $html_bus .= '</option>';
-                                    }
+                                if ( count( $bus_route_default ) > 0 ) {
+                                    $html_bus .= '<select class="form-control w-xs-100per each_route ' . $disabled . '_bus" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_1 . '" ' . $disabled . '>';
+                                        foreach ( $bus_route_default as $k => $v ) {
+                                            $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
+                                                foreach ( $bus_stop_default as $k1 => $v1 ) {
+                                                    if ( $v1['id'] == $v['bus_stop_id'] ) $html_bus .= $v1['bus_stop_name'];
+                                                }
+                                            $html_bus .= '</option>';
+                                        }
+                                    $html_bus .= '</select>';
+                                } else {
+                                    $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                        $html_bus .= '<option>No bus route to choose</option>';
+                                    $html_bus .= '</select>';
+                                }
+                            $html_bus .= '</td>';
+                        } else {
+                            $html_bus .= '<td>';
+                                $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                    $html_bus .= '<option>No bus course to choose</option>';
                                 $html_bus .= '</select>';
                             $html_bus .= '</td>';
+                            $html_bus .= '<td>';
+                                $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                    $html_bus .= '<option>No bus route to choose</option>';
+                                $html_bus .= '</select>';
+                            $html_bus .= '</td>';
+                        }
+                    $html_bus .= '</tr>';
+                        $html_bus .= '<tr>';
+                            $html_bus .= '<td>帰り（降車）</td>';
+                            if ( count( $bus_course ) > 0 ) {
+                                $html_bus .= '<td>';
+                                    $html_bus .= '<select class="form-control w-xs-100per change_bus_course ' . $disabled . '_bus" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_2 . "'" . ')" ' . $disabled . '>';
+                                        foreach ( $bus_course as $k => $v ) {
+                                            $html_bus .= '<option value="' . $v['id'] . '">' . $v['bus_course_name'] . '</option>';
+                                        }
+                                    $html_bus .= '</select>';
+                                $html_bus .= '</td>';
+                                $html_bus .= '<td>';
+                                    if ( count( $bus_route_default ) > 0 ) {
+                                        $html_bus .= '<select class="form-control w-xs-100per each_route ' . $disabled . '_bus" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_2 . '" ' . $disabled . '>';
+                                            foreach ( $bus_route_default as $k => $v ) {
+                                                $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
+                                                    foreach ( $bus_stop_default as $k1 => $v1 ) {
+                                                        if ( $v1['id'] == $v['bus_stop_id'] ) $html_bus .= $v1['bus_stop_name'];
+                                                    }
+                                                $html_bus .= '</option>';
+                                            }
+                                        $html_bus .= '</select>';
+                                    } else {
+                                        $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                            $html_bus .= '<option>No bus route to choose</option>';
+                                        $html_bus .= '</select>';
+                                    }
+                                $html_bus .= '</td>';
+                            } else {
+                                $html_bus .= '<td>';
+                                    $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                        $html_bus .= '<option>No bus course to choose</option>';
+                                    $html_bus .= '</select>';
+                                $html_bus .= '</td>';
+                                $html_bus .= '<td>';
+                                    $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                        $html_bus .= '<option>No bus route to choose</option>';
+                                    $html_bus .= '</select>';
+                                $html_bus .= '</td>';
+                            }
                         $html_bus .= '</tr>';
                     $html_bus .= '</tbody>';
                 $html_bus .= '</table>';

@@ -98,7 +98,7 @@ $(document).ready(function() {
             }
             return true;
         },
-        "Ngày đăng kí phải nhỏ hơn ngày kết thúc"
+        "申込開始は開催終了の値以降で入力してください。"
     );
     $.validator.addMethod(
         "end_regist",
@@ -114,9 +114,7 @@ $(document).ready(function() {
             var date_start = new Date(start);
             var date_end = new Date(end);
             if (date_end <= date_start) {
-                if(!$("#nomal_type").is(':checked')) {
                     return false;
-                }
             }
             return true;
         },
@@ -152,16 +150,16 @@ $(document).ready(function() {
             "end[2]":{
                 end_date:true
             },
-            //
-            // "start_regist[0]":{
-            //     start_regist:true
-            // },
-            // "start_regist[1]":{
-            //     start_regist:true
-            // },
-            // "start_regist[2]":{
-            //     start_regist:true
-            // },
+
+            "start_regist[0]":{
+                start_regist:true
+            },
+            "start_regist[1]":{
+                start_regist:true
+            },
+            "start_regist[2]":{
+                start_regist:true
+            },
 
             "end_regist[0]":{
                 end_regist:true

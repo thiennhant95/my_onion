@@ -162,9 +162,13 @@
                         <td class="bg-white table-border-none">
                           <select class="form-control w-xs-100per" id="change-course" onchange="change_course(this.value, <?php echo $s_info['info']['id']; ?>)">
                           <?php
-                            foreach( $s_info['course']['all'] as $key => $value ) {
-                              $selected = ( $value['id'] == $s_info['course']['nearest']['course_id'] ) ? 'selected' : '';
-                              echo '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['course_name'] . '</option>';
+                            // foreach( $s_info['course']['all'] as $key => $value ) {
+                            //   $selected = ( $value['id'] == $s_info['course']['nearest']['course_id'] ) ? 'selected' : '';
+                            //   echo '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['course_name'] . '</option>';
+                            // }
+                            foreach ( $course_valid as $k => $v ) {
+                              $selected = ( $v['id'] == $s_info['course']['nearest']['course_id'] ) ? 'selected' : '';
+                              echo '<option value="' . $v['id'] . '" ' . $selected . '>' . $v['course_name'] . '</option>';
                             }
                           ?>
                           </select>
@@ -333,7 +337,7 @@
                           <div class="text-gray mb-15">
                             <div class="form-group row">
                               クラブ名　<input name="club_name" value="<?php echo $arr_enquete['experience']['club_name']; ?>" class="form-control select-type-1 w-xs-20per" type="text">　
-                              <input type="text" class="form-control select-type-1 w-xs-20per" name="year_month" value="<?php echo $arr_enquete['experience']['year']. '-' . $arr_enquete['experience']['month']; ?>" readonly/>
+                              <input type="text" class="form-control select-type-1 w-xs-20per" name="year_month" value="<?php if ( $arr_enquete['experience']['year'] != '' && $arr_enquete['experience']['month'] != '' ) echo $arr_enquete['experience']['year']. '-' . $arr_enquete['experience']['month']; ?>" readonly/>
                             </div>
                           </div>
                         </td>
@@ -350,8 +354,8 @@
                         <th class="align-right text-gray table-border-none">バスの利用</th>
                         <td class="bg-white table-border-none text-gray">
                           <div class="text-gray">
-                            <label class="radio-inline"><input name="bus_use_flg" value="0" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) echo 'checked'; ?> type="radio"> する</label>　
-                            <label class="radio-inline"><input name="bus_use_flg" value="1" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '1' ) echo 'checked'; ?> type="radio"> しない</label>
+                            <label class="radio-inline"><input name="bus_use_flg" onclick="disabled_bus(this.value)" value="1" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '1' ) echo 'checked'; ?> type="radio"> する</label>　
+                            <label class="radio-inline"><input name="bus_use_flg" onclick="disabled_bus(this.value)" value="0" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) echo 'checked'; ?> type="radio"> しない</label>
                           </div>
                           <div class="mb-15 display_bus">
                             
@@ -567,6 +571,12 @@
 </html>
 
 <script>
+
+  function disabled_bus( value ) {
+    if ( value == 0 ) $('.disabled_bus').attr('disabled', 'disabled');
+    else $('.disabled_bus').removeAttr('disabled');
+  }
+
   function change_course( course_id, student_id ) {
     $.ajax({
       url: 'https:' + "<?php echo base_url().'admin/entry/edit/'?>"+student_id,
@@ -589,7 +599,7 @@
         $('.bg-gainsboro').css('cursor', 'default');
         $('.bg-lightpink').css('cursor', 'default');
       }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log('error');
+          console.log(errorThrown);
       },
       complete: function() {
         $('#change-course').prop('disabled', '');
@@ -613,7 +623,7 @@
         $('#'+bus_route_id).empty();
         $('#'+bus_route_id).append( result );
       }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log('error');
+          console.log(errorThrown);
       },
       complete: function() {
         $('.change_bus_course').prop('disabled', '');
@@ -643,6 +653,7 @@
           $( '#' + _class ).remove();
         } else {
           $(this).addClass('bg-rouge');
+          // $(this).removeClass('bg-plae-lemmon');
           $(this).text('選択');
           $(this).css('color', 'white');
           $('.display_class').append('<input type="text" data-id="' + _id + '" data-class="' + _class + '" value="' + _class_split[0] + '" class="form-control w-xs-19per each_class" readonly>');
@@ -659,16 +670,16 @@
             method: "POST",
             dataType: "json",
             beforeSend: function() {
-              // $('td[data-class='+_class+']').removeClass('bg-plae-lemmon');
+              $('td[data-class='+_class+']').removeClass('bg-plae-lemmon');
             },
             success: function(result) {
               // console.log( result );
               $('.display_bus').append( result );
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log('error');
+                console.log(errorThrown);
             },
             complete: function() {
-                // $('td[data-class='+_class+']').addClass('bg-plae-lemmon');
+              $('td[data-class='+_class+']').addClass('bg-plae-lemmon');
             }
           });
         }
@@ -965,7 +976,7 @@
             entry_disp_view('#entry_complete');
           }
         }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log('error');
+          console.log(errorThrown);
         }
       });
     } else {

@@ -31,7 +31,7 @@
                   <p class="text-center">〜</p>
                 </div>
                 <div class="col-xs-4 col-sm-3">
-                    <input type="jp-date2" name="date_end" class="form-control" placeholder="YYYY/MM/DD">
+                    <input type="jp-date2" name="date_end" class="form-control" placeholder="YYYY/MM/DD"    >
                 </div>
                 <div class="col-xs-9 col-sm-3">
                   <select class="form-control" name="type">

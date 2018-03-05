@@ -10,6 +10,11 @@ class M_distance_model extends DB_Model {
         parent::__construct();
         $this->load->database();
     }
+    /**
+     * Get list distance
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     function get_list_distance($limit, $start)
     {
         $sql = 'select m_distance.id, m_distance.distance_code,m_distance.distance_name
@@ -21,6 +26,11 @@ class M_distance_model extends DB_Model {
         return $query->result_array();
     }
 
+    /**
+     * Get list distance export CSV
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     function export_csv($limit, $start)
     {
         $sql = 'select m_distance.distance_code,m_distance.distance_name

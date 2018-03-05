@@ -78,10 +78,6 @@ class Bus_route extends ADMIN_Controller {
                     $route_order =$this->input->post('bus_route_order');
                     $route_order=explode(',',$route_order);
                     $bus_stop_id=$this->input->post('bus_stop_id');
-//                    print_r($route_order);
-//                    print_r($bus_stop_id);
-//                    print_r($route_id);
-//                    die();
                     $go_time=$this->input->post('go_time');
                     $ret_time=$this->input->post('ret_time');
 
@@ -307,7 +303,7 @@ class Bus_route extends ADMIN_Controller {
     public function export() {
         if ($this->error_flg) return;
         try {
-            $limit=1000;
+            $limit=LIMIT_CSV;
             $count_bus_course=count($this->bus_course->get_list());
             $count_num=ceil($count_bus_course/$limit);
             for ($i=0;$i<$count_num; $i++)
@@ -328,7 +324,7 @@ class Bus_route extends ADMIN_Controller {
     public function export_bus_route() {
         if ($this->error_flg) return;
         try {
-            $limit=10;
+            $limit=LIMIT_CSV;
             $count_bus_route=count($this->bus_route->get_list());
             $count_num=ceil($count_bus_route/$limit);
             for ($i=0;$i<$count_num; $i++)

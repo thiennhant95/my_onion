@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <?php require_once("head.php"); ?>
 </head>
-
 <body>
   <?php require_once("contents_header_mypage.php"); ?>
-
   <main class="content content-dark">
+  <input type="hidden" value="<?php echo $s_info['info']['id']; ?>" name="student_id" />
     <div class="container">
-
       <h1 class="lead-heading lead-heading-icon-bus-user bg-red h3">バス乗降連絡</h1>
-
       <form class="form-horizontal">
         <section>
           <div class="panel panel-dotted">
             <div class="panel-heading">バス乗降連絡</div>
             <div class="panel-body">
-
               <section>
                 <div class="row block-15">
                   <div class="col-sm-10 col-sm-offset-1">
@@ -37,105 +32,259 @@
                   </div>
                 </div>
               </section>
-
               <hr class="hr-dashed">
-
               <section>
-                <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">基本バスコース</label>
-                  <div class="col-sm-5 control-text">
-                    <span>⑧花見川コース</span>
+                <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) { ?>
+                  <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">基本バスコース</label>
+                    <div class="col-sm-5 control-text">
+                      <span>バス利用無し</span>
+                    </div>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">乗車場所</label>
-                  <div class="col-sm-5 control-text">
-                    <span>【8380】花見川交番前</span>
+                  <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">乗車場所</label>
+                    <div class="col-sm-5 control-text">
+                      <span>__</span>
+                    </div>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">降車場所</label>
-                  <div class="col-sm-5 control-text">
-                    <span>【8380】花見川交番前</span>
+                  <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">降車場所</label>
+                    <div class="col-sm-5 control-text">
+                      <span>__</span>
+                    </div>
                   </div>
-                </div>
+                <?php } else { ?>
+                  <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">基本バスコース:</label>
+                  </div>
+                  <?php
+                    $weeks = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
+                    foreach ( $s_class as $k => $v ) { ?>
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-5 control-text">
+                          <?php echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name']; ?>）
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">行きの乗車場所</label>
+                        <div class="col-sm-5 control-text">
+                          <span><?php echo $v['bus_course_go']['bus_course_name'] . '【' . $v['bus_course_go']['route_order'] . '】' . $v['bus_course_go']['bus_stop_name']; ?></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">帰りの降車場所</label>
+                        <div class="col-sm-5 control-text">
+                          <span><?php echo $v['bus_course_ret']['bus_course_name'] . '【' . $v['bus_course_ret']['route_order'] . '】' . $v['bus_course_ret']['bus_stop_name']; ?></span>
+                        </div>
+                      </div>
+                    <?php } ?>
+                <?php } ?>
               </section>
-
               <hr class="hr-dashed">
-
+              <div class="form-group">
+                <label for="" class="col-sm-2 control-label">送迎バスを</label>
+                <div class="col-sm-5">
+                  <label class="radio-inline">
+                    <input type="radio" name="bus_use_flg" value="1" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '1' ) echo 'checked'; ?>> 利用する
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="bus_use_flg" value="0" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) echo 'checked'; ?>> 利用しない
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="" class="col-sm-2 control-label"></label>
+                <div class="col-sm-5"><a href="#">送迎バスのご案内（別ウィンドウで開く）</a></div>
+              </div>
+              <div class="form-group">
+                <label for="" class="col-xs-12 col-sm-2 control-label">変更日</label>
+                <div class="col-sm-2">
+                  <input name="change_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" readonly>
+                </div>
+                <span>から</span>
+              </div>
               <section>
-                <h2 class="text-center text-danger block-30 h4">
-                  <i class="fa fa-info-circle" aria-hidden="true"></i>
-                  <strong>申請は乗車予定時刻の2時間前までになります。</strong>
-                </h2>
-                <div class="form-group">
-                  <label for="" class="col-xs-12 col-sm-2 control-label">日時</label>
-                  <div class="col-sm-3">
-                    <select class="form-control">
-                      <option value="">2017年10月</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-3">
-                    <select class="form-control">
-                      <option value="">1日</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-3">
-                    <select class="form-control">
-                      <option value="">C(15：55)</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
-                  <div class="col-sm-3">
-                    <select class="form-control">
-                      <option value="">乗らない</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-3">
-                    <select class="form-control">
-                      <option value="">----------</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="" class="col-xs-12 col-sm-2 control-label">帰りの乗車場所</label>
-                  <div class="col-sm-3">
-                    <select class="form-control">
-                      <option value="">⑧花見川コース</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-3">
-                    <select class="form-control">
-                      <option value="">【8380】花見川交番前</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="" class="col-sm-2 control-label">理由</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" value="" placeholder="">
-                  </div>
-                </div>
+                <?php
+                  foreach( $s_class as $k => $v ) { 
+                    $id_bus_stop_1 = random_string( 'alnum', RANDOM_STRING_LENGTH );
+                    $id_bus_stop_2 = random_string( 'alnum', RANDOM_STRING_LENGTH );
+                  ?>
+                    <div class="each_bus_course">
+                      <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-5 control-text">
+                          <?php echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name']; ?>）
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
+                        <div class="col-sm-3">
+                          <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_1 . "'"; ?>)">
+                            <?php
+                              foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
+                                if ( $v['bus_course_go']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                else $selected = '';
+                                echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
+                              }
+                            ?>
+                          </select>
+                        </div>
+                        <div class="col-sm-3">
+                          <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="go" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_go']['bus_route_go_id']; ?>" id="<?php echo $id_bus_stop_1; ?>">
+                            <?php
+                              foreach ( $v['list_route_go'] as $k2 => $v2 ) {
+                                if ( $v['bus_course_go']['bus_route_go_id'] == $v2['id'] ) $selected = 'selected';
+                                else $selected = '';
+                                echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
+                              }
+                            ?>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="" class="col-xs-12 col-sm-2 control-label">帰りの降車場所</label>
+                        <div class="col-sm-3">
+                          <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_2 . "'"; ?>)">
+                            <?php
+                              foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
+                                if ( $v['bus_course_ret']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                else $selected = '';
+                                echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
+                              }
+                            ?>
+                          </select>
+                        </div>
+                        <div class="col-sm-3">
+                          <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="ret" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_ret']['bus_route_ret_id']; ?>" id="<?php echo $id_bus_stop_2; ?>">
+                            <?php
+                              foreach ( $v['list_route_ret'] as $k2 => $v2 ) {
+                                if ( $v['bus_course_ret']['bus_route_ret_id'] == $v2['id'] ) $selected = 'selected';
+                                else $selected = '';
+                                echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
+                              }
+                            ?>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  <?php } ?>
               </section>
-
             </div>
           </div>
         </section>
-
         <div class="block-30 text-center">
-          <a href="#0" class="btn btn-success btn-lg btn-long">
+          <button type="button" class="btn btn-success btn-lg btn-long" id="btn-change-bus">
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             <span>連絡する</span>
-          </a>
+          </button>
         </div>
       </form>
-
     </div>
-  </main>
 
+    <div class="modal fade" id="modal-error" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Error</h4>
+          </div>
+          <div class="modal-body">
+            <p>There was an error, please try again</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </main>
   <?php require_once("contents_footer.php"); ?>
 </body>
-
 </html>
+<script>
+  function change_bus_course( bus_course_id, bus_route_id ) {
+    $.ajax({
+      url: 'https:' + "<?php echo base_url().'request/change_bus'?>",
+      data: {
+          bus_course_id : bus_course_id
+      },
+      method: "POST",
+      dataType: "json",
+      beforeSend: function() {
+        $('.change_bus_course').prop('disabled', 'disabled');
+      },
+      success: function(result) {
+        console.log( result );
+        $('#'+bus_route_id).empty();
+        $('#'+bus_route_id).append( result );
+      }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+          console.log('error');
+      },
+      complete: function() {
+        $('.change_bus_course').prop('disabled', '');
+      }
+    });
+  }
+  $(document).ready(function() {
+    var options = {
+      format: 'yyyy-mm-dd',
+      todayBtn: "linked",
+      todayHighlight: true,
+      autoclose: true,
+      language:'jp'
+    };
+    $('input[name=change_date]').datepicker(options);
+    $('#btn-change-bus').click(function() {
+      var bus_use_flg = "";
+      if( $('input[name=bus_use_flg]').is(':checked') ) bus_use_flg = $('input[name=bus_use_flg]:checked').val();
+      var change_date = $('input[name=change_date]').val();
+      var change_bus = new Object();
+      change_bus.bus_use_flg = bus_use_flg;
+      change_bus.change_date = change_date;
+      var arr_route = [];
+      var check = 0;
+      $('.each_bus_course').find('.change_bus_route').each( function() {
+        check++;
+        if ( $(this).attr('data-bus') == 'bus_route' ) {
+          if ( $(this).attr('data-go-ret') == 'go' ) {
+            arr_route.push({
+              'bus_route_go_id_before' : $(this).attr('data-old-route'),
+              'bus_route_go_id_after' : $(this).val()
+            });
+          } 
+          if ( $(this).attr('data-go-ret') == 'ret' ) {
+            arr_route.push({
+              'bus_route_ret_id_before' : $(this).attr('data-old-route'),
+              'bus_route_ret_id_after' : $(this).val()
+            });
+          }
+        }
+        if ( check == 2 ) {
+          change_bus[$(this).attr('data-class-id')] = arr_route;
+          arr_route = [];
+          check = 0;
+        }
+      });
+
+      var data = {
+        change_bus : change_bus,
+        student_id : $('input[name=student_id]').val()
+      };
+      console.log( change_bus );
+      $.ajax({
+        url: 'https:' + "<?php echo base_url().'request/change_bus'; ?>",
+        data: data,
+        method: "POST",
+        dataType: "json",
+        success: function(result) {
+          if ( result['change_bus'] == 'success' ) window.location.href = "<?php echo base_url().'request/complete'; ?>";
+          else $('#modal-error').modal( 'show' );
+        }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+          console.log(errorThrown);
+        }
+      });
+    });
+  });
+</script>

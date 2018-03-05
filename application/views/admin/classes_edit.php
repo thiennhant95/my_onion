@@ -115,6 +115,7 @@
                   <label for="" class="col-sm-2 control-label">定員</label>
                   <div class="col-sm-5">
                       <input type="text" class="form-control" name="max_count" value="<?php echo $get_class['max_count']?>" required placeholder="">
+                      <strong style="display: none" id="amount"></strong>
                   </div>
               </div>
             <div class="form-group">

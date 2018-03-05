@@ -512,7 +512,7 @@ class FRONT_Controller extends CI_Controller {
      */
     protected function _setenv() {
         if (ENVIRONMENT == 'local') {
-            $this->output->enable_profiler(false);
+            $this->output->enable_profiler(true);
         }
         require_once( realpath( dirname(__FILE__) . "/../libraries/dBug.php"));
 
@@ -532,7 +532,7 @@ class FRONT_Controller extends CI_Controller {
      * @return 
      */
     protected function _doAuthUser() {
- return;
+// return;
         try {
             // 非ログインでもログインページにリダイレクトしないクラス
             $auth_exclude_class = array(

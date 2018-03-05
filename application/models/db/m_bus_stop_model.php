@@ -10,6 +10,12 @@ class M_bus_stop_model extends DB_Model {
         parent::__construct();
         $this->load->database();
     }
+
+    /**
+     * Get list bus stop
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     function get_list_bus_stop($limit, $start)
     {
         $sql = 'select * from m_bus_stop
@@ -20,6 +26,11 @@ class M_bus_stop_model extends DB_Model {
         return $query->result_array();
     }
 
+    /**
+     * Get list bus stop for export CSV
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     function export_csv($limit, $start)
     {
         $sql = 'select bus_stop_code,bus_stop_name from m_bus_stop

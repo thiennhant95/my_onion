@@ -463,6 +463,7 @@ define('BUS_COURSE','バスコース');
 define('NOTICE_OF_ABSENCE','休会届');
 define('NOTICE_OF_WITHDRAWAL','退会届');
 define('CHANGE_BASIC_INFORMATION','基本情報変更');
+
 define('EVENT_ENTRY','イベント・短期教');
 
 //config limit csv
@@ -483,3 +484,15 @@ define('END_TIME_C',1705);
 define('END_TIME_D',1805);
 define('END_TIME_E',1920);
 define('END_TIME_F',2100);
+
+//member CSV
+define('FILTER_ACTION', 0);
+define('CSV_ACTION', 1);
+define('CSV_ACTION_UN_GET_TOTAL', 2);
+
+//reschedule
+define('CLOSE_DATE', 1);
+define('TEST_DATE', 2);
+define('NOTRANSFER_DATE', 3);
+define('CONSTRUCTION_DATE', 4);
+define('FREE_DATE', 5);

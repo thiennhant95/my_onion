@@ -223,6 +223,10 @@
           success: function (data_result) {
             $('#table_change_course tbody').html('');
             $('#table_change_course tbody').html(data_result.html);
+            // e.preventDefault();
+            $('html,body').animate({
+                    scrollTop: $("#start_date_request_change").offset().top},
+                'slow');
             setTimeout(() => {
               list_class_new = [];
               list_class_new = get_list_class_selected();
@@ -266,13 +270,20 @@
       
       function get_list_class_selected() {
         var list_data = [];
+        
         $('#table_change_course tbody tr').find('td').each (function() {
+          console.log(1);
+          if($(this).hasClass('selected')){
+            console.log(2);
+          }
           if($(this).hasClass('selected')){
             var id_select = conver_id($(this).attr('id'));
+            console.log(id_select);
             list_data.push(id_select);
           }
         });
         return  list_data;
+        console.log(list_data);
       }
 
       function sub_list_class(id_selected, list_class) {
@@ -315,7 +326,8 @@
               date_change : date_change
             },
             success: function (data_result) {
-              window.location.href = "https:" + "<?php echo base_url('request/change_course_complete');?>"; 
+              // console.log(data_result);
+              // window.location.href = "https:" + "<?php echo base_url('request/change_course_complete');?>"; 
             }
           });
         }else{

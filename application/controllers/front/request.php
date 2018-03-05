@@ -10,6 +10,10 @@ class Request extends FRONT_Controller {
         $this->load->model('student_model');
         $this->load->model('db/m_student_model','m_student_model');
         $this->load->model('db/l_student_meta_model', 'l_student_meta_model');
+        $this->load->model('db/l_student_class_model', 'l_student_class_model');
+        $this->load->model('db/l_student_bus_route_model', 'l_student_bus_route_model');
+        $this->load->model('db/m_bus_route_model', 'm_bus_route_model');
+        $this->load->model('db/m_bus_stop_model', 'm_bus_stop_model');
     }
     /**
      * トップページ
@@ -111,10 +115,74 @@ class Request extends FRONT_Controller {
     public function change_bus() {
         if ($this->error_flg) return;
         try {
-            front_layout_view('request_change_bus', $this->viewVar);
+            $user_account = ( $this->session->userdata( 'user_account' ) ) ? ( $this->session->userdata( 'user_account' ) ) : '';
+            if ( $user_account == '' ) {
+                redirect('/auth');
+            } else {
+                $s_info = $this->student_model->get_student_data($user_account['id']);
+                $s_class = $this->m_bus_course_model->get_student_class_change_bus( $user_account['id'] );
+                foreach ( $s_class as $k => $v ) {
+                    $bus_go_ret = $this->m_bus_course_model->get_student_bus_route_change_bus( $user_account['id'], $v['class_id'] );
+                    $s_bus_course_go = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_go_id'] );
+                    $s_bus_course_ret = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_ret_id'] );
+                    $s_class[$k]['bus_course_go'] = $s_bus_course_go[0];
+                    $s_class[$k]['bus_course_ret'] = $s_bus_course_ret[0];
+                    $s_class[$k]['bus_course_go']['bus_route_go_id'] = $bus_go_ret[0]['bus_route_go_id'];
+                    $s_class[$k]['bus_course_ret']['bus_route_ret_id'] = $bus_go_ret[0]['bus_route_ret_id'];
+                    $list_bus_course = $this->m_bus_course_model->get_bus_course_by_class_id( $v['class_id'] );
+                    $s_class[$k]['list_bus_course'] = $list_bus_course;
+                    foreach ( $list_bus_course as $k1 => $v1 ) {
+                        if ( $k1 == 0 ) $s_class[$k]['list_route_go'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $v1['id'] );
+                        if ( $k1 == 1 ) $s_class[$k]['list_route_ret'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $v1['id'] );
+                    }
+                }
+                if ( isset( $_POST['bus_course_id'] ) ) {
+                    $html_change_bus_course = $this->create_html_change_bus_course( $_POST['bus_course_id'] );
+                    die( json_encode( $html_change_bus_course ) );
+                }
+                // update l_student_request
+                if ( isset( $_POST['student_id'] ) ) {
+                    $check_bus = $this->m_bus_course_model->check_bus_exists( $_POST['student_id'], 'bus_change_eternal' );
+                    if ( count( $check_bus ) == 0 ) {
+                        $this->l_student_request_model->insert( 
+                            array(
+                                'student_id' => $_POST['student_id'],
+                                'type' => 'bus_change_eternal',
+                                'contents' => json_encode( $_POST['change_bus'] )
+                            )
+                        );
+                        $result['change_bus'] = 'success';
+                        die( json_encode( $result ) );
+                    } else {
+                        $update_change_bus = $this->m_bus_course_model->update_bus_course_exists( $_POST['student_id'], 'bus_change_eternal', json_encode( $_POST['change_bus'] ) );
+                        if ( $update_change_bus == TRUE ) $result['change_bus'] = 'success';
+                        else $result['change_bus'] = 'fail';
+                        die( json_encode( $result ) );
+                    }
+                }
+                $data = array();
+                $data['s_info'] = $s_info;
+                $data['s_class'] = $s_class;
+                $this->viewVar = $data;
+                front_layout_view('request_change_bus', $this->viewVar);
+            }
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
+    }
+
+    public function create_html_change_bus_course( $bus_course_id ) {
+        $bus_route = $this->m_bus_route_model->select_by_id( $bus_course_id, 'bus_course_id', 'm_bus_route' );
+        $bus_stop = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
+        $html_change_bus_course = '';
+        foreach ( $bus_route as $k => $v ) {
+            $html_change_bus_course .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
+                foreach ( $bus_stop as $k1 => $v1 ) {
+                    if ( $v1['id'] == $v['bus_stop_id'] ) $html_change_bus_course .= $v1['bus_stop_name'];
+                }
+            $html_change_bus_course .= '</option>';
+        }
+        return $html_change_bus_course;
     }
 
     /**
@@ -226,7 +294,6 @@ class Request extends FRONT_Controller {
 
             $user_session = $this->session->userdata('user_account');
             $id_user = $user_session['id'];
-            $id_change_course =  $this->input->post('id_course');
             $course_id_old = $this->input->post('id_course_old');
             $course_id_new =  $this->input->post('id_course_new');
             $list_class_old = $this->input->post('list_class_old');
@@ -287,10 +354,12 @@ class Request extends FRONT_Controller {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
+
     public function save_request_leave()
     {
         //$this->accountVar
-        $idMember = 1;
+        $user_session = $this->session->userdata('user_account');
+        $id_user = $user_session['id'];
         if(isset($_POST['start_date'])&&$_POST['start_date']!=''&&isset($_POST['end_date'])&&$_POST['end_date']!='')
         {
             
@@ -298,7 +367,7 @@ class Request extends FRONT_Controller {
             $end_date = date_format(date_create($_POST['end_date'].'-1'),'Y-m-d');
             $note = isset($_POST['note'])?$_POST['note']:'';
             $content = json_encode(['start_date'=>$start_date,'end_date'=>$end_date,'reason'=>$note]);
-            $param = array('student_id'=>$idMember,'type'=>RECESS,'contents'=>$content,'message'=>$note);
+            $param = array('student_id'=>$id_user,'type'=>RECESS,'contents'=>$content,'message'=>$note);
             $this->load->model('db/l_student_request_model');
             $this->l_student_request_model->insert($param);
         }
@@ -323,7 +392,8 @@ class Request extends FRONT_Controller {
     public function save_request_withdrawal()
     {
         //$this->accountVar
-        $idMember = 1;
+        $user_session = $this->session->userdata('user_account');
+        $id_user = $user_session['id'];
         if(isset($_POST['quit_date'])&&$_POST['quit_date']!='')
         {
             $quit_date = date_format(date_create($_POST['quit_date']),'Y-m-d');
@@ -337,7 +407,7 @@ class Request extends FRONT_Controller {
                 }
             }
             $content = json_encode(['quit_date'=>$quit_date,'reason'=>$reason,'memo'=>$note]);
-            $param = array('student_id'=>$idMember,'type'=>QUIT,'contents'=>$content,'message'=>$note);
+            $param = array('student_id'=>$id_user,'type'=>QUIT,'contents'=>$content,'message'=>$note);
             $this->load->model('db/l_student_request_model');
             $this->l_student_request_model->insert($param);
         }
@@ -364,16 +434,17 @@ class Request extends FRONT_Controller {
     public function save_request_event()
     {
         //$this->accountVar
-        $idMember = 1;
+        $user_session = $this->session->userdata('user_account');
+        $id_user = $user_session['id'];
         if(isset($_POST['event'])&&$_POST['event']!='')
         {
             $note = isset($_POST['note'])?$_POST['note']:'';
             $course_id = $_POST['event'];
-            $param = array('student_id'=>$idMember,'course_id'=>$course_id,'contents'=>$note);
+            $param = array('student_id'=>$id_user,'course_id'=>$course_id,'contents'=>$note);
             $this->load->model('db/l_student_event_model');
             $this->l_student_event_model->insert($param);
             $content = json_encode(['course_id'=>$course_id,'memo'=>$note]);
-            $param_2 = array('student_id'=>$idMember,'type'=>EVENT_TRY,'contents'=>$content,'message'=>$note);
+            $param_2 = array('student_id'=>$id_user,'type'=>EVENT_TRY,'contents'=>$content,'message'=>$note);
             $this->load->model('db/l_student_request_model');
             $this->l_student_request_model->insert($param_2);
              redirect('/request/complete');

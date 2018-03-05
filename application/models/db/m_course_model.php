@@ -79,11 +79,11 @@ class M_course_model extends DB_Model {
             return FALSE;
         }
     }
-        public function getData_Course_valid(){   
+    public function getData_Course_valid(){   
         $query ="SELECT a.id,a.course_code,a.course_name,a.start_date,a.end_date,a.regist_start_date,
-                         a.regist_end_date,a.type,a.join_condition
-                  FROM m_course  a
-                  WHERE a.end_date > NOW() ";
+                        a.regist_end_date,a.type,a.join_condition
+                  FROM  m_course  a
+                  WHERE  a.regist_end_date >= DATE_FORMAT(NOW(), '%Y%m%d') ";
         $res = $this->db->query($query);
         if($res === FALSE )
         {
@@ -116,7 +116,7 @@ class M_course_model extends DB_Model {
 
         $query =" SELECT a.id as course_id ,
            b.id as class_id,b.base_class_sign,b.class_code,b.class_name,b.`week`, b.max_count
-                FROM m_course a LEFT JOIN m_class b ON a.id=b.course_id 
+                FROM m_course a JOIN m_class b ON a.id=b.course_id 
                 WHERE a.id='".$id."'";
         $res = $this->db->query($query);
         if($res === FALSE )
@@ -129,6 +129,11 @@ class M_course_model extends DB_Model {
         return $result;
     }
 
+    /**
+     * Get list course
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     function get_list_course($limit, $start)
     {
         $sql = 'select * from m_course
@@ -139,6 +144,11 @@ class M_course_model extends DB_Model {
         return $query->result_array();
     }
 
+    /**
+     * Get list course for export CSV
+     * @access public
+     * @author Tran Thien Nhan - VietVang JSC
+     */
     function export_csv($limit, $start)
     {
         global $data_course;

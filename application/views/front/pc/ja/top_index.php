@@ -32,7 +32,7 @@
       </section>
 
       <section>
-        <?php if(isset($message_nofication)){?>
+        <?php if(!empty($message_nofication)){?>
         <div class="block-30" role="alert">
           <h2 class="h3 text-primary">お知らせ</h2>
           <p class="content03-text-2 mb-xs-30">

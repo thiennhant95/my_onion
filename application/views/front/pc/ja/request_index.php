@@ -67,7 +67,7 @@
                   <?php if(!empty($list_request)){?>
                     <?php foreach ($list_request as $key => $value) {?>
   
-                      <tr class ="<?php if($value['status'] == 1){ echo "complete";} if($key>9){ echo "hidden_tr";}?>">
+                      <tr class ="<?php if($value['status'] == 1){ echo "complete ";} if($key > 9){ echo "hidden_tr";}?>">
                         <th><?php echo $value['student_id'];?></th>
                         <td><?php echo $value['create_date'];?></td>
                         <?php 

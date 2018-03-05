@@ -254,7 +254,7 @@ class Course extends ADMIN_Controller {
     public function export() {
         if ($this->error_flg) return;
         try {
-            $limit=1000;
+            $limit=LIMIT_CSV;
             $count_course=count($this->course->get_list());
             $count_num=ceil($count_course/$limit);
             for ($i=0;$i<$count_num; $i++)

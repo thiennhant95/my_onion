@@ -17,3 +17,10 @@
      outline: none;
      border: 1px solid #fff;
 }
+.fc-highlight{
+     background-color:#00bcd4;
+}
+.fc-day-header{
+     background: #333;
+     color: #fff;
+}

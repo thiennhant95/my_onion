@@ -93,7 +93,7 @@
                   <input type="radio" name="sex" value="1" <?php if($meta['sex']=='1') echo "checked" ?> > 女性
                 </label>
               </div>
-            </div>
+            </div> 
             <div class="form-group">
               <label for="" class="col-xs-12 col-sm-2 control-label">郵便番号</label>
               <div class="col-xs-3 col-sm-2 col-md-1 postal-code-line" id="first_postalcode">

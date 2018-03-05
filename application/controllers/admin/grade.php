@@ -146,7 +146,7 @@ class Grade extends ADMIN_Controller {
     public function export() {
         if ($this->error_flg) return;
         try {
-            $limit=1000;
+            $limit=LIMIT_CSV;
             $count_grade=count($this->grade->get_list());
             $count_num=ceil($count_grade/$limit);
             for ($i=0;$i<$count_num; $i++)

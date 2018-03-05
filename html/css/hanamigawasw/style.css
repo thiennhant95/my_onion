@@ -3123,7 +3123,10 @@ cursor: pointer;
 #fa-calendar-start,#fa-calendar-end,#fa-calendar-quick,input#start_date_request_leave,input#end_date_request_leave,input#quit_date_request_with_dra:hover{
   cursor: pointer;
 }
-
+body { padding-right: 0 !important }
+#waring-msg{
+  display: none;
+}
 /* loading search*/
 @import url(https://fonts.googleapis.com/css?family=Racing+Sans+One);
 .bg_load {
@@ -3234,3 +3237,4 @@ cursor: pointer;
 @keyframes loading-7 {
   100% { opacity: 0.3; }
 }
+

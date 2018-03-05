@@ -340,7 +340,7 @@
                                 <?php
                                 foreach ($config['day'] as $row_day):
                                     ?>
-                                    <option value="<?php echo $row_day?>" <?php if ($row_day==date('d')) echo "selected"?>><?php echo $row_day?>日</option>
+                                    <option value="<?php echo $row_day?>" <?php if ($row_day==date('d')+1) echo "selected"?>><?php echo $row_day?>日</option>
                                 <?php
                                 endforeach;
                                 ?>

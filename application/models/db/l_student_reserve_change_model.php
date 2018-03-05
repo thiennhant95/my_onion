@@ -63,6 +63,10 @@ class L_student_reserve_change_model extends DB_Model {
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
         $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_class.class_id');
+        $this->db->where('l_student_reserve_change.delete_flg','0');
+        $this->db->where('l_student_course.delete_flg','0');
+        $this->db->where('l_student_class.delete_flg','0');
+        $this->db->where('m_class.delete_flg','0');
         //search course
         $course=$this->input->post('course');
         if ($this->input->post('course')!=NULL)
@@ -209,6 +213,10 @@ class L_student_reserve_change_model extends DB_Model {
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
         $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_class.class_id');
+        $this->db->where('l_student_reserve_change.delete_flg','0');
+        $this->db->where('l_student_course.delete_flg','0');
+        $this->db->where('l_student_class.delete_flg','0');
+        $this->db->where('m_class.delete_flg','0');
         //search course
         $course=$this->input->post('course');
         if ($this->input->post('course')!=NULL)

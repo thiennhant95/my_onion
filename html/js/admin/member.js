@@ -299,14 +299,14 @@ $(document).ready(function() {
             return false;
         },
       })
-    $('input').on('keyup blur', function () {
+    $('#form_edit_member input').on('keyup blur', function () {
       if ($('#form_edit_member').valid()) {
         $('input[name=save]').prop('disabled', false);
       } else {
         $('input[name=save]').prop('disabled', 'disabled');
       }
     });
-    $('input[name=save]').on('click', function(){
+    $('#form_edit_member input[name=save]').on('click', function(){
       if($('form#form_edit_member').valid())
       {
         $meta = {};

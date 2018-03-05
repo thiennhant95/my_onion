@@ -218,6 +218,7 @@ class Calender extends ADMIN_Controller {
             $data['list_data'] = [];
             $month_selected = $this->input->post('month_post');
             $year_selected = $this->input->post('year_post');
+            
             $last_date_of_month =  mktime(0, 0, 0, $month_selected + 1, 0, $year_selected);
             $last_date_formart = date("Y-m-d H:i:s", $last_date_of_month);
             $first_date_of_month = date("Y-m-d H:i:s", strtotime($year_selected."-".$month_selected.'-1'));

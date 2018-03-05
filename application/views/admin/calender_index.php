@@ -117,7 +117,7 @@
       var initialLocaleCode = 'ja',
           date = new Date(),
           d = date.getDate(),
-          m = date.getMonth(),
+          m = date.getMonth() + 1,
           y = date.getFullYear(),
           start_date_selected = '',
           end_date_selected = '',
@@ -125,7 +125,7 @@
           year_current_select = '',
           all_day_select = '',
           last_month = (m - 1) <= 0 ? 'Last Year' : (m - 1),
-          next_month = (m == 12) ? 'Next Year' : (m + 2),
+          next_month = (m == 12) ? 'Next Year' : (m + 1),
           list_monday = [];
 
       var MONDAY = "<?php echo EVERY_MONDAY ?>",
@@ -139,12 +139,13 @@
           DATE_CLOSED = "<?php echo DATE_CLOSED ?>";
 
       var calendar = $('#calendar').fullCalendar({
-        editable: true,
+        editable: false,
         locale: initialLocaleCode,
+        unselectAuto: false,
         displayEventTime: false,
         customButtons: {
           pre_event: {
-            text: '< ' + last_month,
+            text: '< ' + last_month + '月',
             click: function() {
               $('#calendar').fullCalendar('prev');
               get_prev_month();
@@ -180,7 +181,6 @@
           end_date_selected = fmt(end);
           all_day_select = allDay;
         },
-        editable: true,
         eventDrop: function (event, delta) {
           var start = fmt(event.start);
           var end = fmt(event.end);

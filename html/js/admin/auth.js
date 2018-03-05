@@ -65,7 +65,11 @@ $(document).ready(function(){
     })
   });
 
-
+  $(document).keypress(function (e) {
+    if (e.which == 13) {
+        $('#login_btn').trigger('click');
+    }
+  });
  
 
 })

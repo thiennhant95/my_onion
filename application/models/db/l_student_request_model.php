@@ -53,7 +53,6 @@ class L_student_request_model extends DB_Model {
         $data = $this->db->get()->result_array();
         return $data;
     }
-
     /**
      * Get list student request change
      * @access public

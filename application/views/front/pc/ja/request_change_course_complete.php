@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="block-30 text-center">
-        <a href="#0" class="btn btn-success btn-lg btn-long">
+        <a href="<?php echo base_url('/request/change_bus');?>" class="btn btn-success btn-lg btn-long">
           <i class="fa fa-angle-double-right" aria-hidden="true"></i>
           <span>バスも変更する</span>
         </a>

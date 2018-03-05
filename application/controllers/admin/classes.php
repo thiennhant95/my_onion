@@ -164,7 +164,7 @@ class Classes extends ADMIN_Controller {
     public function export() {
         if ($this->error_flg) return;
         try {
-            $limit=10;
+            $limit=LIMIT_CSV;
             $count_class=count($this->class->get_list());
             $count_num=ceil($count_class/$limit);
             for ($i=0;$i<$count_num; $i++)
@@ -243,10 +243,10 @@ class Classes extends ADMIN_Controller {
         if ($this->error_flg) return;
         try {
             $this->input->post('max_count');
-            $max_count_db=$this->class->number_of_pupils($course_id)[0]['count_total'];
+            $max_count_db=$this->class->number_of_pupils($course_id)[0]['count_total']?:ZERO;
             $max_course=$this->course->select_by_id($course_id)[0];
             $max_count=$this->input->post('max_count')+$max_count_db;
-            if ($max_count < $max_course['max_count'])
+            if ($max_count <= $max_course['max_count'])
             {
                 $total=$max_course['max_count']-$max_count_db;
                 echo json_encode(array('status'=>'0','total'=>$total));
@@ -255,7 +255,7 @@ class Classes extends ADMIN_Controller {
             else
             {
                 $total=$max_course['max_count']-$max_count_db;
-                echo json_encode(array('status'=>'1','total'=>$total));
+                echo json_encode(array('status'=>'1','total'=>$total,'max_count'=>$max_count_db));
                 die();
             }
         }

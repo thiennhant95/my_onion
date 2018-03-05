@@ -2,21 +2,21 @@
 <html lang="ja">
 
 <head>
-  <?php require_once("head.php"); ?>
+    <?php require_once("head.php"); ?>
 </head>
 
 <body>
-  <?php require_once("contents_header_admin.php"); ?>
+<?php require_once("contents_header_admin.php"); ?>
 
-  <main class="content content-dark">
+<main class="content content-dark">
     <div class="container">
 
-      <h1 class="lead-heading h3">
-        <span>マスター設定</span>
-        <a href="<?php echo site_url('admin/classes/export')?>" class="btn btn-default btn-sm pull-right">
-          <strong>CSV出力</strong>
-        </a>
-      </h1>
+        <h1 class="lead-heading h3">
+            <span>マスター設定</span>
+            <a href="<?php echo site_url('admin/classes/export')?>" class="btn btn-default btn-sm pull-right">
+                <strong>CSV出力</strong>
+            </a>
+        </h1>
 
         <nav class="master-nav">
             <ul class="nav nav-pills" role="group">
@@ -56,28 +56,28 @@
             </ul>
         </nav>
 
-      <hr>
+        <hr>
 
-      <div class="panel panel-default">
-        <div class="table-responsive">
-          <table class="table table-bordered table-hover table-lg table-center">
+        <div class="panel panel-default">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-lg table-center">
 
-            <thead>
-              <tr>
-                <th>クラスレコード</th>
-                <th>クラス名</th>
-                <th>級管理</th>
-                <th>授業曜日</th>
-                <th>定員</th>
-                <th>バス利用</th>
-                <th>有効・無効</th>
-                <th></th>
-              </tr>
-            </thead>
+                    <thead>
+                    <tr>
+                        <th>クラスレコード</th>
+                        <th>クラス名</th>
+                        <th>級管理</th>
+                        <th>授業曜日</th>
+                        <th>定員</th>
+                        <th>バス利用</th>
+                        <th>有効・無効</th>
+                        <th></th>
+                    </tr>
+                    </thead>
 
-            <tbody>
-            <?php
-            foreach ($class_list as $row_class):
+                    <tbody>
+                    <?php
+                    foreach ($class_list as $row_class):
                         ?>
                         <tr <?php if($row_class['invalid_flg']==DATA_ON) echo 'class="disabled"' ?>>
                             <td><?php echo $row_class['class_code']?></td>
@@ -119,43 +119,42 @@
                                 ?></td>
                             <td><?php if($row_class['invalid_flg']==DATA_ON)
                                 {
-                                echo "無効";
+                                    echo "無効";
                                 }
                                 else
                                 {
-                                echo "";
+                                    echo "";
                                 }
                                 ?></td>
                             <td>
                                 <a href="<?php echo site_url('admin/classes/edit/'.$row_class['id'])?>" class="btn btn-outline-blue btn-block btn-sm">編集</a>
                             </td>
                         </tr>
-                        <?php
-            endforeach;
-            ?>
-            </tbody>
-          </table>
+                    <?php
+                    endforeach;
+                    ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
         <div class="row">
             <div class="block-15 text-center">
-<!--            <div class="col-md-12 text-center">-->
+                <!--            <div class="col-md-12 text-center">-->
                 <?php echo $pagination; ?>
             </div>
         </div>
-      <div class="block-15 text-center row">
-        <div class="col-sm-8 col-sm-offset-2">
-          <a class="btn btn-info btn-block" href="<?php echo site_url('admin/classes/create') ?>">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            <span>新規登録</span>
-          </a>
+        <div class="block-15 text-center row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <a class="btn btn-info btn-block" href="<?php echo site_url('admin/classes/create') ?>">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <span>新規登録</span>
+                </a>
+            </div>
         </div>
-      </div>
     </div>
 
-  </main>
+</main>
 
-  <?php require_once("contents_footer.php"); ?>
+<?php require_once("contents_footer.php"); ?>
 </body>
-
 </html>
