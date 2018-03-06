@@ -151,7 +151,7 @@
                     <input type="radio" name="number" value="<?php echo DATA_OFF?>" <?php if ($get_course['practice_type']==DATA_OFF) echo "checked"?>> 月
                   </label>
                   <select class="form-control mr-1 ml-1" name="number_practice_select" id="number_practice_select">
-                      <option value="0" disabled <?php if ($get_course['practice_max']==DATA_OFF) echo "selected"?>>選択する</option>
+<!--                      <option value="0" disabled --><?php //if ($get_course['practice_max']==DATA_OFF) echo "selected"?><!-->選択する</option>-->
                       <option value="<?php echo ONE?>" <?php if ($get_course['practice_max']==ONE) echo 'selected'?>><?php echo ONE?></option>
                     <option value="<?php echo TWO?>" <?php if ($get_course['practice_max']==TWO) echo 'selected'?>><?php echo TWO?></option>
                     <option value="<?php echo THREE?>"<?php if ($get_course['practice_max']==THREE) echo 'selected'?>><?php echo THREE?></option>

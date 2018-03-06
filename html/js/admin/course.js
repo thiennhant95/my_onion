@@ -253,6 +253,13 @@ $(document).ready(function() {
         $("#year_end option[value=2199]").remove();
         $("#month_end option[value=12]").remove();
         $("#day_end option[value=31]").remove();
+        var d = new Date();
+        $("#year_start").val(d.getFullYear());
+        $("#month_start").val(d.getMonth()+1);
+        $("#day_start").val(d.getDate());
+        $("#year_end").val(d.getFullYear());
+        $("#month_end").val(d.getMonth()+1);
+        $("#day_end").val(d.getDate()+1);
     })
 });
 
@@ -264,6 +271,13 @@ $(document).ready(function() {
         $("#year_end option[value=2199]").remove();
         $("#month_end option[value=12]").remove();
         $("#day_end option[value=31]").remove();
+        var d = new Date();
+        $("#year_start").val(d.getFullYear());
+        $("#month_start").val(d.getMonth()+1);
+        $("#day_start").val(d.getDate());
+        $("#year_end").val(d.getFullYear());
+        $("#month_end").val(d.getMonth()+1);
+        $("#day_end").val(d.getDate()+1);
     })
 });
 
@@ -298,7 +312,7 @@ $(document).ready(function() {
                                 $('#myModal').fadeToggle(300, function () {
                                     $('#myModal').modal('hide');
                                 });
-                            }, 2000);
+                            }, 10000);
                         }
                     }
                 });
@@ -337,7 +351,7 @@ $(document).ready(function() {
                             $('#myModal').fadeToggle(300, function () {
                                 $('#myModal').modal('hide');
                             });
-                        }, 2000);
+                        }, 10000);
                     }
                 }
             });
