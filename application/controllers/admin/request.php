@@ -252,7 +252,6 @@ class Request extends ADMIN_Controller {
             $data['get_request']['name']=$this->student->get_student_data($data['get_request']['student_id'])['meta']['name'];
             $contents=json_decode($data['get_request']['contents'],true);
 
-
             //get change course
             if ($data['get_request']['type']==COURSE_CHANGE)
             {
@@ -265,10 +264,11 @@ class Request extends ADMIN_Controller {
                 {
                     foreach ($list as $row_class)
                     {
-                        if ($row_class['id']==$row_class_old)
+                        if ($row_class['id']==preg_split('/\_/',$row_class_old)[1])
                         {
                             $class_old[]=$row_class['class_code'];
                             $class_old_id[]=$row_class['id'];
+                            $week_old[]=preg_split('/\_/',$row_class_old)[0];
                         }
                     }
                 }
@@ -277,18 +277,19 @@ class Request extends ADMIN_Controller {
                 {
                     foreach ($list as $row_class)
                     {
-                        if ($row_class['id']==$row_class_new)
+                        if ($row_class['id']==preg_split('/\_/',$row_class_new)[1])
                         {
                             $class_new[]=$row_class['class_code'];
                             $class_new_id[]=$row_class['id'];
+                            $week_new[]=preg_split('/\_/',$row_class_new)[0];
                         }
                     }
                 }
-
-                $data['get_request']['class_old']=$class_old;
-                $data['get_request']['class_new']=$class_new;
-                $data['get_request']['class_old_id']=$class_old_id;
-                $data['get_request']['class_new_id']=$class_new_id;
+                $data['get_request']['date_change']=$contents['date_change'];
+                $data['get_request']['class_old']=array_unique($class_old);
+                $data['get_request']['class_new']=array_unique($class_new);
+                $data['get_request']['class_old_id']=$contents['list_class_old'];
+                $data['get_request']['class_new_id']=$contents['list_class_new'];
 
                 //get change bus
                 $get_bus_course = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => BUS_CHANGE_ETERNAL));
@@ -299,9 +300,11 @@ class Request extends ADMIN_Controller {
                     }
                     $get_change_course = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => COURSE_CHANGE));
                     $data['get_request']['bus_use_flg']=$contents['bus_use_flg'];
-                    $data['change_date']['change_date']=$contents['change_date'];
+                    $data['get_request']['change_date_bus']=$contents['change_date'];
+                    $data['get_request']['first_time_change_bus']=$contents['first_time_change_bus'];
                     unset($contents['bus_use_flg']);
                     unset($contents['change_date']);
+                    unset($contents['first_time_change_bus']);
 
                     //data change bus
                     foreach ($contents as $key_contents => $row_contents)
@@ -381,9 +384,12 @@ class Request extends ADMIN_Controller {
             {
                 $get_change_course = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => COURSE_CHANGE));
                     $data['get_request']['bus_use_flg']=$contents['bus_use_flg'];
-                    $data['change_date']['change_date']=$contents['change_date'];
+                    $data['get_request']['change_date_bus']=$contents['change_date'];
+                    $data['get_request']['first_time_change_bus_route']=$contents['first_time_change_bus'];
                     unset($contents['bus_use_flg']);
                     unset($contents['change_date']);
+                    unset($contents['first_time_change_bus']);
+
                     foreach ($contents as $key_contents => $row_contents)
                     {
                         $class[]=$this->class->select_by_id($key_contents)['0'];
@@ -515,44 +521,33 @@ class Request extends ADMIN_Controller {
                             $postvalue = unserialize(base64_decode($_POST['body_content']));
                             foreach ($postvalue as $key_content =>$row_content)
                             {
-                                $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['0']['id'],'bus_route_ret_id'=>$row_content['2']['id']),array('bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id']));
+                                $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['0']['id'],'bus_route_ret_id'=>$row_content['2']['id']),array('end_date'=>$_POST['date_change_bus']));
+                                $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
                             }
                         }
                     }
 
                     //update course
                     if (isset($_POST['type_course'])) {
+
                             //update student course
                             $this->student_course->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('course_old')), array('course_id' => $this->input->post('course_new')));
 
-                            // delete old class if new class < old class (delete_flg=1)
-                            if (count($_POST['class_new']) < count($_POST['class_old'])) {
-                                $class_old = array_slice($_POST['class_old'], count($_POST['class_new']));
-                                foreach ($class_old as $old) {
-                                    $this->student_class->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'class_id' => $old), array('delete_flg' => DATA_ON));
-                                }
+                            //update end date student class
+                            foreach (unserialize(base64_decode($_POST['class_old'])) as $class_old) {
+                                $this->student_class->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'class_id' => preg_split ("/\_/", $class_old)[1],'week_num'=>preg_split ("/\_/", $class_old)[0]), array('end_date'=>$_POST['date_change'].'-01'));
                             }
 
-                            //update student class
-                            foreach ($_POST['class_old'] as $old_key => $old) {
-                                foreach ($_POST['class_new'] as $new_key => $new) {
-                                    if ($old_key == $new_key) {
-                                        $this->student_class->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'class_id' => $old), array('class_id' => $new, 'student_course_id' => $this->input->post('course_new')));
-                                    }
-                                }
-                            }
-
-                            // add student new class if new class > old class
-                            if (count($_POST['class_new']) > count($_POST['class_old'])) {
-                                $class_new = array_slice($_POST['class_new'], count($_POST['class_old']));
-                                foreach ($class_new as $new) {
+                            // add student new class
+                                foreach (unserialize(base64_decode($_POST['class_new'])) as $week=>$class_new) {
                                     $dataInsert = array(
                                         'student_course_id' => $this->input->post('course_new'),
                                         'student_id' => $data['get_request']['student_id'],
-                                        'class_id' => $new
+                                        'class_id' => preg_split ("/\_/", $class_new)[1],
+                                        'start_date'=>$_POST['date_change'].'-01',
+                                        'week_num'=>preg_split ("/\_/", $class_new)[0]
                                     );
                                     $this->student_class->insert($dataInsert);
-                                }
                             }
                         }
 
@@ -596,7 +591,8 @@ class Request extends ADMIN_Controller {
                                 $postvalue = unserialize(base64_decode($_POST['body_content']));
                                 foreach ($postvalue as $key_content =>$row_content)
                                 {
-                                    $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['0']['id'],'bus_route_ret_id'=>$row_content['2']['id']),array('bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id']));
+                                    $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['0']['id'],'bus_route_ret_id'=>$row_content['2']['id']),array('end_date'=>$_POST['date_change_bus']));
+                                    $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['2']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
                                 }
                             }
                         }

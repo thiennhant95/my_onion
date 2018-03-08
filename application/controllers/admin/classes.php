@@ -245,6 +245,11 @@ class Classes extends ADMIN_Controller {
             $this->input->post('max_count');
             $max_count_db=$this->class->number_of_pupils($course_id)[0]['count_total']?:ZERO;
             $max_course=$this->course->select_by_id($course_id)[0];
+            if(isset($_POST['class_id']))
+            {
+                $max_class=$this->class->select_by_id($_POST['class_id'])[0]['max_count'];
+                $max_count_db=$max_count_db-$max_class;
+            }
             $max_count=$this->input->post('max_count')+$max_count_db;
             if ($max_count <= $max_course['max_count'])
             {

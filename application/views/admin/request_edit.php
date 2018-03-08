@@ -161,20 +161,26 @@
                           </h3>
                           <input type="hidden" name="course_old" value="<?php echo $get_request['old_course_id']?>">
                           <input type="hidden" name="course_new" value="<?php echo $get_request['new_course_id']?>">
+                          <input type="hidden" name="date_change" value="<?php echo $get_request['date_change']?>">
                           <?php
-                          foreach ($get_request['class_new_id'] as $n) {
-                              ?>
-                              <input type="hidden" name="class_new[]" value="<?php echo $n?>">
-                              <?php
-                          }
-
+                          $class_old = base64_encode(serialize($get_request['class_old_id']));
+                          $class_new = base64_encode(serialize($get_request['class_new_id']));
+//                          foreach ($get_request['class_new_id'] as $n) {
+//                              ?>
+<!--                              <input type="hidden" name="class_new[]" value="--><?php //echo $n?><!--">-->
+<!--                              --><?php
+//                          }
+                          ?>
+                          <input type="hidden" name="class_old" value="<?php echo $class_old?>">
+                          <input type="hidden" name="class_new" value="<?php echo $class_new?>">
+                          <?php
                           //
-                          foreach ($get_request['class_old_id']as $l)
-                          {
-                              ?>
-                              <input type="hidden" name="class_old[]" value="<?php echo $l?>">
-                              <?php
-                          }
+//                          foreach ($get_request['class_old_id']as $l)
+//                          {
+//                              ?>
+<!--                              <input type="hidden" name="class_old[]" value="--><?php //echo $l?><!--">-->
+<!--                              --><?php
+//                          }
                               ?>
                           <input type="hidden" name="type_course" value="<?php echo COURSE_CHANGE?>">
                           <?php
@@ -287,6 +293,7 @@
                                   ?>
                                   <input type="hidden" name="use_bus" value="<?php echo ONE ?>">
                                   <input type="hidden" name="body_content" value="<?php echo $postvalue?>">
+                                  <input type="hidden" name="date_change_bus" value="<?php echo $get_request['change_date_bus']?>">
                                   <?php
                                       foreach ($get_request['content'] as $key_content=> $row_content) {
                                           echo "<h3><strong>"."クラス：".$key_content."</strong></h3>";
@@ -379,7 +386,7 @@
             </section>
         </div>
       </div>
-        <?php if (!isset($get_bus_course)) {?>
+        <?php if (isset($get_request['first_time_change_bus'])==0) {?>
         <div class="block-15 text-center row">
         <div class="col-sm-4 col-sm-offset-2">
           <p>
@@ -404,7 +411,7 @@
   </main>
 
   <?php
-    if (isset($get_bus_course)) {
+    if (isset($get_bus_course) && $get_request['first_time_change_bus']==1) {
         ?>
         <main class="content content-dark">
             <div class="container">
@@ -526,6 +533,7 @@
                                                 $postvalue = base64_encode(serialize($get_request['body_content']));
                                                 ?>
                                                 <input type="hidden" name="use_bus" value="<?php echo ONE ?>">
+                                                <input type="hidden" name="date_change_bus" value="<?php echo $get_request['change_date_bus']?>">
                                                 <input type="hidden" name="body_content" value="<?php echo $postvalue?>">
                                                 <?php
                                                 foreach ($get_request['content'] as $key_content=> $row_content) {
