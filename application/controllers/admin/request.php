@@ -530,12 +530,13 @@ class Request extends ADMIN_Controller {
                     //update course
                     if (isset($_POST['type_course'])) {
 
-                            //update student course
-                            $this->student_course->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('course_old')), array('course_id' => $this->input->post('course_new')));
+                        //update end date student course and insert record l_student_course
+                        $this->student_course->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('course_old')), array('end_date' => $this->input->post('date_change_bus').'-01'));
+                        $this->student_course->insert(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('course_new'),'start_date'=>$this->input->post('date_change').'-01'));
 
-                            //update end date student class
+                        //update end date student class
                             foreach (unserialize(base64_decode($_POST['class_old'])) as $class_old) {
-                                $this->student_class->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'class_id' => preg_split ("/\_/", $class_old)[1],'week_num'=>preg_split ("/\_/", $class_old)[0]), array('end_date'=>$_POST['date_change'].'-01'));
+                                $this->student_class->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'class_id' => preg_split ("/\_/", $class_old)[1],'week_num'=>preg_split ("/\_/", $class_old)[0]), array('end_date'=>$_POST['date_change_bus'].'-01'));
                             }
 
                             // add student new class
@@ -544,7 +545,7 @@ class Request extends ADMIN_Controller {
                                         'student_course_id' => $this->input->post('course_new'),
                                         'student_id' => $data['get_request']['student_id'],
                                         'class_id' => preg_split ("/\_/", $class_new)[1],
-                                        'start_date'=>$_POST['date_change'].'-01',
+                                        'start_date'=>$_POST['date_change_bus'].'-01',
                                         'week_num'=>preg_split ("/\_/", $class_new)[0]
                                     );
                                     $this->student_class->insert($dataInsert);
@@ -592,7 +593,7 @@ class Request extends ADMIN_Controller {
                                 foreach ($postvalue as $key_content =>$row_content)
                                 {
                                     $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['0']['id'],'bus_route_ret_id'=>$row_content['2']['id']),array('end_date'=>$_POST['date_change_bus']));
-                                    $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['2']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
+                                    $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
                                 }
                             }
                         }
