@@ -85,19 +85,21 @@ class Entry extends ADMIN_Controller {
             } else if ( count( $check_student ) == 0 ) {
                 redirect('/admin/entry');
             } else {
-                $student_info = $this->student_data->get_student_data_detail( $id );
+                $s_info = $this->student_data->get_student_data_detail( $id );
                 $course_valid = $this->m_course_model->getData_Course_valid( $id );
                 $data = array();
                 $data['course_valid'] = $course_valid;
-                $data['html'] = $this->create_html( $student_info['course']['nearest']['course_id'] );
+                $data['html'] = $this->create_html( $s_info['course']['nearest'][0]['course_id'] );
                 $data['school_grades'] = $this->configVar['school_grades'];
-                $data['s_info'] = $student_info;
+                $data['s_info'] = $s_info;
                 if ( isset( $_POST['change_course'] ) && isset( $_POST['course_id'] ) ) {
-                    $html = $this->create_html( $_POST['course_id'] );
+                    $html['html'] = $this->create_html( $_POST['course_id'] );
+                    $course_change = $this->student_data->select_by_id( $_POST['course_id'], 'id', 'm_course' );
+                    $html['practice_max'] = $course_change[0]['practice_max'];
                     die( json_encode( $html ) );
                 }
                 if ( isset( $_POST['data_class'] ) && isset( $_POST['class_id'] ) && isset( $_POST['course_id'] ) ) {
-                    $html_bus_default = $this->create_html_bus_default( $_POST['data_class'], $_POST['class_id'], $student_info, $_POST['course_id'] );
+                    $html_bus_default = $this->create_html_bus_default( $_POST['data_class'], $_POST['class_id'], $s_info, $_POST['course_id'] );
                     die( json_encode( $html_bus_default ) );
                 }
                 if ( isset( $_POST['bus_course_id'] ) ) {
@@ -135,7 +137,9 @@ class Entry extends ADMIN_Controller {
                         'enquete' => isset( $_POST['enquete'] ) ? json_encode( $_POST['enquete'] ) : '',
                         'memo_to_coach' => isset( $_POST['memo_to_coach'] ) ? $_POST['memo_to_coach'] : '',
                         'first_lesson_date' => isset( $_POST['first_lesson_date'] ) ? $_POST['first_lesson_date'] : '',
-                        'memo_special' => isset( $_POST['memo_special'] ) ? $_POST['memo_special'] : ''
+                        'memo_special' => isset( $_POST['memo_special'] ) ? $_POST['memo_special'] : '',
+                        'family' => isset( $_POST['family'] ) ? $_POST['family'] : '',
+                        'relationship' => isset( $_POST['relationship'] ) ? $_POST['relationship'] : ''
                     );
                     // update l_student_meta
                     foreach ( $arr_update_meta as $k => $v ) {
@@ -151,7 +155,7 @@ class Entry extends ADMIN_Controller {
                         foreach ( $class_choose as $k => $v ) {
                             $current_class = explode( '_', $v );
                             $start_date = '';
-                            foreach ( $student_info['course']['all'] as $k1 => $v1 ) {
+                            foreach ( $s_info['course']['all'] as $k1 => $v1 ) {
                                 if ( $v1['id'] == $_POST['course_id'] ) $start_date = $v1['start_date'];
                             }
                             $this->l_student_class_model->insert( 
@@ -181,6 +185,7 @@ class Entry extends ADMIN_Controller {
                             );
                         }
                     }
+                    // $this->send_mail_entry_admin( $s_info['info']['email'], $password );
                     $data['update'] = 'success';
                     $data['temporary_pw'] = $password;
                     die( json_encode( $data ) );
@@ -191,6 +196,29 @@ class Entry extends ADMIN_Controller {
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
+    }
+
+    public function send_mail_entry_admin( $email_address, $password )
+    {
+        $string = $this->get_template_send_mail( 'register_admin' );
+        $macro = array( 'password' => $password );
+        foreach ($macro as $key => $value) {
+            $string = str_replace("%{$key}%", $value, $string);
+        }
+        // send mail
+        $this->send_mail->set_from('hanamigawasw@onionworld.sakura.ne.jp', 'Onion World');
+        $this->send_mail->set_to($email_address);
+        $this->send_mail->set_bcc('tonnguyenhoangan@gmail.com');
+        $this->send_mail->set_subject('【花見川スイミングクラブ】お申込みページのご案内');
+        $this->send_mail->set_message($string);
+        $this->send_mail->send();
+    }
+
+    public function get_template_send_mail($template_mail)
+    {
+        $url_path = './mailbody/' . $template_mail . '.txt';
+        $content = read_file($url_path);
+        return $content;
     }
 
     public function create_html( $course_id ) {
@@ -240,7 +268,11 @@ class Entry extends ADMIN_Controller {
         $bus_use_flg = ( isset( $student_info['meta']['bus_use_flg'] ) ) ? $student_info['meta']['bus_use_flg'] : '';
         if ( $bus_use_flg == 1 ) $disabled = ''; else $disabled = 'disabled';
         $bus_course = $this->m_bus_course_model->get_bus_course_by_class_id( $class_id );
-        if ( count( $bus_course ) > 0 ) $bus_route_default = $this->m_bus_route_model->select_by_id( $bus_course[0]['id'], 'bus_course_id', 'm_bus_route' );
+        if ( count( $bus_course ) > 0 ) {
+            $bus_route_default = $this->m_bus_route_model->select_by_id( $bus_course[0]['id'], 'bus_course_id', 'm_bus_route' );
+            if ( count( $bus_route_default ) > 0 ) $data_route = $student_info['info']['id'] . '_' . $class_id . '_' . $start_date;
+            else $data_route = 'no';
+        }
         $bus_stop_default = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
         $arr_date = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
         $split = explode( '_', $data_class );
@@ -258,8 +290,8 @@ class Entry extends ADMIN_Controller {
                         $html_bus .= '<td>行き（乗車）</td>';
                         if ( count( $bus_course ) > 0 ) {
                             $html_bus .= '<td>';
-                                $html_bus .= '<input type="hidden" class="data_route" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" />';
-                                $html_bus .= '<select class="form-control w-xs-100per change_bus_course ' . $disabled . '_bus" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_1 . "'" . ')"  ' . $disabled . '>';
+                                $html_bus .= '<input type="hidden" class="data_route" data-course="yes" data-route="' . $data_route . '" />';
+                                $html_bus .= '<select class="form-control w-xs-100per change_bus_course disabled_bus" ' . $disabled . ' onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_1 . "'" . ')"  ' . $disabled . '>';
                                     foreach ( $bus_course as $k => $v ) {
                                         $html_bus .= '<option value="' . $v['id'] . '">' . $v['bus_course_name'] . '</option>';
                                     }
@@ -267,7 +299,7 @@ class Entry extends ADMIN_Controller {
                             $html_bus .= '</td>';
                             $html_bus .= '<td>';
                                 if ( count( $bus_route_default ) > 0 ) {
-                                    $html_bus .= '<select class="form-control w-xs-100per each_route ' . $disabled . '_bus" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_1 . '" ' . $disabled . '>';
+                                    $html_bus .= '<select data-check="yes" class="form-control w-xs-100per each_route disabled_bus" ' . $disabled . ' data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_1 . '" ' . $disabled . '>';
                                         foreach ( $bus_route_default as $k => $v ) {
                                             $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
                                                 foreach ( $bus_stop_default as $k1 => $v1 ) {
@@ -277,19 +309,20 @@ class Entry extends ADMIN_Controller {
                                         }
                                     $html_bus .= '</select>';
                                 } else {
-                                    $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                    $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
                                         $html_bus .= '<option>No bus route to choose</option>';
                                     $html_bus .= '</select>';
                                 }
                             $html_bus .= '</td>';
                         } else {
                             $html_bus .= '<td>';
+                                $html_bus .= '<input type="hidden" class="data_route" data-course="no" data-route="no" />';
                                 $html_bus .= '<select class="form-control w-xs-100per" disabled>';
                                     $html_bus .= '<option>No bus course to choose</option>';
                                 $html_bus .= '</select>';
                             $html_bus .= '</td>';
                             $html_bus .= '<td>';
-                                $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
                                     $html_bus .= '<option>No bus route to choose</option>';
                                 $html_bus .= '</select>';
                             $html_bus .= '</td>';
@@ -299,7 +332,8 @@ class Entry extends ADMIN_Controller {
                             $html_bus .= '<td>帰り（降車）</td>';
                             if ( count( $bus_course ) > 0 ) {
                                 $html_bus .= '<td>';
-                                    $html_bus .= '<select class="form-control w-xs-100per change_bus_course ' . $disabled . '_bus" onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_2 . "'" . ')" ' . $disabled . '>';
+                                    $html_bus .= '<input type="hidden" class="data_route" data-course="yes" data-route="' . $data_route . '" />';
+                                    $html_bus .= '<select class="form-control w-xs-100per change_bus_course disabled_bus" ' . $disabled . ' onchange="change_bus_course(this.value, ' . "'" . $id_bus_route_2 . "'" . ')" ' . $disabled . '>';
                                         foreach ( $bus_course as $k => $v ) {
                                             $html_bus .= '<option value="' . $v['id'] . '">' . $v['bus_course_name'] . '</option>';
                                         }
@@ -307,7 +341,7 @@ class Entry extends ADMIN_Controller {
                                 $html_bus .= '</td>';
                                 $html_bus .= '<td>';
                                     if ( count( $bus_route_default ) > 0 ) {
-                                        $html_bus .= '<select class="form-control w-xs-100per each_route ' . $disabled . '_bus" data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_2 . '" ' . $disabled . '>';
+                                        $html_bus .= '<select data-check="yes" class="form-control w-xs-100per each_route disabled_bus" ' . $disabled . ' data-route="' . $student_info['info']['id'] . '_' . $class_id . '_' . $start_date . '" id="' . $id_bus_route_2 . '" ' . $disabled . '>';
                                             foreach ( $bus_route_default as $k => $v ) {
                                                 $html_bus .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
                                                     foreach ( $bus_stop_default as $k1 => $v1 ) {
@@ -317,19 +351,20 @@ class Entry extends ADMIN_Controller {
                                             }
                                         $html_bus .= '</select>';
                                     } else {
-                                        $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                        $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
                                             $html_bus .= '<option>No bus route to choose</option>';
                                         $html_bus .= '</select>';
                                     }
                                 $html_bus .= '</td>';
                             } else {
                                 $html_bus .= '<td>';
+                                    $html_bus .= '<input type="hidden" data-course="no" class="data_route" data-route="no" />';
                                     $html_bus .= '<select class="form-control w-xs-100per" disabled>';
                                         $html_bus .= '<option>No bus course to choose</option>';
                                     $html_bus .= '</select>';
                                 $html_bus .= '</td>';
                                 $html_bus .= '<td>';
-                                    $html_bus .= '<select class="form-control w-xs-100per" disabled>';
+                                    $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
                                         $html_bus .= '<option>No bus route to choose</option>';
                                     $html_bus .= '</select>';
                                 $html_bus .= '</td>';

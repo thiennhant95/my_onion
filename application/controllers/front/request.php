@@ -121,21 +121,27 @@ class Request extends FRONT_Controller {
             } else {
                 $s_info = $this->student_model->get_student_data($user_account['id']);
                 $s_class = $this->m_bus_course_model->get_student_class_change_bus( $user_account['id'] );
+
+                // echo '<pre>'; print_r( $s_class ); echo '</pre>'; die();
+
                 foreach ( $s_class as $k => $v ) {
                     $bus_go_ret = $this->m_bus_course_model->get_student_bus_route_change_bus( $user_account['id'], $v['class_id'] );
-                    $s_bus_course_go = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_go_id'] );
-                    $s_bus_course_ret = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_ret_id'] );
-                    $s_class[$k]['bus_course_go'] = $s_bus_course_go[0];
-                    $s_class[$k]['bus_course_ret'] = $s_bus_course_ret[0];
-                    $s_class[$k]['bus_course_go']['bus_route_go_id'] = $bus_go_ret[0]['bus_route_go_id'];
-                    $s_class[$k]['bus_course_ret']['bus_route_ret_id'] = $bus_go_ret[0]['bus_route_ret_id'];
-                    $list_bus_course = $this->m_bus_course_model->get_bus_course_by_class_id( $v['class_id'] );
-                    $s_class[$k]['list_bus_course'] = $list_bus_course;
-                    foreach ( $list_bus_course as $k1 => $v1 ) {
-                        if ( $k1 == 0 ) $s_class[$k]['list_route_go'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $v1['id'] );
-                        if ( $k1 == 1 ) $s_class[$k]['list_route_ret'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $v1['id'] );
+                    $check_bus_route_exists = $this->m_bus_course_model->check_bus_route_exists( $user_account['id'], $v['class_id'] );
+                    if ( count( $check_bus_route_exists ) > 0 ) {
+                        $s_bus_course_go = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_go_id'] );
+                        $s_bus_course_ret = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_ret_id'] );
+                        $s_class[$k]['bus_course_go'] = $s_bus_course_go[0];
+                        $s_class[$k]['bus_course_ret'] = $s_bus_course_ret[0];
+                        $s_class[$k]['bus_course_go']['bus_route_go_id'] = $bus_go_ret[0]['bus_route_go_id'];
+                        $s_class[$k]['bus_course_ret']['bus_route_ret_id'] = $bus_go_ret[0]['bus_route_ret_id'];
+                        $s_class[$k]['list_bus_course'] = $this->m_bus_course_model->get_bus_course_by_class_id( $v['class_id'] );
+                        $s_class[$k]['list_route_go'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['bus_course_go']['bus_course_id'] );
+                        $s_class[$k]['list_route_ret'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['bus_course_ret']['bus_course_id'] );
                     }
                 }
+
+                // echo '<pre>'; print_r( $s_class ); echo '</pre>'; die();
+
                 if ( isset( $_POST['bus_course_id'] ) ) {
                     $html_change_bus_course = $this->create_html_change_bus_course( $_POST['bus_course_id'] );
                     die( json_encode( $html_change_bus_course ) );
@@ -171,6 +177,7 @@ class Request extends FRONT_Controller {
         }
     }
 
+
     public function create_html_change_bus_course( $bus_course_id ) {
         $bus_route = $this->m_bus_route_model->select_by_id( $bus_course_id, 'bus_course_id', 'm_bus_route' );
         $bus_stop = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
@@ -198,16 +205,16 @@ class Request extends FRONT_Controller {
             $user_session = $this->session->userdata('user_account');
             $id_user = $user_session['id'];
             $data['user'] = $this->get_info_user();
-            
             $data['week'] = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土','0' => '日','1' => '月');
             $data['class'] = array('0' => 'M','1' =>  'A', '2' => 'B', '3' => 'C', '4' => 'D', '5' => 'E', '6' => 'F');
             $data['class_of_course'] = [];
             $data['list_class_selected'] = [];
 
-            if(!empty($data['user']['course']['nearest'])){
-                $id_courser_join = (int)$data['user']['course']['nearest']['course_id'];
+            if(!empty($data['user']['course']['nearest'][0])){
+                $id_courser_join = (int)$data['user']['course']['nearest'][0]['course_id'];
                 $data['class_of_course'] = $this->get_list_class_by_course($id_courser_join);
                 $data['list_class_selected'] = $this->get_list_class_of_student($id_courser_join, $id_user);
+                $data['practice_max'] = $this->l_student_request_model->get_practice_max($id_courser_join);
             }
             $data['html'] = $this->create_html_data($data);
 
@@ -232,7 +239,8 @@ class Request extends FRONT_Controller {
                         
                         $list_week = [];
                         $list_week = explode(",",$value_class_course['week']);
-                        if(($value_class_course['base_class_sign'] == $value_name_class) && in_array($key_week, $list_week)){
+                        $to_string_key_week = (string)$key_week;
+                        if(($value_class_course['base_class_sign'] == $value_name_class) && in_array($to_string_key_week, $list_week)){
                             $flag_active = TRUE;
                             $id_class = $value_class_course['id'];
                             $class_sign = $value_class_course['class_code'];
@@ -242,16 +250,20 @@ class Request extends FRONT_Controller {
                     if($flag_active){
                         $flag_selected = FALSE;
                         foreach ($data['list_class_selected'] as $key_selected => $value_selected) {
-                            if(($value_selected['week_num'] == $key_week) && ($id_class == $value_selected['class_id'])){
+                            $name_tmp = (int)$value_selected['week_num'];
+                            $value_class_selected = $value_selected['class_id'];
+                            if(($value_class_selected == $id_class)&&($name_tmp ==  $key_week)){
                                 $flag_selected = TRUE;
                                 break;
                             }
                         }
+
                         if($flag_selected){
                             $html .= '<td class= "selected '.$class_sign.'" id = "'.$key_week.'_'.$id_class.'">選択</td>';
                         }else{
                             $html .= '<td class= "'.$class_sign.'" id = "'.$key_week.'_'.$id_class.'">'.$class_sign.'</td>';
                         }
+                        
                     }else{
                         $html .= '<td class="disabled"></td>';
                     }
@@ -268,7 +280,7 @@ class Request extends FRONT_Controller {
     }
     public function get_list_class_of_student($id_course, $id_student)
     {
-        $where = array('student_course_id' => ' = '.$id_course, 'student_id' => ' = '.$id_student);
+        $where = array('student_course_id' => ' = '.$id_course, 'student_id' => ' = '.$id_student, 'end_date' => ' = "'.END_DATE_DEFAULT.'"');
         $data =  $this->student_model->get_list($where, $order = NULL, $tbl = 'l_student_class');
         return $data;
     }
@@ -284,6 +296,8 @@ class Request extends FRONT_Controller {
             $data['class_of_course'] = $this->get_list_class_by_course($id_change_course);
             $data['list_class_selected'] = $this->get_list_class_of_student($id_change_course, $id_user);
             
+            $data_max_practice = $this->l_student_request_model->get_practice_max($id_change_course);
+            $param['practice_max'] = (!empty($data_max_practice)) ? $data_max_practice[0]['practice_max'] : NULL;
             $param['html'] = $this->create_html_data($data);
             die(json_encode($param));
         }
@@ -333,6 +347,11 @@ class Request extends FRONT_Controller {
     public function change_course_complete() {
         if ($this->error_flg) return;
         try {
+            $user_session = $this->session->userdata('user_account');
+            $id_user = $user_session['id'];
+
+            $data['data_bus_list'] = $this->l_student_request_model->get_name_bus_route($id_user);
+            $this->viewVar = $data;
             front_layout_view('request_change_course_complete', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());

@@ -44,43 +44,10 @@
             </div>
 
             <div class="form-group">
-              <label for="" class="col-xs-12 col-sm-2 control-label">生年月日</label>
-              <div class="col-xs-3 col-sm-2">
-                <select class="form-control" name="year_of_student_birthday" onchange="daysInMonth('day_of_student_birthday','month_of_student_birthday','year_of_student_birthday')">
-                 <!--  <option value="">2000年</option> -->
-                  <?php 
-                      $birthday = date_create($meta['birthday']);
-                      echo '<option class="form-control" value='.date_format($birthday,'Y').'>'.date_format($birthday,'Y年').'</option>';
-                  ?>
-                </select>
-              </div>
-              <div class="col-xs-3 col-sm-2">
-                <select class="form-control" name="month_of_student_birthday" onchange="daysInMonth('day_of_student_birthday','month_of_student_birthday','year_of_student_birthday')">
-                  <?php 
-                      $birthday = date_create($meta['birthday']);
-                      $month  = date_format($birthday,'m');
-                      for($i = 1; $i<=12 ; $i++)
-                      {
-                        $selected=($month==$i)?'selected':'';
-                        echo '<option value="'.$i.'" '. $selected .'>'.$i.'月</option>';
-                      }
-                  ?>
-                </select>
-              </div>
-              <div class="col-xs-3 col-sm-2">
-                <select class="form-control" name="day_of_student_birthday" onchange="daysInMonth('day_of_student_birthday','month_of_student_birthday','year_of_student_birthday')">
-                  <?php 
-                      $birthday = date_create($meta['birthday']);
-                      $day = date_format($birthday,'d');
-                      $days = cal_days_in_month(CAL_GREGORIAN,date_format($birthday,'m'), date_format($birthday,'Y'));
-                      for($i = 1 ; $i <= $days ; $i++)
-                      {
-                        $selected = $day==$i?'selected':'';
-                        echo '<option value="'.$i.'" '.$selected.' >'.$i.'日</option>';
-                      } 
-                  ?>
-                </select>
-              </div>
+              <label class="col-xs-12 col-sm-2 control-label">生年月日</label>
+                <div class="col-sm-3">
+                  <input class="form-control datepicker_Y_M_D" type="text" name="student_birthday" placeholder="YYYY - MM - DD" readonly value="<?php echo date_format(date_create($meta['birthday']) , 'Y - m - d' ) ?>" >
+                </div>
             </div>
 
             <div class="form-group">
@@ -93,7 +60,7 @@
                   <input type="radio" name="sex" value="1" <?php if($meta['sex']=='1') echo "checked" ?> > 女性
                 </label>
               </div>
-            </div> 
+            </div>
             <div class="form-group">
               <label for="" class="col-xs-12 col-sm-2 control-label">郵便番号</label>
               <div class="col-xs-3 col-sm-2 col-md-1 postal-code-line" id="first_postalcode">
@@ -185,8 +152,15 @@
               <label for="" class="col-sm-2 control-label">コースコード</label>
               <div class="col-sm-10">
                 <select class="form-control" name="course_main" style="padding-left:25em">
-                  <?php   
-                    echo isset($course['nearest'])?('<option value="'.$course['nearest']['course_id'].'" >'.$course['nearest']['course_code'].' '.$course['nearest']['course_name'].'</option>'):'';
+                  <?php 
+                  $currentcourse_id = isset( $course['valid'][0]['course_id'] )? $course['valid'][0]['course_id'] : $course['valid']['id'];
+                      foreach($course['all'] as $item)
+                      {
+                        $selected = '';
+                        if($item['id'] === $currentcourse_id)
+                          $selected = 'selected';
+                        echo ('<option data-pratice = "'.$item['practice_max'].'" value="'.$item['id'].'" '.$selected.' >'.$item['course_code'].' '.$item['course_name'].'</option>');
+                      }
                   ?>
                 </select>
               </div>
@@ -198,16 +172,16 @@
               <div class="col-sm-8 " id="class_member_Join">
                 <?php
 
-                  if(isset($course['nearest']['classjoin'])&&count($course['nearest']['classjoin'])>0)
+                  if( isset( $course['valid']['classjoin'] ) && count( $course['valid']['classjoin'] ) > 0)
                   {
                     $x='0';
                     $y='0';
-                    foreach ($course['nearest']['classjoin'] as $key => $value) {
+                    foreach ($course['valid']['classjoin'] as $key => $value) {
                          $html_0 = '<label  class="col-sm-2 control-label sub_class_join" ';
                          $html_1 = '';
                          $html_2= '</label>';
 
-                         $html_1 = 'data-class="'.$value['base_class_sign'].'-'.$value['week_num'].'" >'.$value['class_code'].'';
+                         $html_1 = 'data-class="'.$value['base_class_sign'].'-'.$value['week_num'].'" data-id='.$value['class_id'].'>'.$value['class_code'].'';
                           echo $html_0.$html_1.$html_2;     
                     }
                    }         
@@ -236,51 +210,102 @@
                                   $array_base_class = ['','M','A','B','C','D','E','F'];
                                   $arr_class_join = array();
                                   $arr_class = array();
-                                  $week_num = ($this->config->item('my_config'))['week_num'];
-                                if(isset($course['nearest']['class']))
-                                {
-                                  foreach ($course['nearest']['class'] as $key => $value) {
-                                    $base_class_sign = $value['base_class_sign'];
-                                    $split_week = explode(",",$value['week']);
-                                    foreach ($split_week as $subkey => $subvalue) {
-                                      if(!in_array(array($base_class_sign=>$subvalue),$arr_class))
-                                      $arr_class[][$base_class_sign]= $subvalue;
-                                    }
-                                  }
-                                  if(isset($course['nearest']['classjoin']))
+                                  $config = $this->configVar;
+                                  $week_num = $config['week_num'];
+                                  // dump data into arr_class
+                                  if(isset($course['valid']['class']))
                                   {
-                                    foreach ($course['nearest']['classjoin'] as $index => $value) {
+                                    foreach ($course['valid']['class'] as $key => $value) {
+                                      $class_id = $value['class_id'];
+                                      $class_code = $value['class_code'];
+                                      $class_name = $value['class_name'];
                                       $base_class_sign = $value['base_class_sign'];
-                                      $arr_class_join[][$base_class_sign]= $value['week_num'];
+                                      $split_week = explode(",",$value['week']);
+                                      $max_count = $value['max_count'];
+                                      $number_student_join = $value['number_student_join'];
+
+                                      foreach ($split_week as $subkey => $subvalue) {
+                                        if(!in_array(array([$class_id , $class_code , $class_name, $base_class_sign , $subvalue , $max_count , $number_student_join ]),$arr_class))
+                                        $arr_class[]= [$class_id , $class_code , $class_name , $base_class_sign , $subvalue ,  $max_count , $number_student_join ];
+                                      }
                                     }
+                                    //dump data into arr_class_join
+                                    if(isset($course['valid']['classjoin']))
+                                    {
+                                      foreach ($course['valid']['classjoin'] as $index => $value_2) {
+                                        $class_id = $value_2['class_id'];
+                                        $class_code = $value_2['class_code'];
+                                        $class_name = $value_2['class_name'];
+                                        $max_count = $value_2['max_count'];
+                                        $base_class_sign = $value_2['base_class_sign'];
+                                        $number_student_join = $value_2['number_student_join'];
+                                        $arr_class_join[]= [$class_id , $class_code , $class_name , $base_class_sign , $value_2['week_num'] , $max_count , $number_student_join ];
+                                      }
+                                    }  
                                   }
-                                  
-                                }
-                                
+
+                                // drawing table
+                                  $count_week = count($week_num);
                                 for( $i=0 ; $i<7 ; $i++){
+                                  $x = ($i+2 >= $count_week )?($i-5):($i+2);
                                   echo '<tr>';
-                                  foreach($array_base_class as $key=>$value){
-                                    $choose='';
-                                    $class ='bg-gainsboro';
-                                    $x = ($i+2 >= count($week_num))?($i-5):($i+2);
-                                    if($key==0)
+                                  foreach($array_base_class as $key => $value){
+
+                                    $choose = '';
+                                    $class_id = '';
+                                    $class_code = '';
+                                    $class_name = '';
+                                    $max_count = '';
+                                    $number_student_join = '';
+                                    $class = 'bg-gainsboro';
+                                    
+                                    if($key == 0)
                                     {
                                       echo '<th>'.$week_num[$x].'</th>';
                                     }
-                                    elseif(in_array(array($value=>$x),$arr_class_join))
-                                    {
-                                      $class = 'bg-rouge';
-                                      $choose = '選択';
-                                      echo '<td class="'.$class.'">'.$choose.'</td>';
-                                    }
-                                    elseif(in_array(array($value=>$x),$arr_class)){
-                                      $class ='bg-plae-lemmon';
-                                      echo '<td class="'.$class.'">'.$choose.'</td>';
-                                    }
-                                    else{
-                                      echo '<td class="'.$class.'">'.$choose.'</td>';
-                                    }
-                                    
+                                    elseif( $key != 0 ){
+
+                                      $ishas = FALSE;
+                                      foreach ( $arr_class_join as $subkey_1 => $subvalue_1 ) { 
+                                        if( $value == $subvalue_1['3'] && $x == $subvalue_1['4'] )
+                                        {
+                                          $class_id = $subvalue_1['0'];
+                                          $class_code = $subvalue_1['1'];
+                                          $class_name = $subvalue_1['2'];
+                                          $max_count = $subvalue_1['5'];
+                                          $number_student_join = $subvalue_1['6'];
+                                          $choose = '選択';
+                                          $class = 'bg-rouge';
+                                          $ishas = TRUE ;
+                                          break;
+                                        }
+                                      }
+                                      if($ishas === FALSE)
+                                      {
+                                        foreach ($arr_class as $subkey_2 => $subvalue_2) {
+                                          if($value == $subvalue_2['3'] && $x == $subvalue_2['4'])
+                                          {
+                                            $class_id = $subvalue_2['0']; 
+                                            $class_code = $subvalue_2['1'];
+                                            $class_name = $subvalue_2['2'];
+                                            $class = 'bg-plae-lemmon';
+                                            $max_count = $subvalue_2['5'];
+                                            $number_student_join = $subvalue_2['6'];
+                                            if($subvalue_2['6'] == $subvalue_2['5']) $class = 'bg-red';
+                                            $choose = $subvalue_2['6'].'/'.$subvalue_2['5'];
+                                            break;
+                                          }
+                                        }
+                                      }
+
+                      $data_id = $class_id != '' ? 'data-id = "'.$class_id.'" ' : '';
+                      $data_classcode = $class_code != '' ? 'data-classcode = "'.$class_code.'" ' : '';
+                      $data_classname = $class_name != '' ? 'data-classname = "'.$class_name.'" ' : '';
+                      $data_base = 'data-base = "'.$value.'-'. $x .'"  ' ;
+                      $data_max_count = $max_count != '' ? 'data-maxcount = "'.$max_count.'" ' : '';
+                      $data_number_student_join = $number_student_join != '' ? 'data-numberstudentjoin = "'.$number_student_join.'" ' : '';
+    echo '<td class="'.$class.'" '. $data_base.$data_id.$data_classcode.$data_classname.$data_max_count.$data_number_student_join. ' >'.$choose.'</td>';
+                                    }                          
                                   }
                                   echo '</tr>';
                                 }
@@ -435,21 +460,11 @@
                       <label for="" class="control-label">退会</label>
                       <div class="row">
                         <div class="col-xs-6">
-                          <select class="form-control" name="experience_year">
-                            <option value="<?php echo isset(json_decode($meta['enquete'])->experience->year)?json_decode($meta['enquete'])->experience->year:date('Y') ?>"><?php echo isset(json_decode($meta['enquete'])->experience->year)?json_decode($meta['enquete'])->experience->year:date('Y') ?> 年</option>
-                          </select>
-                        </div>
-                        <div class="col-xs-6">
-                          <select class="form-control" name="experience_month">
-                            <?php 
-                                $experience = isset(json_decode($meta['enquete'])->experience->month)?json_decode($meta['enquete'])->experience->month:'';
-                                for($i = 1; $i<=12 ; $i++)
-                                {
-                                  $selected=($experience==$i)?'selected':'';
-                                  echo '<option value="'.$i.'" '. $selected .'>'.$i.'月</option>';
-                                }
-                            ?>
-                          </select>
+                            <input class="form-control datepicker_Y_M" type="text" id="datepicker_Y_M" name="date_leave_club" placeholder=" YYYY - MM " readonly  value="<?php 
+                             $year_leave_club =  isset(json_decode($meta['enquete'])->experience->club_name)?json_decode($meta['enquete'])->experience->year:'';
+                             $month_leave_club =  isset(json_decode($meta['enquete'])->experience->club_name)?json_decode($meta['enquete'])->experience->month:'';
+                             $date = $year_leave_club .'-'.$month_leave_club ;
+                              echo date_format(date_create($date) , ' Y - m ' ) ?> ">
                         </div>
                       </div>
                     </div>
@@ -478,93 +493,91 @@
             </div>
   
             <div class="row">
-              <div class="col-sm-10 col-sm-offset-2">
+              <div class="col-sm-10 col-sm-offset-2 select_bus_route"  id="select_bus_route">
                 <?php 
-                  if(count($bus_route['valid'])>0){
-                    $my_config = $this->config->item('my_config');
-                    $html_2 ='';
-                    foreach ($bus_route['valid'] as $key => $value) {
-                      $data_course = $value['bus_course'];
-                      foreach ($data_course as $keycourse => $valuebus_course) {
-                         $html_2 .= '<option value="'.$valuebus_course['id'].'" select_'.$key.' >'.$valuebus_course['bus_course_name'].'</option>';
-                      }                       
-                    }
-                    foreach ($bus_route['valid'] as $key => $value) {
+                  if(count( $bus_course['all']) > 0){
+                    foreach ( $bus_course['all'] as $key => $value) {
+                      $class = $value['vaible'][0]['class_name'];
+                      $base_class_sign =  $value['vaible'][0]['base_class_sign'];
+                      $class_id =  $value['vaible'][0]['class_id'];
+                      $config = $this->configVar;
+                      $week_num = $config['week_num']; 
+                      if( isset( $value['student_join'][0] ) )
+                      {
+                        $week = isset($value['student_join'][0]['week_num'])?$value['student_join'][0]['week_num']:'';
+                        $index= random_string('alnum', 10);
+                        $disable = (isset($meta['bus_use_flg'])&&$meta['bus_use_flg']=='0') ? "disabled" :'';
 
-                      $disabled = (isset($meta['bus_use_flg'])&&$meta['bus_use_flg']=='0')?'disabled':'';
-                      $classname = isset($value['classinfo'][0]['class_name'])?$value['classinfo'][0]['class_name']:'';
-                      $week_num = isset($value['classinfo'][0]['week_num'])?$value['classinfo'][0]['week_num']:'0';
-                      $day = '';
-                        foreach ($my_config['week_num'] as $_key => $week_day) {
-                          if($_key==$week_num) $day = $week_day;
-                        }
-                      $html_0 =  '<div for="" class"col-sm-2 control-label" id="classnameforbus">'.$day.'<br>('.$classname.')</div>';
-                      $html_1 ='<div class="form-group">
-                              <label for="" class="col-sm-2 control-label">行き</label>
-                              <div class="col-sm-5">
-                              <select class="form-control bus_route" name="bus_route_go_'.$key.'" '.''.$disabled .' >';
-                      // $html_2 ='';
-                      $html_3 ='</select>
-                                </div>';
-                      $html_4 ='<div class="col-sm-5">
-                                <select class="form-control bus_stop" name="bus_stop_go_'.$key.'" '.$disabled.'>';
-                      $html_5= '';
-                      $html_6 ='</select>
-                                </div>
-                                </div>';
-                      $html_7 = '<div class="form-group">
-                              <label for="" class="col-sm-2 control-label">帰り</label>
-                              <div class="col-sm-5">
-                              <select class="form-control bus_route" name="bus_route_ret_'.$key.'" '.''.$disabled .' >';
-                      // $html_8 = '';
-                      $html_9 = '</select>
-                                 </div>';
-                      $html_10 = '<div class="col-sm-5">
-                              <select class="form-control bus_stop" name="bus_stop_ret_'.$key.'" '.$disabled .'>';
-                      $html_11 ='';
-                      $html_12 = '</select>
-                                </div>
-                                </div>';
-                         
-                        $bus_route_go_id = ($value['bus_route_go_id']!='')?$value['bus_route_go_id']:'';
+                        $html_0 ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week_num[$week].'<br>('.$class.')</div>';
+                        $html_0 .='<div class="form-group">
+                                <label for="" class="col-sm-2 control-label">行き</label>
+                                <div class="col-sm-5">
+                                <select class="form-control bus_course" name="bus_course_go_'.$index.'" '.''.$disable .' onchange="changeBuscoure(this)">';
+                        $html_2 = '';
+                        $html_3 ='</select>
+                                  </div>';
+                        $html_3 .='<div class="col-sm-5">
+                                  <select class="form-control bus_stop" name="bus_stop_go_'.$index.'" '.$disable.'>';
+                        $html_5 = '';
+                        $html_6 ='</select>
+                                  </div>
+                                  </div>';
+                        $html_6 .= '<div class="form-group">
+                                <label for="" class="col-sm-2 control-label">帰り</label>
+                                <div class="col-sm-5">
+                                <select class="form-control bus_course" name="bus_course_ret_'.$index.'" '.''.$disable .' onchange="changeBuscoure(this)">';
+                        $html_8 ='';
+                        $html_9 = '</select>
+                                   </div>';
+                        $html_9 .= '<div class="col-sm-5">
+                                <select class="form-control bus_stop" name="bus_stop_ret_'.$index.'" '.$disable.'>';
+                        $html_11 ='';
+                        $html_12 = '</select></div></div></div>';
 
-                       if(isset($value['bus_course']))
-                       {
-                          $data_course = $value['bus_course'];
-                          foreach ($data_course as $keycourse => $valuebus_course) {
-                            $count = 1;
-                            $html_2=str_replace(" select_".$key," selected",$html_2,$count);
-                            if(isset($valuebus_course['bus_stop']))
+                        $id_go = isset($value['student_join'][0]['bus_go'][0]['bus_course_id'])?$value['student_join'][0]['bus_go'][0]['bus_course_id']:'';
+                        $id_ret = isset($value['student_join'][0]['bus_ret'][0]['bus_course_id'])?$value['student_join'][0]['bus_ret'][0]['bus_course_id']:'';
+                        $id_stop_go = isset($value['student_join'][0]['bus_go'][0]['bus_stop_id'])?$value['student_join'][0]['bus_go'][0]['bus_stop_id']:'';
+                        $id_stop_ret = isset($value['student_join'][0]['bus_ret'][0]['bus_stop_id'])?$value['student_join'][0]['bus_ret'][0]['bus_stop_id']:'';
+
+
+                        foreach ($value['vaible'] as $subkey => $subvalue) {
+                          $selected_go = '';
+                          $selected_ret = '';
+                          $selected_stop_go='';
+                          $selected_stop_ret = '';
+
+                          if($subvalue['id']===$id_go)
+                          {
+                            $selected_go = "selected";
+                            if($subvalue['bus_stop'])
                             {
-                              $data_stop = $valuebus_course['bus_stop'];
-                              foreach($data_stop as $keybusstop => $valuebusstop){
-                                  $selected = '';
-                                  if($bus_route_go_id == $valuebusstop['bus_route_id']) $selected= "selected";
-                                 $html_5.='<option value='.$valuebusstop['bus_route_id'].' '.$selected.' >【'.$valuebusstop['bus_stop_code'].'】'.$valuebusstop['bus_stop_name'].'</option>';
+                              foreach ($subvalue['bus_stop'] as $sub_key_stop => $sub_value_stop) {
+                                if($sub_value_stop['bus_stop_id']===$id_stop_go) $selected_stop_go = "selected";
+                                $html_5.= '<option value='.$sub_value_stop['bus_stop_id'].' '.$selected_stop_go.'>【'.$sub_value_stop['bus_stop_code'].'】'.$sub_value_stop['bus_stop_name'].'</option>';
+                                $selected_stop_go ='';
+                              }
+                            }  
+                          } 
+                          $html_2.= '<option value='.$subvalue['id'].' '.$selected_go.'>'.$subvalue['bus_course_name'].'</option>';
+                          
+                          if($subvalue['id']===$id_ret) 
+                          {
+                            $selected_ret = "selected";
+                            if($subvalue['bus_stop'])
+                            {
+                              foreach ($subvalue['bus_stop'] as $sub_key_stop => $sub_value_stop) {
+                                if($sub_value_stop['bus_stop_id']===$id_stop_ret) $selected_stop_ret = "selected";
+                                $html_11.= '<option value='.$sub_value_stop['bus_stop_id'].' '.$selected_stop_ret.'>【'.$sub_value_stop['bus_stop_code'].'】'.$sub_value_stop['bus_stop_name'].'</option>';
+                                $selected_stop_ret='';
                               }
                             }
-                            
                           }
-
-                          $data_course = $value['bus_course'];
-                          $bus_route_ret_id = $value['bus_route_ret_id'];
-                          foreach ($data_course as $keycourse => $valuebus_course) {
-                              if(isset($valuebus_course['bus_stop']))
-                              {
-                                $data_stop = $valuebus_course['bus_stop'];
-                                foreach($data_stop as $keybusstop => $valuebusstop){
-                                    $selected = '';
-                                    if($bus_route_ret_id == $valuebusstop['bus_route_id']) $selected= "selected";
-                                   $html_11.='<option value='.$valuebusstop['bus_route_id'].' '.$selected.' >【'.$valuebusstop['bus_stop_code'].'】'.$valuebusstop['bus_stop_name'].'</option>';
-                                }
-                              }
-                              
-                          }
-                          echo $html_0.$html_1.$html_2.$html_3.$html_4.$html_5.$html_6.$html_7.$html_2.$html_9.$html_10.$html_11.$html_12;
-                          $html_2=str_replace("selected","",$html_2,$count);
-                       }    
+                          $html_8.= '<option value='.$subvalue['id'].' '.$selected_ret.'>'.$subvalue['bus_course_name'].'</option>';
+                        }
+                          echo $html_0.$html_2.$html_3.$html_5.$html_6.$html_8.$html_9.$html_11.$html_12;
+                      }
                     }
-                  } 
+                  }    
                 ?>
               </div>
             </div>
@@ -584,39 +597,13 @@
               <div class="col-sm-10 form-inline">
                 <div class="checkbox mr-1">
                   <label>
-                    <input type="checkbox" value="" <?php if(isset($meta['life_check_flg'])&&$meta['life_check_flg']=='1') echo 'checked'?> name="chb_lifecheck">
+                    <input type="checkbox" value="" <?php if(isset($meta['life_check_flg']) && $meta['life_check_flg']=='1') echo 'checked'?> name="chb_lifecheck">
                   </label>
                 </div>
-                <select class="form-control" name="chb_year_lifecheck">
-                  <?php 
+                &nbsp;<input class="form-control datepicker_Y_M_D" type="text"  name="life_check_date" placeholder=" YYYY - MM - DD " readonly value="<?php  
                     $life_check_date = isset($meta['life_check_date'])?$meta['life_check_date']:'';
-                    $life_check_date = date_create($life_check_date);
-                      echo '<option class="form-control" value='.date_format($life_check_date,'Y').'>'.date_format($life_check_date,'Y年').'</option>';
-                  ?>
-                </select>
-                <select class="form-control" name="chb_month_lifecheck" onchange="daysInMonth('chb_day_lifecheck','chb_month_lifecheck','chb_year_lifecheck')">
-                  <?php 
-                      $life_check_date = date_create(isset($meta['life_check_date'])?$meta['life_check_date']:'');
-                      $month  = date_format($life_check_date,'m');
-                      for($i = 1; $i<=12 ; $i++)
-                      {
-                        $selected=($month==$i)?'selected':'';
-                        echo '<option value="'.$i.'" '. $selected .'>'.$i.'月</option>';
-                      }
-                  ?>
-                </select>
-                <select class="form-control" name="chb_day_lifecheck">
-                  <?php 
-                      $life_check_date = date_create(isset($meta['life_check_date'])?$meta['life_check_date']:'');
-                      $day = date_format($life_check_date,'d');
-                      $days = cal_days_in_month(CAL_GREGORIAN,date_format($life_check_date,'m'), date_format($life_check_date,'Y'));
-                      for($i = 1 ; $i <= $days ; $i++)
-                      {
-                        $selected = $day==$i?'selected':'';
-                        echo '<option value="'.$i.'" '.$selected.' >'.$i.'日</option>';
-                      } 
-                  ?>
-                </select>
+                    echo date_format(date_create($life_check_date),'Y - m - d') ;
+                ?>" >
               </div>
 
             </div>
@@ -624,35 +611,10 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">初回レッスン</label>
               <div class="col-sm-10 form-inline">
-                <select class="form-control" name="year_first_lesson_date">
-                  <?php 
-                      $first_lesson_date = date_create(isset($meta['first_lesson_date'])?$meta['first_lesson_date']:'');
-                      echo '<option class="form-control"  value='.date_format($first_lesson_date,'Y').'>'.date_format($first_lesson_date,'Y年').'</option>';
-                  ?>
-                </select>
-                <select class="form-control" name="month_first_lesson_date" onchange="daysInMonth('day_first_lesson_date','month_first_lesson_date','year_first_lesson_date')">
-                 <?php 
-                      $first_lesson_date = date_create(isset($meta['first_lesson_date'])?$meta['first_lesson_date']:'');
-                      $month  = date_format($first_lesson_date,'m');
-                      for($i = 1; $i<=12 ; $i++)
-                      {
-                        $selected=($month==$i)?'selected':'';
-                        echo '<option value="'.$i.'" '. $selected .'>'.$i.'月</option>';
-                      }
-                  ?>
-                </select>
-                <select class="form-control" name="day_first_lesson_date">
-                  <?php 
-                      $first_lesson_date = date_create(isset($meta['first_lesson_date'])?$meta['first_lesson_date']:'');
-                      $day = date_format($first_lesson_date,'d');
-                      $days = cal_days_in_month(CAL_GREGORIAN,date_format($first_lesson_date,'m'), date_format($first_lesson_date,'Y'));
-                      for($i = 1 ; $i <= $days ; $i++)
-                      {
-                        $selected = $day==$i?'selected':'';
-                        echo '<option value="'.$i.'" '.$selected.' >'.$i.'日</option>';
-                      } 
-                  ?>
-                </select>
+                <input class="form-control datepicker_Y_M_D" type="text" id="first_lesson_date" name="first_lesson_date" placeholder=" YYYY - MM " readonly value="<?php 
+                    $first_lesson_date = isset($meta['first_lesson_date'])?$meta['first_lesson_date']:'';
+                    echo date_format(date_create($first_lesson_date),'Y - m - d') ;
+                ?>" >
               </div>
             </div>
 
@@ -660,76 +622,37 @@
               <div class="form-group form-color-block mb-0">
                 <label for="" class="col-xs-12 col-sm-2 control-label">休会</label>
                 <div class="col-sm-10 form-inline">
-                  <div class="checkbox mr-1">
-                    <label>
-                      <input type="checkbox" name="student_rest" value="2"  <?php if($info['rest_flg']=='2') echo 'checked'?> >
+
+                  <div class="checkbox form-group col-sm-1">
+                    <label >
+                      <input  type="checkbox" name="student_rest" value="2"  <?php if($info['rest_flg']=='2') echo 'checked'?> >
                     </label>
                   </div>
-                  <select class="form-control" name="year_rest_start_date">
-                    <?php 
-                      $rest_start_date = date_create(isset($meta['rest_start_date'])?$meta['rest_start_date']:'');
-                      echo '<option class="form-control"  value='.date_format($rest_start_date,'Y').'>'.date_format($rest_start_date,'Y年').'</option>';
-                   ?>
-                  </select>
-                  <select class="form-control" name="month_rest_start_date" onchange="daysInMonth('day_rest_start_date','month_rest_start_date','year_rest_start_date')">
-                    <?php 
-                      $rest_start_date = date_create(isset($meta['rest_start_date'])?$meta['rest_start_date']:'');
-                      $month  = date_format($rest_start_date,'m');
-                      for($i = 1; $i<=12 ; $i++)
-                      {
-                        $selected=($month==$i)?'selected':'';
-                        echo '<option value="'.$i.'" '. $selected .'>'.$i.'月</option>';
-                      }
-                   ?>
-                  </select>
-                  <select class="form-control" name="day_rest_start_date">
-                  <?php 
-                      $rest_start_date = date_create(isset($meta['rest_start_date'])?$meta['rest_start_date']:'');
-                      $day = date_format($rest_start_date,'d');
-                      $days = cal_days_in_month(CAL_GREGORIAN,date_format($rest_start_date,'m'), date_format($rest_start_date,'Y'));
-                      for($i = 1 ; $i <= $days ; $i++)
-                      {
-                        $selected = $day==$i?'selected':'';
-                        echo '<option value="'.$i.'" '.$selected.' >'.$i.'日</option>';
-                      } 
-                  ?>
-                  </select>
-                  <span class="form-fromto-split">〜</span>
-                  <select class="form-control" name="year_rest_end_date">
-                    <?php 
-                      $rest_end_date = date_create(isset($meta['rest_end_date'])?$meta['rest_end_date']:'');
-                      echo '<option class="form-control"  value='.date_format($rest_start_date,'Y').'>'.date_format($rest_end_date,'Y年').'</option>';
-                   ?>
-                  </select>
-                  <select class="form-control" name="month_rest_end_date" onchange="daysInMonth('day_rest_end_date','month_rest_end_date','year_rest_end_date')">
-                    <?php 
-                      $rest_end_date = date_create(isset($meta['rest_end_date'])?$meta['rest_end_date']:'');
-                      $month  = date_format($rest_end_date,'m');
-                      for($i = 1; $i<=12 ; $i++)
-                      {
-                        $selected=($month==$i)?'selected':'';
-                        echo '<option value="'.$i.'" '. $selected .'>'.$i.'月</option>';
-                      }
-                   ?>
-                  </select>
-                  <select class="form-control" name="day_rest_end_date">
-                    <?php 
-                      $rest_end_date = date_create(isset($meta['rest_end_date'])?$meta['rest_end_date']:'');
-                      $day = date_format($rest_start_date,'d');
-                      $days = cal_days_in_month(CAL_GREGORIAN,date_format($rest_end_date,'m'), date_format($rest_end_date,'Y'));
-                      for($i = 1 ; $i <= $days ; $i++)
-                      {
-                        $selected = $day==$i?'selected':'';
-                        echo '<option value="'.$i.'" '.$selected.' >'.$i.'日</option>';
-                      } 
-                   ?>
-                  </select>
-                  <div class="checkbox ml-1">
+
+                  <div class="form-group col-sm-4">
+                    <input class="form-control datepicker_Y_M_D" type="text"  name="rest_start_date" placeholder=" YYYY - MM - DD " readonly value="<?php 
+                      $rest_start_date = isset($meta['rest_start_date'])?$meta['rest_start_date']:'';
+                      echo date_format(date_create($rest_start_date),'Y - m - d') ;
+                    ?>" style="margin-left: -12px">
+                  </div>
+
+                  <div class="form-group col-sm-1" ><span style="margin-left: -5px">〜</span></div>
+
+                  <div class="form-group col-sm-4">
+                    <input class="form-control datepicker_Y_M_D" type="text"  name="rest_end_date" placeholder=" YYYY - MM - DD " readonly
+                    value="<?php 
+                        $rest_end_date = isset( $meta['rest_end_date'] ) ? $meta['rest_end_date'] : '';
+                        echo date_format( date_create( $rest_end_date ) ,'Y - m - d') ;
+                    ?>">
+                  </div>
+
+                  <div class="checkbox form-group col-sm-1">
                     <label>
                       <input type="checkbox"  name="student_rest" value="1"  <?php if($info['rest_flg']=='1') echo 'checked'?> > 
                       <small>保留</small>
                     </label>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -743,35 +666,10 @@
                       <input type="checkbox" value="3"  name="student_status" <?php if($info['status']=='3') echo 'checked';?> >
                     </label>
                   </div>
-                  <select class="form-control" name="year_quit_date">
-                    <?php 
-                      $quit_date = date_create(isset($meta['quit_date'])?$meta['quit_date']:'');
-                      echo '<option class="form-control"  value='.date_format($quit_date,'Y').'>'.date_format($quit_date,'Y年').'</option>';
-                   ?>
-                  </select>
-                  <select class="form-control" name="month_quit_date" onchange="daysInMonth('day_quit_date','month_quit_date','year_quit_date')">
-                    <?php 
-                      $quit_date = date_create(isset($meta['quit_date'])?$meta['quit_date']:'');
-                      $month  = date_format($quit_date,'m');
-                      for($i = 1; $i<=12 ; $i++)
-                      {
-                        $selected=($month==$i)?'selected':'';
-                        echo '<option value="'.$i.'" '. $selected .'>'.$i.'月</option>';
-                      }
-                   ?>
-                  </select>
-                  <select class="form-control" name="day_quit_date">
-                    <?php 
-                      $quit_date = date_create(isset($meta['quit_date'])?$meta['quit_date']:'');
-                      $day = date_format($quit_date,'d');
-                      $days = cal_days_in_month(CAL_GREGORIAN,date_format($quit_date,'m'), date_format($quit_date,'Y'));
-                      for($i = 1 ; $i <= $days ; $i++)
-                      {
-                        $selected = $day==$i?'selected':'';
-                        echo '<option value="'.$i.'" '.$selected.' >'.$i.'日</option>';
-                      } 
-                   ?>
-                  </select>
+                  <input class="form-control datepicker_Y_M_D" type="text"  name="quit_date" placeholder=" YYYY - MM - DD" readonly value="<?php 
+                      $quit_date = isset( $meta['quit_date'] ) ? $meta['quit_date'] : '';
+                      echo date_format( date_create( $quit_date ) , 'Y - m - d') ;
+                  ?>">
                   <div class="checkbox ml-1">
                     <label>
                       <input type="checkbox" name="student_status" value="2" <?php if($info['status']=='2') echo 'checked';?> > 
@@ -819,7 +717,6 @@
 
           </div>
         </div>
-
         <div class="block-30 text-center">
           <input type="button" name="save" value="更新" class="btn btn-warning btn-long">
         </div>
@@ -847,70 +744,48 @@
 
 </html>
 <script type="text/javascript">
+
   $(document).ready(function(){
-    $('#table_member_schedule>tbody>tr>td').on('click',function(){
-      var row_index = $(this).parent().index();
-      var col_index = $(this).index();
-      $base_class = '';
-      switch (col_index) {
-            case 1:$base_class = 'M';break;
-            case 2:$base_class = 'A';break;
-            case 3:$base_class = 'B';break;
-            case 4:$base_class = 'C';break;
-            case 5:$base_class = 'D';break;
-            case 6:$base_class = 'E';break;
-            case 7:$base_class = 'F';break;
-            default: $base_class = '';break;
-        }
-        if(row_index+2 < 7) $x = row_index+2 ;
-        else if(row_index+2 == 7) $x = 0 ;
-        else if(row_index+2 == 8) $x = 1 ;
-      if($(this).hasClass('bg-plae-lemmon'))
-      {
-             
-        var classes=  '<?php echo json_encode($course["nearest"]["class"]); ?>';
-            classes = JSON.parse(classes);    
-        
-        $html_0 = '<label  class="col-sm-2 control-label sub_class_join" ';
-        $html_1 = '';
-        $html_2= ' </label>';
-        $ishas =false;
-        jQuery.each(classes,function(){
-          $array_week = this.week.split(',');
-          
-          if($base_class==this.base_class_sign && $.inArray($x,$array_week))
-          {
-               $html_1 = 'data-class="'+$base_class+'-'+$x+'" >'+this.class_code;
-               $ishas = true;
-               return true;
-          }
 
-        });
-        if($ishas) 
-        {
-          $(this).removeAttr('class');
-          $(this).addClass('bg-rouge');
-          $(this).html('選択');
-          $("#class_member_Join").append($html_0+$html_1+$html_2);
-        }
-       
-
-      }
-      else if($(this).hasClass('bg-rouge')) 
-      {
-        $class_sign = $base_class+'-'+$x;
-        
-        $('label.sub_class_join').each(function(){
-          $data_class = $(this).data('class');
-          if( $(this).data('class')===$class_sign){
-              $(this).remove();
-          }
-        });
-        $(this).removeAttr('class');
-        $(this).addClass('bg-plae-lemmon');
-        $(this).html('');
-      }
+    $.fn.datepicker.dates['jp'] = {
+        days: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        daysShort: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        daysMin: ["日", "月", "火", "水", "木", "金", "土", "日"],
+        months:  ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        today: "今日",
+        clear: "クリア",
+        weekStart: 0
+    };
+    var options_Y_M_D={
+        isRTL: false,
+        format: 'yyyy - mm - dd',
+        minViewMode: 'days',
+        todayHighlight: true,
+        autoclose: true,
+        language:'jp',
+        orientation: "auto right",
+    };
+    var options_Y_M={
+        isRTL: false,
+        format: 'yyyy - mm',
+        minViewMode: 'months',
+        todayHighlight: true,
+        autoclose: true,
+        language:'jp',
+        orientation: "auto right",
+    };
+    $('.datepicker_Y_M_D').click(function(){
+      $(this).datepicker(options_Y_M_D);
+      $(this).datepicker("show");
     });
+    $('.datepicker_Y_M').click(function(){
+      $(this).datepicker(options_Y_M);
+      $(this).datepicker("show");
+    });
+
+    
+    
   });
   
 </script>

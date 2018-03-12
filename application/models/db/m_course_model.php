@@ -80,11 +80,11 @@ class M_course_model extends DB_Model {
         }
     }
     public function getData_Course_valid(){   
-        $query ="SELECT a.id,a.course_code,a.course_name,a.start_date,a.end_date,a.regist_start_date,
-                        a.regist_end_date,a.type,a.join_condition
+        $query ="SELECT a.id , a.course_code , a.course_name , a.start_date , a.end_date , a.regist_start_date,
+                        a.regist_end_date , a.type , a.join_condition , a.practice_max , a.delete_flg = ?
                   FROM  m_course  a
                   WHERE  a.regist_end_date >= DATE_FORMAT(NOW(), '%Y%m%d') ";
-        $res = $this->db->query($query);
+        $res = $this->db->query($query ,[ DATA_NOT_DELETED ] );
         if($res === FALSE )
         {
             logerr($params, $sql);
@@ -114,10 +114,10 @@ class M_course_model extends DB_Model {
     public function getData_class_by_id($id = NULL){   
         if($id == NULL) return '';
 
-        $query =" SELECT a.id as course_id ,
-           b.id as class_id,b.base_class_sign,b.class_code,b.class_name,b.`week`, b.max_count
-                FROM m_course a JOIN m_class b ON a.id=b.course_id 
-                WHERE a.id='".$id."'";
+        $query =" SELECT a.id as course_id , b.id as class_id , 
+                         b.base_class_sign , b.class_code,b.class_name,b.`week`, b.max_count
+                  FROM   m_course a JOIN m_class b ON a.id=b.course_id 
+                  WHERE  a.id='".$id."'";
         $res = $this->db->query($query);
         if($res === FALSE )
         {
@@ -125,6 +125,17 @@ class M_course_model extends DB_Model {
             throw new Exception();
         }
         $result = $res->result_array();
+        if(count($result) > 0 )
+        {
+            foreach ($result as $key => $value) {
+               $query = " SELECT COUNT(e.id) as num_ber FROM m_class e , l_student_class f
+                          WHERE e.id = f.class_id AND e.id = ? AND f.end_date = ? ";
+                $data =  $this->db->query($query , [ $value['class_id'] , END_DATE_DEFAULT ]);
+                $number_student_join = $data->result_array();
+                $number = $number_student_join[0]['num_ber'] ;
+                $result[ $key ][ 'number_student_join' ] =   $number ;
+            }
+        }
         $this->found_rows = count($result);
         return $result;
     }
@@ -138,7 +149,7 @@ class M_course_model extends DB_Model {
     {
         $sql = 'select * from m_course
                 where m_course.delete_flg =0 
-                order by m_course.id ASC 
+                order by m_course.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         return $query->result_array();
@@ -157,7 +168,7 @@ class M_course_model extends DB_Model {
                 end_date,regist_start_date,regist_end_date,join_condition,max_count
                 from m_course
                 where m_course.delete_flg =0
-                order by m_course.id ASC 
+                order by m_course.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         $data=$query->result_array();
@@ -254,7 +265,5 @@ class M_course_model extends DB_Model {
         $query = $this->db->get()->result_array();
         return $query;
     }
-
-
 
 }

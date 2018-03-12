@@ -127,6 +127,7 @@ class Member_model extends DB_Model {
         $data_filltered = [];
         $data_search_rel  = [];
         $data_search_filtered = [];
+
         $data_input_condition = $this->input->post('data_input_search');
         $tmp_conver = is_array($data_input_condition) ? NULL : json_decode($data_input_condition, true);
         $data_input_condition = !empty($tmp_conver) ? $tmp_conver : $data_input_condition;
@@ -182,7 +183,7 @@ class Member_model extends DB_Model {
 
         }
         $this->db->order_by('m_student.id', 'ASC');
-
+        $this->db->group_by("m_student.id");
         $data_rel_tmp = $this->db->get()->result_array();
         $check_tag_condition = $this->check_valid_tag($data_input_condition);
         $data_filltered = $data_rel_tmp;
@@ -282,4 +283,57 @@ class Member_model extends DB_Model {
         
     }
     
+    public function filer_type_singe_condition($limit,$start)
+    {
+        if(isset($_POST['text_condition'])){
+            
+            $input_search = $this->input->post('text_condition');
+            $type_search = $this->input->post('type_condition');
+            
+            $this->db->select('SQL_CALC_FOUND_ROWS m_student.id, l_student_course.student_id, l_student_course.course_id, m_student.status, m_class.base_class_sign, m_class.class_name, m_course.course_name, l_student_bus_route.bus_route_ret_id, m_bus_route.bus_stop_id, m_bus_stop.bus_stop_name, l_student_meta.tag, l_student_meta.value',FALSE);
+            $this->db->from('m_student');
+            $this->db->join('l_student_meta' , 'l_student_meta.student_id = m_student.id', 'left');
+            $this->db->join('l_student_course' , 'l_student_course.student_id = m_student.id', 'left');
+            $this->db->join('m_course', 'm_course.id = l_student_course.course_id', 'left');
+            $this->db->join('l_student_class', 'l_student_class.student_id = m_student.id', 'left');
+            $this->db->join('m_class', 'm_class.id = l_student_class.class_id', 'left');
+            $this->db->join('l_student_bus_route', 'l_student_bus_route.student_id = m_student.id', 'left');
+            $this->db->join('m_bus_route', 'm_bus_route.id = l_student_bus_route.bus_route_ret_id', 'left');
+            $this->db->join('m_bus_stop', 'm_bus_stop.id = m_bus_route.bus_stop_id', 'left');
+            $this->db->where('m_student.delete_flg','0');
+
+            $condition_filter = array();
+            switch ($type_search) {
+                case 'id':
+                    $this->db->like('m_student.id', $input_search);
+                    break;
+                case 'practice_course':
+                    $this->db->like('m_course.course_name', $input_search);
+                    break;
+                case 'level':
+                    $this->db->like('m_class.base_class_sign', $input_search);
+                    break;
+                case 'class_current':
+                    $this->db->like('m_class.class_name', $input_search);
+                    break;
+                default:
+                    $this->db->like('l_student_meta.value', $input_search);
+                    $this->db->where('l_student_meta.tag',$type_search);
+                    break;
+            }
+
+            $this->db->order_by('m_student.id', 'ASC');
+            $this->db->group_by("m_student.id");
+            $this->db->limit($limit,$start);
+
+            $data = $this->db->get()->result_array();
+            $query_total = $this->db->query('SELECT FOUND_ROWS() AS `count`');
+            $total = $query_total->row()->count;
+
+            return array('0'=>$data,'1'=>$total);
+
+        }
+        
+
+    }
 }

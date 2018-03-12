@@ -53,6 +53,82 @@ class L_student_request_model extends DB_Model {
         $data = $this->db->get()->result_array();
         return $data;
     }
+
+    public function get_bus_route_student($id_student)
+    {
+        $conditions = array('l_student_bus_route.student_id' => $id_student, 'l_student_bus_route.end_date' => END_DATE_DEFAULT, 'l_student_class.end_date' => END_DATE_DEFAULT);
+        $this->db->select('l_student_bus_route.student_class_id, l_student_bus_route.bus_route_go_id, l_student_bus_route.bus_route_ret_id, l_student_bus_route.student_id, l_student_class.week_num, m_class.class_name,  m_class.course_id, l_student_bus_route.end_date, l_student_class.end_date, m_course.course_name' )
+            ->from('l_student_bus_route')
+            ->join('l_student_class', 'l_student_class.id = l_student_bus_route.student_id', 'left')
+            ->join('m_class', 'm_class.id = l_student_class.class_id',' left')
+            ->join('m_course', 'm_course.id = m_class.course_id',' left')
+            ->where($conditions);
+        $data = $this->db->get()->result_array();
+        return $data;
+    }
+
+    public function get_bus_name($id)
+    {
+        
+        $conditions = array('m_bus_route.id' => $id);
+        $this->db->select('m_bus_route.bus_stop_id, m_bus_route.bus_course_id, m_bus_stop.bus_stop_code, m_bus_stop.bus_stop_name, m_bus_stop.id, m_bus_route.route_order' )
+            ->from('m_bus_route')
+            ->join('m_bus_stop', 'm_bus_stop.id = m_bus_route.bus_stop_id', 'left')
+            ->where($conditions);
+        $data = $this->db->get()->result_array();
+        return $data;
+
+    }
+
+    public function get_name_bus_route($id_student)
+    {
+       $data =  $this->get_bus_route_student($id_student);
+       $data_full =  [];
+       if(!empty($data)){
+
+            foreach ($data as $key => $value) {
+                $tmp = $data[$key];
+                $data_bus = [];
+                $data_bus_go = [];
+                $data_bus_ret = [];
+                if($value['bus_route_go_id'] == $value['bus_route_ret_id']){
+                    $data_bus = $this->get_bus_name($value['bus_route_go_id']);
+                } else {
+                    $data_bus_go =  $this->get_bus_name($value['bus_route_go_id']);
+                    $data_bus_ret =  $this->get_bus_name($value['bus_route_ret_id']);
+                }
+                if(!empty($data_bus)){
+                    $tmp['bus_name'] = $data_bus[0]['bus_stop_name'];
+                    $tmp['route_order'] = $data_bus[0]['route_order'];
+                    $tmp['flag_type'] = FLAG_BUS_GO_SAME_RET;
+                }
+                if(!empty($data_bus_go)){
+                    $tmp['bus_name'] = $data_bus_go[0]['bus_stop_name'];
+                    $tmp['route_order'] = $data_bus_go[0]['route_order'];
+                    $tmp['flag_type'] = FLAG_BUS_GO;
+                }
+                if(!empty($data_bus_ret)){
+                    $tmp['bus_name'] = $data_bus_ret[0]['bus_stop_name'];
+                    $tmp['route_order'] = $data_bus_ret[0]['route_order'];
+                    $tmp['flag_type'] = FLAG_BUS_RET;
+                }
+                $data_full[] =  $tmp;
+            }
+       }    
+       return $data_full;
+    }
+    
+    public function get_practice_max($id_course)
+    {
+        $conditions = array('id' => $id_course);
+        $this->db->select('m.id, m.practice_max')
+            ->from('m_course m')
+            ->where($conditions);
+        $data = $this->db->get()->result_array();
+        return $data;
+    }
+
+
     /**
      * Get list student request change
      * @access public
@@ -90,7 +166,6 @@ class L_student_request_model extends DB_Model {
         //return 0 is list; return 1 is count list
         return array('0'=>$student_request,'1'=>$total);
     }
-
     /**
      * Search Get list student request change
      * @access public

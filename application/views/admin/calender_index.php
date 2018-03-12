@@ -176,10 +176,13 @@
         selectable: true,
         selectHelper: true,
         select: function (start, end, allDay) {
+          
           enable_button_action();
           start_date_selected = fmt(start);
           end_date_selected = fmt(end);
           all_day_select = allDay;
+          uncheck_multiple_date();
+          
         },
         eventDrop: function (event, delta) {
           var start = fmt(event.start);
@@ -478,6 +481,22 @@
         myHtml = myHtmlDay + myHtmlWeek;
 
         return myHtml;
+      }
+
+      function uncheck_multiple_date() {
+        if($('.fc-week div').hasClass('fc-highlight-skeleton')){
+            var count = '';
+            count = $('.fc-highlight').attr("colSpan");
+            if(count > 1){
+              calendar.fullCalendar( 'unselect' );
+              start_date_selected = '';
+              end_date_selected = '';
+              all_day_select = '';
+              month_current_select = '';
+              year_current_select = '';
+              return false;
+            }
+        };
       }
 
       $('#add_date_input').click(function() {

@@ -386,18 +386,15 @@ class Student_model extends DB_Model {
             'family'    => array(), 
             'course'    => array(  
                 'all'=>  array(), 
-                'nearest'   => array(),
+                'valid'   => array(),
 
             ), 
-            'class'     => array(   
+            'class'      => array(   
                 'all'       => array(),
                 'valid'     => array(),
             ),
             'bus_course' => array(   
-            ),
-            'bus_route' => array(   
-                // 'all'       => array(),
-                // 'valid'     => array(),
+                'all'       => array(),
             )
         );
 
@@ -425,31 +422,49 @@ class Student_model extends DB_Model {
         //get data course
         $all_course = $this->student['course']['all'] = $this->m_course_model->getData_Course_valid();
 
-        $course = $this->l_student_course_model->getData_course_valid_by_studentid($student_id);
+        $course_join = $this->l_student_course_model->getData_course_valid_by_studentid($student_id);
         
-        if($course)
+        if($course_join)
         {
-            $this->student['course']['nearest'] = $course;
-            $class = $this->m_course_model->getData_class_by_id($course[0]['course_id']);
-            $this->student['course']['nearest']['class'] = $class;
+            $this->student['course']['valid'] = $course_join;
+            $class = $this->m_course_model->getData_class_by_id($course_join[0]['course_id']);
+            $this->student['course']['valid']['class'] = $class;
 
-            $this->student['course']['nearest']['classjoin'] = $this->l_student_course_model->getData_class_by_id($course[0]['student_course']);
-        }  
-        if(isset($this->student['course']['nearest']['classjoin']))
+            $this->student['course']['valid']['classjoin'] = $this->l_student_course_model->getData_class_by_id($course_join[0]['student_course']);
+        }
+        else
         {
-            foreach ($this->student['course']['nearest']['classjoin'] as $key => $item) {
-                $this->student['bus_course']['all'][$key]['vaible'] = $this->m_bus_course_model->get_data_class_and_bus_course($item['class_id']);
+            $this->student['course']['valid'] = $all_course[0];
+            $class = $this->m_course_model->getData_class_by_id( $all_course[0]['id'] );
+            $this->student['course']['valid']['class'] = $class;
+        }
 
-                foreach ($this->student['bus_course']['all'][$key]['vaible'] as $subkey => $value) {
-                   $this->student['bus_course']['all'][$key]['vaible'][$subkey]['bus_stop'] = $this->m_bus_course_model->getData_Bus_stop_by_id($value['id']);
+        if( isset($this->student['course']['valid']['classjoin']) && count($this->student['course']['valid']['classjoin']) > 0)
+        {
+            foreach ($this->student['course']['valid']['classjoin'] as $key => $item) {
+
+                $data_class_and_bus_course = $this->m_bus_course_model->get_data_class_and_bus_course( $item['class_id'] );
+
+                if( $data_class_and_bus_course )
+                {
+                    $this->student['bus_course']['all'][$key]['vaible'] = $data_class_and_bus_course;
+
+                    foreach ($data_class_and_bus_course as $subkey => $value) {
+                        $this->student['bus_course']['all'][$key]['vaible'][$subkey]['bus_stop'] = $this->m_bus_course_model->getData_Bus_stop_by_id($value['id']);
+                    }
+                    
                 }
-                 $this->student['bus_course']['all'][$key]['student_join'] = $this->l_student_bus_route_model->get_data_student_class($item['student_class_id']);
-                 if($this->student['bus_course']['all'][$key]['student_join'])
-                 {
-                    $this->student['bus_course']['all'][$key]['student_join'][0]['bus_go'] = $this->m_bus_route_model->select_by_id($this->student['bus_course']['all'][$key]['student_join'][0]['bus_route_go_id'],'id');
-                    $this->student['bus_course']['all'][$key]['student_join'][0]['bus_ret'] = $this->m_bus_route_model->select_by_id($this->student['bus_course']['all'][$key]['student_join'][0]['bus_route_ret_id'],'id');
-                 }
-                 
+                
+                
+                $data_student_class = $this->l_student_bus_route_model->get_data_student_class( $item['student_class_id'] );
+
+                if( $data_student_class )
+                {
+                    $this->student['bus_course']['all'][$key]['student_join'] = $data_student_class;
+
+                    $this->student['bus_course']['all'][$key]['student_join'][0]['bus_go'] = $this->m_bus_route_model->select_by_id( $data_student_class[0]['bus_route_go_id'],'id' );
+                    $this->student['bus_course']['all'][$key]['student_join'][0]['bus_ret'] = $this->m_bus_route_model->select_by_id( $data_student_class[0]['bus_route_ret_id'],'id' ); 
+                }
             }
         }
         return $this->student;
@@ -467,12 +482,22 @@ class Student_model extends DB_Model {
 
     public function get_total_user_inactive($condition)
     {
-        # code...
         $this->db->select()
             ->from('m_student')
             ->where($condition);
         $query = count($this->db->get()->result_array());
         return $query;
 
+    }
+
+    public function get_course_current($id_user)
+    {
+        $condition = array('l_student_course.student_id' => $id_user, 'l_student_course.end_date' => END_DATE_DEFAULT);
+        $this->db->select('l_student_course.course_id, m_course.*')
+            ->from('l_student_course')
+            ->where($condition)
+            ->join('m_course', 'm_course.id = l_student_course.student_id');
+        $query = $this->db->get()->result_array();
+        return $query;
     }
 }

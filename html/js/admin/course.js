@@ -81,9 +81,9 @@ $(document).ready(function() {
     $.validator.addMethod(
         "start_regist",
         function(value, element) {
-            var year_end = $('#year_end').val();
-            var month_end = $('#month_end').val();
-            var day_end = $('#day_end').val();
+            var year_end = $('#year_start').val();
+            var month_end = $('#month_start').val();
+            var day_end = $('#day_start').val();
             var year_regist_start = $('#year_regist_start').val();
             var month_regist_start = $('#month_regist_start').val();
             var day_regist_start = $('#day_regist_start').val();
@@ -98,7 +98,7 @@ $(document).ready(function() {
             }
             return true;
         },
-        "申込開始は開催終了の値以降で入力してください。"
+        "申込開始は開催開始の値以降で入力してください。"
     );
     $.validator.addMethod(
         "end_regist",

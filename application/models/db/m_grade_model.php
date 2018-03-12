@@ -14,7 +14,7 @@ class M_grade_model extends DB_Model {
     {
         $sql = 'select * from m_grade
                 where m_grade.delete_flg = 0 
-                order by m_grade.id ASC 
+                order by m_grade.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         return $query->result_array();
@@ -24,7 +24,7 @@ class M_grade_model extends DB_Model {
     {
         $sql = 'select grade_code,grade_name from m_grade
                 where m_grade.delete_flg = 0 
-                order by m_grade.id ASC 
+                order by m_grade.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         return $query->result_array();

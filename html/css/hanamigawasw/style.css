@@ -997,7 +997,7 @@ hr.hr-dashed
 table .complete,
 table .disabled
 {
-  background-color: #f0f0f0 !important;
+  background-color: #cecece !important;
 }
 
 .table-responsive.border
@@ -3238,3 +3238,23 @@ body { padding-right: 0 !important }
   100% { opacity: 0.3; }
 }
 
+.msg_alert{
+  font-size: 18px;
+}
+.content-point-center{
+  text-align: center;
+}
+.hr_edit{
+  height: 3px;
+  background: cornflowerblue;
+}
+.list-bus-route{
+  margin: 5px 20px;
+}
+.list-bus-route {
+  text-align: center;
+}
+.list-bus-route table{
+  width: 50%;
+  margin: 0 auto;
+}

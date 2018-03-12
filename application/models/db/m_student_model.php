@@ -145,23 +145,21 @@ class M_student_model extends DB_Model {
                 $result[ $key ]['meta'][ $row2['tag'] ] = $row2['value'];
             }
             $query = ' SELECT '.
-                        ' l_class.student_id , l_class.start_date as l_class_start_date,l_class.end_date as l_class_end_date , '.
-                        ' m_class.id as idClass,m_class.base_class_sign,m_class.class_name,m_class.class_code ,'.
-                        ' l_course.start_date as l_course_start_date ,l_course.end_date as l_course_end_date , l_course.join_date as l_course_join_date ,'.
-                        ' m_course.id as idcourse,m_course.course_code,m_course.course_name '.
-                    ' FROM l_student_class l_class , m_class , l_student_course l_course ,m_course '.
-                                                             
-                    ' WHERE '.      
-                         ' l_class.class_id = m_class.id AND '.
-                         ' l_class.student_course_id = l_course.id AND'.
-                         ' l_class.student_id = l_course.student_id AND'.
-                         ' l_course.course_id = m_course.id AND'.
-                         ' l_class.start_date <= DATE_FORMAT(NOW(),"%Y-%m-%d") AND '.
-                         ' l_class.delete_flg = 0 AND'.
-                         ' l_class.student_id = ? '.
-                         ' ORDER BY l_class.start_date ASC , l_class.end_date ASC LIMIT 1 ';
+                        ' a.student_id , a.start_date as l_class_start_date , a.end_date as l_class_end_date ,  b.id as idClass, b.base_class_sign , b.class_name , b.class_code , '.
+                        ' c.start_date as l_course_start_date ,c.end_date as l_course_end_date , c.join_date as l_course_join_date , d.id as idcourse , d.course_code, d.course_name  '.   
+                     ' FROM l_student_class a , m_class b, l_student_course c , m_course d ' .           
+                     ' WHERE '.      
+                         ' a.class_id = b.id AND'.
+                         ' a.student_course_id = c.id AND '.
+                         ' a.student_id = c.student_id AND '.
+                         ' c.course_id = d.id AND '.
+                         ' b.delete_flg = ? AND '.
+                         ' d.delete_flg = ? AND '.
+                         ' a.end_date = ?  AND '.
+                         ' c.end_date = ? AND ' .
+                         ' a.student_id = ?  ORDER BY a.start_date  LIMIT 1';
             $result[ $key ]['info'] = array();                
-            $res_2 = $this->db->query($query, $row['id']);
+            $res_2 = $this->db->query($query,[ DATA_NOT_DELETED , DATA_NOT_DELETED, END_DATE_DEFAULT , END_DATE_DEFAULT , $row['id'] ]);
             if ($res_2 === FALSE) {
                 logerr($params, $query);
                 throw new Exception();

@@ -496,3 +496,26 @@ define('TEST_DATE', 2);
 define('NOTRANSFER_DATE', 3);
 define('CONSTRUCTION_DATE', 4);
 define('FREE_DATE', 5);
+
+//request model
+define('FLAG_BUS_GO', 1);
+define('FLAG_BUS_RET', 2);
+define('FLAG_BUS_GO_SAME_RET', 3);
+$config['type_search'] = array(
+    'id'       => '会員番号',
+   'name'       => '氏名',
+    'name_kana'        => '氏名カナ',
+    'practice_course'        => '練習コース',
+    'level'        => '級',
+    'class_current'        => 'クラス',
+    'sex'        => '性別',
+    'birthday'        => '生年月日',
+    'zip'        => '郵便番号',
+    'address'    => '住所',
+    'tel'        => 'TEL',
+    'emergency_tel'        => '緊急連絡先',
+    'enter_date'        => '入会年月日',
+    'quit_reason'        => '休会理由',
+    'drawal_date'        => '退会日付',
+    'rest_start_date' => '休会開始日'
+);

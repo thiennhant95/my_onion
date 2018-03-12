@@ -14,14 +14,17 @@ class L_student_course_model extends DB_Model {
 	public function getData_course_valid_by_studentid($student_id = NULL){	
     	if($student_id == NULL) return '';
     	$params = array(
-    		$student_id,
-    		END_DATE_DEFAULT
+    		$student_id ,
+    		END_DATE_DEFAULT ,
+    		DATA_NOT_DELETED ,
+    		DATA_NOT_DELETED
     	);
     	$query =" SELECT a.id as course_id,a.course_code , a.course_name ,a.short_course_name,a.start_date as course_startdate , 
 	    			     a.end_date as course_enddate ,a.type ,a.regist_start_date,a.regist_end_date ,
 					     b.id as student_course,b.student_id , b.start_date,b.end_date,b.join_date,b.start_date ,b.end_date 
-				  FROM   m_course a  JOIN l_student_course b ON a.id=b.course_id 
-				  WHERE  b.student_id = ? AND b.end_date = ? ";
+				  FROM   m_course a  JOIN l_student_course b ON a.id = b.course_id 
+				  WHERE  b.student_id = ? AND b.end_date = ? AND b.delete_flg = ? AND 
+			  			 a.delete_flg = ? AND a.regist_end_date >= DATE_FORMAT(NOW(), '%Y%m%d') ";
 		$res = $this->db->query($query,$params);
 		if($res === FALSE )
 		{
@@ -37,20 +40,26 @@ class L_student_course_model extends DB_Model {
     	if($id == NULL ) return '';
     	$params = array(
     		$id ,
-    		END_DATE_DEFAULT
+    		END_DATE_DEFAULT , 
+    		DATA_NOT_DELETED ,
+    		DATA_NOT_DELETED ,
+    		DATA_NOT_DELETED 
     	);
     	$query ="   SELECT 
-						a.id,a.course_id,
-						a.student_id,b.id AS student_class_id,b.class_id,b.week_num,
-						b.start_date ,b.end_date ,
-						c.base_class_sign,c.class_name,c.class_code,c.`week`
+						a.id , a.course_id,
+						a.student_id , b.id AS student_class_id , b.class_id , b.week_num,
+						b.start_date , b.end_date , c.max_count ,
+						c.base_class_sign , c.class_name , c.class_code , c.`week`
 					FROM
-						l_student_course a,l_student_class b , m_class c 
+						l_student_course a , l_student_class b , m_class c 
 					WHERE
 						a.id = b.student_course_id  AND
 						c.id = b.class_id AND
 						a.id = ? AND
-						b.end_date = ? ";
+						b.end_date = ? AND  
+						c.delete_flg = ? AND 
+						a.delete_flg = ? AND 
+						b.delete_flg = ? ";
 
 		$res = $this->db->query($query,$params);
 		if($res === FALSE )
@@ -59,6 +68,17 @@ class L_student_course_model extends DB_Model {
             throw new Exception();
 		}
 		$result = $res->result_array();
+		if(count($result) > 0 )
+        {
+            foreach ($result as $key => $value) {
+               $query = " SELECT COUNT(e.id) as num_ber FROM m_class e , l_student_class f
+                          WHERE e.id = f.class_id AND e.id = ? AND f.end_date = ? ";
+                $data =  $this->db->query($query , [ $value['class_id'] , END_DATE_DEFAULT ]);
+                $number_student_join = $data->result_array();
+                $number = $number_student_join[0]['num_ber'] ;
+                $result[ $key ][ 'number_student_join' ] =   $number ;
+            }
+        }
 		$this->found_rows = count($result);
         return $result;
 	}
@@ -102,7 +122,7 @@ class L_student_course_model extends DB_Model {
 
 			$sql = "SELECT id FROM l_student_course WHERE student_id = ? AND course_id != ? AND end_date = ?"; 
 			$data = $this->db->query($sql, array(  $student_id , $course_id , END_DATE_DEFAULT))->result_array();
-			if(count($data))
+			if(count($data) > 0)
 			{
 				$id_old_student_course = $data[0]['id'];
 				$current_date = date('Y-m-d');
@@ -136,7 +156,7 @@ class L_student_course_model extends DB_Model {
      * @param array $information object information
      * @return boolean
      * @access public
-     * @author  Tran Thien Nhan Viet Vang JSC
+	 * @author  Tran Thien Nhan Viet Vang JSC
      */
     public function edit_by_where($whereclause, $information,$table=NULL)
     {

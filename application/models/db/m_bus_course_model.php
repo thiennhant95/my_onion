@@ -39,9 +39,9 @@ class M_bus_course_model extends DB_Model {
         $query.=" FROM   m_bus_course , m_bus_route , m_bus_stop  ";
         $query.=" WHERE  m_bus_route.bus_course_id = m_bus_course.id AND ";
 		$query.="		 m_bus_route.bus_stop_id = m_bus_stop.id AND ";
-		$query.="		 m_bus_course.delete_flg = '".DATA_NOT_DELETED."' AND ";
-		$query.="		 m_bus_course.id = '".$id."'" ;
-		$res = $this->db->query($query);
+		$query.="		 m_bus_course.delete_flg = ? AND ";
+		$query.="		 m_bus_course.id = ? " ;
+		$res = $this->db->query($query , [ DATA_NOT_DELETED , $id ]);
 		if($res === FALSE )
 		{
 			logerr($params, $sql);
@@ -54,14 +54,16 @@ class M_bus_course_model extends DB_Model {
 
     public function get_data_class_and_bus_course($class_id)
     {
-        if($class_id == NULL) return '';
+        if($class_id == NULL || $class_id == '') return '';
 
-        $query =" SELECT b.id ,b.class_id ,a.base_class_sign,a.class_code,a.class_name,a.delete_flg,b.bus_course_code,b.bus_course_name,b.max ";
+        $query =" SELECT b.id , b.class_id , a.base_class_sign , a.class_code , ";
+        $query.=" a.class_name , a.delete_flg , b.bus_course_code , b.bus_course_name , b.max ";
         $query.=" FROM   m_class a , m_bus_course b  ";
         $query.=" WHERE  a.id = b.class_id AND  ";
-        $query.="        a.delete_flg = '".DATA_NOT_DELETED."' AND ";
-        $query.="        b.class_id = '".$class_id."'" ;
-        $res = $this->db->query($query);
+        $query.="        a.delete_flg = ? AND ";
+        $query.="        b.delete_flg = ? AND ";
+        $query.="        b.class_id = ? " ;
+        $res = $this->db->query($query , [ DATA_NOT_DELETED , DATA_NOT_DELETED , $class_id] );
         if($res === FALSE )
         {
             logerr($params, $sql);
@@ -82,7 +84,7 @@ class M_bus_course_model extends DB_Model {
         $sql = 'select m_bus_course.id,m_bus_course.bus_course_code,m_bus_course.bus_course_name,m_bus_course.max,m_class.class_name 
                 from m_bus_course JOIN m_class ON m_bus_course.class_id = m_class.id 
                 where m_bus_course.delete_flg = 0 and m_class.delete_flg=0
-                order by m_bus_course.id ASC 
+                order by m_bus_course.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         return $query->result_array();
@@ -98,7 +100,7 @@ class M_bus_course_model extends DB_Model {
         $sql = 'select m_bus_course.bus_course_code,m_bus_course.bus_course_name,m_bus_course.max,m_class.class_name 
                 from m_bus_course JOIN m_class ON m_bus_course.class_id = m_class.id 
                 where m_bus_course.delete_flg = 0 and m_class.delete_flg=0
-                order by m_bus_course.id ASC 
+                order by m_bus_course.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         return $query->result_array();
@@ -215,5 +217,21 @@ class M_bus_course_model extends DB_Model {
             throw new Exception();
         }
         return TRUE;
+    }
+
+    function check_bus_route_exists( $student_id, $class_id ) {
+        $sql = "
+            SELECT * 
+            FROM l_student_bus_route 
+            WHERE student_id = '$student_id' 
+            AND student_class_id = '$class_id' 
+            AND end_date LIKE '%2199-12-31%'
+        ";
+        $query = $this->db->query( $sql );
+        if ( $query === FALSE ) {
+            logerr($params, $sql);
+            throw new Exception();
+        }
+        return $query->result_array();
     }
 }

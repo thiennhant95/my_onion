@@ -27,7 +27,7 @@
         <div class="panel-heading">基本契約情報</div>
         <div class="panel-body">
         <?php 
-           $config = $this->config->item('my_config');
+              $config = $this->configVar;
               switch (isset($info['rest_flg'])?$info['rest_flg']:'0') {
                   case 1:
                       echo '<div class="alert alert-info text-center">
@@ -84,18 +84,46 @@
                   </tr>
                   <tr>
                     <th>コース</th>
-                    <td><?php  echo isset($course['nearest']['course_name'])?$course['nearest']['course_name']:''?></td>
+                    <td><?php  echo isset($course['valid'][0]['course_name'])?$course['valid'][0]['course_name']:''?></td>
                     <th>級</th>
-                    <td><?php echo  isset($course['nearest']['classjoin_nearest']['class_name'])?$course['nearest']['classjoin_nearest']['class_name']:''?></td>
+                    <td>
+                      <?php if(isset($course['valid']['classjoin']) )
+                      {
+                        $class_join = $course['valid']['classjoin'];
+                        $date_temp = $class_join[0]['start_date'];
+                        $num_ber = 0;
+                        foreach ($class_join as $key => $value) {
+                          $clas_name = '';
+                          if( date_create( $date_temp )  < date_create($value['start_date']) )
+                          {
+                            $num_ber = $key;
+                          }
+                        }
+                        echo $class_join[$num_ber]['class_name'];
+                      } 
+                      ?>
+                    </td>
                   </tr>
                   <tr>
                     <th>指導開始日</th>
-                    <td><?php 
-                    if(isset($course['nearest']['classjoin_nearest']['start_date'])&&$course['nearest']['classjoin_nearest']['start_date']!='')
-                    {
-                      echo  date_format(date_create($course['nearest']['classjoin_nearest']['start_date']),'Y年m月d日(y年M月)');
-                    }
-                      ?></td>
+                    <td>
+                      <?php 
+                      if(isset($course['valid']['classjoin']) )
+                      {
+                        $class_join = $course['valid']['classjoin'];
+                        $date_temp = $class_join[0]['start_date'];
+                        $num_ber = 0;
+                        foreach ($class_join as $key => $value) {
+                          $clas_name = '';
+                          if( date_create( $date_temp )  < date_create($value['start_date']) )
+                          {
+                            $num_ber = $key;
+                          }
+                        }
+                        echo date_format( date_create($class_join[$num_ber]['start_date']),'Y年m月d日(y年mヶ月)') ;
+                      } 
+                      ?>
+                      </td>
                     <th>生年月日</th>
                     <td><?php
                         $today = date_create(date('Y-m-d'));
@@ -107,6 +135,10 @@
                   <tr>
                     <th>健康管理連絡事項</th>
                     <td class="text-red" colspan="3"><?php echo isset($meta['memo_health'])?$meta['memo_health']:'' ?></td>
+                  </tr>
+                  <tr>
+                    <th>メモ特記事項</th>
+                    <td class="text-red" colspan="3"></td>
                   </tr>
                 </tbody>
               </table>
@@ -145,7 +177,7 @@
                     }
                     else {
                       foreach ($family as $key => $value) {
-                        $config = $this->config->item('my_config');
+                        $config = $this->configVar;
                         $status = "";
                         switch ($info['status']) {
                                 case '0':

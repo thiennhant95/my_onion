@@ -806,7 +806,7 @@
               $('#page_complete').css('display','block');
               if ( birthday_check >= 18 ) $('.parent-text').css('display', 'block');
             }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-              console.log('error');
+              console.log( errorThrown );
             }
           });
         } else {

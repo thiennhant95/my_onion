@@ -145,6 +145,37 @@
                 </div>
               </section>
 
+              <section class="mb-30">
+                <div class="panel panel-card">
+                  <div class="panel-heading bg-rouge align-left pl-30">※誓約書連名ご家族（入会者が成人の場合のみ記入）</div>
+                  <div class="panel-body-2 pt-10 bg-milky-pink table-responsive">
+                    <table class="table table-style-1" width="100%" class="text-gray">
+                      <tr>
+                        <th class="align-right table-border-none">家族氏名</th>
+                        <td class="bg-white table-border-none">
+                          <input name="family" class="form-control w-sm-50per w-xl-60per" value="" placeholder="" type="text">
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="align-right table-border-none">続柄</th>
+                        <td class="bg-white table-border-none">
+                          <select name="relationship" class="form-control w-xs-100per w-md-40per">
+                            <option>---</option>
+                            <option value="父">父</option>
+                            <option value="母">母</option>
+                            <option value="夫・妻">夫・妻</option>
+                            <option value="兄弟">兄弟</option>
+                            <option value="子">子</option>
+                            <option value="祖父母">祖父母</option>
+                            <option value="その他">その他</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </section>
+
 
               <section>
 
@@ -152,22 +183,19 @@
                   <div class="panel-heading g-green bg-deep-green align-left pl-30">【希望練習コース・泳力アンケートなど】</div>
                   <div class="panel-body-2 pt-10 bg-ice-green table-responsive">
                     <h2 class="title-1 mb-20" style="text-decoration: underline;">※入会者が未成年の場合のみ記入</h2>
+                    <input type="hidden" value="<?php echo isset( $s_info['course']['nearest'][0]['practice_max'] ) ? $s_info['course']['nearest'][0]['practice_max'] : ''; ?>" name="practice_max" />
                     <table class="table table-style-1" width="100%" class="text-gray">
                       <tr>
                         <th class="align-right table-border-none">希望練習コース</th>
-                        <td class="bg-white text-gray table-border-none">ジュニア週２</td>
+                        <td class="bg-white text-gray table-border-none"><?php echo isset( $s_info['course']['nearest'][0]['course_name'] ) ? $s_info['course']['nearest'][0]['course_name'] : ''; ?></td>
                       </tr>
                       <tr>
                         <th class="align-right bg-plae-lemmon text-gray table-border-none">コースコード<br><span style="font-size:11px">（スタッフ入力欄）</span></th>
                         <td class="bg-white table-border-none">
                           <select class="form-control w-xs-100per" id="change-course" onchange="change_course(this.value, <?php echo $s_info['info']['id']; ?>)">
                           <?php
-                            // foreach( $s_info['course']['all'] as $key => $value ) {
-                            //   $selected = ( $value['id'] == $s_info['course']['nearest']['course_id'] ) ? 'selected' : '';
-                            //   echo '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['course_name'] . '</option>';
-                            // }
                             foreach ( $course_valid as $k => $v ) {
-                              $selected = ( $v['id'] == $s_info['course']['nearest']['course_id'] ) ? 'selected' : '';
+                              $selected = ( $v['id'] == $s_info['course']['nearest'][0]['course_id'] ) ? 'selected' : '';
                               echo '<option value="' . $v['id'] . '" ' . $selected . '>' . $v['course_name'] . '</option>';
                             }
                           ?>
@@ -451,13 +479,13 @@
               <p class="mb-50">
                 入会者は、健康状態にあり、水泳練習への参加に支障がないものと認め健康状態についての一切とクラブ規則を遵守することを保護者の責任として誓約します。
               </p>
-              <p class="mb-50">2017年9月10日</p>
+              <p class="mb-50"><?php echo date('Y年m月d日'); ?></p>
               <div class="align-center">
                 <dl class="dl-style-1">
                   <dt>入会者名</dt>
-                  <dd>玉葱　太郎</dd>
+                  <dd><?php echo isset( $s_info['meta']['name'] ) ? $s_info['meta']['name'] : ''; ?></dd>
                   <dt>保護者氏名</dt>
-                  <dd>玉葱　花絵</dd>
+                  <dd><?php echo isset( $s_info['meta']['parent_name'] ) ? $s_info['meta']['parent_name'] : ''; ?></dd>
                 </dl>
               </div>
             </div>
@@ -492,15 +520,15 @@
                 <li>プール施設内において、入会者の健康状態が原因で事故が発生した場合は、入会者及び家族の責任で一切を処理し、クラブには何らご迷惑をおかけしません。</li>
                 <li>水泳練習に差し支えない場合でも、身体的理由で定期的に通院している場合にはお知らせします。</li>
               </ol>
-              <p class="mb-50">2017年9月10日</p>
+              <p class="mb-50"><?php echo date('Y年m月d日'); ?></p>
               <div class="align-center">
                 <dl class="dl-style-1">
                   <dt>入会者名</dt>
-                  <dd>玉葱　太郎</dd>
+                  <dd><?php echo isset( $s_info['meta']['name'] ) ? $s_info['meta']['name'] : ''; ?></dd>
                   <dt>家族名</dt>
-                  <dd>玉葱　花絵</dd>
+                  <dd id="family"></dd>
                   <dt>続柄</dt>
-                  <dd>母</dd>
+                  <dd id="relationship"></dd>
                 </dl>
               </div>
             </div>
@@ -565,6 +593,40 @@
     </div>
   </div>
 
+  <div class="modal fade" id="modal-empty-class" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Error</h4>
+        </div>
+        <div class="modal-body">
+          <p>Empty class!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modal-max-class" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Error</h4>
+        </div>
+        <div class="modal-body">
+          <p>Max class is: <span id="max_class"><?php echo isset( $s_info['course']['nearest'][0]['practice_max'] ) ? $s_info['course']['nearest'][0]['practice_max'] : ''; ?></span></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <?php require_once("contents_footer.php"); ?>
 </body>
 
@@ -576,6 +638,9 @@
     if ( value == 0 ) $('.disabled_bus').attr('disabled', 'disabled');
     else $('.disabled_bus').removeAttr('disabled');
   }
+
+  var practice_max = $('input[name=practice_max]').val();
+  var practice_max_change = 0;
 
   function change_course( course_id, student_id ) {
     $.ajax({
@@ -591,10 +656,14 @@
       },
       success: function(result) {
         // console.log( result );
+        practice_max = result['practice_max'];
+        practice_max_change = 0;
         $('.display_class').empty();
         $('.display_bus').empty();
         $('.html_display').empty();
-        $('.html_display').append( result );
+        $('.html_display').append( result['html'] );
+        $('input[name=practice_max]').val( result['practice_max'] );
+        $('#max_class').html( result['practice_max'] );
         $('.bg-gainsboro').css('border', '1px solid #9e9e9e3d');
         $('.bg-gainsboro').css('cursor', 'default');
         $('.bg-lightpink').css('cursor', 'default');
@@ -630,6 +699,7 @@
       }
     });
   }
+
   $(function() {
     $('.bg-gainsboro').css('border', '1px solid #9e9e9e3d');
     $('.bg-gainsboro').css('cursor', 'default');
@@ -641,6 +711,7 @@
         var _class_split = _class.split( '_week_' );
         var _class_name = _class.split('_');
         if ( $(this).hasClass( 'bg-rouge' ) ) {
+          practice_max_change--;
           $(this).removeClass( 'bg-rouge' );
           $(this).text(_class_split[0]+'('+_class_name[3]+'/'+_class_name[4]+')');
           $(this).css('color', 'black');
@@ -652,36 +723,39 @@
           // remove bus
           $( '#' + _class ).remove();
         } else {
-          $(this).addClass('bg-rouge');
-          // $(this).removeClass('bg-plae-lemmon');
-          $(this).text('選択');
-          $(this).css('color', 'white');
-          $('.display_class').append('<input type="text" data-id="' + _id + '" data-class="' + _class + '" value="' + _class_split[0] + '" class="form-control w-xs-19per each_class" readonly>');
-          // add bus
-          var student_id = $('input[name=student_id]').val();
-          var course_id = $('#change-course option:selected').val();
-          $.ajax({
-            url: 'https:' + "<?php echo base_url().'admin/entry/edit/'?>"+student_id,
-            data: {
-                data_class : _class,
-                class_id : _id,
-                course_id : course_id
-            },
-            method: "POST",
-            dataType: "json",
-            beforeSend: function() {
-              $('td[data-class='+_class+']').removeClass('bg-plae-lemmon');
-            },
-            success: function(result) {
-              // console.log( result );
-              $('.display_bus').append( result );
-            }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(errorThrown);
-            },
-            complete: function() {
-              $('td[data-class='+_class+']').addClass('bg-plae-lemmon');
-            }
-          });
+          if ( practice_max_change < practice_max ) {
+            practice_max_change++;
+            $(this).addClass('bg-rouge');
+            $(this).text('選択');
+            $(this).css('color', 'white');
+            $('.display_class').append('<input type="text" data-id="' + _id + '" data-class="' + _class + '" value="' + _class_split[0] + '" class="form-control w-xs-19per each_class" readonly>');
+            // add bus
+            var student_id = $('input[name=student_id]').val();
+            var course_id = $('#change-course option:selected').val();
+            $.ajax({
+              url: 'https:' + "<?php echo base_url().'admin/entry/edit/'?>"+student_id,
+              data: {
+                  data_class : _class,
+                  class_id : _id,
+                  course_id : course_id
+              },
+              method: "POST",
+              dataType: "json",
+              beforeSend: function() {
+                $('td[data-class='+_class+']').removeClass('bg-plae-lemmon');
+              },
+              success: function(result) {
+                $('.display_bus').append( result );
+              }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                  console.log(errorThrown);
+              },
+              complete: function() {
+                $('td[data-class='+_class+']').addClass('bg-plae-lemmon');
+              }
+            });
+          } else {
+            $('#modal-max-class').modal( 'show' );
+          }
         }
       }
     });
@@ -849,7 +923,9 @@
           return false;
       }
   });
-  $('#btn-entry-edit').click(function() {
+  // $('#btn-entry-edit').click(function() {
+  $('#btn-entry-next').click(function() {
+    
     var user_name = $('input[name=user_name]').val();
     var postal_code1 = $('input[name=postal_code1').val();
     var postal_code2 = $('input[name=postal_code2]').val();
@@ -926,80 +1002,103 @@
     var class_route_1 = [];
     var class_route_2 = [];
     $('.display_bus').find('.data_route').each( function() {
-      class_route_1.push( $( this ).attr( 'data-route' ) );
-      class_route_2.push( $( this ).attr( 'data-route' ) );
+      // if ( $( this ).attr( 'data-route' ) != 'no' ) {
+        class_route_1.push( $( this ).attr( 'data-route' ) );
+        class_route_2.push( $( this ).attr( 'data-route' ) );
+      // }
     });
     $('.display_bus').find('.main_bus_route').each( function() {
       $( this ).find( '.each_route' ).each( function() {
-        for ( var i = 0; i < class_route_1.length; i++ ) {
-          if ( class_route_1[i] == $( this ).attr( 'data-route' ) ) {
-            class_route_2[i] = class_route_2[i] + '_' + $( this ).val();
+        // if ( $( this ).attr('data-check') != 'no' ) {
+          for ( var i = 0; i < class_route_1.length; i++ ) {
+            if ( class_route_1[i] == $( this ).attr( 'data-route' ) ) {
+              class_route_2[i] = class_route_2[i] + '_' + $( this ).val();
+            }
           }
-        }
+        // }
       });
     });
-    var data = {
-      user_name : user_name,
-      postal_code : postal_code1 +'-'+ postal_code2,
-      address : address,
-      email_address : email_address,
-      email_flg : email_flg,
-      phone_number : phone_number,
-      name_kana : name_kana,
-      birthday : birthday,
-      sex : sex,
-      emergency_tel : emergency_tel,
-      school_name : school_name,
-      parent_name : parent_name,
-      school_grade : school_grade,
-      bus_use_flg : bus_use_flg,
-      enquete : enquete,
-      memo_to_coach : memo_to_coach,
-      iccard : iccard,
-      first_lesson_date : first_lesson_date,
-      memo_special : memo_special,
-      student_id : student_id,
-      course_id : course_id,
-      class_choose : class_choose,
-      class_route : class_route_2
-    }
-    if ( user_name != '' && name_kana != '' && birthday != '' && sex != '' && postal_code1 != '' && postal_code2 != '' && address != '' && email_address != '' && phone_number != '' ) {
-      $.ajax({
-        url: 'https:' + "<?php echo base_url().'admin/entry/edit/1'; ?>",
-        data: data,
-        method: "POST",
-        dataType: "json",
-        success: function(result) {
-          console.log( result );
-          if ( result['update'] == 'success' ) {
-            $('#temporary_pw').text( result['temporary_pw'] );
-            entry_disp_view('#entry_complete');
-          }
-        }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log(errorThrown);
-        }
-      });
-    } else {
-      $('#modal-error').modal( 'show' );
-    }
+    console.log( class_route_1 );
+    console.log( class_route_2 );
+
+    // var family = $('input[name=family]').val();
+    // var relationship = $('select[name=relationship] option:selected').val();
+    // var data = {
+    //   user_name : user_name,
+    //   postal_code : postal_code1 +'-'+ postal_code2,
+    //   address : address,
+    //   email_address : email_address,
+    //   email_flg : email_flg,
+    //   phone_number : phone_number,
+    //   name_kana : name_kana,
+    //   birthday : birthday,
+    //   sex : sex,
+    //   emergency_tel : emergency_tel,
+    //   school_name : school_name,
+    //   parent_name : parent_name,
+    //   school_grade : school_grade,
+    //   bus_use_flg : bus_use_flg,
+    //   enquete : enquete,
+    //   memo_to_coach : memo_to_coach,
+    //   iccard : iccard,
+    //   first_lesson_date : first_lesson_date,
+    //   memo_special : memo_special,
+    //   student_id : student_id,
+    //   course_id : course_id,
+    //   class_choose : class_choose,
+    //   class_route : class_route_2,
+    //   family : family,
+    //   relationship : relationship
+    // }
+
+    // console.log( data );
+
+    // if ( user_name != '' && name_kana != '' && birthday != '' && sex != '' && postal_code1 != '' && postal_code2 != '' && address != '' && email_address != '' && phone_number != '' ) {
+    //   $.ajax({
+    //     url: 'https:' + "<?php echo base_url().'admin/entry/edit/1'; ?>",
+    //     data: data,
+    //     method: "POST",
+    //     dataType: "json",
+    //     success: function(result) {
+    //       if ( result['update'] == 'success' ) {
+    //         $('#temporary_pw').text( result['temporary_pw'] );
+    //         entry_disp_view('#entry_complete');
+    //       }
+    //     }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+    //       console.log(errorThrown);
+    //     }
+    //   });
+    // } else {
+    //   $('#modal-error').modal( 'show' );
+    // }
   });
 
   entry_disp_view('#page_init');
 
-  $('main#page_init').on('click', '#btn-entry-next', function(event) {
-      // event.preventDefault();
-      entry_disp_view('#entry_explain');
-  });
+  // $('main#page_init').on('click', '#btn-entry-next', function(event) {
+  //     // event.preventDefault();
+  //     var class_choose = [];
+  //     $('.display_class').find('.each_class').each( function(){
+  //       class_choose.push( $(this).attr('data-id') + '_' + $(this).attr('data-class') );
+  //     });
+  //     if ( class_choose.length == 0 ) $('#modal-empty-class').modal( 'show' );
+  //     else entry_disp_view('#entry_explain');
+  // });
 
   $('main#entry_explain').on('click', 'span#button_entry_contract', function(event) {
       // event.preventDefault();
 
+      var check_year = $('input[name=birthday]').val();
+      check_year = moment().diff(moment(check_year, 'YYYYMMDD'), 'years');
+
       // 申込者の年齢チェックによって、どちらを表示するか表示を振り分ける
-      if (1) {
+      if ( check_year < 18 ) {
           // 未成年者用 誓約書表示
           entry_disp_view('#entry_minority');
       } else {
           // 成年用 誓約書表示
+          $('#family').html( $('input[name=family]').val() );
+          $('#relationship').html( $('select[name=relationship] option:selected').val() );
           entry_disp_view('#entry_majority');
       }
   });

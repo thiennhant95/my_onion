@@ -63,21 +63,25 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-5 control-text">
-                          <?php echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name']; ?>）
+                          <?php if( isset( $v['bus_course_go'] ) ) { echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name'] . '）'; } ?>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">行きの乗車場所</label>
-                        <div class="col-sm-5 control-text">
-                          <span><?php echo $v['bus_course_go']['bus_course_name'] . '【' . $v['bus_course_go']['route_order'] . '】' . $v['bus_course_go']['bus_stop_name']; ?></span>
+                      <?php if ( isset( $v['bus_course_go'] ) ) {?>
+                        <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">行きの乗車場所</label>
+                          <div class="col-sm-5 control-text">
+                            <span><?php echo $v['bus_course_go']['bus_course_name'] . '【' . $v['bus_course_go']['route_order'] . '】' . $v['bus_course_go']['bus_stop_name']; ?></span>
+                          </div>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">帰りの降車場所</label>
-                        <div class="col-sm-5 control-text">
-                          <span><?php echo $v['bus_course_ret']['bus_course_name'] . '【' . $v['bus_course_ret']['route_order'] . '】' . $v['bus_course_ret']['bus_stop_name']; ?></span>
+                      <?php }
+                      if ( isset( $v['bus_course_ret'] ) ) { ?>
+                        <div class="form-group">
+                          <label for="" class="col-sm-2 control-label">帰りの降車場所</label>
+                          <div class="col-sm-5 control-text">
+                            <span><?php echo $v['bus_course_ret']['bus_course_name'] . '【' . $v['bus_course_ret']['route_order'] . '】' . $v['bus_course_ret']['bus_stop_name']; ?></span>
+                          </div>
                         </div>
-                      </div>
+                      <?php } ?>
                     <?php } ?>
                 <?php } ?>
               </section>
@@ -114,58 +118,66 @@
                       <div class="form-group">
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-5 control-text">
-                          <?php echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name']; ?>）
+                          <?php if ( isset( $v['bus_course_go'] ) ) { echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name'] . '）'; } ?>
                         </div>
                       </div>
                       <div class="form-group">
+                        <?php if ( isset( $v['list_bus_course'] ) ) { ?>  
                         <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
-                        <div class="col-sm-3">
-                          <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_1 . "'"; ?>)">
-                            <?php
-                              foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
-                                if ( $v['bus_course_go']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
-                                else $selected = '';
-                                echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
-                              }
-                            ?>
-                          </select>
-                        </div>
-                        <div class="col-sm-3">
-                          <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="go" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_go']['bus_route_go_id']; ?>" id="<?php echo $id_bus_stop_1; ?>">
-                            <?php
-                              foreach ( $v['list_route_go'] as $k2 => $v2 ) {
-                                if ( $v['bus_course_go']['bus_route_go_id'] == $v2['id'] ) $selected = 'selected';
-                                else $selected = '';
-                                echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
-                              }
-                            ?>
-                          </select>
-                        </div>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_1 . "'"; ?>)">
+                              <?php
+                                foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
+                                  if ( $v['bus_course_go']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                  else $selected = '';
+                                  echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
+                                }
+                              ?>
+                            </select>
+                          </div>
+                        <?php } ?>
+                        <?php if ( isset( $v['list_route_go'] ) ) { ?>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="go" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_go']['bus_route_go_id']; ?>" id="<?php echo $id_bus_stop_1; ?>">
+                              <?php
+                                foreach ( $v['list_route_go'] as $k2 => $v2 ) {
+                                  if ( $v['bus_course_go']['bus_route_go_id'] == $v2['id'] ) $selected = 'selected';
+                                  else $selected = '';
+                                  echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
+                                }
+                              ?>
+                            </select>
+                          </div>
+                        <?php } ?>
                       </div>
                       <div class="form-group">
+                      <?php if ( isset( $v['list_bus_course'] ) ) { ?>
                         <label for="" class="col-xs-12 col-sm-2 control-label">帰りの降車場所</label>
-                        <div class="col-sm-3">
-                          <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_2 . "'"; ?>)">
-                            <?php
-                              foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
-                                if ( $v['bus_course_ret']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
-                                else $selected = '';
-                                echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
-                              }
-                            ?>
-                          </select>
-                        </div>
-                        <div class="col-sm-3">
-                          <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="ret" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_ret']['bus_route_ret_id']; ?>" id="<?php echo $id_bus_stop_2; ?>">
-                            <?php
-                              foreach ( $v['list_route_ret'] as $k2 => $v2 ) {
-                                if ( $v['bus_course_ret']['bus_route_ret_id'] == $v2['id'] ) $selected = 'selected';
-                                else $selected = '';
-                                echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
-                              }
-                            ?>
-                          </select>
-                        </div>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_2 . "'"; ?>)">
+                              <?php
+                                foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
+                                  if ( $v['bus_course_ret']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                  else $selected = '';
+                                  echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
+                                }
+                              ?>
+                            </select>
+                          </div>
+                        <?php } ?>
+                        <?php if ( isset( $v['list_route_ret'] ) ) { ?>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="ret" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_ret']['bus_route_ret_id']; ?>" id="<?php echo $id_bus_stop_2; ?>">
+                              <?php
+                                foreach ( $v['list_route_ret'] as $k2 => $v2 ) {
+                                  if ( $v['bus_course_ret']['bus_route_ret_id'] == $v2['id'] ) $selected = 'selected';
+                                  else $selected = '';
+                                  echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
+                                }
+                              ?>
+                            </select>
+                          </div>
+                        <?php } ?>
                       </div>
                     </div>
                   <?php } ?>

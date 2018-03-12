@@ -33,26 +33,29 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="rounded-corners-1 pb-10">
-              <form action="" method="">
+              <form action="<?php echo base_url(); ?>admin/member" method="POST">
 
                 <div class="row">
                   <div class="col-sm-5 align-center mb-5">
                     <table width="100%">
                       <tr>
                         <td><img src="/images/hanamigawasw/icon_magnifying_glass.svg" style="width:35px"></td>
-                        <td><input class="form-control" type="text" name="" placeholder="氏名・番号・学校名等"></td>
+                        <td><input class="form-control" id = "text_condition" type="text" name="text_condition" placeholder="氏名・番号・学校名等"></td>
                       </tr>
                     </table>
                   </div>
                   <div class="col-sm-5 align-center mb-5">
-                    <select class="form-control">
-                      <option value="">練習コース</option>
+                    <select class="form-control" name="type_condition">
+                      <?php foreach ($type_search as $key_select => $value_select) {?>
+                        <option value="<?php echo $key_select;?>"><?php echo $value_select;?></option>
+                      <?php }?>
                     </select>
                   </div>
                   <div class="col-sm-2 align-center mb-5">
-                    <input class="submit-btn bg-blue-green" type="submit" value="会員検索">
+                    <input class="submit-btn bg-blue-green" id="search_member" type="submit" value="会員検索">
                   </div>
                 </div>
+
               </form>
             </div>
           </div>
@@ -455,6 +458,8 @@
     </div>
   </main>
   <?php require_once("contents_footer.php"); ?>
+  <script>
+  </script>
 </body>
 
 </html>

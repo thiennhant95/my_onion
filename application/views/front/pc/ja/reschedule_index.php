@@ -12,7 +12,13 @@
       <h1 class="lead-heading lead-heading-icon-calender bg-main h3">欠席･振替申請</h1>
       <section>
         <div class="panel panel-dotted">
-          <div class="panel-heading">ジュニアコース 週1回</div>
+          <div class="panel-heading">
+            <?php if (!empty($course)) {
+              foreach ($course as $key => $value) {
+                echo $value['course_name'];
+              }
+            }?>
+          </div>
           <div class="panel-body">
 
             <div class="block-30" id="waring-msg">
@@ -417,15 +423,12 @@
                       <span aria-hidden="true">&times;</span>
                       <span></span>
                     </button>-->
-                  </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      msg
       <!-- end custome page -->
 
     </div>
@@ -492,9 +495,12 @@
         selectable: true,
         selectHelper: true,
         select: function (start, end, allDay) {
+
           start_date_selected = fmt_date(start);
-          // end_date_selected = fmt(end);
-          check_type_date();
+          uncheck_multiple_date();
+          if(start_date_selected){
+            check_type_date();
+          }       
           
         },
         eventDrop: function (event, delta) {
@@ -650,6 +656,18 @@
         (last_month_tmp == 0) ? $('.fc-pre_event-button').html('< Last year') : $('.fc-pre_event-button').html('< ' + last_month_tmp + '月');
         (next_month_tmp == '') ? $('.fc-next_event-button').html('Next year >') : $('.fc-next_event-button').html(next_month_tmp + '月' + ' >');
 
+      }
+
+      function uncheck_multiple_date() {
+        if($('.fc-week div').hasClass('fc-highlight-skeleton')){
+            var count = '';
+            count = $('.fc-highlight').attr("colSpan");
+            if(count > 1){
+              calendar.fullCalendar( 'unselect' );
+              start_date_selected = '';
+              return false;
+            }
+        };
       }
 
       $('#modalTransfer').on('show.bs.modal', function (e) {

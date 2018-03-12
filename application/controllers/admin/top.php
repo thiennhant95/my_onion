@@ -12,6 +12,9 @@ class Top extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
+            $config = $this->configVar;
+            $data['type_search'] = $config['type_search'];
+            $this->viewVar = $data;
             admin_layout_view('top_index', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());

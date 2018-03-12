@@ -8,6 +8,8 @@ class Member extends ADMIN_Controller {
         $this->load->model('member_model','member_model');
         $this->load->library("pagination");
     }
+    
+    //DEV TRÍ VV_JSC
     /**
      * 会員一覧(1ページ目)
      *
@@ -18,12 +20,34 @@ class Member extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
-            $this->view(0);
+            // $this->view(0);
+            if(isset($_POST['text_condition'])){
+
+                $input_text = $this->input->post('text_condition');
+                $type_condition = $this->input->post('type_condition');
+
+                $pagin = $this->paginationConfig;
+                $pagin["base_url"] = '/admin/member/index';
+                $pagin['full_tag_open'] = '<ul class="pagination pagination-md pagination-main">';
+                $pagin['full_tag_close'] = '</ul>';
+                $data['page'] = ($this->uri->segment(FOUR)) ? $this->uri->segment(FOUR) : DATA_OFF;
+
+                $data['rel_search_top'] = $this->member_model->filer_type_singe_condition($pagin["per_page"], $data['page']);
+                $pagin['total_rows'] = $data['rel_search_top'][1];
+                $total_rel = $data['rel_search_top'][1];
+
+                $this->pagination->initialize($pagin);
+                $data['pagination'] = $this->pagination->create_links();
+
+                $this->viewVar = $data;
+                admin_layout_view('member_index', $this->viewVar);
+            }else{
+                admin_layout_view('member_index', $this->viewVar);
+            }
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
-    //DEV TRÍ VV_JSC
     public function ajax_load_list_member()
     {
         if ($this->error_flg) return;
@@ -308,27 +332,34 @@ class Member extends ADMIN_Controller {
         $course_class_join = isset($_POST['course_class_join'])?$_POST['course_class_join']:'';
         $bus_route_join = isset($_POST['bus_route_join'])?$_POST['bus_route_join']:'';
 
-        if($info_data=='' || $meta_data=='' || $course_join== '') {echo "UnSuccessfully";exit();}
-
-        if( $this->m_student_model->new_update_by_id($info_data,$id) )
-        {
-            if($this->l_student_meta_model->update_tagMeta($meta_data,$id))
+        if($info_data =='' || $meta_data =='' || $course_join == '') { echo " UnSuccessfully "; exit(); }
+        try{
+            if( $this->m_student_model->new_update_by_id($info_data,$id) )
             {
-                if($this->l_student_course_model->Update_course($course_join))
+                if($this->l_student_meta_model->update_tagMeta($meta_data,$id))
                 {
-                    if($this->l_student_class_model->Update_class($course_class_join))
+                    if($this->l_student_course_model->Update_course($course_join))
                     {
-                        echo "Successfully";
-                        exit();
+                        if($this->l_student_class_model->Update_class($course_class_join))
+                        {
+
+                           if( $this->l_student_bus_route_model->Update_bus_route_join($bus_route_join)  )
+                           {
+                                echo "Successfully";
+                                exit();
+                           } 
+                        }  
                     }  
                 }  
-            }  
-        }
-        else
-        {
-            echo "UnSuccessfully";
+            }
+            echo " UnSuccessfully ";
             exit();
         }
+        catch(Exception $e)
+        {
+            echo " UnSuccessfully ";
+            exit();
+        }    
         
     }
     public function get_data_bus_stop()
@@ -353,7 +384,7 @@ class Member extends ADMIN_Controller {
     {
         $course_id = isset($_POST['course_id'])?$_POST['course_id']:'';
         $student_id = isset($_POST['student_id'])?$_POST['student_id']:'';
-        if($course_id!='' && $student_id!='')
+        if($course_id != '' && $student_id != '')
         {
             $this->load->model('db/m_course_model');
             $this->load->model('db/l_student_class_model');
@@ -372,11 +403,8 @@ class Member extends ADMIN_Controller {
                 foreach ($classesjoin as $key => $value) {
                     $course['classjoin'][]=$value;
                 }
-// echo json_encode($course);
-//             exit();
                 if(count($classesjoin)>0)
                 {
-                     //student join bus_route
                     foreach ($classesjoin as $key => $value) {
 
                     $course['bus_course']['all'][$key]['arr'] = $this->m_bus_course_model->get_data_class_and_bus_course($value['class_id']);
@@ -396,8 +424,8 @@ class Member extends ADMIN_Controller {
                     {
                         $html = array();
                         foreach ($course['bus_course']['all'] as $key => $value) {
-                          
-                          $week = ($this->config->item('my_config'))['week_num'];
+                          $config = $this->configVar;
+                          $week = $config['week_num'];
                           $week_num = 0;
                           $index = random_string('alnum', 10);
                           $base_class_sign = '';
@@ -459,25 +487,25 @@ class Member extends ADMIN_Controller {
                                 }
                                 $html_8.= '<option value='.$subvalue['id'].' '.$selected_ret.'>'.$subvalue['bus_course_name'].'</option>'; 
                             }
-                          $html_0 ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week_num.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week[$week_num].'<br>('.$class_name.')</div>';
-                          $html_1 ='<div class="form-group">
+                          $html_0  ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week_num.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week[$week_num].'<br>('.$class_name.')</div>';
+                          $html_1  ='<div class="form-group">
                                   <label for="" class="col-sm-2 control-label">行き</label>
                                   <div class="col-sm-5">
                                   <select class="form-control bus_course" name="bus_course_go_'.$index.'" onchange="changeBuscoure(this)">';
-                          $html_3 ='</select>
+                          $html_3  ='</select>
                                     </div>';
-                          $html_4 ='<div class="col-sm-5">
+                          $html_4  ='<div class="col-sm-5">
                                     <select class="form-control bus_stop" name="bus_stop_go_'.$index.'" >';
-                          $html_6 ='</select>
+                          $html_6  ='</select>
                                     </div>
                                     </div>';
-                          $html_7 = '<div class="form-group">
+                          $html_7  = '<div class="form-group">
                                   <label for="" class="col-sm-2 control-label">帰り</label>
                                   <div class="col-sm-5">
                                   <select class="form-control bus_course" name="bus_course_ret_'.$index.'" onchange="changeBuscoure(this)">';
-                          $html_9 = '</select>
+                          $html_9  = '</select>
                                      </div>';
-                          $html_10 = '<div class="col-sm-5">
+                          $html_10  = '<div class="col-sm-5">
                                   <select class="form-control bus_stop" name="bus_stop_ret_'.$index.'" >';
                           $html_12 = '</select></div></div></div>';
 
@@ -498,8 +526,13 @@ class Member extends ADMIN_Controller {
         $class_name = isset($_POST['class_name'])?$_POST['class_name']:'';
         $base_class_sign =  isset($_POST['base_class_sign'])?$_POST['base_class_sign']:'';
         $week = isset($_POST['week_num'])?$_POST['week_num']:'';
-        if($class_name==''|| $class_id==''|| $week=='' || $base_class_sign=='') exit();
+        if($class_name == ''|| $class_id == ''|| $week == '' || $base_class_sign == '')  { echo ''; exit(); }
+        
         $this->load->model('db/m_bus_course_model');
+        $this->load->model('db/m_class_model');
+        $class =$this->m_class_model->select_by_id($class_id,'id'); 
+
+        if( count($class)>0 && $class[0]['use_bus_flg'] === '1' ) { echo ''; exit(); }
 
         $bus_couse = $this->m_bus_course_model->select_by_id($class_id,'class_id');
         
@@ -509,20 +542,20 @@ class Member extends ADMIN_Controller {
             {
                 $bus_couse[$key]['bus_stop']=$this->m_bus_course_model->getData_Bus_stop_by_id($value['id']);
             }
-
-              $week_num = ($this->config->item('my_config'))['week_num'];
+              $config = $this->configVar;
+              $week_num = $config['week_num'];
               $index = random_string('alnum', 10);
               $html_0 ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week_num[$week].'<br>('.$class_name.')</div>';
               $html_1 ='<div class="form-group">
                       <label for="" class="col-sm-2 control-label">行き</label>
                       <div class="col-sm-5">
                       <select class="form-control bus_course" name="bus_course_go_'.$index.'" onchange="changeBuscoure(this)">';
-              $html_2='';
+              $html_2 ='';
               $html_3 ='</select>
                         </div>';
               $html_4 ='<div class="col-sm-5">
                         <select class="form-control bus_stop" name="bus_stop_go_'.$index.'" >';
-              $html_5= '';
+              $html_5 = '';
               $html_6 ='</select>
                         </div>
                         </div>';
@@ -530,7 +563,7 @@ class Member extends ADMIN_Controller {
                       <label for="" class="col-sm-2 control-label">帰り</label>
                       <div class="col-sm-5">
                       <select class="form-control bus_course" name="bus_course_ret_'.$index.'" onchange="changeBuscoure(this)">';
-              $html_8='';
+              $html_8 ='';
               $html_9 = '</select>
                          </div>';
               $html_10 = '<div class="col-sm-5">

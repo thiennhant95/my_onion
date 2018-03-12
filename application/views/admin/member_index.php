@@ -425,7 +425,14 @@
 
             <div class="block-30" id="js-scroll-to">
               <span class="pull-left text-small">検索結果&#58;
-                <strong class="h4" id="js-count_rel">0</strong> 件
+                <strong class="h4" id="js-count_rel">
+                  <?php if(!empty($rel_search_top[1])){
+                    echo $rel_search_top[1];
+                  }else{
+                    echo 0;
+                  }
+                  ?>
+                </strong> 件
               </span>
               <a class="btn btn-default btn-sm pull-right" id = "js-export-csv">
                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
@@ -459,6 +466,38 @@
                   </tr>
                 </thead>
                 <tbody>
+                
+                  <?php if(!empty($rel_search_top[0])){?>
+                    <?php foreach ($rel_search_top[0] as $key_stop => $value_stop) {?>
+                      <tr>
+                        <td><?php echo $value_stop['id'];?></td>
+                        <td><?php echo $value_stop['value'];?></td>
+                        <td><?php echo $value_stop['course_name'];?></td>
+                        <td><?php echo $value_stop['base_class_sign'];?></td>
+                        <td><?php echo $value_stop['class_name'];?></td>
+                        <td><?php echo $value_stop['bus_stop_name'];?></td>
+                        <td><?php 
+                          $string_status = '';
+                          switch ($value_stop['status']) {
+                              case "0":
+                                  $string_status = '未処理状態';
+                                  break;
+                              case "1":
+                                  $string_status = '入会中';
+                                  break;
+                              case "2":
+                                  $string_status = '退会保留中';
+                                  break;
+                              default:
+                                  $string_status = '退会済み';
+                                  break;
+                          }
+                          echo $string_status;?></td>
+                        <td><a href="<?php echo base_url('admin/member/detail/'.$value_stop['id']);?>" class="btn btn-success btn-sm btn-block">詳細</a></td>
+                        
+                      </tr>
+                    <?php }?>
+                  <?php }?>
                 </tbody>
               </table>
             </div>

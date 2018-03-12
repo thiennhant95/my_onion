@@ -85,7 +85,7 @@ class Top extends FRONT_Controller {
             'm' => $secs / 60 % 60,
             's' => $secs % 60
             );
-            
+            $ret = array();
         foreach($bit as $k => $v)
             if($v > 0)$ret[] = $v . $k;
             

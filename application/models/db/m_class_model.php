@@ -38,7 +38,7 @@ class M_class_model extends DB_Model {
         $sql = 'select m_class.id,m_class.course_id,m_class.class_code,m_class.class_name,m_class.invalid_flg,m_class.grade_manage_flg,m_class.week,m_class.max_count,m_class.use_bus_flg
                 from m_class JOIN m_course ON m_class.course_id = m_course.id 
                 where m_class.delete_flg = 0 and m_course.delete_flg=0
-                order by m_class.id ASC 
+                order by m_class.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
         return $query->result_array();
@@ -55,7 +55,7 @@ class M_class_model extends DB_Model {
         $sql = 'select m_course.short_course_name,m_class.base_class_sign,m_class.class_code,m_class.class_name,m_class.week,m_class.use_bus_flg,m_class.start_time,m_class.end_time,m_class.max_count
                 from m_class JOIN m_course ON m_class.course_id = m_course.id 
                 where m_class.delete_flg = 0 and m_course.delete_flg=0
-                order by m_class.id ASC 
+                order by m_class.id DESC 
                 limit ' . $start . ', ' . $limit;
         $query = $this->db->query($sql);
        $data=$query->result_array();

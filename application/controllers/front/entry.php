@@ -44,7 +44,7 @@ class Entry extends FRONT_Controller {
                     foreach ( $arr_insert as $key => $value ) {
                         $this->student_meta_model->insert(array('student_id' => $id_auto, 'tag' => $key, 'value' => $value));
                     }
-                    $this->send_mail_register('https:' . base_url(), $_POST['email_address'], $_POST['user_name'], $reg_token);
+                    // $this->send_mail_register('https:' . base_url(), $_POST['email_address'], $_POST['user_name'], $reg_token);
                     $data['insert'] = 'success';
                 }
                 echo json_encode($data);
@@ -130,7 +130,7 @@ class Entry extends FRONT_Controller {
                 // update l_student_course
                 $course_lesson = $_POST['course_lesson'];
                 $course = $this->m_course_model->select_by_id( $course_lesson, 'id', 'm_course' );
-                $this->l_student_course_model->insert( array( 'student_id' => $_POST['student_id'], 'course_id' => $course_lesson, 'start_date' => $course[0]['start_date'], 'end_date' => $course[0]['end_date'] ) );
+                $this->l_student_course_model->insert( array( 'student_id' => $_POST['student_id'], 'course_id' => $course_lesson, 'start_date' => $course[0]['start_date'] ) );
                 // send mail
                 $today = date('Y-m-d');
                 $diff = date_diff(date_create($_POST['birthday']), date_create($today));
@@ -140,7 +140,7 @@ class Entry extends FRONT_Controller {
                     ①ご来館前に、本人以外のご家族様に<a href="#">誓約書(要ｸﾘｯｸ)</a> の内容をご確認・同意をお願いします。
                     ②<a href="#">ライフチェックシート(要ｸﾘｯｸ)</a>を印刷、ご記入いただき、ご来館時にご持参ください。(印刷できない場合は、窓口にてご記入頂けますが、必ず事前にご確認下さい)';
                 }
-                $this->send_mail_questionnaire( $email_address[0]['email'], $user_name[0]['value'], $_POST['student_id'], $parent_text );
+                // $this->send_mail_questionnaire( $email_address[0]['email'], $user_name[0]['value'], $_POST['student_id'], $parent_text );
                 $data = array();
                 $data['student_id'] = $_POST['student_id'];
                 $data['insert'] = 'success';

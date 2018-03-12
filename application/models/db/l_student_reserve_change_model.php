@@ -63,6 +63,7 @@ class L_student_reserve_change_model extends DB_Model {
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
 //        $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_reserve_change.class_id');
+        $this->db->where('l_student_course.end_date','2199-12-31');
         $this->db->where('l_student_reserve_change.delete_flg','0');
         $this->db->where('l_student_course.delete_flg','0');
 //        $this->db->where('l_student_class.delete_flg','0');
@@ -213,6 +214,7 @@ class L_student_reserve_change_model extends DB_Model {
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
         $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_reserve_change.class_id');
+        $this->db->where('l_student_course.end_date','2199-12-31');
         $this->db->where('l_student_reserve_change.delete_flg','0');
         $this->db->where('l_student_course.delete_flg','0');
 //        $this->db->where('l_student_class.delete_flg','0');

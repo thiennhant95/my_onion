@@ -13,12 +13,16 @@ class Reschedule extends FRONT_Controller {
     public  function __construct() {
         parent::__construct();
         $this->load->model('db/m_config_calendar_model', 'config_calendar_model');
+        $this->load->model('student_model', 'student_model');
     }
 
     public function index($year = NULL, $month = NULL) {
         if ($this->error_flg) return;
         try {
-           
+            $info_user = $this->session->userdata('user_account');
+            $user_id = !empty($info_user) ? $info_user['id'] : NULL;
+            $data['course'] = $this->student_model->get_course_current($user_id);
+            $this->viewVar = $data;
             front_layout_view('reschedule_index', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());

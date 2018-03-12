@@ -86,7 +86,7 @@ class L_student_class_model extends DB_Model {
             $id_student_course ='';
             $start_date ='';
             $current_date = date('Y-m-d');
-
+            // search current course join
             $sql = "SELECT id , start_date FROM l_student_course WHERE student_id = ? AND course_id = ? AND end_date = ?"; 
             $data = $this->db->query($sql, array(  $student_id , $course_id , END_DATE_DEFAULT))->result_array();
             if($data)
@@ -95,7 +95,7 @@ class L_student_class_model extends DB_Model {
                 $start_date = $data[0]['start_date'];
             }
                 
-            $sql = "SELECT id , student_course_id ,student_id , class_id ,week_num  FROM l_student_class WHERE  student_course_id = ? AND student_id = ?  AND end_date = ?";
+            $sql = "SELECT id , student_course_id , student_id , class_id , week_num  FROM l_student_class WHERE  student_course_id = ? AND student_id = ?  AND end_date = ?";
 
             $subdata = $this->db->query($sql, array(  $id_student_course , $student_id  , END_DATE_DEFAULT ))->result_array();
 
@@ -103,17 +103,26 @@ class L_student_class_model extends DB_Model {
             {
                 $array_class_week = array();
                 foreach ($subdata as $sub_key_1 => $sub_value_1) {
+
                     $ckeck = FALSE;
                     $id_old_student_class = $sub_value_1['id'];
                     foreach ($course_class_join['arr'] as $sub_key_2 => $sub_value_2) {
-                        if($sub_value_1['class_id']===$sub_value_2['class_id'] && $sub_value_1['week_num']===$sub_value_2['week_num'])
+
+                        if($sub_value_1['class_id'] === $sub_value_2['class_id'] && $sub_value_1['week_num'] === $sub_value_2['week_num'])
                         {
                             $ckeck = TRUE;
                         }
                     }
-                    if($ckeck===FALSE)
+                    if($ckeck === FALSE)
                     {
                         $this->db->update('l_student_class', array( 'end_date' => $current_date ), array('id' => $id_old_student_class) );
+                        //update old bus_route
+                        $sql = " SELECT id  FROM l_student_bus_route WHERE  student_class_id = ? AND student_id = ?  AND end_date = ?";
+                        $data_bus_route = $this->db->query($sql, array(  $id_old_student_class , $student_id  , END_DATE_DEFAULT ))->result_array();
+                        if( $data_bus_route )
+                        {
+                            $this->db->update('l_student_bus_route', array( 'end_date' => $current_date ), array('id' => $data_bus_route[0]['id']) );
+                        }
                     }
                 }
             }
@@ -124,10 +133,10 @@ class L_student_class_model extends DB_Model {
                 $class_id = $value['class_id'];
                 $week_num = $value['week_num'];
                     
-                $sql = "SELECT id FROM l_student_class WHERE  student_course_id = ? AND student_id = ? AND class_id = ? AND end_date = ?";
-                $subdata = $this->db->query($sql, array(  $id_student_course , $student_id , $class_id , END_DATE_DEFAULT ))->result_array();
+                $sql = "SELECT id FROM l_student_class WHERE  student_course_id = ? AND student_id = ? AND class_id = ? AND week_num = ? AND end_date = ?";
+                $data_student_class = $this->db->query($sql, array(  $id_student_course , $student_id , $class_id , $week_num , END_DATE_DEFAULT ))->result_array();
 
-                if(!$subdata)
+                if(!$data_student_class)
                 {
                     $this->db->insert('l_student_class', array( 'student_course_id' => $id_student_course , 'student_id' => $student_id ,'class_id' => $class_id ,'week_num' => $week_num ,'start_date' => $start_date , 'end_date' => END_DATE_DEFAULT) ) ;
                 }
@@ -135,11 +144,11 @@ class L_student_class_model extends DB_Model {
             }
 
             $sql = "SELECT id  , student_id ,course_id , start_date , end_date FROM l_student_course a WHERE student_id = ? AND a.end_date = ? ORDER BY id DESC ";
-            $subdata = $this->db->query($sql, array( $student_id  , $current_date ))->result_array();
+            $data_student_course = $this->db->query($sql, array( $student_id  , $current_date ))->result_array();
 
-            if(count($subdata)>0)
+            if(count($data_student_course)>0)
             {
-                $id_old_student_course =  $subdata[0]['id'];
+                $id_old_student_course =  $data_student_course[0]['id'];
                 if($id_student_course != $id_old_student_course)
                 {
                     $sql = "SELECT id FROM l_student_class WHERE  student_course_id = ? AND student_id = ? AND end_date = ?";
@@ -149,6 +158,13 @@ class L_student_class_model extends DB_Model {
                     {
                         foreach ($subdata_2 as $key => $value) {
                             $this->db->update('l_student_class', array( 'end_date' => $current_date ), array( 'id' => $value['id'] ) );
+
+                            $sql = "SELECT id FROM l_student_bus_route WHERE  student_class_id = ? AND student_id = ? AND end_date = ?";
+                            $data_student_bus = $this->db->query($sql, array(  $value['id'] , $student_id  , END_DATE_DEFAULT ))->result_array();
+                            if( count($data_student_bus) > 0 )
+                            {
+                                $this->db->update('l_student_bus_route', array( 'end_date' => $current_date ), array( 'id' => $data_student_bus[0]['id'] ) );
+                            }
                         }   
                     }
                 } 
