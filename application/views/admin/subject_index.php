@@ -64,7 +64,7 @@
             ?>
         </p>
         <p class="box-msg">
-        <div style="display:none;" id="alert-delete" class='alert alert-danger'>科目を削除しました。 </div>
+        <div style="display:none;" id="alert-delete" class='alert alert-success'>科目を削除しました。 </div>
         </p>
 
       <div class="panel panel-default">

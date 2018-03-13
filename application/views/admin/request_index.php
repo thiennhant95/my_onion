@@ -277,6 +277,6 @@
     });
     $('#end_date_request_change').datepicker(options).on('changeDate', function(ev){
         var endVal = $('#end_date_request_change').val();
-        $('#start_date_request_change').data('datepicker').setEndDate(endVal );
+        $('#start_date_request_change').data('datepicker').setEndDate(endVal);
     });
 </script>

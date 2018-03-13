@@ -132,11 +132,11 @@
                               $ret_time = substr_replace($row_route['ret_time'],':',2,0);
                               ?>
                               <td>
-                                  <input type="asia-time" class="form-control" name="go_time[]"
+                                  <input type="asia-time1" class="form-control" name="go_time[]"
                                          value="<?php echo $go_time ?>" placeholder="00:00" required>
                               </td>
                               <td>
-                                  <input type="asia-time" class="form-control" name="ret_time[]"
+                                  <input type="asia-time2" class="form-control" name="ret_time[]"
                                          value="<?php echo $ret_time ?>" placeholder="00:00" required>
                               </td>
                               <td>

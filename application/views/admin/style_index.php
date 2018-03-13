@@ -65,7 +65,7 @@
             ?>
         </p>
         <p class="box-msg">
-        <div style="display:none;" id="alert-delete" class='alert alert-danger'>正常に削除されました。</div>
+        <div style="display:none;" id="alert-delete" class='alert alert-success'>正常に削除されました。</div>
         </p>
 
       <div class="panel panel-default">

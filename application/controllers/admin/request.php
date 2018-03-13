@@ -165,7 +165,7 @@ class Request extends ADMIN_Controller {
                           <tr>
                             <th>' . $row['student_id'] . '</th>
                             <td>' . $row['name'] . '</td> 
-                            <td>' . date('Y-m-d',strtotime($row['create_date'])). '</td> 
+                            <td>' . date('Y-m-d',strtotime($row['update_date'])). '</td> 
                             <td>' . $row['type'] . '</td> 
                             <td>' . $row['status'] . '</td> 
                             <td>' . $row['process_date'] . '</td> 
@@ -180,7 +180,7 @@ class Request extends ADMIN_Controller {
                           <tr>
                             <th>' . $row['student_id'] . '</th>
                             <td>' . $row['name'] . '</td> 
-                            <td>' . date('Y-m-d',strtotime($row['create_date'])). '</td> 
+                            <td>' . date('Y-m-d',strtotime($row['update_date'])). '</td> 
                             <td>' . $row['type'] . '</td> 
                             <td>' . $row['status'] . '</td> 
                             <td>' . $row['process_date']. '</td> 
@@ -456,13 +456,13 @@ class Request extends ADMIN_Controller {
                         $quit_meta = $this->student_meta->get_list(array('student_id' => '=' . $data['get_request']['student_id'], 'tag' => '=' . "'quit_date'"));
                         if ($quit_meta != null) {
                             $this->student_meta->update_student_meta($data['get_request']['student_id'], 'quit_date', $this->input->post('quit_date'));
-                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'reason', $this->input->post('quit_date'));
-                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'memo', $this->input->post('memo'));
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'quit_reason', $this->input->post('reason'));
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'quit_memo', $this->input->post('memo'));
                         } else {
                             $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'quit_date', 'value' => $this->input->post('quit_date')));
-                            $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'reason', 'value' => $this->input->post('reason')));
+                            $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'quit_reason', 'value' => $this->input->post('reason')));
                             if ($this->input->post('memo') != null) {
-                                $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'memo', 'value' => $this->input->post('memo')));
+                                $this->student_meta->insert(array('student_id' => $data['get_request']['student_id'], 'tag' => 'quit_memo', 'value' => $this->input->post('memo')));
                             }
                         }
                         $this->student_model->update_by_id(array('id' => $data['get_request']['student_id'], 'status' => THREE));
@@ -531,7 +531,7 @@ class Request extends ADMIN_Controller {
                     if (isset($_POST['type_course'])) {
 
                         //update end date student course and insert record l_student_course
-                        $this->student_course->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('course_old')), array('end_date' => $this->input->post('date_change_bus').'-01'));
+                        $this->student_course->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('course_old')), array('end_date' => $this->input->post('date_change').'-01'));
                         $this->student_course->insert(array('student_id' => $data['get_request']['student_id'], 'course_id' => $this->input->post('course_new'),'start_date'=>$this->input->post('date_change').'-01'));
 
                         //update end date student class
@@ -545,7 +545,7 @@ class Request extends ADMIN_Controller {
                                         'student_course_id' => $this->input->post('course_new'),
                                         'student_id' => $data['get_request']['student_id'],
                                         'class_id' => preg_split ("/\_/", $class_new)[1],
-                                        'start_date'=>$_POST['date_change_bus'].'-01',
+                                        'start_date'=>$_POST['date_change'].'-01',
                                         'week_num'=>preg_split ("/\_/", $class_new)[0]
                                     );
                                     $this->student_class->insert($dataInsert);

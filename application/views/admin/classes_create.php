@@ -19,7 +19,7 @@
             <div class="panel-body">
 
                 <form class="form-horizontal"id="class_form" method="post">
-                    <input type="hidden" class="form-control" name="class_id" id="class_id" value="-1">
+                    <input type="hidden" class="form-control" name="class_id" id="class_id" value="0">
                     <div class="form-group">
                         <label for="" class="col-sm-2 control-label">コース記号</label>
                         <div class="col-sm-5">

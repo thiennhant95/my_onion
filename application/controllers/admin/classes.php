@@ -208,7 +208,7 @@ class Classes extends ADMIN_Controller {
         if ($this->error_flg) return;
         try {
             $list_class=$this->class->get_list(array('course_id'=>'='.$id_course,'base_class_sign'=>'="'.$class_sign.'"'));
-            if ($list_class!=null) {
+            if ($list_class!=ZERO) {
                 if (array_key_exists($id_class,$list_class))
                 {
                     unset($list_class[$id_class]);
@@ -245,7 +245,7 @@ class Classes extends ADMIN_Controller {
             $this->input->post('max_count');
             $max_count_db=$this->class->number_of_pupils($course_id)[0]['count_total']?:ZERO;
             $max_course=$this->course->select_by_id($course_id)[0];
-            if(isset($_POST['class_id']))
+            if(isset($_POST['class_id']) && $_POST['class_id']!=ZERO)
             {
                 $max_class=$this->class->select_by_id($_POST['class_id'])[0]['max_count'];
                 $max_count_db=$max_count_db-$max_class;

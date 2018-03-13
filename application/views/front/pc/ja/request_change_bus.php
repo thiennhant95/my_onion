@@ -113,7 +113,8 @@
                   foreach( $s_class as $k => $v ) { 
                     $id_bus_stop_1 = random_string( 'alnum', RANDOM_STRING_LENGTH );
                     $id_bus_stop_2 = random_string( 'alnum', RANDOM_STRING_LENGTH );
-                  ?>
+                      $weeks = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
+                      ?>
                     <div class="each_bus_course">
                       <div class="form-group">
                         <label class="col-sm-2 control-label"></label>

@@ -57,8 +57,17 @@
         </nav>
 
       <hr>
-
-      <div class="panel panel-default">
+        <p class="box-msg">
+            <?php
+            if($this->session->flashdata('message')){
+                echo $this->session->flashdata('message');
+            }
+            ?>
+        </p>
+        <p class="box-msg">
+        <div style="display:none;" id="alert-delete" class='alert alert-success'>科目を削除しました。 </div>
+        </p>
+        <div class="panel panel-default">
         <div class="table-responsive">
           <table class="table table-bordered table-hover table-lg table-center" id="mytable">
 

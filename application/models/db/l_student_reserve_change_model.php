@@ -61,12 +61,10 @@ class L_student_reserve_change_model extends DB_Model {
         $this->db->select("SQL_CALC_FOUND_ROWS l_student_reserve_change.*,l_student_course.course_id,m_class.base_class_sign",FALSE);
         $this->db->from('l_student_reserve_change');
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
-//        $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_reserve_change.class_id');
         $this->db->where('l_student_course.end_date','2199-12-31');
         $this->db->where('l_student_reserve_change.delete_flg','0');
         $this->db->where('l_student_course.delete_flg','0');
-//        $this->db->where('l_student_class.delete_flg','0');
         $this->db->where('m_class.delete_flg','0');
         //search course
         $course=$this->input->post('course');
@@ -211,14 +209,14 @@ class L_student_reserve_change_model extends DB_Model {
             $date_end=END_DATE_DEFAULT;
         }
         $this->db->select("SQL_CALC_FOUND_ROWS l_student_reserve_change.*,l_student_course.course_id,m_class.base_class_sign",FALSE);
+        $this->db->from('l_student_reserve_change');
         $this->db->join('l_student_course','l_student_course.student_id=l_student_reserve_change.student_id');
-        $this->db->join('l_student_class','l_student_class.student_id=l_student_reserve_change.student_id');
         $this->db->join('m_class','m_class.id=l_student_reserve_change.class_id');
         $this->db->where('l_student_course.end_date','2199-12-31');
         $this->db->where('l_student_reserve_change.delete_flg','0');
         $this->db->where('l_student_course.delete_flg','0');
-//        $this->db->where('l_student_class.delete_flg','0');
         $this->db->where('m_class.delete_flg','0');
+
         //search course
         $course=$this->input->post('course');
         if ($this->input->post('course')!=NULL)
@@ -232,11 +230,12 @@ class L_student_reserve_change_model extends DB_Model {
         //search date
         $this->db->where('target_date >=',$date_start);
         $this->db->where('target_date <=',$date_end);
+
         //search type
         $type=$this->input->post('type');
         if ($type!=DATA_ON){$this->db->where('type', $type);}
         $this->db->order_by("id", "desc");
-        $query = $this->db->get('l_student_reserve_change');
+        $query = $this->db->get();
         global $student_reserve;
         $data=$query->result_array();
 

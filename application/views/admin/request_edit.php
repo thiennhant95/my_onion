@@ -98,7 +98,7 @@
                   <tr>
                     <th><?php echo $get_request['student_id']?></th>
                     <td><a href="<?php echo  site_url('admin/member/detail/'.$get_request['student_id'])?>" class="btn btn-default"><?php echo $get_request['name']?></a></td>
-                    <td><?php echo date('Y-m-d',strtotime($get_request['create_date']))?></td>
+                    <td><?php echo date('Y-m-d',strtotime($get_request['update_date']))?></td>
                     <td><?php echo $get_request['type_jp']?></td>
                     <td><?php echo $get_request['status_jp']?></td>
                     <td><?php echo $get_request['process_date']?></td>

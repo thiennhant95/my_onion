@@ -130,7 +130,7 @@
                                     <input type="radio" name="number" value="<?php echo DATA_OFF?>"> 月
                                 </label>
                                 <select class="form-control mr-1 ml-1" name="number_practice_select" id="number_practice_select">
-<!--                                    <option value="0" disabled>選択する</option>-->
+                                    <option value="0" disabled>選択する</option>
                                     <option value="<?php echo ONE?>"><?php echo ONE?></option>
                                     <option value="<?php echo TWO?>"><?php echo TWO?></option>
                                     <option value="<?php echo THREE?>"><?php echo THREE?></option>
@@ -142,7 +142,7 @@
                                 </select>
                                 <label class="radio-inline">
 <!--                                    <input type="radio" id="free_practice_radio" onclick="test(this)" name="free_practice_radio" value="--><?php //echo TWO ?><!--"> フリー-->
-                                    <input type="radio" id="free_practice_radio" name="number" value="<?php echo TWO ?>"> フリー
+                                    <input type="radio" id="free_practice_radio"  onclick="test(this)" name="number" value="<?php echo TWO ?>"> フリー
 
                                 </label>
                             </div>
