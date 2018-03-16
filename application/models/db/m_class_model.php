@@ -95,4 +95,20 @@ class M_class_model extends DB_Model {
         $query = $this->db->query($sql);
         return $query->result_array();
     }
+    /**
+     * get number of student join class
+     * @access public
+     * @author Bao - VietVang JSC
+     */
+    public function Get_data_class( $class_id , $week_num )
+    {
+        if( $class_id < 0 || $week_num < 0 ) return '';
+        $query = "  SELECT id , class_name, class_code , base_class_sign , max_count , use_bus_flg ,
+                        ( SELECT COUNT( id ) FROM l_student_class  WHERE  class_id = ? AND week_num = ? AND end_date = ? ) as num_ber 
+                    FROM m_class  
+                    WHERE   id = ? AND invalid_flg = ?";
+        $data =  $this->db->query( $query , [ $class_id ,  $week_num , END_DATE_DEFAULT , $class_id , DATA_INVALID_NO ] );
+        $result = $data->result_array();
+        return  $result ;
+    }
 }

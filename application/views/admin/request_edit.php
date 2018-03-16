@@ -299,7 +299,8 @@
                                           echo "<h3><strong>"."クラス：".$key_content."</strong></h3>";
                                           foreach ($row_content as $bus_key=> $bus_row)
                                           {
-                                              if ($bus_key==ZERO)
+                                              if (count($row_content)!=2){
+                                                  if ($bus_key==ZERO)
                                               {
                                                   ?>
                                                   <h4>
@@ -333,6 +334,7 @@
                                               if ($bus_key==ONE || $bus_key==THREE)
                                               {
                                                   ?>
+
                                                   <h3 class="text-red">
                                                       <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
                                                   </h3>
@@ -340,11 +342,43 @@
                                                   <?php
                                               }
                                           }
+                                          else
+                                          {
                                               ?>
-                                              <hr>
+
+                                              <?php
+                                              if ($bus_key==ZERO)
+                                              {
+                                                  ?>
+                                                  <h4>
+                                                      行きの乗車場所：
+                                                  </h4>
+                                                  <h3 class="text-red">
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                  </h3>
+                                                  <?php
+                                              }
+                                              if ($bus_key==ONE)
+                                              {
+                                                  ?>
+                                                  <h4>
+                                                      帰りの降車場所：
+                                                  </h4>
+                                                  <h3 class="text-red">
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                  </h3>
+                                                  <?php
+                                              }
+                                              ?>
+                                              <br>
+                                              <?php
+                                          }
+                                              ?>
                                               <?php
                                       }
+                                      }
                                   ?>
+                                  <hr>
                                   <?php
                               }
                       }
@@ -538,47 +572,68 @@
                                                 <?php
                                                 foreach ($get_request['content'] as $key_content=> $row_content) {
                                                     echo "<h3><strong>"."クラス：".$key_content."</strong></h3>";
-                                                    foreach ($row_content as $bus_key=> $bus_row)
-                                                    {
-                                                        if ($bus_key==ZERO)
-                                                        {
+                                                    foreach ($row_content as $bus_key=> $bus_row) {
+                                                        if (count($row_content) != 2) {
+                                                            if ($bus_key == ZERO) {
+                                                                ?>
+                                                                <h4>
+                                                                    行きの乗車場所：
+                                                                </h4>
+                                                                <?php
+                                                            }
+                                                            if ($bus_key == TWO) {
+                                                                ?>
+                                                                <h4>
+                                                                    帰りの降車場所：
+                                                                </h4>
+                                                                <?php
+                                                            }
                                                             ?>
-                                                            <h4>
-                                                                行きの乗車場所：
-                                                            </h4>
                                                             <?php
+                                                            if ($bus_key == ZERO || $bus_key == TWO) {
+                                                                ?>
+                                                                <h3 class="h4">
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                </h3>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                            <p class="arrow_down_<?php echo $bus_key ?>">
+                                                                <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                                                            </p>
+                                                            <?php
+                                                            if ($bus_key == ONE || $bus_key == THREE) {
+                                                                ?>
+                                                                <h3 class="text-red">
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                </h3>
+                                                                <br>
+                                                                <?php
+                                                            }
                                                         }
-                                                        if ($bus_key==TWO)
+                                                        else
                                                         {
-                                                            ?>
-                                                            <h4>
-                                                                帰りの降車場所：
-                                                            </h4>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                        <?php
-                                                        if ($bus_key==ZERO || $bus_key==TWO)
-                                                        {
-                                                            ?>
-                                                            <h3 class="h4">
-                                                                <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
-                                                            </h3>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                        <p  class="arrow_down_<?php echo $bus_key?>">
-                                                            <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
-                                                        </p>
-                                                        <?php
-                                                        if ($bus_key==ONE || $bus_key==THREE)
-                                                        {
-                                                            ?>
-                                                            <h3 class="text-red">
-                                                                <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
-                                                            </h3>
-                                                            <br>
-                                                            <?php
+                                                            if ($bus_key == ZERO) {
+                                                                ?>
+                                                                <h4>
+                                                                    行きの乗車場所：
+                                                                </h4>
+                                                                <h3 class="text-red">
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                </h3>
+                                                                <?php
+                                                            }
+                                                            if ($bus_key == ONE) {
+                                                                ?>
+                                                                <h4>
+                                                                    帰りの降車場所：
+                                                                </h4>
+                                                                <h3 class="text-red">
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                </h3>
+                                                                <?php
+                                                            }
+
                                                         }
                                                     }
                                                     ?>

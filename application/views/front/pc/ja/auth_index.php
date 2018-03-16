@@ -50,7 +50,9 @@
 
     $("#login_customer").validate({
       rules: {
-        users: "required",
+        users: {
+          required: true
+        },
         pass: {
           required: true,
           minlength: 8
@@ -61,6 +63,17 @@
           error.appendTo(".err_user");
         else
           error.appendTo(".err_pass");
+      },
+      messages: {
+        users: {
+            required: "必須です。ご入力ください。",
+            
+        },
+        pass: { 
+          required: "必須です。ご入力ください。",
+          minlength: "8半角文字以上で入力してください。"
+        },
+        
       },
     });
 
@@ -96,7 +109,7 @@
             }
           }
           else{
-            msg_show = 'Email or Password incorrect!';
+            msg_show = 'メールアドレスは正しくありません。';
             msg_login_alert(msg_show);
           }
         },error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -108,7 +121,7 @@
     
     function msg_login_alert(text){
       $('.err_msg').text(text);
-      setTimeout(() => {
+      setTimeout(function(){
         $('.err_msg').text('');
       }, 2000);
     }

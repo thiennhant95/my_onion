@@ -19,7 +19,7 @@
               <span class="label label-info label-lg"><?php echo $name_class ?> 級</span>
               <span><strong><?php echo $class_pass['end_date']?> 合格</strong></span>
             <?php }else{?>
-              <span><strong>Don't completed any class</strong></span>
+              <!-- <span><strong>Don't completed any class</strong></span> -->
             <?php }?>
           </div>
           <div class="col-xs-6 text-break">
@@ -36,17 +36,17 @@
         <div class="block-30" role="alert">
           <h2 class="h3 text-primary">お知らせ</h2>
           <p class="content03-text-2 mb-xs-30">
-            <?php echo $message_nofication['body'];?>
+            <?php echo $message_nofication;?>
           </p>
         </div>
-        <div class="center-block text-center block-15">
+        <!-- <div class="center-block text-center block-15">
           <div class="alert alert-warning text-center" role="alert">
             新しいメッセージがあります！
           </div>
-        </div>
+        </div> -->
         <?php }?>
 
-        <div class="alert alert-danger text-center" role="alert">
+        <!-- <div class="alert alert-danger text-center" role="alert">
           <h3 class="lead">
             <strong>現在休会中です。</strong>
           </h3>
@@ -54,7 +54,7 @@
             2017年11月1日より元の練習コースへ復帰します。
             <br> 休会を延長される場合は、再度休会申請を行ってください。
           </p>
-        </div>
+        </div> -->
       </section>
 
       <section>

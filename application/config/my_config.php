@@ -519,3 +519,8 @@ $config['type_search'] = array(
     'drawal_date'        => '退会日付',
     'rest_start_date' => '休会開始日'
 );
+define('INVALID_DATE', '0000-00-00');
+//type course
+define('COURSE_NORMAL', 0);//通常
+define('COURSE_LIMIT', 1);//期間限定（短期）
+define('COURSE_FREE', 2);//無料

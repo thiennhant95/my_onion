@@ -95,6 +95,73 @@ class Reschedule extends FRONT_Controller {
             die();
         }
     }
+    public function get_info_class_current()
+    {
+        $db_session = $this->session->userdata('user_account');
+        $db_id_student = (int)$db_session['id'];
+        $db_class = $this->config_calendar_model->get_info_class($db_id_student);
+        $str_info_class = '';
+        $class_id = '';
+        if(!empty($db_class)){
+            $name_class_sign = $db_class[0]['base_class_sign'];
+            $start_time = $db_class[0]['start_time'];
+            $end_time = $db_class[0]['end_time'];
+            $str_info_class = '['.$name_class_sign.']'.$start_time.'~'.$end_time;
+            $class_id = $db_class[0]['id'];
+        }
+
+        $course_id = $this->config_calendar_model->get_course_current($db_id_student);
+        $calender_class = $this->config_calendar_model->get_class_of_course($course_id['course_id']);
+        $db_bus = $this->config_calendar_model->get_list_bus_name($class_id);
+
+        $data['db_class_str'] = $str_info_class;
+        $data['db_class'] = $db_class;
+        $data['calendar_class'] = $this->create_hmtl_list_time($calender_class);
+        
+
+        $html_bus = '';
+        if(!empty($db_bus)){
+
+            foreach ($db_bus as $key => $value) {
+                # code...
+                $html_bus .= '<option value = "'.$value['id'].'"> ' .$value['bus_course_name'].'</option>';
+            }
+        }else{
+            $html_bus .= '<option value = "">選んでください </option>';
+        }
+        $data['db_bus'] = $html_bus;
+
+        echo json_encode($data);
+        die();
+        
+    }
+    public function create_hmtl_list_time($data)
+    {
+        $html = '';
+        foreach ($data as $key => $value) {
+            # code...
+            $html .= '<option value = "'.$value['id'].'"> ' .'['.$value['base_class_sign'].'] '.$value['start_time'].'~'.$value['end_time'].'</option>';
+        }
+        return $html;
+    }
+    public function get_busroute_of_class()
+    {
+        $id_class = $this->input->post('id_class_selected');
+        $db_bus = $this->config_calendar_model->get_list_bus_name($id_class);
+        $html = '';
+        if(!empty($db_bus)){
+
+            foreach ($db_bus as $key => $value) {
+                # code...
+                $html .= '<option value = "'.$value['id'].'"> ' .$value['bus_course_name'].'</option>';
+            }
+        }else{
+            $html .= '<option value = "">選んでください </option>';
+        }
+        $data['html'] = $html;
+        echo json_encode($data);
+        die();
+    }
 
 }
 

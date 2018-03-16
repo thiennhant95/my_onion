@@ -8,7 +8,8 @@ class M_student_model extends DB_Model {
      */
     public function __construct() {
         parent::__construct();
-        $this->load->database();
+        // $this->load->database();
+        // $this->load->model('db/m_student_model','m_student');
     }
 
     /**
@@ -144,30 +145,24 @@ class M_student_model extends DB_Model {
             foreach ($meta as $row2) {
                 $result[ $key ]['meta'][ $row2['tag'] ] = $row2['value'];
             }
-            $query = ' SELECT '.
-                        ' a.student_id , a.start_date as l_class_start_date , a.end_date as l_class_end_date ,  b.id as idClass, b.base_class_sign , b.class_name , b.class_code , '.
-                        ' c.start_date as l_course_start_date ,c.end_date as l_course_end_date , c.join_date as l_course_join_date , d.id as idcourse , d.course_code, d.course_name  '.   
-                     ' FROM l_student_class a , m_class b, l_student_course c , m_course d ' .           
-                     ' WHERE '.      
-                         ' a.class_id = b.id AND'.
-                         ' a.student_course_id = c.id AND '.
-                         ' a.student_id = c.student_id AND '.
-                         ' c.course_id = d.id AND '.
-                         ' b.delete_flg = ? AND '.
-                         ' d.delete_flg = ? AND '.
-                         ' a.end_date = ?  AND '.
-                         ' c.end_date = ? AND ' .
-                         ' a.student_id = ?  ORDER BY a.start_date  LIMIT 1';
+            $query = " SELECT 
+                         a.student_id , a.start_date as l_class_start_date , a.end_date as l_class_end_date ,  b.id as idClass, b.base_class_sign , 
+                         b.class_name , b.class_code , 
+                         c.start_date as l_course_start_date ,c.end_date as l_course_end_date , c.join_date as l_course_join_date , 
+                         d.id as idcourse , d.course_code, d.course_name  
+                     FROM l_student_class a , m_class b, l_student_course c , m_course d          
+                     WHERE     
+                          a.class_id = b.id AND a.student_course_id = c.id AND a.student_id = c.student_id AND c.course_id = d.id AND 
+                          a.delete_flg = ? AND c.delete_flg = ? AND b.invalid_flg = ? AND d.invalid_flg = ? AND 
+                          a.end_date = ?  AND c.end_date = ? AND 
+                          a.student_id = ?  ORDER BY a.start_date  LIMIT 1 ";
             $result[ $key ]['info'] = array();                
-            $res_2 = $this->db->query($query,[ DATA_NOT_DELETED , DATA_NOT_DELETED, END_DATE_DEFAULT , END_DATE_DEFAULT , $row['id'] ]);
-            if ($res_2 === FALSE) {
-                logerr($params, $query);
-                throw new Exception();
-            }
+            $res_2 = $this->db->query( $query,[ DATA_NOT_DELETED , DATA_NOT_DELETED, DATA_INVALID_NO , DATA_INVALID_NO , END_DATE_DEFAULT , END_DATE_DEFAULT , $row['id'] ]);
+
             $result_2 = $res_2->result_array();
-            foreach ($result_2 as $row) {
-                $result[ $key ]['info'][]=$row;
-            }
+
+            $result[ $key ]['info'] = $result_2;
+
         }
         return $result;
     }
@@ -204,9 +199,49 @@ class M_student_model extends DB_Model {
         }
     }
 
-    public function get_user_course_free()
+    public function get_student_meta_tag($student_id)
     {
         
+        $result = $this->select_by_id($student_id, 'student_id', 'l_student_meta');
+        $data = [];
+        foreach ($result as $row) {
+            $data['meta'][$row['tag']] = $row['value'];
+        }
+        return $data;
+    }
+
+    public function get_user_course_free($limit, $start)
+    {
+        $condition = array('l_student_course.delete_flg' => 0, 'm_course.end_date' => END_DATE_DEFAULT, 'm_course.delete_flg' => 0, 'm_course.type' => COURSE_FREE);
+        $this->db->select('SQL_CALC_FOUND_ROWS l_student_course.id, l_student_course.student_id, l_student_course.course_id, m_course.course_name, m_class.base_class_sign',FALSE);
+        $this->db->from('l_student_course');
+        $this->db->join('m_course', 'm_course.id = l_student_course.course_id', 'left');
+        $this->db->join('m_class', 'm_class.course_id = m_course.id', 'left');
+        $this->db->where($condition);
+
+        $this->db->order_by('l_student_course.create_date', 'ASC');
+        $this->db->limit($limit,$start);
+
+        $data = $this->db->get()->result_array();
+        $data_filter = [];
+        $query_total = $this->db->query('SELECT FOUND_ROWS() AS `count`');
+        $total = $query_total->row()->count;
+
+        foreach ($data as $row_user) {
+            $rel_meta = $this->get_student_meta_tag($row_user['student_id']);
+            if(!empty($rel_meta['meta'])){
+
+                $row_user['name'] = isset($rel_meta['meta']['name']) ? $rel_meta['meta']['name'] : '';
+                $row_user['name_kana'] = isset($rel_meta['meta']['name_kana']) ? $rel_meta['meta']['name_kana'] : '';       
+                $row_user['school_name'] = isset($rel_meta['meta']['school_name']) ? $rel_meta['meta']['school_name'] : '';
+                $row_user['school_grade'] = isset($rel_meta['meta']['school_grade']) ? $rel_meta['meta']['school_grade'] : '';
+                $row_user['enquete'] = isset($rel_meta['meta']['enquete']) ? $rel_meta['meta']['enquete'] : '';
+                $row_user['memo_health'] = isset($rel_meta['meta']['memo_health']) ? $rel_meta['meta']['memo_health'] : '';
+                               
+            }
+            $data_filter[] = $row_user;
+        }
+        return array('0'=>$data_filter,'1'=>$total);
     }
 
 }

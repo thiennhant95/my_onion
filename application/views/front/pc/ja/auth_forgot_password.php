@@ -70,7 +70,7 @@
 
     function msg_login_alert(text){ 
       $('.err_msg').text(text);
-      setTimeout(() => {
+      setTimeout(function() {
         $('.err_msg').text('');
       }, 2000);
     }
@@ -84,6 +84,12 @@
       },
       errorPlacement: function (error, element) {
           error.appendTo(".err_msg");
+      },
+      messages: {
+        email_forgot_pass: {
+          required: "必須です。ご入力ください。",
+          email: "正しいメールアドレスを入力してください。",
+        },
       },
     });
 
@@ -114,10 +120,11 @@
           if(result.status == 'OK'){
             send_pass_success();
           }else{
-            msg_login_alert('Email not exits!');
+            msg_login_alert('メールアドレスは存在していません。');
           }
-        },error(XMLHttpRequest, textStatus, errorThrown){
-          msg_login_alert('Change password fail!');
+        }
+        ,error:function(XMLHttpRequest, textStatus, errorThrown){
+          msg_login_alert('パスワードの変更に失敗しました。');
         }
       })
     });

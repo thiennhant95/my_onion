@@ -63,7 +63,7 @@
           dataType: "JSON",
           success:function(result) {
             window.location.href = "/"; 
-          },error(XMLHttpRequest, textStatus ,errorThrown){
+          },error:function(XMLHttpRequest, textStatus ,errorThrown){
             console.log('err');
           }
         })
@@ -80,7 +80,7 @@
           },
           success:function(result) {
             location.reload();
-          },error(XMLHttpRequest, textStatus ,errorThrown){
+          },error:function(XMLHttpRequest, textStatus ,errorThrown){
             console.log('err');
           }
         })

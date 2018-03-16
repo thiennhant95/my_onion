@@ -223,7 +223,7 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="panel panel-card">
-              <div class="panel-heading bg-carnation-pink align-left pl-30">本日の無料体験者一覧（１名）</div>
+              <div class="panel-heading bg-carnation-pink align-left pl-30">本日の無料体験者一覧（<?php if(!empty($member_course_free[1])){echo $member_course_free[1];}else{ echo 0;}?>名）(doing)</div>
               <div class="panel-body pl-30 pr-30 pt-30 pb-10">
                 <div class="table-responsive">
                   <table class="table table-lg table-center table-border-1">
@@ -239,21 +239,26 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>12345</td>
-                        <td>玉葱　太郎</td>
-                        <td>ジュニア</td>
-                        <td>C</td>
-                        <td>人見知りでおとなしいです</td>
-                        <td class="align-left">■潜れる<br>■バタ足25M</td>
-                        <td>
-                          <div class="block-30 text-center">
-                            <a href="#0" class="btn bg-wasatch-front btn-lg btn-long">
-                              <span>確認</span>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
+                    <?php if(!empty($member_course_free[0])){ ?>
+                      <?php foreach ($member_course_free[0] as $key_cf => $value_cf) { ?>      
+                        <tr>
+                          <td><?php echo $value_cf['student_id'];?></td>
+                          <td><?php echo $value_cf['name'];?></td>
+                          <td><?php echo $value_cf['course_name'];?></td>
+                          <td><?php echo $value_cf['base_class_sign'];?></td>
+                          <td><?php echo $value_cf['school_name'].'/'.$value_cf['school_grade'];?></td>
+                          <!-- <td><?php //echo $value_cf['memo_health'];?></td> -->
+                          <td class="align-left"><?php echo $value_cf['enquete'];?></td>
+                          <td>
+                            <div class="block-30 text-center">
+                              <a target ="blank" href="<?php echo base_url('/admin/member/edit/'.$value_cf['student_id']);?>" class="btn btn-default">
+                                <span>確認</span>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      <?php }?>
+                    <?php }?>
                     </tbody>
                   </table>
                 </div>
@@ -360,49 +365,26 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="panel panel-card">
-              <div class="panel-heading bg-blue-green align-left pl-30">新規ネット申し込み（未処理）一覧</div>
+              <div class="panel-heading bg-blue-green align-left pl-30">新規ネット申し込み（未処理）一覧(doing)</div>
               <div class="panel-body pl-30 pr-30 pt-30 pb-10">
                 <div class="table-responsive">
                   <table class="table table-border-1 table-lg table-center">
-                    <tr>
-                      <td>12345</td>
-                      <td>2017/09/01</td>
-                      <td>21：59</td>
-                      <td>玉葱　太郎</td>
-                      <td>入会</td>
-                      <td>一般</td>
-                      <td class="align-center">
-                        <a href="#0" class="btn bg-wasatch-front btn-lg btn-long">
-                          <span>処理</span>
-                        </a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>12345</td>
-                      <td>2017/09/01</td>
-                      <td>21：59</td>
-                      <td>玉葱　太郎</td>
-                      <td>入会</td>
-                      <td>一般</td>
-                      <td class="align-center">
-                        <a href="#0" class="btn bg-wasatch-front btn-lg btn-long">
-                          <span>処理</span>
-                        </a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>12345</td>
-                      <td>2017/09/01</td>
-                      <td>21：59</td>
-                      <td>玉葱　太郎</td>
-                      <td>入会</td>
-                      <td>一般</td>
-                      <td class="align-center">
-                        <a href="#0" class="btn bg-wasatch-front btn-lg btn-long">
-                          <span>処理</span>
-                        </a>
-                      </td>
-                    </tr>
+                    <?php if(!empty($student_register)){?>
+                      <?php foreach ($student_register as $key_str => $value_str) { ?>
+                        <tr>
+                          <td><?php echo $value_str['id'];?></td>
+                          <td><?php echo $value_str['date_register'];?></td>
+                          <td><?php echo $value_str['tag_name'];?></td>
+                          <td><?php echo $value_str['course_name'];?></td>
+                          <td><?php echo $value_str['tag_type_course'];?></td>
+                          <td class="align-center">
+                            <a target ="blank" href="<?php echo base_url('admin/entry/edit'.$value_str['id']);?>" class="btn btn-default">
+                              <span>処理</span>
+                            </a>
+                          </td>
+                        </tr>
+                      <?php }?>
+                    <?php }?>
                   </table>
                 </div>
               </div>
@@ -416,7 +398,7 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="panel panel-card">
-              <div class="panel-heading bg-blue-green align-left pl-30">契約変更申請（未処理）一覧</div>
+              <div class="panel-heading bg-blue-green align-left pl-30">契約変更申請（未処理）一覧(doing)</div>
               <div class="panel-body pl-30 pr-30 pt-30 pb-10">
                 <div class="table-responsive">
                   <table class="table table-border-1 table-lg table-center">
@@ -432,20 +414,95 @@
                         <th class="bg-sirahuji text-gray">　</th>
                       </tr>
                     </thead>
-                    <tr>
-                      <td>12345</td>
-                      <td>玉葱　太郎</td>
-                      <td>2017/09/01</td>
-                      <td>コース変更</td>
-                      <td>未処理</td>
-                      <td>-</td>
-                      <td>　</td>
-                      <td class="align-center">
-                        <a href="#0" class="btn bg-wasatch-front btn-lg btn-long">
-                          <span>処理</span>
-                        </a>
-                      </td>
-                    </tr>
+                    <tbody>
+                      <?php if(!empty($student_request[0])){?>
+                        <?php foreach ($student_request[0] as $key_rq => $value_rq) {?>
+                          
+                          <tr>
+                            <td><?php echo $value_rq['student_id'];?></td>
+                            <td><?php echo $value_rq['name'];?></td>
+                            <td><?php echo date('Y-m-d',strtotime($value_rq['create_date']));?></td>
+                            <td><?php 
+                              switch ($value_rq['type'])
+                              {
+                                  case 'bus_change_once':
+                                      $value_rq['type']='バス乗降連絡';
+                                      break;
+                                  case 'bus_change_eternal':
+                                      $value_rq['type']='バスコース変更';
+                                      break;
+                                  case 'course_change':
+                                      $value_rq['type']='練習コース変更';
+                                      break;
+                                  case 'recess':
+                                      $value_rq['type']='休会届';
+                                      break;
+                                  case 'quit':
+                                      $value_rq['type']='退会届';
+                                      break;
+                                  case 'event_entry':
+                                      $value_rq['type']='イベント・短期教室参加申請';
+                                      break;
+                                  case 'address_change':
+                                      $value_rq['type']='住所変更申請 ';
+                                      break;
+                              }
+                              echo $value_rq['type'];
+                            ?></td>
+                            <td><?php 
+                              switch ($value_rq['status'])
+                              {
+                                  case '0':
+                                      $value_rq['status']='未処理/未確認';
+                                      break;
+                                  case '1':
+                                      $value_rq['status']='承認/処理済み/確認済み';
+                                      break;
+                                  case '2':
+                                      $value_rq['status']='保留';
+                                      break;
+                              }
+                              echo $value_rq['status'];
+                            ?></td>
+                            <td>
+                              <?php 
+                                if ($value_rq['process_date']==NULL)
+                                {
+                                    $value_rq['process_date']='---';
+                                }
+                                else
+                                {
+                                    $value_rq['process_date'] = date('Y-m-d', strtotime($value_rq['process_date']));
+                                }
+                                
+                                echo $value_rq['process_date'];
+                              ?>
+                            </td>
+                            <td>
+                                <?php 
+                                  switch ($value_rq['comission_flg'])
+                                  {
+                                      case '0':
+                                          $value_rq['comission_flg']='無';
+                                          break;
+                                      case '1':
+                                          $value_rq['comission_flg']='手数料発生';
+                                          break;
+                                      case '2': $value_rq['comission_flg']='免除';
+                                          break;
+                                  }
+                                  echo $value_rq['comission_flg'];
+                                ?>
+                            </td>
+                            <td class="align-center">
+                              <a target ="blank" href="<?php echo base_url('admin/request/edit/'.$value_rq['student_id']);?>" class="btn btn-default">
+                                <span>処理</span>
+                              </a>
+                            </td>
+                          </tr>
+                        <?php }?>
+                      <?php }?>
+                    </tbody>
                   </table>
                 </div>
               </div>

@@ -23,8 +23,8 @@
                 <div class="form-group">
                   <label for="" class="col-sm-2 control-label">現在のコース</label>
                   <div class="col-sm-5 control-text">
-                    <?php if(!empty($user['course']['nearest'][0]['course_name'])){?>
-                      <span class="label label-md label-main"><?php echo $user['course']['nearest'][0]['course_name'];?></span>
+                    <?php if(!empty($user['course']['valid'][0]['course_name'])){?>
+                      <span class="label label-md label-main"><?php echo $user['course']['valid'][0]['course_name'];?></span>
                     <?php }?>
                   </div>
                 </div>
@@ -32,8 +32,8 @@
                   <label for="" class="col-sm-2 control-label">現在の級</label>
                   <div class="col-sm-5 control-text">
                   
-                  <?php if(!empty($user['course']['nearest']['classjoin'])){?>
-                    <span class="label label-md label-info"><?php echo $user['course']['nearest']['classjoin'][0]['base_class_sign']?>級</span>
+                  <?php if(!empty($user['course']['valid']['classjoin'])){?>
+                    <span class="label label-md label-info"><?php echo $user['course']['valid']['classjoin'][0]['base_class_sign']?>級</span>
                   <?php }?>
                   </div>
                 </div>
@@ -49,12 +49,14 @@
                       <?php if(!empty($user['course']['all'])){?>
                         <?php 
                           $id_course_current = '';
-                          if(!empty($user['course']['nearest'][0]['course_id'])){
-                            $id_course_current = $user['course']['nearest'][0]['course_id'];
+                          if(!empty($user['course']['valid'][0]['course_id'])){
+                            $id_course_current = $user['course']['valid'][0]['course_id'];
                           }
                         ?>
                         <?php foreach ($user['course']['all'] as $key => $value) {?>
-                          <option value="<?php echo $value['id'];?>" <?php if($value['id'] == $id_course_current){ echo "selected";}?>> <?php echo  $value['course_name'];?></option>
+                          <?php if($value['type'] == '0'){?>
+                            <option value="<?php echo $value['id'];?>" <?php if($value['id'] == $id_course_current){ echo "selected";}?>> <?php echo  $value['course_name'];?></option>
+                          <?php }?>
                         <?php }?>
                       <?php }?>
                     </select>
@@ -163,8 +165,8 @@
           </a>
         </div>
         <div id="infor_hidden">
-          <?php if(!empty($user['course']['nearest'][0]['course_id'])){ ?>
-            <input type = "hidden" id = "course_old" value = "<?php echo $user['course']['nearest'][0]['course_id']?>"/>
+          <?php if(!empty($user['course']['valid'][0]['course_id'])){ ?>
+            <input type = "hidden" id = "course_old" value = "<?php echo $user['course']['valid'][0]['course_id']?>"/>
           <?php }?>
           <div class="list_old_class">
             <?php if(!empty($list_class_selected)){?>
@@ -173,8 +175,10 @@
               <?php }?>
             <?php }?>
           </div>
-          <?php foreach ($practice_max as $key_practice => $value_practice) {?>
-            <input type = "hidden" id = "practice_course" value = "<?php echo $value_practice['practice_max']?>" />
+          <?php if(!empty($practice_max)){?>
+            <?php foreach ($practice_max as $key_practice => $value_practice) {?>
+              <input type = "hidden" id = "practice_course" value = "<?php echo $value_practice['practice_max']?>" />
+            <?php }?>
           <?php }?>
         </div>
       </form>
@@ -257,7 +261,7 @@
                     scrollTop: $("#start_date_request_change").offset().top},
                 'slow');
 
-            setTimeout(() => {
+            setTimeout(function(){
               list_class_new = [];
               list_class_new = get_list_class_selected();
             }, 2000);
@@ -284,8 +288,22 @@
               list_class_new = sub_list_class(id_selected, list_class_new);
               
             }else{
-              var msg = "MAX PRACTICE " + practice_max_of_course;
-              show_msg(msg);
+              
+
+              var tmp_class = $(this).parent();
+              var tmp_ = true;
+              $(tmp_class).find('td').each (function() {
+  
+                if($(this).hasClass('selected')){
+                  tmp_ = false;
+                  return false;
+                }
+              });
+              
+              if(tmp_){
+                var msg = "MAX PRACTICE " + practice_max_of_course;
+                show_msg(msg);
+              }
             }
             
           } else {
@@ -298,11 +316,23 @@
               list_class_new = sub_list_class(id_selected, list_class_new);
 
             } else {
-
-              var id_selected = $(this).attr('id'); 
-              list_class_new = sub_list_class(id_selected, list_class_new);
-              $(this).addClass('selected');
-              $(this).html('選択');
+              var tmp_class = $(this).parent();
+              var tmp_ = true;
+              $(tmp_class).find('td').each (function() {
+  
+                if($(this).hasClass('selected')){
+                  tmp_ = false;
+                  return false;
+                }
+              });
+              
+              if(tmp_){
+                var id_selected = $(this).attr('id'); 
+                list_class_new = sub_list_class(id_selected, list_class_new);
+                $(this).addClass('selected');
+                $(this).html('選択');
+                var tmp_class = $(this).parent();
+              }
 
             }
           } 
@@ -373,7 +403,7 @@
           if(date_change <= date_now ){
 
             srcoll_to_div('#start_date_request_change');
-            var err_msg = 'Please select a month in the future';
+            var err_msg = '変更月は次の月以降で入力してください。';//vui lòng chọn tháng trong tương lai
             show_msg(err_msg);
 
           } 
@@ -402,7 +432,7 @@
         else{
 
           srcoll_to_div('#start_date_request_change') ;
-          var err_msg = 'Please select date change';
+          var err_msg = '変更月を入力してください。';//vui lòng chọn tháng để chuyển đổi
           show_msg(err_msg);
           
         }

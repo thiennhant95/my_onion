@@ -84,7 +84,7 @@
         </ul>
       </div>
       <!-- Modal: お休み／振替予定設定 -->
-      <section class="modal fade" id="modalTransfer" role="dialog" aria-labelledby="modalTransfer">
+      <section class="modal fade" id="modalTransfer" role="dialog" >
         <div class="modal-dialog" >
           <div class="modal-content">
             <div class="modal-header bg-blue text-center">
@@ -95,23 +95,26 @@
             </div>
             <div class="modal-body">
               <h5 class="text-center">
-                <strong>2017 年9 月27 日　[C]15：55 ～</strong>
+                <strong class = "date-select-tmp">
+                  <!-- name coure + class + time -->
+                </strong>
               </h5>
               <hr class="hr-dashed">
               <form class="form-horizontal">
-                <div class="form-group">
+                <!-- chọn ngày  -->
+                <!-- <div class="form-group">
                   <label for="" class="col-sm-3 control-label">振替日</label>
                   <div class="col-sm-7">
                     <select class="form-control">
                       <option value="">あとで決める</option>
                     </select>
                   </div>
-                </div>
+                </div> -->
+
                 <div class="form-group">
                   <label for="" class="col-sm-3 control-label">時間</label>
                   <div class="col-sm-7">
-                    <select class="form-control">
-                      <option value="">C 15：15〜</option>
+                    <select class="form-control" id = "fill_select_time">
                     </select>
                   </div>
                 </div>
@@ -120,14 +123,14 @@
                   <div class="col-sm-7">
                     <select class="form-control">
                       <option value="">受ける</option>
+                      <option value="">受けない</option>
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="" class="col-sm-3 control-label">送迎バス</label>
                   <div class="col-sm-7">
-                    <select class="form-control">
-                      <option value="">送迎のバスに乗る</option>
+                    <select class="form-control" id="list_bus">
                     </select>
                   </div>
                 </div>
@@ -434,7 +437,8 @@
     </div>
   </main>
   <script>
-    $(document).on('ready',function () {    
+    $(document).on('ready',function () {  
+
       var MONDAY = "<?php echo EVERY_MONDAY ?>",
           TUESDAY = "<?php echo EVERY_TUESDAY ?>",
           WENDAY = "<?php echo EVERY_WENDAY ?>",
@@ -454,6 +458,7 @@
       var last_month = tmp_m <= 0 ? 'Last Year' : tmp_m + '月';
       var next_month = (m == 12) ? 'Next Year' : (m + 1);
       var start_date_selected = "";
+      var arr_monday = [];
       var calendar = $('#calendar_recheduce').fullCalendar({
 
         locale: initialLocaleCode,
@@ -499,7 +504,14 @@
           start_date_selected = fmt_date(start);
           uncheck_multiple_date();
           if(start_date_selected){
-            check_type_date();
+            let tmp_date = start_date_selected + ' 00:00';
+            if ($.inArray(tmp_date, arr_monday) == -1){
+              check_type_date();
+            }else{
+              srcoll_to_div('.header-mypage',' CLOSED DATE, can not register');
+            }
+            let tmp_data_class =  get_class_current();
+            get_class_current(start_date_selected);
           }       
           
         },
@@ -531,9 +543,31 @@
           // console.log(list_modays);
           month_current_select = $('#calendar_recheduce').fullCalendar('getDate').format('M');
           year_current_select = $('#calendar_recheduce').fullCalendar('getDate').format('YYYY');
+          var tmp_current_moment = $('#calendar_recheduce').fullCalendar('getDate').format('YYYY-MM-DD');
           
           get_list_date_test();
           get_list_date_absent();
+
+          var tmp_date_set =  new Date(tmp_current_moment);
+          var tmp_list_mondays = getMondays(tmp_date_set);
+          arr_monday = [];
+          for (let index = 0; index < tmp_list_mondays.length; index++) {
+            
+            var date = new Date(tmp_list_mondays[index]);
+            var tmp_get_fmt_month = ('0'+(date.getMonth()+1)).slice(-2);
+            var tmp_get_fmt_date  = ('0'+ date.getDate()).slice(-2);
+            var date_convert = date.getFullYear() + '-' + tmp_get_fmt_month + '-' +  tmp_get_fmt_date + ' ' + '00:00';
+            
+            arr_monday.push(date_convert);
+            $('#calendar_recheduce').fullCalendar('renderEvent',
+              {
+                title: DATE_CLOSED,
+                start: date_convert,
+                className : "closed_class_btn monday_class",
+              },false // make the event "stick"
+            );
+            
+          }
         }
       });
 
@@ -548,7 +582,7 @@
           dataType: 'JSON',
           success: function (result) {
             if(result['list_data']){
-              result['list_data'].forEach(element => {
+              $.each(result['list_data'], function( key ,element) {
                 calendar.fullCalendar('renderEvent',
                   {
                     id: element.id,
@@ -576,7 +610,7 @@
           dataType: 'JSON',
           success: function (result) {
             if(result['list_data_test']){
-              result['list_data_test'].forEach(element => {
+              $.each(result['list_data_test'], function( key ,element ) {
                 calendar.fullCalendar('renderEvent',
                     {
                       id: element.id,
@@ -677,7 +711,81 @@
       $('#modalSelectOption').on('show.bs.modal', function (e) {
         $('body').css('padding-right', '0px');
       });
+
+      function getMondays(date) {
+        var d = new Date(date),
+        month = d.getMonth(),
+        mondays = [];
+        d.setDate(1);
+        // // Get the first Monday in the month
+        while (d.getDay() !== 1) {
+            d.setDate(d.getDate() + 1);
+        }
+        // Get all the other Mondays in the month
+        while (d.getMonth() === month) {
+            mondays.push(new Date(d.getTime()));
+            d.setDate(d.getDate() + 7);
+        }
+        return mondays;
+      }
+
+      function fill_date_click(date_selected, str_info_class) {
+
+        let date_jp  = conver_date_jp(date_selected);
+        let box_show_date = $('.date-select-tmp');
+        box_show_date.html(date_jp + ' ' + str_info_class);
+      }
+
+      function conver_date_jp(date_input) {
+
+        let tmp_date = new Date(date_input);
+        let tmp_day = tmp_date.getDate();
+        let tmp_month = tmp_date.getMonth();
+        let tmp_year = tmp_date.getFullYear();
+        let date_jp = [tmp_year ,'年',tmp_month ,'月', tmp_day,'日'].join(' ');
+        
+        return date_jp;
       
+      }
+      
+      function get_class_current(date_selected_curr) {
+        $.ajax({
+          type: "POST",
+          url: "https:" + "<?php echo base_url('reschedule/get_info_class_current');?>",
+          data: {
+            start_date_selected : start_date_selected
+          },
+          dataType: 'JSON',
+          success: function (result) {
+            let tmp_str_info = result.db_class_str;
+            let tmp_select_calender = result.calendar_class;
+            fill_selected_time(tmp_select_calender);
+            fill_date_click(date_selected_curr, tmp_str_info);
+            $('#list_bus').html(result.db_bus);
+          }
+        });
+      }
+
+      function fill_selected_time(db_calendar) {
+        let tmp_ojb = $('#fill_select_time');
+
+        tmp_ojb.html(db_calendar);
+      }
+
+      $('#fill_select_time').on('change', function name() {
+        let tmp_id = $('#fill_select_time').val();
+        $.ajax({
+          type: "POST",
+          url: "https:" + "<?php echo base_url('reschedule/get_busroute_of_class');?>",
+          data: {
+            id_class_selected : tmp_id
+          },
+          dataType: 'JSON',
+          success: function (result) {
+            $('#list_bus').html(result.html);
+          }
+        });
+      })
     });
   </script>
   <?php require_once("contents_footer.php"); ?>

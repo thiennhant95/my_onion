@@ -86,10 +86,12 @@ class Entry extends ADMIN_Controller {
                 redirect('/admin/entry');
             } else {
                 $s_info = $this->student_data->get_student_data_detail( $id );
+                // echo '<pre>'; print_r( $s_info ); echo '</pre>'; die();
+
                 $course_valid = $this->m_course_model->getData_Course_valid( $id );
                 $data = array();
                 $data['course_valid'] = $course_valid;
-                $data['html'] = $this->create_html( $s_info['course']['nearest'][0]['course_id'] );
+                $data['html'] = $this->create_html( $s_info['course']['valid'][0]['course_id'] );
                 $data['school_grades'] = $this->configVar['school_grades'];
                 $data['s_info'] = $s_info;
                 if ( isset( $_POST['change_course'] ) && isset( $_POST['course_id'] ) ) {
@@ -271,8 +273,8 @@ class Entry extends ADMIN_Controller {
         if ( count( $bus_course ) > 0 ) {
             $bus_route_default = $this->m_bus_route_model->select_by_id( $bus_course[0]['id'], 'bus_course_id', 'm_bus_route' );
             if ( count( $bus_route_default ) > 0 ) $data_route = $student_info['info']['id'] . '_' . $class_id . '_' . $start_date;
-            else $data_route = 'no';
-        }
+            else $data_route = $student_info['info']['id'] . '_' . $class_id . '_' . $start_date;
+        } else $data_route = $student_info['info']['id'] . '_' . $class_id . '_' . $start_date;
         $bus_stop_default = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
         $arr_date = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
         $split = explode( '_', $data_class );
@@ -310,20 +312,20 @@ class Entry extends ADMIN_Controller {
                                     $html_bus .= '</select>';
                                 } else {
                                     $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
-                                        $html_bus .= '<option>No bus route to choose</option>';
+                                        $html_bus .= '<option>データがありません</option>';
                                     $html_bus .= '</select>';
                                 }
                             $html_bus .= '</td>';
                         } else {
                             $html_bus .= '<td>';
-                                $html_bus .= '<input type="hidden" class="data_route" data-course="no" data-route="no" />';
+                                $html_bus .= '<input type="hidden" class="data_route" data-course="no" data-route="' . $data_route . '" />';
                                 $html_bus .= '<select class="form-control w-xs-100per" disabled>';
-                                    $html_bus .= '<option>No bus course to choose</option>';
+                                    $html_bus .= '<option>データがありません</option>';
                                 $html_bus .= '</select>';
                             $html_bus .= '</td>';
                             $html_bus .= '<td>';
                                 $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
-                                    $html_bus .= '<option>No bus route to choose</option>';
+                                    $html_bus .= '<option>データがありません</option>';
                                 $html_bus .= '</select>';
                             $html_bus .= '</td>';
                         }
@@ -352,20 +354,20 @@ class Entry extends ADMIN_Controller {
                                         $html_bus .= '</select>';
                                     } else {
                                         $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
-                                            $html_bus .= '<option>No bus route to choose</option>';
+                                            $html_bus .= '<option>データがありません</option>';
                                         $html_bus .= '</select>';
                                     }
                                 $html_bus .= '</td>';
                             } else {
                                 $html_bus .= '<td>';
-                                    $html_bus .= '<input type="hidden" data-course="no" class="data_route" data-route="no" />';
+                                    $html_bus .= '<input type="hidden" data-course="no" class="data_route" data-route="' . $data_route . '" />';
                                     $html_bus .= '<select class="form-control w-xs-100per" disabled>';
-                                        $html_bus .= '<option>No bus course to choose</option>';
+                                        $html_bus .= '<option>データがありません</option>';
                                     $html_bus .= '</select>';
                                 $html_bus .= '</td>';
                                 $html_bus .= '<td>';
                                     $html_bus .= '<select data-check="no" class="form-control w-xs-100per" disabled>';
-                                        $html_bus .= '<option>No bus route to choose</option>';
+                                        $html_bus .= '<option>データがありません</option>';
                                     $html_bus .= '</select>';
                                 $html_bus .= '</td>';
                             }

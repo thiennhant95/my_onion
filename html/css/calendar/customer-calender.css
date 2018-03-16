@@ -8,7 +8,7 @@
 .closed_class_btn , .test_class_btn{
      color: #fff;
      max-width: 50%;
-     width: 120px;
+     width: 50px;
      height: 40px;
      line-height: 3;
      font-weight: bold;
@@ -23,4 +23,12 @@
 .fc-day-header{
      background: #333;
      color: #fff;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
 }

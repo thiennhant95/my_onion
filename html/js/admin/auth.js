@@ -3,7 +3,7 @@ $(document).ready(function(){
 
   function msg_login_alert(text){
     $('.err_msg').text(text);
-      setTimeout(() => {
+      setTimeout(function(){
         $('.err_msg').text('');
       }, 2000);
   }

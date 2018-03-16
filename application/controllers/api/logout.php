@@ -10,7 +10,8 @@ class Logout extends CI_Controller {
     public function logout_user(){
         if(isset($_POST['flag_logout']))
         {
-            $this->session->sess_destroy('admin_account');
+            $this->session->sess_destroy('user_account');
+            $this->session->sess_destroy('list_family');
             echo json_decode(1);
             die();
         }

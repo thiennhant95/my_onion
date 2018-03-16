@@ -48,7 +48,12 @@
                             </select>
                         </div>
                         <?php
-                        $short_course_name=$course_list[1]['short_course_name'];
+//                        $short_course_name=reset($course_list);
+                        foreach ($course_list as $k=>$v)
+                        {
+                            $short_course_name=$v['short_course_name'];
+                            break;
+                        }
                         $base_class_sign="M";
                         $class_code=$short_course_name.$base_class_sign;
                         ?>

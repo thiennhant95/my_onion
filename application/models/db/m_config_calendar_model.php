@@ -119,4 +119,47 @@ class M_config_calendar_model extends DB_Model {
         $query = $this->db->get()->result_array();
         return $query;
     }
+
+    public function get_info_class($id_std)
+    {
+        $my_array = array('l_student_course.student_id' => $id_std, 'l_student_course.end_date' => END_DATE_DEFAULT, 'l_student_class.end_date' => END_DATE_DEFAULT );
+        $this->db->select('l_student_course.course_id, m_class.id, m_class.class_name, m_class.base_class_sign, m_class.start_time, m_class.end_time')
+                ->from('l_student_course')
+                ->join('l_student_class', 'l_student_class.student_course_id = l_student_course.course_id')
+                ->join('m_class', 'm_class.id = l_student_class.class_id')
+                ->where($my_array);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+
+    public function get_class_of_course($id_course)
+    {
+        $my_array = array('m_class.course_id' => $id_course);
+        $this->db->select('m_class.id, m_class.class_name, m_class.base_class_sign, m_class.start_time, m_class.end_time')
+                ->from('m_class')
+                ->where($my_array);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+
+    public function get_course_current($id)
+    {
+        $my_array = array('student_id' => $id, 'end_date' => END_DATE_DEFAULT);
+        $this->db->select('l_student_course.course_id')
+                ->from('l_student_course')
+                ->where($my_array);
+        $query = $this->db->get()->row_array();
+        return $query;
+    }
+
+    public function get_list_bus_name($id_class)
+    {
+       
+        $my_array = array('m_bus_course.class_id' => $id_class);
+        $this->db->select('m_bus_course.bus_course_name, m_bus_course.id')
+                ->from('m_bus_course')
+                ->where($my_array);
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
 }

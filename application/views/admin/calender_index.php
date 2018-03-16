@@ -17,7 +17,7 @@
           </div>
           <div class="panel-body">
 
-            <div class="block-30">
+            <!-- <div class="block-30">
               <div class="alert alert-danger text-center">
                 <h3>
                   <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -25,9 +25,9 @@
                 </h3>
                 <p>何度も失敗する場合はシステム担当へお問い合わせください。</p>
               </div>
-            </div>
+            </div> -->
 
-            <hr class="hr-dashed">
+            <!-- <hr class="hr-dashed"> -->
             <div class="block-15 text-center">
               <button class="btn btn-success btn-long" type = "button" id = "absent_date" disabled>休館</button>
               <button class="btn btn-warning btn-long" type = "button" id = "test_examp" disabled>テスト</button>
@@ -110,11 +110,39 @@
 
       </form>
     </div>
+      <!-- DEV TRI CUSTOME -->
+      <button id="show_show_btn" type="button" style = "display:none" class="btn btn-link btn-sm" data-toggle="modal" data-target="#showMsgCalendar">show list option</button>
+      <section class="modal fade" id="showMsgCalendar" role="dialog" aria-labelledby="showMsgCalendar">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h4 class="text-center">
+                <i class="fa fa-info-circle text-primary" aria-hidden="true"></i>
+                <strong>WARNING!</strong>
+              </h4>
+              <div class="" style = "text-align: center ">
+                  
+                <span id = "msg_alert_calender" center>
+
+              </span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="modal-btns row" style = "text-align: center ">
+              <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--END DEV TRI CUSTOME -->
   </main>
   <script>
+
     $(document).on('ready',function () {
 
       var initialLocaleCode = 'ja',
+          arr_monday = [],
           date = new Date(),
           d = date.getDate(),
           m = date.getMonth() + 1,
@@ -124,8 +152,8 @@
           month_current_select = '',
           year_current_select = '',
           all_day_select = '',
-          last_month = (m - 1) <= 0 ? 'Last Year' : (m - 1),
-          next_month = (m == 12) ? 'Next Year' : (m + 1),
+          last_month = (m - 1) <= 0 ? '去年' : (m - 1),
+          next_month = (m == 12) ? '来年' : (m + 1),
           list_monday = [];
 
       var MONDAY = "<?php echo EVERY_MONDAY ?>",
@@ -177,10 +205,15 @@
         selectHelper: true,
         select: function (start, end, allDay) {
           
-          enable_button_action();
           start_date_selected = fmt(start);
           end_date_selected = fmt(end);
           all_day_select = allDay;
+          let tmp_date = start_date_selected;
+          if ($.inArray(tmp_date, arr_monday) == -1){
+            enable_button_action();
+          }else{
+            disabled_button_action();
+          }
           uncheck_multiple_date();
           
         },
@@ -191,18 +224,27 @@
           });
         },
         eventClick: function (event) {
-          var decision = confirm("Do you want to remove event?");
-          var id_date_current;
-          if (decision) {
-            if($(this).hasClass('closed_class_btn')){
-              id_date_current = event.id;
-              remove_closed_date(id_date_current);
-            }
-            if($(this).hasClass('test_class_btn')){
-              id_date_current = event.id;
-              remove_test_date(id_date_current);
+          if($(this).hasClass('monday_class')){
+
+            let msg = '休館日!';
+            show_msg_alert(msg);
+            $('#calendar').fullCalendar( 'unselect' );
+
+          }else{
+            var decision = confirm("この内容を削除します。よろしいでしょうか？");
+            var id_date_current;
+            if (decision) {
+              if($(this).hasClass('closed_class_btn')){
+                id_date_current = event.id;
+                remove_closed_date(id_date_current);
+              }
+              if($(this).hasClass('test_class_btn')){
+                id_date_current = event.id;
+                remove_test_date(id_date_current);
+              }
             }
           }
+          
         },
         eventResize: function (event) {
           // var start = fmt(event.start);
@@ -216,15 +258,32 @@
           // });
         },
         viewRender: function (event) {
-
+          var tmp_current_moment = $('#calendar').fullCalendar('getDate').format('YYYY-MM-DD');
           month_current_select = $('#calendar').fullCalendar('getDate').format('M');
           year_current_select = $('#calendar').fullCalendar('getDate').format('YYYY');
           
           get_list_date_test();
           get_list_date_absent();
-          // console.log(list_modays);
-          //lây danh sach cac ngay t2 cua nam gan vao 1 mang sau do forearch chen ngay nghi vao. 
-          // Can code ham kiem tra xem do phai la t2 ko, neu ko thi ko dc edit va ko dc set la ngay test
+          var tmp_date_set =  new Date(tmp_current_moment);
+          var tmp_list_mondays = getMondays(tmp_date_set);
+          
+          arr_monday = []
+          for (let index = 0; index < tmp_list_mondays.length; index++) {
+            
+            var date = new Date(tmp_list_mondays[index]);
+            var tmp_get_fmt_month = ('0'+(date.getMonth()+1)).slice(-2);
+            var tmp_get_fmt_date  = ('0'+ date.getDate()).slice(-2);
+            var date_convert = date.getFullYear() + '-' + tmp_get_fmt_month + '-' +  tmp_get_fmt_date + ' ' + '00:00';
+            arr_monday.push(date_convert);
+            $('#calendar').fullCalendar('renderEvent',
+              {
+                title: DATE_CLOSED,
+                start: date_convert,
+                className : "closed_class_btn monday_class",
+              },false // make the event "stick"
+            );
+            
+          }
         }
       });
 
@@ -238,8 +297,8 @@
       }
 
       function disabled_button_action() {
-        $('#absent_date').attr('disabled');
-        $('#test_examp').attr('disabled');
+        $('#absent_date').attr('disabled','true');
+        $('#test_examp').attr('disabled','true');
       }
 
       function get_prev_month() {
@@ -263,20 +322,19 @@
       }
 
       function getMondays(date) {
-        var d = date || new Date(),
-            month = d.getMonth(),
-            mondays = [];
-    
+        var d = new Date(date),
+        month = d.getMonth(),
+        mondays = [];
         d.setDate(1);
-    
+        // // Get the first Monday in the month
         while (d.getDay() !== 1) {
             d.setDate(d.getDate() + 1);
         }
+        // Get all the other Mondays in the month
         while (d.getMonth() === month) {
             mondays.push(new Date(d.getTime()));
             d.setDate(d.getDate() + 7);
         }
-    
         return mondays;
       }
  
@@ -302,6 +360,7 @@
           success: function (rel) {
           }
         })
+
       }
 
       function remove_test_date(id_selected) {
@@ -351,7 +410,8 @@
                 );
                 break;
               case 'FAIL':
-                alert('ERROR! THIS IS TEST DAY');
+                let msg = '休館日に変更する前にテスト日を削除してください。';//hãy xóa ngày test trước khi đổi thành ngày nghỉ
+                show_msg_alert(msg);
                 break;
               default:
                 break;
@@ -392,7 +452,8 @@
                 );
                 break;
               case 'FAIL':
-                alert('ERROR, THIS IS DAY OFF');
+                let msg = 'テスト日に変更する前に休館日を削除してください。';//xóa ngày nghỉ trước khi đổi thành ngày test
+                show_msg_alert(msg);
                 break;
               default:
                 break;
@@ -564,7 +625,11 @@
           })
         }
       });
-      
+
+      function show_msg_alert(msg) {
+        $( "#show_show_btn" ).trigger( "click" ); 
+        $('#msg_alert_calender').html(msg);
+      }
     });
   </script>
   

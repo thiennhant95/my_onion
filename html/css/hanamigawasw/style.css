@@ -3258,3 +3258,6 @@ body { padding-right: 0 !important }
   width: 50%;
   margin: 0 auto;
 }
+#js_msg_err_member{
+  display: none;
+}

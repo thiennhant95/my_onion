@@ -81,10 +81,10 @@ class M_course_model extends DB_Model {
     }
     public function getData_Course_valid(){   
         $query ="SELECT a.id , a.course_code , a.course_name , a.start_date , a.end_date , a.regist_start_date,
-                        a.regist_end_date , a.type , a.join_condition , a.practice_max , a.delete_flg = ?
+                        a.regist_end_date , a.type , a.join_condition , a.practice_max 
                   FROM  m_course  a
-                  WHERE  a.regist_end_date >= DATE_FORMAT(NOW(), '%Y%m%d') ";
-        $res = $this->db->query($query ,[ DATA_NOT_DELETED ] );
+                  WHERE  a.regist_end_date >= DATE_FORMAT(NOW(), '%Y%m%d') AND a.delete_flg = ? AND a.invalid_flg = ? ";
+        $res = $this->db->query($query ,[ DATA_NOT_DELETED , DATA_INVALID_NO] );
         if($res === FALSE )
         {
             logerr($params, $sql);
@@ -111,29 +111,38 @@ class M_course_model extends DB_Model {
         $this->found_rows = count($result);
         return $result;
     }
+    /**
+     * Get data class by  course valid 
+     * @access public
+     * @author Bao - VietVang JSC
+     */    
     public function getData_class_by_id($id = NULL){   
         if($id == NULL) return '';
 
-        $query =" SELECT a.id as course_id , b.id as class_id , 
-                         b.base_class_sign , b.class_code,b.class_name,b.`week`, b.max_count
-                  FROM   m_course a JOIN m_class b ON a.id=b.course_id 
-                  WHERE  a.id='".$id."'";
-        $res = $this->db->query($query);
-        if($res === FALSE )
-        {
-            logerr($params, $sql);
-            throw new Exception();
-        }
+        $query = " SELECT a.id as course_id , b.id as class_id , b.base_class_sign , b.class_code , b.class_name , b.`week`, b.max_count
+                  FROM   m_course a JOIN m_class b ON a.id = b.course_id 
+                  WHERE  a.id = ? AND  a.invalid_flg = ? AND  b.invalid_flg = ? ";
+        $res = $this->db->query( $query , [ $id , DATA_INVALID_NO , DATA_INVALID_NO ] );
         $result = $res->result_array();
         if(count($result) > 0 )
         {
+
             foreach ($result as $key => $value) {
-               $query = " SELECT COUNT(e.id) as num_ber FROM m_class e , l_student_class f
-                          WHERE e.id = f.class_id AND e.id = ? AND f.end_date = ? ";
-                $data =  $this->db->query($query , [ $value['class_id'] , END_DATE_DEFAULT ]);
-                $number_student_join = $data->result_array();
-                $number = $number_student_join[0]['num_ber'] ;
-                $result[ $key ][ 'number_student_join' ] =   $number ;
+                $week = explode( ',' , $value['week'] ) ;
+                $sub_id = $value['class_id'] ;
+                $max_count = $value['max_count'] ;
+                $result[ $key ][ 'week_full' ] = '';
+                foreach( $week as $item )
+                {
+                    $query = " SELECT COUNT( id ) as num_ber FROM l_student_class  WHERE  class_id = ? AND week_num = ? AND end_date = ?  ";
+                    $data =  $this->db->query($query , [ $sub_id , $item , END_DATE_DEFAULT ])->result_array();
+                    if( count( $data ) > 0)
+                    {
+                        $number = $data[0]['num_ber'] ;
+                        if( $number == $max_count )
+                            $result[ $key ][ 'week_full' ] .= $item.'-' ;
+                    }
+                }
             }
         }
         $this->found_rows = count($result);

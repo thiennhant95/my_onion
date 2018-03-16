@@ -309,16 +309,17 @@ class Request extends ADMIN_Controller {
                     //data change bus
                     foreach ($contents as $key_contents => $row_contents)
                     {
+                        $key_contents=preg_split('/\_/',$key_contents)[0];
                         $class[]=$this->class->select_by_id($key_contents)['0'];
                         foreach ($row_contents as $child_contents)
                         {
-                            if (isset($child_contents['bus_route_go_id_before'])) {
+                            if (isset($child_contents['bus_route_go_id_before']) && $child_contents['bus_route_go_id_before']!=null) {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_go_id_before'])[0];
                             }
                             if (isset($child_contents['bus_route_go_id_after'])) {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_go_id_after'])[0];
                             }
-                            if (isset($child_contents['bus_route_ret_id_before'])) {
+                            if (isset($child_contents['bus_route_ret_id_before']) && $child_contents['bus_route_ret_id_before']!=null) {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_ret_id_before'])[0];
                             }
                             if (isset($child_contents['bus_route_ret_id_after'])) {
@@ -328,6 +329,13 @@ class Request extends ADMIN_Controller {
                     }
                     foreach ($get_bus_route as $bus=> $bus_course)
                     {
+                        if (count($bus_course)==2)
+                        {
+                            $bus_course[3]=$bus_course[1];
+                            unset($bus_course[1]);
+                            $bus_course[1]=$bus_course[0];
+                            unset($bus_course[0]);
+                        }
                         foreach ($bus_course as $bus_course_key=>$bus_row)
                         {
                             $bus_row['bus_stop_name']=$this->bus_stop->select_by_id($bus_row['bus_stop_id'])[0]['bus_stop_name'];
@@ -392,16 +400,17 @@ class Request extends ADMIN_Controller {
 
                     foreach ($contents as $key_contents => $row_contents)
                     {
+                        $key_contents=preg_split('/\_/',$key_contents)[0];
                         $class[]=$this->class->select_by_id($key_contents)['0'];
                         foreach ($row_contents as $child_contents)
                         {
-                            if (isset($child_contents['bus_route_go_id_before'])) {
+                            if (isset($child_contents['bus_route_go_id_before']) && $child_contents['bus_route_go_id_before']!=null) {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_go_id_before'])[0];
                             }
                             if (isset($child_contents['bus_route_go_id_after'])) {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_go_id_after'])[0];
                             }
-                            if (isset($child_contents['bus_route_ret_id_before'])) {
+                            if (isset($child_contents['bus_route_ret_id_before']) && $child_contents['bus_route_ret_id_before']!=null) {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_ret_id_before'])[0];
                             }
                             if (isset($child_contents['bus_route_ret_id_after'])) {
@@ -411,12 +420,18 @@ class Request extends ADMIN_Controller {
                     }
                     foreach ($get_bus_route as $bus=> $bus_course)
                     {
-                        foreach ($bus_course as $bus_course_key=>$bus_row)
+                        if (count($bus_course)==2)
                         {
-                            $bus_row['bus_stop_name']=$this->bus_stop->select_by_id($bus_row['bus_stop_id'])[0]['bus_stop_name'];
-                            $bus_row['bus_course_name']=$this->bus_course->select_by_id($bus_row['bus_course_id'])[0]['bus_course_name'];
-                            $get_bus_route_new[$bus][] =$bus_row;
+                            $bus_course[3]=$bus_course[1];
+                            unset($bus_course[1]);
+                            $bus_course[1]=$bus_course[0];
+                            unset($bus_course[0]);
                         }
+                            foreach ($bus_course as $bus_course_key => $bus_row) {
+                                $bus_row['bus_stop_name'] = $this->bus_stop->select_by_id($bus_row['bus_stop_id'])[0]['bus_stop_name'];
+                                $bus_row['bus_course_name'] = $this->bus_course->select_by_id($bus_row['bus_course_id'])[0]['bus_course_name'];
+                                $get_bus_route_new[$bus][] = $bus_row;
+                            }
                     }
                     $data['get_request']['class']=$class;
                     $data['get_request']['body_content']=$get_bus_route_new;
@@ -521,8 +536,13 @@ class Request extends ADMIN_Controller {
                             $postvalue = unserialize(base64_decode($_POST['body_content']));
                             foreach ($postvalue as $key_content =>$row_content)
                             {
-                                $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['0']['id'],'bus_route_ret_id'=>$row_content['2']['id']),array('end_date'=>$_POST['date_change_bus']));
-                                $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
+                                if (isset($row_content['0']['id']) && isset($row_content['2']['id'])) {
+                                    $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content, 'bus_route_go_id' => $row_content['0']['id'], 'bus_route_ret_id' => $row_content['2']['id']), array('end_date' => $_POST['date_change_bus']));
+                                    $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
+                                }
+                                else {
+                                    $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content, 'bus_route_go_id' => $row_content['1']['id'], 'bus_route_ret_id' => $row_content['0']['id'], 'start_date' => $_POST['date_change_bus']));
+                                }
                             }
                         }
                     }
@@ -592,8 +612,13 @@ class Request extends ADMIN_Controller {
                                 $postvalue = unserialize(base64_decode($_POST['body_content']));
                                 foreach ($postvalue as $key_content =>$row_content)
                                 {
-                                    $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['0']['id'],'bus_route_ret_id'=>$row_content['2']['id']),array('end_date'=>$_POST['date_change_bus']));
-                                    $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
+                                    if (isset($row_content['0']['id']) && isset($row_content['2']['id'])) {
+                                        $this->student_bus_route->edit_by_where(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content, 'bus_route_go_id' => $row_content['0']['id'], 'bus_route_ret_id' => $row_content['2']['id']), array('end_date' => $_POST['date_change_bus']));
+                                        $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content,'bus_route_go_id'=>$row_content['1']['id'],'bus_route_ret_id'=>$row_content['3']['id'],'start_date'=>$_POST['date_change_bus']));
+                                    }
+                                    else {
+                                        $this->student_bus_route->insert(array('student_id' => $data['get_request']['student_id'], 'student_class_id' => $key_content, 'bus_route_go_id' => $row_content['1']['id'], 'bus_route_ret_id' => $row_content['0']['id'], 'start_date' => $_POST['date_change_bus']));
+                                    }
                                 }
                             }
                         }

@@ -11,7 +11,19 @@
 
   <main class="content content-dark">
     <div class="container">
-
+      <div id="js_msg_err_member">
+        <div class="block-30">
+          <div class="alert alert-danger text-center">
+            <h3>
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              <strong>ERROR!</strong>
+            </h3>
+            <p></p>
+          </div>
+        </div>
+        <hr class="hr-dashed">
+      </div>
+      
       <h1 class="lead-heading bg-blue-green h3">会員一覧</h1>
 
       <div class="panel panel-dotted">
@@ -40,9 +52,9 @@
                         <label for="" class="control-label text-small col-sm-2">会員番号</label>
                         <div class="col-sm-4">
                           <div class="form-fromto">
-                            <input type="text" class="form-control" id = "id_from" name="id_from" value="" placeholder="FROM">
+                            <input type="number" class="form-control" id = "id_from" name="id_from" value="" placeholder="FROM">
                             <span class="form-fromto-split">〜</span>
-                            <input type="text" class="form-control" id = "id_to" name="id_to" value="" placeholder="TO">
+                            <input type="number" class="form-control" id = "id_to" name="id_to" value="" placeholder="TO">
                           </div>
                         </div>
                         <div class="col-xs-4 col-sm-2">
@@ -190,7 +202,7 @@
                       <div class="form-group form-group-sm form-gutter-half clearfix mb-1">
                         <label for="" class="control-label text-small col-sm-2">TEL</label>
                         <div class="col-sm-4">
-                          <input type="text" class="form-control" id="tel" name="tel" value="" placeholder="">
+                          <input type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" class="form-control" id="tel" name="tel" value="" placeholder="">
                         </div>
                         <div class="col-xs-4 col-sm-2">
                           <input type="text" class="form-control" name="class" value="" placeholder="並び順">
@@ -324,10 +336,11 @@
                       <div class="form-group form-group-sm form-gutter-half clearfix mb-1">
                         <label for="" class="control-label text-small col-sm-2">練習コース</label>
                         <div class="col-sm-4">
-                          <div class="form-fromto">
-                            <input type="text" class="form-control" id="practice_course_from" name="practice_course" value="" placeholder="FROM">
+                          <div class="form">
+                            <input type="text" class="form-control" id="practice_course" name="practice_course" value="" placeholder="はコースコードで">
+                            <!-- <input type="text" class="form-control" id="practice_course_from" name="practice_course" value="" placeholder="FROM">
                             <span class="form-fromto-split">〜</span>
-                            <input type="text" class="form-control" id="practice_course_to" name="practice_course_to" value="" placeholder="TO">
+                            <input type="text" class="form-control" id="practice_course_to" name="practice_course_to" value="" placeholder="TO"> -->
                           </div>
                         </div>
                         <div class="col-xs-4 col-sm-2">
@@ -349,10 +362,11 @@
                       <div class="form-group form-group-sm form-gutter-half clearfix mb-1">
                         <label for="" class="control-label text-small col-sm-2">級</label>
                         <div class="col-sm-4">
-                          <div class="form-fromto">
-                            <input type="text" class="form-control" id="level_from" name="level_from" value="" placeholder="FROM">
+                          <div class="">
+                            <input type="text" class="form-control" id="level" name="level" value="" placeholder="級">
+                            <!-- <input type="text" class="form-control" id="level_from" name="level_from" value="" placeholder="FROM">
                             <span class="form-fromto-split">〜</span>
-                            <input type="text" class="form-control" name="level_to" id="level_to" value="" placeholder="TO">
+                            <input type="text" class="form-control" name="level_to" id="level_to" value="" placeholder="TO"> -->
                           </div>
                         </div>
                         <div class="col-xs-4 col-sm-2">
@@ -374,10 +388,11 @@
                       <div class="form-group form-group-sm form-gutter-half clearfix mb-1">
                         <label for="" class="control-label text-small col-sm-2">クラス</label>
                         <div class="col-sm-4">
-                          <div class="form-fromto">
-                            <input type="text" class="form-control" id="class_from" name="class_from" value="" placeholder="FROM">
+                          <div class="">
+                            <input type="text" class="form-control" id="class_from" name="class_from" value="" placeholder="クラス">
+                            <!-- <input type="text" class="form-control" id="class_from" name="class_from" value="" placeholder="FROM">
                             <span class="form-fromto-split">〜</span>
-                            <input type="text" class="form-control" id="class_to" name="class_to" value="" placeholder="TO">
+                            <input type="text" class="form-control" id="class_to" name="class_to" value="" placeholder="TO"> -->
                           </div>
                         </div>
                         <div class="col-xs-4 col-sm-2">
@@ -444,6 +459,11 @@
 
           <form action="<?php echo base_url('/admin/member/export_filter');?>" method = "POST">
             <input type="hidden" id="condition_search" value = '' name = "data_input_search">
+            
+            <?php if(isset($condition_input)){?>
+              <input type="hidden" id = "condition_text" name = "type_condition" value = "<?php $tmp_condition = !empty($condition_input['type_condition']) ?  $condition_input['type_condition'] : ''; echo $tmp_condition;?>">
+              <input type="hidden" id = "input_text" name = "text_condition" value = "<?php $tmp_condition_text_filter = !empty($condition_input['text_filter']) ?  $condition_input['text_filter'] : ''; echo $tmp_condition_text_filter;?>">
+            <?php }?>
             <input type="submit" style ="display:none" id="submit_form_csv">
           </form>
 
@@ -471,7 +491,7 @@
                     <?php foreach ($rel_search_top[0] as $key_stop => $value_stop) {?>
                       <tr>
                         <td><?php echo $value_stop['id'];?></td>
-                        <td><?php echo $value_stop['value'];?></td>
+                        <td><?php echo $value_stop['name'];?></td>
                         <td><?php echo $value_stop['course_name'];?></td>
                         <td><?php echo $value_stop['base_class_sign'];?></td>
                         <td><?php echo $value_stop['class_name'];?></td>
@@ -497,6 +517,10 @@
                         
                       </tr>
                     <?php }?>
+                  <?php }else{?>
+                    <tr>
+                      <td colspan = "7" style ="text-align: center">データがありません。</td>
+                    </tr>
                   <?php }?>
                 </tbody>
               </table>
@@ -506,6 +530,9 @@
       </div>
 
       <div class="block-15 text-center" id="pagination">
+        <?php if(!empty($pagination)){?>
+          <?php echo $pagination; ?>
+        <?php }?>
       </div>
     </div>
 
@@ -528,27 +555,83 @@
         var options={
             isRTL: false,
             format: 'yyyy-mm-dd',
-            // minViewMode: 'months',
             todayHighlight: true,
             autoclose: true,
             language:'jp',
             orientation: "auto right",
         };
+
+        $("#leave_duration_from").datepicker({
+            isRTL: false,
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            language:'jp',
+            orientation: "auto right"
+        }).on('changeDate', function (selected) {
+            var startDate = new Date(selected.date.valueOf());
+            $('#leave_duration_to').datepicker('setStartDate', startDate);
+        }).on('clearDate', function (selected) {
+            $('#leave_duration_to').datepicker('setStartDate', null);
+        });
+
+        $("#leave_duration_to").datepicker({
+            isRTL: false,
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            language:'jp',
+            orientation: "auto right"
+        }).on('changeDate', function (selected) {
+            var endDate = new Date(selected.date.valueOf());
+            $('#leave_duration_from').datepicker('setEndDate', endDate);
+        }).on('clearDate', function (selected) {
+            $('#leave_duration_from').datepicker('setEndDate', null);
+        });
+
+
+        $("#drawal_date_from").datepicker({
+            isRTL: false,
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            language:'jp',
+            orientation: "auto right"
+        }).on('changeDate', function (selected) {
+            var startDate = new Date(selected.date.valueOf());
+            $('#drawal_date_to').datepicker('setStartDate', startDate);
+        }).on('clearDate', function (selected) {
+            $('#drawal_date_to').datepicker('setStartDate', null);
+        });
         
-        $('#leave_duration_from').datepicker(options).on('changeDate', function(ev){
+        $("#drawal_date_to").datepicker({
+            isRTL: false,
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            language:'jp',
+            orientation: "auto right"
+        }).on('changeDate', function (selected) {
+            var startDate = new Date(selected.date.valueOf());
+            $('#drawal_date_from').datepicker('setStartDate', startDate);
+        }).on('clearDate', function (selected) {
+            $('#drawal_date_from').datepicker('setStartDate', null);
         });
-        $('#leave_duration_to').datepicker(options).on('changeDate', function(ev){
-        });
-        $('#drawal_date_from').datepicker(options).on('changeDate', function(ev){
-        });
-        $('#drawal_date_to').datepicker(options).on('changeDate', function(ev){
-        });
+
         $('#join_date').datepicker(options).on('changeDate', function(ev){
+        });
+        $('#birthday').datepicker(options).on('changeDate', function(ev){
         });
 
         $("#search_button").on('click',function (e) {
-            e.preventDefault();
+          
+          let data = get_value_input();
+          let flag_check_ft = check_input_type_from(data);
+          e.preventDefault();
+          if(flag_check_ft){
             load_request_data(0);
+          }else{
+            // alert('');
+            let msg = '「会員番号」データが無効です';
+            show_div_err(msg);
+          }
+         
         });
 
         //set number relsult
@@ -567,6 +650,15 @@
         }
         function set_condition(data) {
           $('#condition_search').val(data);
+        }
+
+        function show_div_err(msg) {
+          srcoll_to_div('.content-dark');
+          $('#js_msg_err_member').show();
+          setTimeout(function(){
+            $('#js_msg_err_member').fadeOut();
+          }, 2000);
+          $('#js_msg_err_member p').html(msg);
         }
         // load data list member
         function load_request_data(page)
@@ -635,12 +727,12 @@
                         'quit_reason': $('#quit_reason').val(),
                         'drawal_date_from': $('#drawal_date_from').val(),//thời gian rời hội
                         'drawal_date_to': $('#drawal_date_to').val(),//thời gian rời hội
-                        'practice_course_from': $('#practice_course_from').val(),
-                        'practice_course_to': $('#practice_course_to').val(),
-                        'level_from': $('#level_from').val(),
-                        'level_to': $('#level_to').val(),
+                        'practice_course': $('#practice_course').val(),
+                        'level': $('#level').val(),
                         'class_from': $('#class_from').val(),
-                        'class_to': $('#class_to').val(),
+                        // 'level_to': $('#level_to').val(),
+                        // 'class_from': $('#class_from').val(),
+                        // 'class_to': $('#class_to').val(),
                         'all_user': all_user,
                         'sub_user': sub_user,
                       };
@@ -659,17 +751,29 @@
       });
       
       $('#js-export-csv').on('click', function() {
-        if($('#condition_search').val() != ''){
+        if(($('#condition_search').val() != '') || (($('#condition_text').val() != '') && $('#condition_text').val())){
           $( "#submit_form_csv" ).trigger( "click" ); 
         }else{
-          alert('DATA SEARCH NULL');
+          let msg = 'データがありません。';
+          show_div_err(msg);
         }
       })
 
       $('#goto_page').on('click', function() {
-        // window.location.replace("https:" + "<?php echo base_url('/entry');?>");
+        // window.location.replace("https:" + "<?php //echo base_url('/entry');?>");
         window.open("https:" + "<?php echo base_url('/entry');?>",'_blank');
       })
+
+      function check_input_type_from(data) {
+        var status = true;
+        if((data['id_from'] != "") &&  (data['id_to'] != "") ){
+          if(data['id_from'] > data['id_to']){
+            status = false;
+          }
+        }
+        return status;
+      }
+
     });
   </script>
   <?php require_once("contents_footer.php"); ?>

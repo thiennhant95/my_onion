@@ -36,26 +36,26 @@ class L_student_meta_model extends DB_Model {
             return 'error';
         } else return 'success';
     }
-    public function update_tagMeta($arrayDataMeta,$student_id=NULL)
+    public function update_tagMeta( $arrayDataMeta , $student_id=NULL)
     {
-        if($student_id==NULL) return '';
-        foreach ($arrayDataMeta as $key => $value) {
-            $query = $this->db->select('id')->from( 'l_student_meta' )->where(['student_id'=>$student_id,'tag'=>$key]);
-            $result = $this->db->get()->result_array();
-            if(count($result)>0)
-            {
-              if($key==='enquete') $value = json_encode($value);
-
-              if($this->db->update('l_student_meta', array( 'value' => $value ), array('student_id' => $student_id, 'tag' => $key))===FALSE)
-                {
-                    return FALSE;
+        if($student_id == NULL) return '';
+        try {
+                foreach ($arrayDataMeta as $key => $value) {
+                    $query = $this->db->select('id')->from('l_student_meta')->where(['student_id'=>$student_id,'tag'=>$key]);
+                    $result = $this->db->get()->result_array();
+                    if($key === 'enquete') $value = json_encode($value);
+                    if( count($result) > 0)
+                    {
+                      $this->db->update('l_student_meta', array( 'value' => $value ), array('student_id' => $student_id, 'tag' => $key) );
+                    }
+                    else
+                    {
+                        $this->db->insert('l_student_meta', array('student_id' => $student_id, 'tag' => $key,'value'=>$value));
+                    }
                 }
-            }
-            else
-            {
-                $this->db->insert('l_student_meta', array('student_id' => $student_id, 'tag' => $key,'value'=>$value));
-            }
-        }
-        return TRUE;
+            return TRUE;
+        } catch (Exception $e) {
+            return FALSE;
+        }   
     }
 }

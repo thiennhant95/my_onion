@@ -24,20 +24,20 @@
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">氏名</th>
                         <td class="bg-white table-border-none">
-                          <input name="user_name" class="form-control w-sm-50per w-xl-60per" value="<?php echo $s_info['meta']['name']; ?>" placeholder="" type="text">
+                          <input name="user_name" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset($s_info['meta']['name'])?$s_info['meta']['name']:''; ?>" placeholder="" type="text">
                           <input type="hidden" name="student_id" value="<?php echo $s_info['info']['id']; ?>" />
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">フリガナ</th>
                         <td class="bg-white table-border-none">
-                          <input name="name_kana" class="form-control w-sm-50per w-xl-60per" value="<?php echo $s_info['meta']['name_kana']; ?>" placeholder="" type="text">
+                          <input name="name_kana" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset($s_info['meta']['name_kana'])?$s_info['meta']['name_kana']:''; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">生年月日</th>
                         <td class="bg-white table-border-none">
-                          <input name="birthday" class="form-control w-xs-100per w-md-30per" value="<?php echo date_format(date_create($s_info['meta']['birthday']), 'Y-m-d'); ?>" readonly />
+                          <input name="birthday" class="form-control w-xs-100per w-md-30per" value="<?php echo date_format(date_create(isset($s_info['meta']['birthday'])?$s_info['meta']['birthday']:''), 'Y-m-d'); ?>" readonly />
                         </td>
                       </tr>
                       <tr>
@@ -45,10 +45,10 @@
                         <td class="bg-white table-border-none">
                           <div class="col-sm-10 text-gray">
                             <label class="radio-inline">
-                              <input name="sex" value="male" <?php if( $s_info['meta']['sex'] == 'male' ) echo 'checked'; ?> type="radio"> 男性
+                              <input name="sex" value="male" <?php if( isset($s_info['meta']['sex']) && $s_info['meta']['sex'] == 'male' ) echo 'checked'; ?> type="radio"> 男性
                             </label>
                             <label class="radio-inline">
-                              <input name="sex" value="female" <?php if( $s_info['meta']['sex'] == 'female' ) echo 'checked'; ?> type="radio"> 女性
+                              <input name="sex" value="female" <?php if( isset($s_info['meta']['sex']) && $s_info['meta']['sex'] == 'female' ) echo 'checked'; ?> type="radio"> 女性
                             </label>
                           </div>
                         </td>
@@ -58,7 +58,7 @@
                         <td class="bg-white table-border-none">
                           <div class="row post-input">
                             <?php
-                              $postal_code = explode('-', $s_info['meta']['zip']);
+                              $postal_code = explode('-', isset($s_info['meta']['zip'])?$s_info['meta']['zip']:'');
                             ?>
                             <div class="col-xs-6 col-md-3 postal-code-line postal-code-line-gray">
                               <input name="postal_code1" class="form-control post-input-main" value="<?php echo $postal_code[0]; ?>" placeholder="" type="number">
@@ -76,7 +76,7 @@
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">住所</th>
                         <td class="bg-white table-border-none">
-                          <input name="address" class="form-control w-xs-100per" value="<?php echo $s_info['meta']['address']; ?>" placeholder="" type="text">
+                          <input name="address" class="form-control w-xs-100per" value="<?php echo isset($s_info['meta']['address'])?$s_info['meta']['address']:''; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
@@ -84,7 +84,7 @@
                         <td class="bg-white table-border-none">
                           <div class="row">
                             <div class="col-sm-6">
-                              <input name="email_address" class="form-control w-xs-100per" value="<?php echo $s_info['info']['email']; ?>" placeholder="" type="text">
+                              <input name="email_address" class="form-control w-xs-100per" value="<?php echo isset($s_info['info']['email'])?$s_info['info']['email']:''; ?>" placeholder="" type="text">
                             </div>
                             <div class="col-sm-6 text-gray">
                               <label><input name="email_flg" value="" type="checkbox"> メールアドレスなし</label>
@@ -95,7 +95,7 @@
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">電話番号</th>
                         <td class="bg-white table-border-none">
-                          <input name="phone_number" class="form-control w-sm-50per w-xl-60per" value="<?php echo $s_info['meta']['tel']; ?>" placeholder="" type="text">
+                          <input name="phone_number" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset($s_info['meta']['tel'])?$s_info['meta']['tel']:''; ?>" placeholder="" type="text">
                         </td>
                       </tr>
                       <tr>
@@ -134,7 +134,7 @@
                           <select name="school_grade" class="form-control w-xs-100per w-md-40per">
                             <?php
                               foreach ( $school_grades as $key => $value ) {
-                                echo '<option value="' . $value . '" '; if ( $value == $s_info['meta']['school_grade'] ) echo 'selected'; echo '>' . $value . '</option>';
+                                echo '<option value="' . $value . '" '; if ( $value == isset($s_info['meta']['school_grade'])?$s_info['meta']['school_grade']:'' ) echo 'selected'; echo '>' . $value . '</option>';
                               }
                             ?>
                           </select>
@@ -183,7 +183,7 @@
                   <div class="panel-heading g-green bg-deep-green align-left pl-30">【希望練習コース・泳力アンケートなど】</div>
                   <div class="panel-body-2 pt-10 bg-ice-green table-responsive">
                     <h2 class="title-1 mb-20" style="text-decoration: underline;">※入会者が未成年の場合のみ記入</h2>
-                    <input type="hidden" value="<?php echo isset( $s_info['course']['nearest'][0]['practice_max'] ) ? $s_info['course']['nearest'][0]['practice_max'] : ''; ?>" name="practice_max" />
+                    <input type="hidden" value="<?php echo isset( $s_info['course']['valid'][0]['practice_max'] ) ? $s_info['course']['valid'][0]['practice_max'] : ''; ?>" name="practice_max" />
                     <table class="table table-style-1" width="100%" class="text-gray">
                       <tr>
                         <th class="align-right table-border-none">希望練習コース</th>
@@ -195,7 +195,7 @@
                           <select class="form-control w-xs-100per" id="change-course" onchange="change_course(this.value, <?php echo $s_info['info']['id']; ?>)">
                           <?php
                             foreach ( $course_valid as $k => $v ) {
-                              $selected = ( $v['id'] == $s_info['course']['nearest'][0]['course_id'] ) ? 'selected' : '';
+                              $selected = ( $v['id'] == $s_info['course']['valid'][0]['course_id'] ) ? 'selected' : '';
                               echo '<option value="' . $v['id'] . '" ' . $selected . '>' . $v['course_name'] . '</option>';
                             }
                           ?>
@@ -238,7 +238,7 @@
                         <th class="align-right table-border-none">申請時の泳力</th>
                         <td class="bg-white table-border-none pl-30">
                           <div class="row text-gray mb-15">
-                          <?php $arr_enquete = json_decode( $s_info['meta']['enquete'], true ); ?>
+                          <?php $arr_enquete = json_decode( isset($s_info['meta']['enquete'])?$s_info['meta']['enquete']:'', true ); ?>
                             <div class="checkbox">
                               <label class="radio-inline">
                                 <input name="face_into_water" value="" type="checkbox" <?php if ( $arr_enquete['face_into_water'] == '1' ) echo 'checked'; ?>> 水に顔をつけることができ
@@ -618,7 +618,7 @@
           <h4 class="modal-title">Error</h4>
         </div>
         <div class="modal-body">
-          <p>Max class is: <span id="max_class"><?php echo isset( $s_info['course']['nearest'][0]['practice_max'] ) ? $s_info['course']['nearest'][0]['practice_max'] : ''; ?></span></p>
+          <p>Max class is: <span id="max_class"><?php echo isset( $s_info['course']['valid'][0]['practice_max'] ) ? $s_info['course']['valid'][0]['practice_max'] : ''; ?></span></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -633,7 +633,6 @@
 </html>
 
 <script>
-
   function disabled_bus( value ) {
     if ( value == 0 ) $('.disabled_bus').attr('disabled', 'disabled');
     else $('.disabled_bus').removeAttr('disabled');
@@ -923,8 +922,8 @@
           return false;
       }
   });
-  // $('#btn-entry-edit').click(function() {
-  $('#btn-entry-next').click(function() {
+  $('#btn-entry-edit').click(function() {
+  // $('#btn-entry-next').click(function() {
     
     var user_name = $('input[name=user_name]').val();
     var postal_code1 = $('input[name=postal_code1').val();
@@ -1018,72 +1017,80 @@
         // }
       });
     });
-    console.log( class_route_1 );
-    console.log( class_route_2 );
+    // console.log( class_route_1 );
+    var class_route_3 = [];
+    // console.log( class_route_2 );
+    for ( var i = 0; i < class_route_2.length; i++ ) {
+      var value = class_route_2[i].split('_');
+      if ( value.length > 3 ) {
+        class_route_3.push( class_route_2[i] );
+      }
+    }
+    // console.log( class_route_3 );
 
-    // var family = $('input[name=family]').val();
-    // var relationship = $('select[name=relationship] option:selected').val();
-    // var data = {
-    //   user_name : user_name,
-    //   postal_code : postal_code1 +'-'+ postal_code2,
-    //   address : address,
-    //   email_address : email_address,
-    //   email_flg : email_flg,
-    //   phone_number : phone_number,
-    //   name_kana : name_kana,
-    //   birthday : birthday,
-    //   sex : sex,
-    //   emergency_tel : emergency_tel,
-    //   school_name : school_name,
-    //   parent_name : parent_name,
-    //   school_grade : school_grade,
-    //   bus_use_flg : bus_use_flg,
-    //   enquete : enquete,
-    //   memo_to_coach : memo_to_coach,
-    //   iccard : iccard,
-    //   first_lesson_date : first_lesson_date,
-    //   memo_special : memo_special,
-    //   student_id : student_id,
-    //   course_id : course_id,
-    //   class_choose : class_choose,
-    //   class_route : class_route_2,
-    //   family : family,
-    //   relationship : relationship
-    // }
+    var family = $('input[name=family]').val();
+    var relationship = $('select[name=relationship] option:selected').val();
+    var data = {
+      user_name : user_name,
+      postal_code : postal_code1 +'-'+ postal_code2,
+      address : address,
+      email_address : email_address,
+      email_flg : email_flg,
+      phone_number : phone_number,
+      name_kana : name_kana,
+      birthday : birthday,
+      sex : sex,
+      emergency_tel : emergency_tel,
+      school_name : school_name,
+      parent_name : parent_name,
+      school_grade : school_grade,
+      bus_use_flg : bus_use_flg,
+      enquete : enquete,
+      memo_to_coach : memo_to_coach,
+      iccard : iccard,
+      first_lesson_date : first_lesson_date,
+      memo_special : memo_special,
+      student_id : student_id,
+      course_id : course_id,
+      class_choose : class_choose,
+      class_route : class_route_3,
+      family : family,
+      relationship : relationship
+    }
 
     // console.log( data );
 
-    // if ( user_name != '' && name_kana != '' && birthday != '' && sex != '' && postal_code1 != '' && postal_code2 != '' && address != '' && email_address != '' && phone_number != '' ) {
-    //   $.ajax({
-    //     url: 'https:' + "<?php echo base_url().'admin/entry/edit/1'; ?>",
-    //     data: data,
-    //     method: "POST",
-    //     dataType: "json",
-    //     success: function(result) {
-    //       if ( result['update'] == 'success' ) {
-    //         $('#temporary_pw').text( result['temporary_pw'] );
-    //         entry_disp_view('#entry_complete');
-    //       }
-    //     }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-    //       console.log(errorThrown);
-    //     }
-    //   });
-    // } else {
-    //   $('#modal-error').modal( 'show' );
-    // }
+    if ( user_name != '' && name_kana != '' && birthday != '' && sex != '' && postal_code1 != '' && postal_code2 != '' && address != '' && email_address != '' && phone_number != '' ) {
+      $.ajax({
+        url: 'https:' + "<?php echo base_url().'admin/entry/edit/1'; ?>",
+        data: data,
+        method: "POST",
+        dataType: "json",
+        success: function(result) {
+          if ( result['update'] == 'success' ) {
+            $('#temporary_pw').text( result['temporary_pw'] );
+            entry_disp_view('#entry_complete');
+          }
+        }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+          console.log(errorThrown);
+        }
+      });
+    } else {
+      $('#modal-error').modal( 'show' );
+    }
   });
 
   entry_disp_view('#page_init');
 
-  // $('main#page_init').on('click', '#btn-entry-next', function(event) {
-  //     // event.preventDefault();
-  //     var class_choose = [];
-  //     $('.display_class').find('.each_class').each( function(){
-  //       class_choose.push( $(this).attr('data-id') + '_' + $(this).attr('data-class') );
-  //     });
-  //     if ( class_choose.length == 0 ) $('#modal-empty-class').modal( 'show' );
-  //     else entry_disp_view('#entry_explain');
-  // });
+  $('main#page_init').on('click', '#btn-entry-next', function(event) {
+      // event.preventDefault();
+      var class_choose = [];
+      $('.display_class').find('.each_class').each( function(){
+        class_choose.push( $(this).attr('data-id') + '_' + $(this).attr('data-class') );
+      });
+      if ( class_choose.length == 0 ) $('#modal-empty-class').modal( 'show' );
+      else entry_disp_view('#entry_explain');
+  });
 
   $('main#entry_explain').on('click', 'span#button_entry_contract', function(event) {
       // event.preventDefault();

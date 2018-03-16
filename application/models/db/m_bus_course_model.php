@@ -31,17 +31,15 @@ class M_bus_course_model extends DB_Model {
 		$this->found_rows = count($result);
         return $result;
     }
-    public function getData_Bus_stop_by_id($id = NULL)
+    public function getData_Bus_stop_by_id( $id = NULL )
     {	
     	if($id == NULL) return '';
 
-    	$query =" SELECT m_bus_stop.id as bus_stop_id, m_bus_stop.bus_stop_code , m_bus_stop.bus_stop_name ";
-        $query.=" FROM   m_bus_course , m_bus_route , m_bus_stop  ";
-        $query.=" WHERE  m_bus_route.bus_course_id = m_bus_course.id AND ";
-		$query.="		 m_bus_route.bus_stop_id = m_bus_stop.id AND ";
-		$query.="		 m_bus_course.delete_flg = ? AND ";
-		$query.="		 m_bus_course.id = ? " ;
-		$res = $this->db->query($query , [ DATA_NOT_DELETED , $id ]);
+    	$query =" SELECT m_bus_stop.id as bus_stop_id, m_bus_stop.bus_stop_code , m_bus_stop.bus_stop_name 
+                  FROM   m_bus_course , m_bus_route , m_bus_stop  
+                  WHERE  m_bus_route.bus_course_id = m_bus_course.id AND m_bus_route.bus_stop_id = m_bus_stop.id AND 
+                        m_bus_course.delete_flg = ? AND m_bus_stop.delete_flg = ? AND m_bus_course.id = ? ";
+		$res = $this->db->query($query , [ DATA_NOT_DELETED , DATA_NOT_DELETED , $id ]);
 		if($res === FALSE )
 		{
 			logerr($params, $sql);
@@ -52,23 +50,15 @@ class M_bus_course_model extends DB_Model {
         return $result;
     }
 
-    public function get_data_class_and_bus_course($class_id)
+    public function get_data_class_and_bus_course( $class_id )
     {
-        if($class_id == NULL || $class_id == '') return '';
+        if( $class_id == NULL || $class_id == '') return '';
 
-        $query =" SELECT b.id , b.class_id , a.base_class_sign , a.class_code , ";
-        $query.=" a.class_name , a.delete_flg , b.bus_course_code , b.bus_course_name , b.max ";
-        $query.=" FROM   m_class a , m_bus_course b  ";
-        $query.=" WHERE  a.id = b.class_id AND  ";
-        $query.="        a.delete_flg = ? AND ";
-        $query.="        b.delete_flg = ? AND ";
-        $query.="        b.class_id = ? " ;
-        $res = $this->db->query($query , [ DATA_NOT_DELETED , DATA_NOT_DELETED , $class_id] );
-        if($res === FALSE )
-        {
-            logerr($params, $sql);
-            throw new Exception();
-        }
+        $query =" SELECT b.id , b.class_id , a.base_class_sign , a.class_code , a.class_name , a.delete_flg ,
+                         b.bus_course_code , b.bus_course_name , b.max 
+                  FROM   m_class a , m_bus_course b  
+                  WHERE  a.id = b.class_id AND a.invalid_flg = ? AND a.delete_flg = ? AND b.delete_flg = ? AND  b.class_id = ? " ;
+        $res = $this->db->query($query , [ DATA_INVALID_NO , DATA_NOT_DELETED , DATA_NOT_DELETED , $class_id] );
         $result = $res->result_array();
         $this->found_rows = count($result);
         return $result;

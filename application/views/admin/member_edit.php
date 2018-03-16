@@ -25,14 +25,14 @@
             <div class="form-group">
               <label for="student_id" class="col-sm-2 control-label">会員番号</label>
               <div class="col-sm-5">
-                <input type="text" class="form-control" value="<?php echo $info['id'] ?>" name="student_id" readonly >
+                <input type="text" class="form-control" value="<?php echo isset( $info['id'] ) ? $info['id'] : '' ?>" name="student_id" disabled >
               </div>
             </div>
 
             <div class="form-group">
               <label for="student_name" class="col-sm-2 control-label">ご氏名</label>
               <div class="col-sm-5">
-                <input type="text" class="form-control" value="<?php echo isset($meta['name'])?$meta['name']:''?>" name="student_name"  >
+                <input type="text" class="form-control" value="<?php echo isset( $meta['name'] )? $meta['name'] :''?>" name="student_name"  >
               </div>
             </div>
 
@@ -46,7 +46,7 @@
             <div class="form-group">
               <label class="col-xs-12 col-sm-2 control-label">生年月日</label>
                 <div class="col-sm-3">
-                  <input class="form-control datepicker_Y_M_D" type="text" name="student_birthday" placeholder="YYYY - MM - DD" readonly value="<?php echo date_format(date_create($meta['birthday']) , 'Y - m - d' ) ?>" >
+                  <input class="form-control datepicker_Y_M_D" type="text" name="student_birthday" placeholder="YYYY - MM - DD" readonly value="<?php  if( isset($meta['birthday']) && $meta['birthday'] != INVALID_DATE && $meta['birthday'] !='' ) echo date_format(date_create( $meta['birthday'] ) , 'Y - m - d' ) ?>" >
                 </div>
             </div>
 
@@ -54,20 +54,20 @@
               <label for="" class="col-sm-2 control-label">性別</label>
               <div class="col-sm-10" >
                 <label class="radio-inline">
-                  <input type="radio" name="sex" value="0" <?php if($meta['sex']=='0') echo "checked" ?> > 男性
+                  <input type="radio" name="sex" value="0" <?php if( isset($meta['sex']) && $meta['sex']=='0') echo "checked" ?> > 男性
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="sex" value="1" <?php if($meta['sex']=='1') echo "checked" ?> > 女性
+                  <input type="radio" name="sex" value="1" <?php if( isset($meta['sex']) && $meta['sex']=='1') echo "checked" ?> > 女性
                 </label>
               </div>
             </div>
             <div class="form-group">
               <label for="" class="col-xs-12 col-sm-2 control-label">郵便番号</label>
               <div class="col-xs-3 col-sm-2 col-md-1 postal-code-line" id="first_postalcode">
-                <input type="number" class="form-control"  name="first_postalcode" value="<?php echo (isset($meta['zip'])&&$meta['zip']!='')?(explode('-',$meta['zip']))[0]:''; ?>">
+                <input type="text" class="form-control"  name="first_postalcode" value="<?php  if( isset($meta['zip']) && strpos($meta['zip'], '-')) { $postalcode = explode('-',$meta['zip']) ; echo $postalcode[0];  } ?>">
               </div>
               <div class="col-xs-3 col-sm-2 col-md-1" id="second_postalcode">
-                <input type="number" class="form-control"  name="second_postalcode" value="<?php echo (isset($meta['zip'])&&$meta['zip']!='')?(explode('-',$meta['zip']))[1]:''; ?>" />
+                <input type="text" class="form-control"  name="second_postalcode" value="<?php  if( isset($meta['zip']) && strpos($meta['zip'], '-')) { $postalcode = explode('-',$meta['zip']) ; echo $postalcode[1];  } ?>" />
               </div>
               <div class="col-xs-3 ">
                 <input type="button" class="btn btn-main" value="&#12306; 住所に反映" id="btn_postalcode"  onclick="AjaxZip3.zip2addr('first_postalcode','second_postalcode','student_address','student_address');" />
@@ -77,24 +77,24 @@
             <div class="form-group">
               <label for="student_address" class="col-sm-2 control-label">ご住所</label>
               <div class="col-sm-8">
-                <input type="text" class="form-control" value="<?php echo isset($meta['address'])?$meta['address']:'' ?>" name="student_address" >
+                <input type="text" class="form-control" value="<?php echo isset( $meta['address'] )? $meta['address'] : '' ?>" name="student_address" >
               </div>
             </div>
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">電話番号</label>
               <div class="col-sm-5">
-                <input type="tel" class="form-control" value="<?php echo isset($meta['tel'])?$meta['tel']:''; ?>" name="student_phone" >
+                <input type="tel" class="form-control" value="<?php echo isset( $meta['tel'] )? $meta['tel'] : '' ; ?>" name="student_phone" >
               </div>
             </div>
 
             <div class="form-group">
               <label for="student_mail" class="col-sm-2 control-label">メールアドレス</label>
               <div class="col-sm-5">
-                <input type="email" class="form-control" name="student_mail" value="<?php  echo isset($info['email'])?$info['email']:"" ?>" >
+                <input type="email" class="form-control" name="student_mail" value="<?php  echo isset( $info['email'] )? $info['email'] :"" ?>" >
               </div>
               <div class="col-sm-5">
                 <label class="checkbox-inline">
-                  <input type="checkbox" value="0" name="student_mail_flg" <?php if(isset($meta['email_flg'])&&$meta['email_flg']=='0')  echo 'checked'?> >
+                  <input type="checkbox" value="0" name="student_mail_flg" <?php if( isset( $meta['email_flg'] ) && $meta['email_flg']=='0')  echo 'checked'?> >
                   <small>メールアドレスなし</small>
                 </label>
               </div>
@@ -103,7 +103,7 @@
             <div class="form-group">
               <label for="student_emergency_tel" class="col-sm-2 control-label">緊急連絡先</label>
               <div class="col-sm-5">
-                <input type="tel" class="form-control" value="<?php  echo isset($meta['emergency_tel'])?$meta['emergency_tel']:"" ?>" name="student_emergency_tel"  >
+                <input type="tel" class="form-control" value="<?php  echo isset( $meta['emergency_tel'] )? $meta['emergency_tel'] :'' ?>" name="student_emergency_tel"  >
               </div>
             </div>
 
@@ -117,13 +117,13 @@
                     <div class="form-group">
                       <label for="student_school_name" class="col-sm-2 control-label">学校名</label>
                       <div class="col-sm-10">
-                        <input type="text" class="form-control" name="student_school_name" value="<?php  echo isset($meta['school_name'])?$meta['school_name']:"" ?>" >
+                        <input type="text" class="form-control" name="student_school_name" value="<?php  echo isset( $meta['school_name'] )? $meta['school_name'] :'' ?>" >
                       </div>
                     </div>
                     <div class="form-group">
                       <label for="student_parent_name" class="col-sm-2 control-label">保護者氏名</label>
                       <div class="col-sm-10">
-                        <input type="text" class="form-control" value="<?php  echo isset($meta['parent_name'])?$meta['parent_name']:'' ?>" placeholder="" name="student_parent_name" >
+                        <input type="text" class="form-control" value="<?php  echo isset( $meta['parent_name'] )? $meta['parent_name'] :'' ?>" placeholder="" name="student_parent_name" >
                       </div>
                     </div>
                     <div class="form-group">
@@ -131,11 +131,12 @@
                       <div class="col-sm-10">
                           <select class="form-control" name="student_school_grade" >
                          <?php 
-                            $grade=['幼稚園','小学1年～6年生','中学1年～3年生','高校1年～3年生','専門学校・高専','大学生'];
-                            $student_grade = isset($meta['school_grade'])?$meta['school_grade']:'';
-                            foreach ($grade as $value) {
-                              $selected = ($student_grade==$value)?'selected':'';
-                              echo '<option value="'.$value.'" '.$selected.'>'.$value.'</option>';
+                            $config = $this->configVar;
+                            $grades = $config['school_grades'];
+                            $student_grade = isset( $meta['school_grade'] )? $meta['school_grade'] :'';
+                            foreach ($grades as $key => $value) {
+                              $selected = ( $student_grade == $key ) ? 'selected' : '';
+                              echo '<option value="'.$key.'" '.$selected.'>'.$value.'</option>';
                             }
                          ?>
                       </select>
@@ -153,7 +154,9 @@
               <div class="col-sm-10">
                 <select class="form-control" name="course_main" style="padding-left:25em">
                   <?php 
-                  $currentcourse_id = isset( $course['valid'][0]['course_id'] )? $course['valid'][0]['course_id'] : $course['valid']['id'];
+                  if( $course['all'] )
+                  {
+                    $currentcourse_id = isset( $course['valid'][0]['course_id'] )? $course['valid'][0]['course_id'] : $course['valid']['id'];
                       foreach($course['all'] as $item)
                       {
                         $selected = '';
@@ -161,6 +164,11 @@
                           $selected = 'selected';
                         echo ('<option data-pratice = "'.$item['practice_max'].'" value="'.$item['id'].'" '.$selected.' >'.$item['course_code'].' '.$item['course_name'].'</option>');
                       }
+                  }
+                  else{
+                    echo '<option  > データがありません。 !</option>';
+                  }
+                  
                   ?>
                 </select>
               </div>
@@ -171,18 +179,12 @@
               <label class="col-sm-2 control-label">選択クラスコード <span class="fa fa-arrow-right"></span></label>
               <div class="col-sm-8 " id="class_member_Join">
                 <?php
-
                   if( isset( $course['valid']['classjoin'] ) && count( $course['valid']['classjoin'] ) > 0)
                   {
-                    $x='0';
-                    $y='0';
                     foreach ($course['valid']['classjoin'] as $key => $value) {
                          $html_0 = '<label  class="col-sm-2 control-label sub_class_join" ';
-                         $html_1 = '';
-                         $html_2= '</label>';
-
-                         $html_1 = 'data-class="'.$value['base_class_sign'].'-'.$value['week_num'].'" data-id='.$value['class_id'].'>'.$value['class_code'].'';
-                          echo $html_0.$html_1.$html_2;     
+                         $html_1 = 'data-class="'.$value['base_class_sign'].'-'.$value['week_num'].'" data-id='.$value['class_id'].'>'.$value['class_code'].' </label>';
+                        echo $html_0.$html_1;     
                     }
                    }         
                 ?> 
@@ -212,51 +214,24 @@
                                   $arr_class = array();
                                   $config = $this->configVar;
                                   $week_num = $config['week_num'];
-                                  // dump data into arr_class
-                                  if(isset($course['valid']['class']))
+                                  $count_week = count( $week_num );
+                                  if( isset($course['valid']['class']) )
                                   {
-                                    foreach ($course['valid']['class'] as $key => $value) {
-                                      $class_id = $value['class_id'];
-                                      $class_code = $value['class_code'];
-                                      $class_name = $value['class_name'];
-                                      $base_class_sign = $value['base_class_sign'];
-                                      $split_week = explode(",",$value['week']);
-                                      $max_count = $value['max_count'];
-                                      $number_student_join = $value['number_student_join'];
-
-                                      foreach ($split_week as $subkey => $subvalue) {
-                                        if(!in_array(array([$class_id , $class_code , $class_name, $base_class_sign , $subvalue , $max_count , $number_student_join ]),$arr_class))
-                                        $arr_class[]= [$class_id , $class_code , $class_name , $base_class_sign , $subvalue ,  $max_count , $number_student_join ];
-                                      }
-                                    }
-                                    //dump data into arr_class_join
-                                    if(isset($course['valid']['classjoin']))
-                                    {
-                                      foreach ($course['valid']['classjoin'] as $index => $value_2) {
-                                        $class_id = $value_2['class_id'];
-                                        $class_code = $value_2['class_code'];
-                                        $class_name = $value_2['class_name'];
-                                        $max_count = $value_2['max_count'];
-                                        $base_class_sign = $value_2['base_class_sign'];
-                                        $number_student_join = $value_2['number_student_join'];
-                                        $arr_class_join[]= [$class_id , $class_code , $class_name , $base_class_sign , $value_2['week_num'] , $max_count , $number_student_join ];
-                                      }
-                                    }  
+                                    $arr_class = $course['valid']['class'] ; 
                                   }
+                                  if(isset($course['valid']['classjoin']))
+                                  {
+                                    $arr_class_join = $course['valid']['classjoin'] ;
+                                  }
+                                  
+                                for( $i=0 ; $i < 7 ; $i++){
 
-                                // drawing table
-                                  $count_week = count($week_num);
-                                for( $i=0 ; $i<7 ; $i++){
-                                  $x = ($i+2 >= $count_week )?($i-5):($i+2);
+                                  $x = ( $i+2 >= $count_week ) ? ($i-5) : ($i+2);
                                   echo '<tr>';
-                                  foreach($array_base_class as $key => $value){
+                                  foreach( $array_base_class as $key => $value ){
 
                                     $choose = '';
                                     $class_id = '';
-                                    $class_code = '';
-                                    $class_name = '';
-                                    $max_count = '';
-                                    $number_student_join = '';
                                     $class = 'bg-gainsboro';
                                     
                                     if($key == 0)
@@ -267,13 +242,10 @@
 
                                       $ishas = FALSE;
                                       foreach ( $arr_class_join as $subkey_1 => $subvalue_1 ) { 
-                                        if( $value == $subvalue_1['3'] && $x == $subvalue_1['4'] )
+
+                                        if( $value == $subvalue_1['base_class_sign'] && $subvalue_1['week_num'] == strval($x)  )
                                         {
-                                          $class_id = $subvalue_1['0'];
-                                          $class_code = $subvalue_1['1'];
-                                          $class_name = $subvalue_1['2'];
-                                          $max_count = $subvalue_1['5'];
-                                          $number_student_join = $subvalue_1['6'];
+                                          $class_id = $subvalue_1['class_id'];
                                           $choose = '選択';
                                           $class = 'bg-rouge';
                                           $ishas = TRUE ;
@@ -282,29 +254,23 @@
                                       }
                                       if($ishas === FALSE)
                                       {
-                                        foreach ($arr_class as $subkey_2 => $subvalue_2) {
-                                          if($value == $subvalue_2['3'] && $x == $subvalue_2['4'])
+                                        foreach ($arr_class as $subkey_2 => $subvalue_2 ) {
+                                          if( $value == $subvalue_2['base_class_sign'] &&  strpos( $subvalue_2['week'] , strval($x) ) !== false )
                                           {
-                                            $class_id = $subvalue_2['0']; 
-                                            $class_code = $subvalue_2['1'];
-                                            $class_name = $subvalue_2['2'];
+                                            $class_id = $subvalue_2['class_id']; 
                                             $class = 'bg-plae-lemmon';
-                                            $max_count = $subvalue_2['5'];
-                                            $number_student_join = $subvalue_2['6'];
-                                            if($subvalue_2['6'] == $subvalue_2['5']) $class = 'bg-red';
-                                            $choose = $subvalue_2['6'].'/'.$subvalue_2['5'];
+                                            $week_full = $subvalue_2['week_full'];
+                                            if( strpos( $week_full , strval($x) ) !== false ) $class = 'bg-red';
                                             break;
                                           }
                                         }
                                       }
 
-                      $data_id = $class_id != '' ? 'data-id = "'.$class_id.'" ' : '';
-                      $data_classcode = $class_code != '' ? 'data-classcode = "'.$class_code.'" ' : '';
-                      $data_classname = $class_name != '' ? 'data-classname = "'.$class_name.'" ' : '';
-                      $data_base = 'data-base = "'.$value.'-'. $x .'"  ' ;
-                      $data_max_count = $max_count != '' ? 'data-maxcount = "'.$max_count.'" ' : '';
-                      $data_number_student_join = $number_student_join != '' ? 'data-numberstudentjoin = "'.$number_student_join.'" ' : '';
-    echo '<td class="'.$class.'" '. $data_base.$data_id.$data_classcode.$data_classname.$data_max_count.$data_number_student_join. ' >'.$choose.'</td>';
+                                      $data_id = $class_id != '' ? 'data-id = "'.$class_id.'" ' : '';
+                                      $data_base = 'data-base = "'.$value.'-'. $x .'"  ' ;
+                                      $data_class = 'class = "'.$class.'" ' ;
+
+                                      echo '<td '.$data_class. $data_base.$data_id. ' onclick=" choose_class(this) " >'.$choose.'</td>';
                                     }                          
                                   }
                                   echo '</tr>';
@@ -322,22 +288,22 @@
                 <div class="block-15">
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox"  name="chx_face_into_water" value="1" <?php if(isset(json_decode($meta['enquete'])->face_into_water)&&json_decode($meta['enquete'])->face_into_water=='1') echo 'checked'?> > 水に顔をつけることができない 
+                      <input type="checkbox"  name="chx_face_into_water" value="1" <?php if(isset($meta['enquete']) && isset(json_decode( $meta['enquete'] )->face_into_water ) && json_decode( $meta['enquete'] )->face_into_water == '1') echo 'checked'?> > 水に顔をつけることができない 
                     </label>
                   </div>
                   <div class="checkbox" >
                     <label>
-                      <input type="checkbox" name="chx_not_face_into_water" value="1" <?php if(isset(json_decode($meta['enquete'])->not_face_into_water)&&json_decode($meta['enquete'])->not_face_into_water=='1') echo 'checked'?> > 水に顔をつけることができる
+                      <input type="checkbox" name="chx_not_face_into_water" value="1" <?php if(isset($meta['enquete']) && isset(json_decode($meta['enquete'])->not_face_into_water) && json_decode($meta['enquete'])->not_face_into_water=='1') echo 'checked'?> > 水に顔をつけることができる
                     </label>
                   </div>
                   <div class="checkbox" >
                     <label>
-                      <input type="checkbox" value="1" name="chx_dive" <?php if(isset(json_decode($meta['enquete'])->dive)&&json_decode($meta['enquete'])->dive=='1') echo 'checked'?> > 潜れる
+                      <input type="checkbox" value="1" name="chx_dive" <?php if(isset($meta['enquete']) && isset(json_decode($meta['enquete'])->dive) && json_decode($meta['enquete'])->dive=='1') echo 'checked'?> > 潜れる
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox"  name="chx_float" value="1" <?php if(isset(json_decode($meta['enquete'])->float)&&json_decode($meta['enquete'])->float=='1') echo 'checked'?> > 浮かべる
+                      <input type="checkbox"  name="chx_float" value="1" <?php if(isset($meta['enquete']) && isset(json_decode($meta['enquete'])->float)&& json_decode($meta['enquete'])->float == '1') echo 'checked'?> > 浮かべる
                     </label>
                   </div>
                   <div class="row block-15">
@@ -345,10 +311,10 @@
                       <label for="" class=" control-label">バタ足</label>
                       <select class="form-control" name="flutter_kick">
                         <?php 
-                        if(count($distance)>0){
-                          $abl = isset(json_decode($meta['enquete'])->style->flutter_kick)?json_decode($meta['enquete'])->style->flutter_kick:'';
-                            foreach ($distance as $value) {
-                              $selected = ($abl==$value['distance_name'])?'selected':'';
+                        if( count($distance)>0 ){
+                          $abl = isset($meta['enquete']) && isset( json_decode( $meta['enquete'] )->style->flutter_kick ) ? json_decode( $meta['enquete'] )->style->flutter_kick : '';
+                            foreach ( $distance as $value) {
+                              $selected = ( $abl == $value['distance_name'] ) ? 'selected' : '';
                               echo '<option value="'.$value['distance_name'].'" '.$selected.'>'.$value['distance_name'].'M</option>';
                             }
                         }  
@@ -359,8 +325,8 @@
                       <label for="" class=" control-label">板キック</label>
                       <select class="form-control" name="board_kick">
                          <?php 
-                            if(count($distance)>0){
-                              $abl = isset(json_decode($meta['enquete'])->style->board_kick)?json_decode($meta['enquete'])->style->board_kick:'';
+                            if( count( $distance )>0){
+                              $abl =isset($meta['enquete']) && isset( json_decode( $meta['enquete'] )->style->board_kick ) ? json_decode( $meta['enquete'] )->style->board_kick:'';
                               foreach ($distance as $value) {
                                 $selected = ($abl==$value['distance_name'])?'selected':'';
                                 echo '<option value="'.$value['distance_name'].'" '.$selected.'>'.$value['distance_name'].'M</option>';
@@ -375,7 +341,7 @@
                       <select class="form-control" name="backstroke">
                          <?php 
                             if(count($distance)>0){
-                              $abl = isset(json_decode($meta['enquete'])->style->backstroke)?json_decode($meta['enquete'])->style->backstroke:'';
+                              $abl = isset($meta['enquete']) && isset(json_decode( $meta['enquete'] )->style->backstroke ) ? json_decode( $meta['enquete'] )->style->backstroke:'';
                               foreach ($distance as $value) {
                                 $selected = ($abl==$value['distance_name'])?'selected':'';
                                 echo '<option value="'.$value['distance_name'].'" '.$selected.'>'.$value['distance_name'].'M</option>';
@@ -390,7 +356,7 @@
                       <select class="form-control" name="crawl">
                          <?php 
                              if(count($distance)>0){
-                              $abl = isset(json_decode($meta['enquete'])->style->crawl)?json_decode($meta['enquete'])->style->crawl:'';
+                              $abl = isset($meta['enquete']) && isset( json_decode( $meta['enquete'] )->style->crawl ) ? json_decode( $meta['enquete'] )->style->crawl:'';
                               foreach ($distance as $value) {
                                 $selected = ($abl==$value['distance_name'])?'selected':'';
                                 echo '<option value="'.$value['distance_name'].'" '.$selected.'>'.$value['distance_name'].'M</option>';
@@ -405,7 +371,7 @@
                       <select class="form-control" name="breast_stroke">
                          <?php 
                             if(count($distance)>0){
-                              $abl = isset(json_decode($meta['enquete'])->style->breast_stroke)?json_decode($meta['enquete'])->style->breast_stroke:'';
+                              $abl = isset($meta['enquete']) && isset( json_decode( $meta['enquete'] )->style->breast_stroke ) ? json_decode( $meta['enquete'] )->style->breast_stroke:'';
                               foreach ($distance as $value) {
                                 $selected = ($abl==$value['distance_name'])?'selected':'';
                                 echo '<option value="'.$value['distance_name'].'" '.$selected.'>'.$value['distance_name'].'M</option>';
@@ -419,8 +385,8 @@
                       <label for="" class=" control-label">バタフライ</label>
                       <select class="form-control" name="butterfly">
                          <?php 
-                            if(count($distance)>0){
-                              $abl = isset(json_decode($meta['enquete'])->style->butterfly)?json_decode($meta['enquete'])->style->butterfly:'';
+                            if( count($distance )>0){
+                              $abl = isset($meta['enquete']) && isset( json_decode( $meta['enquete'] )->style->butterfly ) ? json_decode( $meta['enquete'] )->style->butterfly:'';
                               foreach ($distance as $value) {
                                 $selected = ($abl ==$value['distance_name'])?'selected':'';
                                 echo '<option value="'.$value['distance_name'].'" '.$selected.'>'.$value['distance_name'].'M</option>';
@@ -431,40 +397,40 @@
                     </div>
                     <div class="col-xs-12">
                       <label for="note" class="control-label">備考</label>
-                      <input type="text" name="note" class="form-control" value="<?php echo isset(json_decode($meta['enquete'])->style->note)?json_decode($meta['enquete'])->style->note:''; ?>" >
+                      <input type="text" name="note" class="form-control" value="<?php echo isset($meta['enquete']) && isset( json_decode( $meta['enquete'])->style->note ) ? json_decode( $meta['enquete'] )->style->note : ''; ?>" >
                     </div>
                   </div>
 
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" value="1" name="free_lesson" <?php if(isset(json_decode($meta['enquete'])->free_lesson)&&json_decode($meta['enquete'])->free_lesson=='1') echo 'checked'?> > 無料体験に参加をしたことがある
+                      <input type="checkbox" value="1" name="free_lesson" <?php if( isset($meta['enquete']) && isset( json_decode($meta['enquete'])->free_lesson ) && json_decode($meta['enquete'])->free_lesson=='1' ) echo 'checked'?> > 無料体験に参加をしたことがある
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" value="1" name="short_lesson" <?php if(isset(json_decode($meta['enquete'])->short_lesson)&&json_decode($meta['enquete'])->short_lesson=='1') echo 'checked'?> > 短期水泳教室に参加をしたことがある
+                      <input type="checkbox" value="1" name="short_lesson" <?php if(isset($meta['enquete']) && isset( json_decode($meta['enquete'] )->short_lesson ) && json_decode($meta['enquete'])->short_lesson=='1') echo 'checked'?> > 短期水泳教室に参加をしたことがある
                     </label>
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input type="checkbox" value="1" name="status" <?php if(isset(json_decode($meta['enquete'])->experience->status)&&json_decode($meta['enquete'])->experience->status=='1') echo 'checked'?> > 当クラブまたは他クラブに通っていたことがある
+                      <input type="checkbox" value="1" name="status" <?php if( isset($meta['enquete'] ) && isset( json_decode( $meta['enquete'] )->experience->status) &&json_decode( $meta['enquete'] )->experience->status=='1') echo 'checked'?> > 当クラブまたは他クラブに通っていたことがある
                     </label>
                   </div>
 
                   <div class="row block-15">
                     <div class="col-sm-6">
                       <label for="club_name" class="control-label">クラブ名</label>
-                      <input type="text" name="club_name" class="form-control" value="<?php echo isset(json_decode($meta['enquete'])->experience->club_name)?json_decode($meta['enquete'])->experience->club_name:''; ?>">
+                      <input type="text" name="club_name" class="form-control" value="<?php echo isset( $meta['enquete'] ) && isset( json_decode($meta['enquete'] )->experience->club_name) ? json_decode( $meta['enquete'] )->experience->club_name:  ''; ?>">
                     </div>
                     <div class="col-sm-6">
                       <label for="" class="control-label">退会</label>
                       <div class="row">
                         <div class="col-xs-6">
                             <input class="form-control datepicker_Y_M" type="text" id="datepicker_Y_M" name="date_leave_club" placeholder=" YYYY - MM " readonly  value="<?php 
-                             $year_leave_club =  isset(json_decode($meta['enquete'])->experience->club_name)?json_decode($meta['enquete'])->experience->year:'';
-                             $month_leave_club =  isset(json_decode($meta['enquete'])->experience->club_name)?json_decode($meta['enquete'])->experience->month:'';
+                             $year_leave_club = isset($meta['enquete']) && isset( json_decode($meta['enquete'])->experience->club_name ) ? json_decode($meta['enquete'])->experience->year : date_format (date_create (START_DATE_DEFAULT) , 'Y');
+                             $month_leave_club = isset($meta['enquete']) && isset( json_decode($meta['enquete'])->experience->club_name) ? json_decode($meta['enquete'])->experience->month : date_format (date_create (START_DATE_DEFAULT) , 'm');
                              $date = $year_leave_club .'-'.$month_leave_club ;
-                              echo date_format(date_create($date) , ' Y - m ' ) ?> ">
+                              echo date_format( date_create($date) , ' Y - m ' ) ?> ">
                         </div>
                       </div>
                     </div>
@@ -484,10 +450,10 @@
               <label for="" class="col-sm-2 control-label">バスの利用</label>
               <div class="col-sm-10">
                 <label class="radio-inline">
-                  <input type="radio" name="bus_use_flg" value="1" <?php if(isset($meta['bus_use_flg'])&&$meta['bus_use_flg']=='1') echo 'checked'?> > 利用する
+                  <input type="radio" name="bus_use_flg" value="1" checked > 利用する
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="bus_use_flg" value="0" <?php if(isset($meta['bus_use_flg'])&&$meta['bus_use_flg']=='0') echo 'checked'?> > 利用しない
+                  <input type="radio" name="bus_use_flg" value="0" <?php if(isset($meta['bus_use_flg'] )&& $meta['bus_use_flg'] == '0') echo 'checked'?> > 利用しない
                 </label>
               </div>
             </div>
@@ -505,8 +471,8 @@
                       if( isset( $value['student_join'][0] ) )
                       {
                         $week = isset($value['student_join'][0]['week_num'])?$value['student_join'][0]['week_num']:'';
-                        $index= random_string('alnum', 10);
-                        $disable = (isset($meta['bus_use_flg'])&&$meta['bus_use_flg']=='0') ? "disabled" :'';
+                        $index= random_string('alnum', RANDOM_STRING_LENGTH );
+                        $disable = ( isset( $meta['bus_use_flg'] ) && $meta['bus_use_flg'] == '0') ? "disabled" :'';
 
                         $html_0 ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week_num[$week].'<br>('.$class.')</div>';
                         $html_0 .='<div class="form-group">
@@ -560,13 +526,13 @@
                           } 
                           $html_2.= '<option value='.$subvalue['id'].' '.$selected_go.'>'.$subvalue['bus_course_name'].'</option>';
                           
-                          if($subvalue['id']===$id_ret) 
+                          if( $subvalue['id'] == $id_ret ) 
                           {
                             $selected_ret = "selected";
-                            if($subvalue['bus_stop'])
+                            if( $subvalue['bus_stop'] )
                             {
-                              foreach ($subvalue['bus_stop'] as $sub_key_stop => $sub_value_stop) {
-                                if($sub_value_stop['bus_stop_id']===$id_stop_ret) $selected_stop_ret = "selected";
+                              foreach ( $subvalue['bus_stop'] as $sub_key_stop => $sub_value_stop) {
+                                if( $sub_value_stop['bus_stop_id'] == $id_stop_ret ) $selected_stop_ret = "selected";
                                 $html_11.= '<option value='.$sub_value_stop['bus_stop_id'].' '.$selected_stop_ret.'>【'.$sub_value_stop['bus_stop_code'].'】'.$sub_value_stop['bus_stop_name'].'</option>';
                                 $selected_stop_ret='';
                               }
@@ -575,6 +541,14 @@
                           $html_8.= '<option value='.$subvalue['id'].' '.$selected_ret.'>'.$subvalue['bus_course_name'].'</option>';
                         }
                           echo $html_0.$html_2.$html_3.$html_5.$html_6.$html_8.$html_9.$html_11.$html_12;
+
+                          if( $key == 0)
+                          {
+                            $set_same  = '<div class="checkbox ml-1" id="set_same" ><label id="set_same_lable" style="margin: 0px auto 10px 142px;padding-top: 0px;" onclick ="check_set_same()">';
+                            $set_same .= '<input type="checkbox" id="check_set_same">'; 
+                            $set_same .= '<small>上記と同じ設定をする</small></label></div>';
+                            echo  $set_same;
+                          }
                       }
                     }
                   }    
@@ -601,8 +575,8 @@
                   </label>
                 </div>
                 &nbsp;<input class="form-control datepicker_Y_M_D" type="text"  name="life_check_date" placeholder=" YYYY - MM - DD " readonly value="<?php  
-                    $life_check_date = isset($meta['life_check_date'])?$meta['life_check_date']:'';
-                    echo date_format(date_create($life_check_date),'Y - m - d') ;
+                    $life_check_date = isset( $meta['life_check_date'] ) && $meta['life_check_date'] != INVALID_DATE && $meta['life_check_date'] != '' ? $meta['life_check_date'] : '';
+                    echo date_format( date_create($life_check_date) ,'Y - m - d') ;
                 ?>" >
               </div>
 
@@ -612,8 +586,8 @@
               <label for="" class="col-sm-2 control-label">初回レッスン</label>
               <div class="col-sm-10 form-inline">
                 <input class="form-control datepicker_Y_M_D" type="text" id="first_lesson_date" name="first_lesson_date" placeholder=" YYYY - MM " readonly value="<?php 
-                    $first_lesson_date = isset($meta['first_lesson_date'])?$meta['first_lesson_date']:'';
-                    echo date_format(date_create($first_lesson_date),'Y - m - d') ;
+                    $first_lesson_date = isset( $meta['first_lesson_date'] ) && $meta['first_lesson_date'] != INVALID_DATE && $meta['first_lesson_date'] != '' ?$meta['first_lesson_date']:'';
+                    echo date_format( date_create( $first_lesson_date ),'Y - m - d') ;
                 ?>" >
               </div>
             </div>
@@ -625,13 +599,13 @@
 
                   <div class="checkbox form-group col-sm-1">
                     <label >
-                      <input  type="checkbox" name="student_rest" value="2"  <?php if($info['rest_flg']=='2') echo 'checked'?> >
+                      <input  type="checkbox" name="student_rest" value="2"  <?php if( isset( $info['rest_flg'] ) && $info['rest_flg']=='2') echo 'checked'?> >
                     </label>
                   </div>
 
                   <div class="form-group col-sm-4">
                     <input class="form-control datepicker_Y_M_D" type="text"  name="rest_start_date" placeholder=" YYYY - MM - DD " readonly value="<?php 
-                      $rest_start_date = isset($meta['rest_start_date'])?$meta['rest_start_date']:'';
+                      $rest_start_date = isset( $meta['rest_start_date']) && $meta['rest_start_date'] != INVALID_DATE && $meta['rest_start_date'] != '' ? $meta['rest_start_date'] : '';
                       echo date_format(date_create($rest_start_date),'Y - m - d') ;
                     ?>" style="margin-left: -12px">
                   </div>
@@ -641,14 +615,14 @@
                   <div class="form-group col-sm-4">
                     <input class="form-control datepicker_Y_M_D" type="text"  name="rest_end_date" placeholder=" YYYY - MM - DD " readonly
                     value="<?php 
-                        $rest_end_date = isset( $meta['rest_end_date'] ) ? $meta['rest_end_date'] : '';
+                        $rest_end_date = isset( $meta['rest_end_date'] ) && $meta['rest_end_date'] != INVALID_DATE && $meta['rest_end_date'] != '' ? $meta['rest_end_date'] : '';
                         echo date_format( date_create( $rest_end_date ) ,'Y - m - d') ;
                     ?>">
                   </div>
 
                   <div class="checkbox form-group col-sm-1">
                     <label>
-                      <input type="checkbox"  name="student_rest" value="1"  <?php if($info['rest_flg']=='1') echo 'checked'?> > 
+                      <input type="checkbox"  name="student_rest" value="1"  <?php if( isset( $info['rest_flg'] ) && $info['rest_flg']=='1')  echo 'checked'?> > 
                       <small>保留</small>
                     </label>
                   </div>
@@ -663,16 +637,16 @@
                 <div class="col-sm-10 form-inline">
                   <div class="checkbox mr-1">
                     <label>
-                      <input type="checkbox" value="3"  name="student_status" <?php if($info['status']=='3') echo 'checked';?> >
+                      <input type="checkbox" value="3"  name="student_status" <?php if( isset($info['status']) && $info['status'] == '3') echo 'checked';?> >
                     </label>
                   </div>
                   <input class="form-control datepicker_Y_M_D" type="text"  name="quit_date" placeholder=" YYYY - MM - DD" readonly value="<?php 
-                      $quit_date = isset( $meta['quit_date'] ) ? $meta['quit_date'] : '';
+                      $quit_date = isset( $meta['quit_date'] )  && $meta['quit_date'] != INVALID_DATE && $meta['quit_date'] != '' ? $meta['quit_date'] : '';
                       echo date_format( date_create( $quit_date ) , 'Y - m - d') ;
                   ?>">
                   <div class="checkbox ml-1">
                     <label>
-                      <input type="checkbox" name="student_status" value="2" <?php if($info['status']=='2') echo 'checked';?> > 
+                      <input type="checkbox" name="student_status" value="2" <?php if( isset($info['status']) && $info['status'] == '2') echo 'checked';?> > 
                       <small>保留</small>
                     </label>
                   </div>
@@ -686,7 +660,7 @@
                 <div class="col-sm-10 form-inline">
                   <div class="checkbox mr-1">
                     <label>
-                      <input type="checkbox" name="student_lock" value="1" <?php if($info['lock_flg']=='1') echo 'checked';?> >
+                      <input type="checkbox" name="student_lock" value="1" <?php if( isset($info['lock_flg']) && $info['lock_flg'] == '1') echo 'checked';?> >
                     </label>
                   </div>
                 </div>
@@ -699,7 +673,7 @@
                 <div class="col-sm-10 form-inline">
                   <div class="checkbox mr-1">
                     <label>
-                      <input type="checkbox" value="1" name="medley" <?php echo isset($meta['medley'])&&($meta['medley']=='1')?'checked':'' ?> >
+                      <input type="checkbox" value="1" name="medley" <?php echo isset( $meta['medley'] ) && ( $meta['medley'] == '1') ? 'checked' : '' ?> >
                     </label>
                   </div>
                 </div>
@@ -710,7 +684,7 @@
               <div class="form-group">
                 <label for="" class="col-sm-2 control-label">メモ・特記事項</label>
                 <div class="col-sm-10">
-                  <textarea class="form-control" rows="3" name="memo_special"><?php echo isset($meta['memo_special'])?$meta['memo_special']:'' ?></textarea>
+                  <textarea class="form-control" rows="3" name="memo_special"><?php echo isset($meta['memo_special']) ? $meta['memo_special'] : '' ?></textarea>
                 </div>
               </div>
             </div>
@@ -718,7 +692,7 @@
           </div>
         </div>
         <div class="block-30 text-center">
-          <input type="button" name="save" value="更新" class="btn btn-warning btn-long">
+          <input type="button" name="edit_save" value="更新" class="btn btn-warning btn-long">
         </div>
       </form>
       <div class="modal fade" id="modal-notice" role="dialog">
@@ -726,16 +700,20 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">×</button>
-                <h4 class="modal-title">Message</h4>
+                <h4 class="modal-title"> お知らせ </h4>
               </div>
               <div class="modal-body">
-                
+                 <p id="status_update"></p>
               </div>
             </div>
           </div>
       </div>
 
-
+<style>
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px;border: 0px solid }
+    .alert-warning {border-radius: 0px;border: 0px solid }
+</style>
     </div>
   </main>
 
@@ -784,8 +762,25 @@
       $(this).datepicker("show");
     });
 
+    $('input[name=student_birthday] , input[name=rest_start_date] , input[name=rest_end_date]').change(function(){
+      if($('form#form_edit_member').valid())
+      {
+        $('input[name=edit_save]').prop('disabled', false);
+      }
+      else {
+        $('input[name=edit_save]').prop('disabled', 'disabled');
+      }
+    });
+
+    $('input').on('keyup blur', function () {
+      if ($('#form_edit_member').valid()) {
+        $('input[name=edit_save]').prop('disabled', false);
+      } else {
+        $('input[name=edit_save]').prop('disabled', 'disabled');
+      }
+    });
+
     
-    
-  });
+});
   
 </script>

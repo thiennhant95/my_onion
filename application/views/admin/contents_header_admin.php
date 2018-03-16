@@ -29,7 +29,7 @@
         dataType: "JSON",
         success:function(result) {
           window.location.href = "<?php echo base_url('admin/auth');?>"; 
-        },error(XMLHttpRequest, textStatus ,errorThrown){
+        },error:function(XMLHttpRequest, textStatus ,errorThrown){
           console.log('err');
         }
       })

@@ -121,34 +121,41 @@ class Request extends FRONT_Controller {
             } else {
                 $s_info = $this->student_model->get_student_data($user_account['id']);
                 $s_class = $this->m_bus_course_model->get_student_class_change_bus( $user_account['id'] );
-
                 // echo '<pre>'; print_r( $s_class ); echo '</pre>'; die();
-
+                $check_bus = $this->m_bus_course_model->check_bus_exists( $user_account['id'], 'bus_change_eternal' );
                 foreach ( $s_class as $k => $v ) {
                     $bus_go_ret = $this->m_bus_course_model->get_student_bus_route_change_bus( $user_account['id'], $v['class_id'] );
                     $check_bus_route_exists = $this->m_bus_course_model->check_bus_route_exists( $user_account['id'], $v['class_id'] );
-                    if ( count( $check_bus_route_exists ) > 0 ) {
-                        $s_bus_course_go = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_go_id'] );
-                        $s_bus_course_ret = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_ret_id'] );
-                        $s_class[$k]['bus_course_go'] = $s_bus_course_go[0];
-                        $s_class[$k]['bus_course_ret'] = $s_bus_course_ret[0];
-                        $s_class[$k]['bus_course_go']['bus_route_go_id'] = $bus_go_ret[0]['bus_route_go_id'];
-                        $s_class[$k]['bus_course_ret']['bus_route_ret_id'] = $bus_go_ret[0]['bus_route_ret_id'];
+                    if ( count( $bus_go_ret ) > 0 ) {
+                        if ( count( $check_bus_route_exists ) > 0 ) {
+                            $s_bus_course_go = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_go_id'] );
+                            $s_bus_course_ret = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_ret_id'] );
+                            $s_class[$k]['bus_course_go'] = $s_bus_course_go[0];
+                            $s_class[$k]['bus_course_ret'] = $s_bus_course_ret[0];
+                            $s_class[$k]['bus_course_go']['bus_route_go_id'] = $bus_go_ret[0]['bus_route_go_id'];
+                            $s_class[$k]['bus_course_ret']['bus_route_ret_id'] = $bus_go_ret[0]['bus_route_ret_id'];
+                            $s_class[$k]['list_bus_course'] = $this->m_bus_course_model->get_bus_course_by_class_id( $v['class_id'] );
+                            $s_class[$k]['list_route_go'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['bus_course_go']['bus_course_id'] );
+                            $s_class[$k]['list_route_ret'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['bus_course_ret']['bus_course_id'] );
+                        }
+                    } else {
                         $s_class[$k]['list_bus_course'] = $this->m_bus_course_model->get_bus_course_by_class_id( $v['class_id'] );
-                        $s_class[$k]['list_route_go'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['bus_course_go']['bus_course_id'] );
-                        $s_class[$k]['list_route_ret'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['bus_course_ret']['bus_course_id'] );
+                        if ( count( $s_class[$k]['list_bus_course'] ) > 0 ) {
+                            $s_class[$k]['list_route_go'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['list_bus_course'][0]['id']);
+                            $s_class[$k]['list_route_ret'] = $this->m_bus_course_model->get_bus_route_by_bus_course_id( $s_class[$k]['list_bus_course'][0]['id']);
+
+                        } else {
+                            $s_class[$k]['list_route_go'] = array();
+                            $s_class[$k]['list_route_ret'] = array();
+                        }
                     }
                 }
-
-                // echo '<pre>'; print_r( $s_class ); echo '</pre>'; die();
-
                 if ( isset( $_POST['bus_course_id'] ) ) {
                     $html_change_bus_course = $this->create_html_change_bus_course( $_POST['bus_course_id'] );
                     die( json_encode( $html_change_bus_course ) );
                 }
                 // update l_student_request
                 if ( isset( $_POST['student_id'] ) ) {
-                    $check_bus = $this->m_bus_course_model->check_bus_exists( $_POST['student_id'], 'bus_change_eternal' );
                     if ( count( $check_bus ) == 0 ) {
                         $this->l_student_request_model->insert( 
                             array(
@@ -169,6 +176,7 @@ class Request extends FRONT_Controller {
                 $data = array();
                 $data['s_info'] = $s_info;
                 $data['s_class'] = $s_class;
+                $data['check_bus'] = count( $check_bus );
                 $this->viewVar = $data;
                 front_layout_view('request_change_bus', $this->viewVar);
             }
@@ -176,6 +184,7 @@ class Request extends FRONT_Controller {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
+
 
 
     public function create_html_change_bus_course( $bus_course_id ) {
@@ -210,8 +219,8 @@ class Request extends FRONT_Controller {
             $data['class_of_course'] = [];
             $data['list_class_selected'] = [];
 
-            if(!empty($data['user']['course']['nearest'][0])){
-                $id_courser_join = (int)$data['user']['course']['nearest'][0]['course_id'];
+            if(!empty($data['user']['course']['valid'][0])){
+                $id_courser_join = (int)$data['user']['course']['valid'][0]['course_id'];
                 $data['class_of_course'] = $this->get_list_class_by_course($id_courser_join);
                 $data['list_class_selected'] = $this->get_list_class_of_student($id_courser_join, $id_user);
                 $data['practice_max'] = $this->l_student_request_model->get_practice_max($id_courser_join);
@@ -230,7 +239,7 @@ class Request extends FRONT_Controller {
         $html = '';
         foreach ($data['week'] as $key_week => $value_name_day) {
             $html .= '<tr>';
-                $html .= '<td>'.$value_name_day.'</td>';
+                $html .= '<th>'.$value_name_day.'</th>';
                 foreach ($data['class'] as $key_class => $value_name_class) {
                     $id_class = '';
                     $class_sign = '';
@@ -379,18 +388,35 @@ class Request extends FRONT_Controller {
         //$this->accountVar
         $user_session = $this->session->userdata('user_account');
         $id_user = $user_session['id'];
-        if(isset($_POST['start_date'])&&$_POST['start_date']!=''&&isset($_POST['end_date'])&&$_POST['end_date']!='')
+        $current_date = date('Y-m-d H:i:s');
+        if(isset( $_POST['start_date'] )&& $_POST['start_date'] !='' && isset( $_POST['end_date'] ) && $_POST['end_date'] !='')
         {
             
-            $start_date = date_format(date_create($_POST['start_date'].'-1'),'Y-m-d');
-            $end_date = date_format(date_create($_POST['end_date'].'-1'),'Y-m-d');
-            $note = isset($_POST['note'])?$_POST['note']:'';
-            $content = json_encode(['start_date'=>$start_date,'end_date'=>$end_date,'reason'=>$note]);
-            $param = array('student_id'=>$id_user,'type'=>RECESS,'contents'=>$content,'message'=>$note);
-            $this->load->model('db/l_student_request_model');
-            $this->l_student_request_model->insert($param);
+            $start_date = date_format( date_create( $_POST['start_date'] ),'Y-m-d' );
+            $end_date = date_format( date_create( $_POST['end_date']),'Y-m-d' );
+            $note = isset( $_POST['note'] )? $_POST['note'] : '';
+            $content = json_encode( ['start_date'=>$start_date ,'end_date'=>$end_date ,'reason'=>$note] );
+            
+            $result_search = $this->l_student_request_model->Search_request_notyet_processed( $id_user , RECESS );
+            if( count( $result_search ) > 0 )
+            {
+                $id_old = $result_search[0]['id'];
+                if($id_old > 0)
+                {      
+                     $params = array('student_id'=>$id_user , 'type'=>RECESS ,'contents'=>$content , 'update_date'=> $current_date);              
+                    $this->db->update('l_student_request', $params , array( 'id'=>$id_old ) );  
+                }
+            }
+            else
+            {
+               $params = array('student_id'=>$id_user , 'type'=>RECESS ,'contents'=>$content , 'create_date' => $current_date , 'update_date'=> $current_date );
+               $this->db->insert( 'l_student_request', $params );
+            }  
+            echo 'success';
+            exit();
         }
-        redirect('/request/complete');
+        echo '';
+        exit();
     }
 
     /**
@@ -413,24 +439,40 @@ class Request extends FRONT_Controller {
         //$this->accountVar
         $user_session = $this->session->userdata('user_account');
         $id_user = $user_session['id'];
-        if(isset($_POST['quit_date'])&&$_POST['quit_date']!='')
+        $current_date = date('Y-m-d H:i:s');
+
+        if( isset( $_POST['quit_date'] ) && $_POST['quit_date']!= '')
         {
-            $quit_date = date_format(date_create($_POST['quit_date']),'Y-m-d');
-            
-            $note = isset($_POST['note'])?$_POST['note']:'';
+            $quit_date = date_format( date_create( $_POST['quit_date'] ) , 'Y-m-d');
+            $note = isset( $_POST['note'] )?$_POST['note']:'';
             $reason = [];
-            if(isset($_POST['note'])&&count($_POST['reason'])>0)
+            if(isset($_POST['note']) && count($_POST['reason']) > 0)
             {
                 foreach ($_POST['reason'] as $key => $value) {
-                   $reason[]=$value;
+                   $reason[] = $value;
                 }
             }
-            $content = json_encode(['quit_date'=>$quit_date,'reason'=>$reason,'memo'=>$note]);
-            $param = array('student_id'=>$id_user,'type'=>QUIT,'contents'=>$content,'message'=>$note);
-            $this->load->model('db/l_student_request_model');
-            $this->l_student_request_model->insert($param);
+
+            $content = json_encode(['quit_date' => $quit_date , 'reason'=>$reason , 'memo'=>$note]);
+            $result_search = $this->l_student_request_model->Search_request_notyet_processed( $id_user , QUIT );
+            if( count( $result_search ) > 0 )
+            {
+                $id_old = $result_search[0]['id'];
+                if($id_old > 0)
+                {                
+                    $params = array( 'student_id' => $id_user , 'type' => QUIT , 'contents'=>$content ,'update_date'=>$current_date );   
+                    $this->db->update('l_student_request', $params, array('id'=>$id_old ) );  
+                }
+            }
+            else
+            {
+                $params = array( 'student_id' => $id_user , 'type' => QUIT , 'contents'=>$content ,'create_date'=>$current_date , 'update_date'=> $current_date );
+                $this->db->insert( 'l_student_request', $params );
+            }  
+            echo 'success';
+            exit();
         }
-        redirect('/request/complete');
+        exit();
     }
 
     /**
@@ -444,7 +486,7 @@ class Request extends FRONT_Controller {
         if ($this->error_flg) return;
         try {
             $this->load->model('db/m_course_model');
-            $data['Course_Limited'] = $this->m_course_model->get_Info_by_type(VALUE_COURSE_TYPE_LIMITED);
+            $data['Course_Limited'] = $this->m_course_model->getData_Course_valid();
             front_layout_view('request_event', $data);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
@@ -455,20 +497,32 @@ class Request extends FRONT_Controller {
         //$this->accountVar
         $user_session = $this->session->userdata('user_account');
         $id_user = $user_session['id'];
-        if(isset($_POST['event'])&&$_POST['event']!='')
+        $current_date = date('Y-m-d H:i:s');
+        if(isset( $_POST['event'] ) && $_POST['event'] != '')
         {
-            $note = isset($_POST['note'])?$_POST['note']:'';
+            $note = isset( $_POST['note'] ) ? $_POST['note']: '';
             $course_id = $_POST['event'];
-            $param = array('student_id'=>$id_user,'course_id'=>$course_id,'contents'=>$note);
-            $this->load->model('db/l_student_event_model');
-            $this->l_student_event_model->insert($param);
-            $content = json_encode(['course_id'=>$course_id,'memo'=>$note]);
-            $param_2 = array('student_id'=>$id_user,'type'=>EVENT_TRY,'contents'=>$content,'message'=>$note);
-            $this->load->model('db/l_student_request_model');
-            $this->l_student_request_model->insert($param_2);
-             redirect('/request/complete');
+            $result_search = $this->l_student_request_model->Search_request_notyet_processed( $id_user , EVENT_TRY );
+
+            $content = json_encode( ['course_id'=>$course_id , 'memo' => $note] );
+            
+            if( count( $result_search ) > 0 )
+            {
+                $id_old = $result_search[0]['id'];
+                if($id_old > 0)
+                {       
+                    $params = array( 'student_id' => $id_user , 'type'=>EVENT_TRY , 'contents' =>$content , 'update_date' =>$current_date );             
+                    $this->db->update('l_student_request', $params, array( 'id'=>$id_old ) );   
+                }
+            }
+            else{
+               $params = array( 'student_id' => $id_user , 'type'=>EVENT_TRY , 'contents' =>$content , 'create_date' =>$current_date , 'update_date'=> $current_date );             
+                $this->db->insert( 'l_student_request', $params );
+            }  
+            echo 'success';
+            exit();
         }
-        
+        exit();
     }
 
     /**

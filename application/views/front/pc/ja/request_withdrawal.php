@@ -12,8 +12,7 @@
     <div class="container">
 
       <h1 class="lead-heading bg-main h3">退会届</h1>
-
-      <form class="form-horizontal" id="form_request_withdrawal" action="<?php echo  base_url('/request/save_request_withdrawal') ?>"  method="POST">
+<form id="form_request_withdrawal">  
         <section>
           <div class="panel panel-dotted">
             <div class="panel-heading">退会届</div>
@@ -35,7 +34,7 @@
             </div>
           </div>
         </section>
-                
+          
         <section>
           <div class="panel panel-dotted">
             <div class="panel-heading">退会理由</div>
@@ -86,14 +85,13 @@
             </div>
           </div>
         </section>
-
+</form>
         <div class="block-30 text-center">
-          <button class="btn btn-success btn-lg btn-long" type="submit">
+          <button class="btn btn-success btn-lg btn-long" id="btnsubmit">
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             <span>申請する</span>
           </button>
         </div>
-      </form>
 
     </div>
   </main>
@@ -102,6 +100,22 @@
 </body>
 
 </html>
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="status_update"></p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px;border: 0px solid }
+</style>
 <script type="text/javascript">
   $(document).ready(function(){
     $.fn.datepicker.dates['jp'] = {
@@ -116,33 +130,36 @@
         titleFormat: "yyyy-mm-dd",
         weekStart: 0
     };
-    var options={
-        isRTL: false,
+    var options = {
         format: 'yyyy-mm-dd',
         todayHighlight: true,
         autoclose: true,
         language:'jp',
         orientation: "auto right",
+        startDate: new Date() 
     };
     $('input[id=quit_date_request_with_dra]').datepicker(options).on('changeDate', function(ev){
          $( this ).valid();
     });
     $('span#fa-calendar-quick').click(function(){
-      $('input[id=quit_date_request_with_dra]').datepicker("show");
+      $('input[id=quit_date_request_with_dra]').datepicker('show');
     });
     $('form#form_request_withdrawal').validate({
         rules:{
           quit_date:{
               required:true,
-              date:true,
           },
+          note :{
+            maxlength : 100 ,
+          }
         },
         messages:{
           quit_date:{
-              required:"required",
-              date: "invalid !"
+              required:"この項目は必須です",
           },
-
+        note : {
+            maxlength : " 100文字以下で入力してください。 !"
+          }
         },
         errorClass: "label label-danger",
         errorPlacement: function(errorClass, element) {
@@ -156,10 +173,47 @@
         },
     })
 
-    $('button[id=submit_request]').click(function(){
+    $('#btnsubmit').click(function(){
       if($( "form#form_request_withdrawal" ).valid())
-      {
-        $( "form#form_request_withdrawal" ).submit();
+      {   
+        $quit_date = $('input[name = quit_date]').val();
+        $reasons= {};
+        $('input[name^="reason"]:checked').each(function(index) {
+
+            $reasons[index] = $(this).val();
+        });
+        $note = $('textarea[name = note]').val();
+        $data = {quit_date : $quit_date , note : $note , reason: $reasons};
+
+        $.ajax({
+              url : '/request/save_request_withdrawal ' ,
+              type : 'POST' ,
+              data : $data ,
+              success : function (res) {
+                if( res == 'success' )
+                {
+                  $('#myModal').modal('show');
+                  $('.modal-body').addClass('alert alert-success');
+                    $("#status_update").html("<b>退会を申請しました。</b>");
+                    window.setTimeout(function () {
+                        $('#myModal').fadeToggle(300, function () {
+                            $('#myModal').modal('hide');
+                            window.location = '/request/complete';
+                        });
+                    }, 1000);
+                }
+                else{
+                    
+                    $('.modal-body').addClass('alert alert-success');
+                    $("#status_update").html("<b>退会の申請に失敗しました。</b>");
+                    $('#myModal').modal('show');
+                    $('#myModal').fadeToggle(300, function () {
+                        $('#myModal').modal('hide');
+                    });
+    
+                }
+              }
+        });
       }
       
     });

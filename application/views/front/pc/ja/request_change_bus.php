@@ -34,7 +34,9 @@
               </section>
               <hr class="hr-dashed">
               <section>
-                <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) { ?>
+                <?php 
+                  $weeks = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
+                  if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) { ?>
                   <div class="form-group">
                     <label for="" class="col-sm-2 control-label">基本バスコース</label>
                     <div class="col-sm-5 control-text">
@@ -58,7 +60,6 @@
                     <label for="" class="col-sm-2 control-label">基本バスコース:</label>
                   </div>
                   <?php
-                    $weeks = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
                     foreach ( $s_class as $k => $v ) { ?>
                       <div class="form-group">
                         <label class="col-sm-2 control-label"></label>
@@ -90,10 +91,10 @@
                 <label for="" class="col-sm-2 control-label">送迎バスを</label>
                 <div class="col-sm-5">
                   <label class="radio-inline">
-                    <input type="radio" name="bus_use_flg" value="1" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '1' ) echo 'checked'; ?>> 利用する
+                    <input type="radio" name="bus_use_flg" onclick="disabled_bus(1)" value="1" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '1' ) echo 'checked'; ?>> 利用する
                   </label>
                   <label class="radio-inline">
-                    <input type="radio" name="bus_use_flg" value="0" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) echo 'checked'; ?>> 利用しない
+                    <input type="radio" name="bus_use_flg" onclick="disabled_bus(0)" value="0" <?php if ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == '0' ) echo 'checked'; ?>> 利用しない
                   </label>
                 </div>
               </div>
@@ -110,36 +111,49 @@
               </div>
               <section>
                 <?php
-                  foreach( $s_class as $k => $v ) { 
+                  $disabled = ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == 1 ) ? '' : 'disabled';
+                  $check_checkbox = 0;
+                  foreach( $s_class as $k => $v ) {
+                    $check_checkbox++;
                     $id_bus_stop_1 = random_string( 'alnum', RANDOM_STRING_LENGTH );
                     $id_bus_stop_2 = random_string( 'alnum', RANDOM_STRING_LENGTH );
-                      $weeks = array('2' => '火', '3' => '水', '4' => '木', '5' => '金', '6' => '土', '0' => '日', '1' => '月');
-                      ?>
+                    $class_course_go = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                    $class_course_ret = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                    $class_route_go = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                    $class_route_ret = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                  ?>
                     <div class="each_bus_course">
                       <div class="form-group">
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-5 control-text">
-                          <?php if ( isset( $v['bus_course_go'] ) ) { echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name'] . '）'; } ?>
+                          <?php echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name'] . '）'; ?>
                         </div>
                       </div>
                       <div class="form-group">
-                        <?php if ( isset( $v['list_bus_course'] ) ) { ?>  
+                        <?php if ( isset( $v['list_bus_course'] ) && count( $v['list_bus_course'] ) > 0 ) { ?>  
                         <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
                           <div class="col-sm-3">
-                            <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_1 . "'"; ?>)">
+                            <select class="form-control change_bus_course disabled_bus <?php echo $class_course_go; ?> <?php echo $id_bus_stop_1; ?>" <?php echo $disabled; ?> data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_1 . "'"; ?>)">
                               <?php
                                 foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
-                                  if ( $v['bus_course_go']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                  if ( isset($v['bus_course_go']['bus_course_id']) && $v['bus_course_go']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
                                   else $selected = '';
                                   echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
                                 }
                               ?>
                             </select>
                           </div>
-                        <?php } ?>
-                        <?php if ( isset( $v['list_route_go'] ) ) { ?>
+                        <?php } else { ?>
+                          <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
                           <div class="col-sm-3">
-                            <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="go" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_go']['bus_route_go_id']; ?>" id="<?php echo $id_bus_stop_1; ?>">
+                            <select class="form-control" disabled>
+                              <option>データがありません</option>
+                            </select>
+                          </div>
+                        <?php } ?>
+                        <?php if ( isset( $v['list_route_go'] ) && count( $v['list_route_go'] ) > 0 ) { ?>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_route disabled_bus <?php echo $class_route_go; ?>" <?php echo $disabled; ?> data-bus="bus_route" data-go-ret="go" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>" data-old-route="<?php echo $v['bus_course_go']['bus_route_go_id']; ?>" id="<?php echo $id_bus_stop_1; ?>">
                               <?php
                                 foreach ( $v['list_route_go'] as $k2 => $v2 ) {
                                   if ( $v['bus_course_go']['bus_route_go_id'] == $v2['id'] ) $selected = 'selected';
@@ -149,26 +163,39 @@
                               ?>
                             </select>
                           </div>
+                        <?php } else {?>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_route" disabled id="<?php echo $id_bus_stop_1; ?>" data-bus="bus_route" data-go-ret="go" data-old-route="null" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>">
+                              <option>データがありません</option>
+                            </select>
+                          </div>
                         <?php } ?>
                       </div>
                       <div class="form-group">
-                      <?php if ( isset( $v['list_bus_course'] ) ) { ?>
+                      <?php if ( isset( $v['list_bus_course'] ) && count( $v['list_bus_course'] ) > 0 ) { ?>
                         <label for="" class="col-xs-12 col-sm-2 control-label">帰りの降車場所</label>
                           <div class="col-sm-3">
-                            <select class="form-control change_bus_course" data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_2 . "'"; ?>)">
+                            <select class="form-control change_bus_course disabled_bus <?php echo $class_course_ret; ?> <?php echo $id_bus_stop_2; ?>" <?php echo $disabled; ?> data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_2 . "'"; ?>)">
                               <?php
                                 foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
-                                  if ( $v['bus_course_ret']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                  if ( isset($v['bus_course_ret']['bus_course_id']) && $v['bus_course_ret']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
                                   else $selected = '';
                                   echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
                                 }
                               ?>
                             </select>
                           </div>
-                        <?php } ?>
-                        <?php if ( isset( $v['list_route_ret'] ) ) { ?>
+                        <?php } else {?>
+                          <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
                           <div class="col-sm-3">
-                            <select class="form-control change_bus_route" data-bus="bus_route" data-go-ret="ret" data-class-id="<?php echo $v['class_id']; ?>" data-old-route="<?php echo $v['bus_course_ret']['bus_route_ret_id']; ?>" id="<?php echo $id_bus_stop_2; ?>">
+                            <select class="form-control" disabled>
+                              <option>データがありません</option>
+                            </select>
+                          </div>
+                        <?php } ?>
+                        <?php if ( isset( $v['list_route_ret'] ) && count( $v['list_route_ret'] ) > 0) { ?>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_route disabled_bus <?php echo $class_route_ret; ?>" <?php echo $disabled; ?> data-bus="bus_route" data-go-ret="ret" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>" data-old-route="<?php echo $v['bus_course_ret']['bus_route_ret_id']; ?>" id="<?php echo $id_bus_stop_2; ?>">
                               <?php
                                 foreach ( $v['list_route_ret'] as $k2 => $v2 ) {
                                   if ( $v['bus_course_ret']['bus_route_ret_id'] == $v2['id'] ) $selected = 'selected';
@@ -178,10 +205,25 @@
                               ?>
                             </select>
                           </div>
+                        <?php } else {?>
+                          <div class="col-sm-3">
+                            <select class="form-control change_bus_route" disabled id="<?php echo $id_bus_stop_2; ?>" data-bus="bus_route" data-go-ret="ret" data-old-route="null" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>">
+                              <option>データがありません</option>
+                            </select>
+                          </div>
                         <?php } ?>
                       </div>
+                      <?php if ( $check_checkbox < 2 ) {?>
+                        <div class="form-group">
+                          <div class="col-sm-2"></div>
+                          <div class="col-sm-10">
+                            <label><input type="checkbox" value="" name="check_bus_checked" onclick="duplicate_bus('<?php echo $class_course_go; ?>', '<?php echo $class_course_ret; ?>', '<?php echo $class_route_go; ?>', '<?php echo $class_route_ret; ?>', '<?php echo $v['class_id']; ?>')">上記と同じ設定をする</label>
+                          </div>
+                        </div>
+                      <?php } ?>
                     </div>
                   <?php } ?>
+                  <input type="hidden" name="check_bus" value="<?php echo $check_bus; ?>" />
               </section>
             </div>
           </div>
@@ -217,6 +259,64 @@
 </body>
 </html>
 <script>
+  function duplicate_bus( class_course_go, class_course_ret, class_route_go, class_route_ret, class_id ) {
+    if ( $('input[name=check_bus_checked]').is(":checked") ) {
+      var bus_course_go_default = $('.'+class_course_go).val();
+      var bus_course_ret_default = $('.'+class_course_ret).val();
+      var bus_route_go_default = [];
+      var bus_route_ret_default = [];
+      var bus_route_go_default_html = [];
+      var bus_route_ret_default_html = [];
+      var bus_route_go_selected = $('.'+class_route_go).val();
+      var bus_route_ret_selected = $('.'+class_route_ret).val();
+      $('.'+class_route_go+' option').each(function() {
+          bus_route_go_default.push($(this).val());
+      });
+      $('.'+class_route_ret+' option').each(function() {
+          bus_route_ret_default.push($(this).val());
+      });
+
+      $('.'+class_route_go+' option').each(function() {
+          bus_route_go_default_html.push($(this).html());
+      });
+      $('.'+class_route_ret+' option').each(function() {
+          bus_route_ret_default_html.push($(this).html());
+      });
+     
+      var id_route = '';
+      $('.each_bus_course').find('.change_bus_route').each( function() {
+        if ( $(this).attr('data-class-id').split('_')[0] == class_id ) {
+          if ( $(this).attr('data-go-ret') == 'go' ) {
+            id_route = $(this).attr('id');
+            $(this).empty();
+            var html_route_go = '';
+            for ( var i = 0; i < bus_route_go_default.length; i++ ) {
+              if ( bus_route_go_default[i] == bus_route_go_selected ) selected = 'selected';
+              else selected = '';
+              html_route_go += '<option value="'+bus_route_go_default[i]+'" '+selected+'>'+bus_route_go_default_html[i]+'</option>';
+            }
+            $(this).append( html_route_go );
+            $('.'+id_route).val( bus_course_go_default );
+          } else {
+            id_route = $(this).attr('id');
+            $(this).empty();
+            var html_route_ret = '';
+            for ( var i = 0; i < bus_route_ret_default.length; i++ ) {
+              if ( bus_route_ret_default[i] == bus_route_ret_selected ) selected = 'selected';
+              else selected = '';
+              html_route_ret += '<option value="'+bus_route_ret_default[i]+'" '+selected+'>'+bus_route_ret_default_html[i]+'</option>';
+            }
+            $(this).append( html_route_ret );
+            $('.'+id_route).val( bus_course_ret_default );
+          }
+        }
+      });
+    }
+  }
+  function disabled_bus( value ) {
+    if ( value == 1 ) $('.disabled_bus').removeAttr('disabled');
+    else $('.disabled_bus').attr('disabled', 'disabled');
+  }
   function change_bus_course( bus_course_id, bus_route_id ) {
     $.ajax({
       url: 'https:' + "<?php echo base_url().'request/change_bus'?>",
@@ -230,8 +330,16 @@
       },
       success: function(result) {
         console.log( result );
-        $('#'+bus_route_id).empty();
-        $('#'+bus_route_id).append( result );
+        if ( result == '' ) {
+          $('#'+bus_route_id).empty();
+          $('#'+bus_route_id).append( '<option>データがありません</option>' );
+          $('#'+bus_route_id).attr('disabled', 'disabled');
+        } else {
+          $('#'+bus_route_id).empty();
+          $('#'+bus_route_id).append( result );
+          $('#'+bus_route_id).removeAttr('disabled');
+        }
+        
       }, error: function (XMLHttpRequest, textStatus, errorThrown) {
           console.log('error');
       },
@@ -254,6 +362,9 @@
       if( $('input[name=bus_use_flg]').is(':checked') ) bus_use_flg = $('input[name=bus_use_flg]:checked').val();
       var change_date = $('input[name=change_date]').val();
       var change_bus = new Object();
+      var check_bus = $('input[name=check_bus]').val();
+      if ( check_bus == 0 ) change_bus.first_time_change = 1
+      else change_bus.first_time_change = 0;
       change_bus.bus_use_flg = bus_use_flg;
       change_bus.change_date = change_date;
       var arr_route = [];
@@ -262,16 +373,20 @@
         check++;
         if ( $(this).attr('data-bus') == 'bus_route' ) {
           if ( $(this).attr('data-go-ret') == 'go' ) {
-            arr_route.push({
-              'bus_route_go_id_before' : $(this).attr('data-old-route'),
-              'bus_route_go_id_after' : $(this).val()
-            });
+            if ( $(this).val() != 'データがありません' ) {
+              arr_route.push({
+                'bus_route_go_id_before' : $(this).attr('data-old-route'),
+                'bus_route_go_id_after' : $(this).val()
+              });
+            }
           } 
           if ( $(this).attr('data-go-ret') == 'ret' ) {
-            arr_route.push({
-              'bus_route_ret_id_before' : $(this).attr('data-old-route'),
-              'bus_route_ret_id_after' : $(this).val()
-            });
+            if ( $(this).val() != 'データがありません' ) {
+              arr_route.push({
+                'bus_route_ret_id_before' : $(this).attr('data-old-route'),
+                'bus_route_ret_id_after' : $(this).val()
+              });
+            }
           }
         }
         if ( check == 2 ) {
@@ -280,6 +395,15 @@
           check = 0;
         }
       });
+      console.log( change_bus );
+
+      for (var key in change_bus) {
+        if (change_bus.hasOwnProperty(key)) {
+          if (change_bus[key].length == 0) delete change_bus[key];
+        }
+      }
+
+    console.log( change_bus );
 
       var data = {
         change_bus : change_bus,

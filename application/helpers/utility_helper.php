@@ -413,12 +413,3 @@ if ( ! function_exists('is_valid_date')) {
         }
     }
 }
-if( ! function_exists('getDayofWeek')){
-    function getDayofWeek($date) {
-        $weekday = array(0=>'日',1=>'月',2=>'火',3=>'水',4=>'木',5=>'金',6=>'土');
-        $number = date('w', strtotime($date));
-        return $weekday[$number];
-    }
-}
-
-

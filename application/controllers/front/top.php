@@ -94,9 +94,9 @@ class Top extends FRONT_Controller {
     
     public function get_message_nofication()
     {
-        $my_array = array('type' => 'recess');
-        $data = $this->m_request_message_model->get_message_notification($my_array);
-        return $data;
+        $url_path = './files/notice.txt';
+        $content = read_file($url_path);
+        return $content;
     }
 
 

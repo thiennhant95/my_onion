@@ -28,7 +28,7 @@ class Help extends FRONT_Controller {
         require_once APPPATH . '/third_party/MPDF/vendor/autoload.php'; 
         $mpdf = new  Mpdf\Mpdf(['default_font' => 'Sun-ExtA']);
         $mpdf->WriteHTML($html);
-        $mpdf->Output($filename, \Mpdf\Output\Destination::INLINE);
+        $mpdf->Output($filename, \Mpdf\Output\Destination::DOWNLOAD);
         exit(0);
     }
 

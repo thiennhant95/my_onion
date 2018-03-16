@@ -28,47 +28,51 @@
         <div class="panel-body">
         <?php 
               $config = $this->configVar;
-              switch (isset($info['rest_flg'])?$info['rest_flg']:'0') {
-                  case 1:
+              $student_rest_status = $config['student_rest_status'];
+              $student_lock_status = $config['student_lock_status'];
+              $student_status = $config['student_status'];
+
+              switch ( isset( $info['rest_flg'] ) ? $info['rest_flg'] : '') {
+                  case '1':
                       echo '<div class="alert alert-info text-center">
                               <i class="fa fa-pause" aria-hidden="true"></i>
-                              <strong>'.($config['student_rest_status'])[VALUE_STUDENT_REST_WATING].'</strong>
+                              <strong>'.$student_rest_status[VALUE_STUDENT_REST_WATING].'</strong>
                             </div>';
                       break;
-                  case 2:
+                  case '2':
                       echo '<div class="alert alert-info text-center">
                               <i class="fa fa-window-close-o" aria-hidden="true"></i>
-                              <strong>'.($config['student_rest_status'])[VALUE_STUDENT_REST_DONE].'</strong>
+                              <strong>'.$student_rest_status[VALUE_STUDENT_REST_DONE].'</strong>
                             </div>';
                       break;
               }
-              switch (isset($info['lock_flg'])?$info['lock_flg']:'0') {
-                  case 1:
+              switch ( isset( $info['lock_flg'] ) ? $info['lock_flg']: '') {  
+                  case '1':
                       echo '<div class="alert alert-danger text-center">
                               <i class="fa fa-user-times" aria-hidden="true"></i>
-                              <strong>'.($config['student_lock_status'])[VALUE_STUDENT_LOCK_ON].'</strong>
+                              <strong>'.$student_lock_status[VALUE_STUDENT_LOCK_ON].'</strong>
                             </div>';
                       break;
                }
-              switch (isset($info['status'])?$info['status']:'1') {
-                  case 0:
+              switch ( isset( $info['status'] ) ? $info['status'] : '' ) {
+                  case '0':
                       echo '<div class="alert  alert-glay text-center">
                               <i class="fa fa-hourglass-1" aria-hidden="true"></i>
-                              <strong>'.($config['student_status'])[VALUE_STUDENT_STATUS_WATING].'</strong>
+                              <strong>'.$student_status[VALUE_STUDENT_STATUS_WATING].'</strong>
                             </div>';
                       break;
-                  case 2:
+                  case '2':
                       echo '<div class="alert  alert-glay text-center">
                               <i class="fa fa-hourglass-half" aria-hidden="true"></i>
-                              <strong>'.($config['student_status'])[VALUE_STUDENT_STATUS_QUIT_WAIT].'</strong>
+                              <strong>'.$student_status[VALUE_STUDENT_STATUS_QUIT_WAIT].'</strong>
                             </div>';
                       break;
-                  case 3:
-                  echo '<div class="alert  alert-glay text-center">
-                          <i class="fa fa-window-close-o" aria-hidden="true"></i>
-                          <strong>'.($config['student_status'])[VALUE_STUDENT_STATUS_QUIT].'</strong>
-                        </div>';
-                  break;
+                  case '3':
+                      echo '<div class="alert  alert-glay text-center">
+                              <i class="fa fa-window-close-o" aria-hidden="true"></i>
+                              <strong>'.$student_status[VALUE_STUDENT_STATUS_QUIT].'</strong>
+                            </div>';
+                      break;
             }
           
         ?>
@@ -78,28 +82,35 @@
                 <tbody>
                   <tr>
                     <th>氏名</th>
-                    <td><?php  echo $meta['name']?></td>
+                    <td><?php  echo isset( $meta['name'] ) ? $meta['name']:'' ?></td>
                     <th>会員番号</th>
-                    <td><?php  echo $info['id']?></td>
+                    <td><?php  echo isset($info['id']) ? $info['id']:'' ?></td>
                   </tr>
                   <tr>
                     <th>コース</th>
-                    <td><?php  echo isset($course['valid'][0]['course_name'])?$course['valid'][0]['course_name']:''?></td>
+                    <td><?php  echo isset( $course['valid'][0]['course_name'] )? $course['valid'][0]['course_name']:'' ?></td>
                     <th>級</th>
                     <td>
-                      <?php if(isset($course['valid']['classjoin']) )
+                      <?php if( isset( $course['valid']['classjoin'] ) )
                       {
                         $class_join = $course['valid']['classjoin'];
                         $date_temp = $class_join[0]['start_date'];
-                        $num_ber = 0;
-                        foreach ($class_join as $key => $value) {
-                          $clas_name = '';
-                          if( date_create( $date_temp )  < date_create($value['start_date']) )
-                          {
-                            $num_ber = $key;
+                        if( $date_temp != INVALID_DATE && $date_temp !='' )
+                        {
+                          $num_ber = 0;
+
+                          foreach ($class_join as $key => $value) {
+                            if( $value['start_date'] != INVALID_DATE && $value['start_date'] != '' && date_create( $date_temp )  < date_create( $value['start_date'] ) )
+                            {
+                                $num_ber = $key;
+                            }
                           }
+                          echo $class_join[$num_ber]['class_name'];
                         }
-                        echo $class_join[$num_ber]['class_name'];
+                        else
+                        {
+                          echo '';
+                        }
                       } 
                       ?>
                     </td>
@@ -111,30 +122,45 @@
                       if(isset($course['valid']['classjoin']) )
                       {
                         $class_join = $course['valid']['classjoin'];
-                        $date_temp = $class_join[0]['start_date'];
-                        $num_ber = 0;
-                        foreach ($class_join as $key => $value) {
-                          $clas_name = '';
-                          if( date_create( $date_temp )  < date_create($value['start_date']) )
-                          {
-                            $num_ber = $key;
+                        if( $date_temp != INVALID_DATE && $date_temp !='' )
+                        {
+                          $date_temp =  $class_join[0]['start_date'];
+                          $num_ber = 0;
+
+                          foreach ($class_join as $key => $value) {
+                            if( $value['start_date'] != INVALID_DATE && $value['start_date'] != '' && date_create( $date_temp )  < date_create( $value['start_date'] ) )
+                            {
+                                $num_ber = $key;
+                            }
                           }
+                          $start_date = $class_join[ $num_ber ]['start_date'] ;
+                          echo date_format( date_create( $start_date ),'Y年m月d日(y年mヶ月)') ;
                         }
-                        echo date_format( date_create($class_join[$num_ber]['start_date']),'Y年m月d日(y年mヶ月)') ;
+                        else
+                        {
+                          echo '';
+                        } 
                       } 
                       ?>
                       </td>
                     <th>生年月日</th>
                     <td><?php
-                        $today = date_create(date('Y-m-d'));
-                        $birthday = date_create($meta['birthday']);
-                        $diff = date_diff($birthday,$today);                     
-                        echo  date_format($birthday,'Y年m月d日').'('.$diff->format('%y').'歳）';
+                        $today = date_create( date('Y-m-d') );
+                        
+                        if( isset($meta['birthday']) && $meta['birthday'] != INVALID_DATE && $meta['birthday'] !='' )
+                        {
+                          $birthday = date_create( $meta['birthday'] );
+                          $diff = date_diff( $birthday , $today ); 
+                          echo  date_format( $birthday,'Y年m月d日' ).'('.$diff->format('%y').'歳）';
+                        }
+                        else
+                          echo '';                     
+                        
                      ?></td>
                   </tr>
                   <tr>
                     <th>健康管理連絡事項</th>
-                    <td class="text-red" colspan="3"><?php echo isset($meta['memo_health'])?$meta['memo_health']:'' ?></td>
+                    <td class="text-red" colspan="3"><?php echo isset( $meta['memo_health'] ) ? $meta['memo_health'] :'' ?></td>
                   </tr>
                   <tr>
                     <th>メモ特記事項</th>
@@ -144,7 +170,7 @@
               </table>
             </div>
             <div class="block-15 text-center">
-              <a href="<?php echo base_url('admin/member/edit').'/'.$info['id'] ?>" class="btn btn-warning btn-long">
+              <a href="<?php echo base_url('admin/member/edit').'/'.(isset( $info['id'] ) ? $info['id'] : '') ?>" class="btn btn-warning btn-long">
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 <span>詳細確認・編集</span>
               </a>
@@ -173,24 +199,24 @@
                     $i = 0;
                     if(!count($family) >0 )
                     {
-                      echo '<tr><td colspan="7">No body  !</td></tr>'; 
+                      echo '<tr><td colspan="7"> データがありません。</td></tr>'; 
                     }
                     else {
                       foreach ($family as $key => $value) {
-                        $config = $this->configVar;
+                        $student_status = $this->configVar['student_status'];
                         $status = "";
-                        switch ($info['status']) {
+                        switch ($value['status']) {
                                 case '0':
-                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_WATING];
+                                  $status = $student_status[VALUE_STUDENT_STATUS_WATING];
                                   break;
                                 case '1':
-                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_MEMBER];
+                                  $status = $student_status[VALUE_STUDENT_STATUS_MEMBER];
                                   break;
                                 case '2':
-                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_QUIT_WAIT];
+                                  $status = $student_status[VALUE_STUDENT_STATUS_QUIT_WAIT];
                                   break;
                                 case '3':
-                                  $status = ($config['student_status'])[VALUE_STUDENT_STATUS_QUIT];
+                                  $status = $student_status[VALUE_STUDENT_STATUS_QUIT];
                                   break;
                          }
                          $name = isset($value['meta']['name'])?$value['meta']['name']:'';
@@ -223,13 +249,7 @@
         <div class="panel-heading">最新出席状況</div>
         <div class="panel-body">
           <div class="block-15">
-            <span><?php 
-                    $now = new \DateTime();
-                    $date = $now->format('Y年m月d日');
-                    $time = $now->format('H:i 現在');
-                    $weekday = getDayofWeek($now->format('Y/m/d H:i'));
-                      echo  $date.'('.$weekday.')'.$time;
-                  ?> 
+            <span>
            </span>
           </div>
           <div class="row row-table-wrapper text-center">

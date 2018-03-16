@@ -537,4 +537,14 @@ class L_student_request_model extends DB_Model {
         return $this->db->affected_rows() !== false;
     }
 
+    public function Search_request_notyet_processed($id , $type)
+    {
+        $array = array('student_id' => $id , 'type' => $type , 'status' => DATA_OFF);
+        $this->db->select()
+               ->from('l_student_request')
+               ->where($array)
+               ->order_by('id','desc');
+        return  $this->db->get()->result_array();
+    }
+
 }

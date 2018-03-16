@@ -45,10 +45,6 @@ class L_student_bus_route_model extends DB_Model {
                    WHERE  a.id = b.student_class_id  AND b.student_class_id =? AND b.end_date = ? AND b.delete_flg = ?';
 
         $res = $this->db->query($query, $params);
-        if ($res === FALSE) {
-            logerr($params, $query);
-            throw new Exception();
-        }
         return $res->result_array();
     }
     public function Update_bus_route_join($bus_route_join)

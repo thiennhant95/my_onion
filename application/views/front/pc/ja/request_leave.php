@@ -13,7 +13,7 @@
 
       <h1 class="lead-heading bg-blue-green h3">休会届</h1>
 
-      <form class="form-horizontal" id="form_request_leave" action="<?php echo  base_url('/request/save_request_leave') ?>"  method="POST">
+      <form  id="form_request_leave">
         <section>
           <div class="panel panel-dotted">
             <div class="panel-heading">休会期間</div>
@@ -69,14 +69,14 @@
             </div>
           </div>
         </section>
-
+</form>
         <div class="block-30 text-center">
-          <button class="btn btn-success btn-lg btn-long" id="submit_request_leave">
+          <button class="btn btn-success btn-lg btn-long" id="btnsubmit">
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             <span>申請する</span>
           </button>
         </div>
-      </form>
+      
 
     </div>
   </main>
@@ -85,6 +85,24 @@
 </body>
 
 </html>
+
+<div id="myModal"  class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="status_update"></p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<style>
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px;border: 0px solid }
+</style>
+
 <script type="text/javascript">
   $(document).ready(function(){
     $.fn.datepicker.dates['jp'] = {
@@ -97,6 +115,7 @@
         clear: "クリア",
         weekStart: 0
     };
+
     var options={
         isRTL: false,
         format: 'yyyy-mm',
@@ -105,6 +124,7 @@
         autoclose: true,
         language:'jp',
         orientation: "auto right",
+        startDate: new Date() 
     };
     jQuery.validator.addMethod("greaterThan", function(value, element, params) {
         if($("input[name="+params[0]+"]").val()!='')
@@ -117,7 +137,7 @@
           
         }
          return true;
-    },'Must be greater than start date');
+    },'休会終了は休会開始以降で入力してください。');
     jQuery.validator.addMethod("lessThan", function(value, element, params) {
         if($("input[name="+params[0]+"]").val()!='')
         {
@@ -129,7 +149,7 @@
           
         }
          return true;
-    },'Must be less than end date');
+    },'休会開始は休会終了の値以下で入力してください');
 
     $('#start_date_request_leave,#end_date_request_leave').datepicker(options).on('changeDate', function(ev){
          $( "form#form_request_leave" ).valid();
@@ -148,24 +168,26 @@
         rules:{
           start_date:{
               required:true,
-              date:true,
               lessThan:["end_date"]
               
           },
           end_date:{
             required:true,
-            date:true,
             greaterThan:["start_date"]
           },
+          note :{
+            maxlength : 100 ,
+          }
         },
         messages:{
           start_date:{
-              required:"required",
-              date: "invalid !"
+              required:"この項目は必須です",
+          },
+          note : {
+            maxlength : " 100文字以下で入力してください。 !"
           },
           end_date:{
-            required:"required",
-            date: "invalid !"
+            required:"この項目は必須です",
           },
         },
         errorClass: "label label-danger",
@@ -180,12 +202,43 @@
         },
     })
 
-    $('button[id=submit_request_leave]').click(function(){
+   $('#btnsubmit').click(function(){
       if($( "form#form_request_leave" ).valid())
-      {
-        $( "form#form_request_leave" ).submit();
+      {   
+        var start_date = $('#start_date_request_leave').val();
+        var end_date = $('#end_date_request_leave').val();
+        var reason = $('textarea[name=note]').val();
+        var data = {start_date : start_date , end_date : end_date , note : reason };
+        $.ajax({
+          url : '/request/save_request_leave ' ,
+          type : 'POST' ,
+          data : data ,
+          success : function (res) {
+            if( res == 'success' )
+            {
+              
+              $('.modal-body').addClass('alert alert-success');
+              $("#status_update").html("<b>休会を申請しました。</b>");
+              $('#myModal').modal('show');
+              window.setTimeout(function () {
+                $('#myModal').fadeToggle(300, function () {
+                      $('#myModal').modal('hide');
+                      window.location = '/request/complete';
+                });
+              }, 1000);
+            }
+            else{
+              
+              $('.modal-body').addClass('alert-danger');
+              $("#status_update").html("<b>休会の申請に失敗しました。</b>");
+              $('#myModal').modal('show');
+              $('#myModal').fadeToggle(300, function () {
+                      $('#myModal').modal('hide');
+              });   
+            }
+          }
+        });
       }
     });
-    
   });
 </script>
