@@ -153,6 +153,6 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <style>
-    .alert-success {border-radius: 0px }
-    .alert-danger {border-radius: 0px }
+    .alert-success {border-radius: 0px;border: 0px solid }
+    .alert-danger {border-radius: 0px ;border: 0px solid}
 </style>

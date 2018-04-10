@@ -98,12 +98,12 @@ class M_bus_course_model extends DB_Model {
 
     function get_student_class_change_bus( $student_id ) {
         $sql = "
-            SELECT lsc.student_course_id, lsc.class_id, lsc.week_num, mc.class_name 
+            SELECT lsc.id, lsc.student_course_id, lsc.class_id, lsc.week_num, mc.class_name, mc.use_bus_flg 
             FROM l_student_class lsc
             LEFT JOIN m_class mc
             ON lsc.class_id = mc.id 
             WHERE student_id = '$student_id' 
-            AND end_date LIKE '%2199-12-31%' 
+            AND end_date = '" . END_DATE_DEFAULT . "'
         ";
         $query = $this->db->query( $sql );
         if ( $query === FALSE ) {
@@ -119,7 +119,7 @@ class M_bus_course_model extends DB_Model {
             FROM l_student_bus_route lsbr
             WHERE  lsbr.student_id = '$student_id' 
             AND lsbr.student_class_id = '$class_id' 
-            AND lsbr.end_date LIKE '%2199-12-31%' 
+            AND lsbr.end_date = '" . END_DATE_DEFAULT . "'
         ";
         $query = $this->db->query( $sql );
         if ( $query === FALSE ) {
@@ -131,7 +131,7 @@ class M_bus_course_model extends DB_Model {
 
     function get_bus_course_change_bus( $bus_route_id ) {
         $sql = "
-            SELECT mbr.bus_course_id, mbc.bus_course_name, mbr.route_order, mbr.bus_stop_id, mbs.bus_stop_name 
+            SELECT mbr.bus_course_id, mbc.bus_course_name, mbs.bus_stop_code, mbr.bus_stop_id, mbs.bus_stop_name 
             FROM m_bus_route mbr
             LEFT JOIN m_bus_course mbc
             ON mbr.bus_course_id = mbc.id
@@ -163,7 +163,7 @@ class M_bus_course_model extends DB_Model {
 
     function get_bus_route_by_bus_course_id( $bus_course_id ) {
         $sql = "
-            SELECT mbr.id, mbr.route_order, mbr.bus_stop_id, mbs.bus_stop_name
+            SELECT mbr.id, mbs.bus_stop_code, mbr.bus_stop_id, mbs.bus_stop_name
             FROM m_bus_route mbr
             LEFT JOIN m_bus_stop mbs 
             ON mbr.bus_stop_id = mbs.id
@@ -215,7 +215,7 @@ class M_bus_course_model extends DB_Model {
             FROM l_student_bus_route 
             WHERE student_id = '$student_id' 
             AND student_class_id = '$class_id' 
-            AND end_date LIKE '%2199-12-31%'
+            AND end_date = '" . END_DATE_DEFAULT . "'
         ";
         $query = $this->db->query( $sql );
         if ( $query === FALSE ) {

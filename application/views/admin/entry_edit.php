@@ -45,10 +45,10 @@
                         <td class="bg-white table-border-none">
                           <div class="col-sm-10 text-gray">
                             <label class="radio-inline">
-                              <input name="sex" value="male" <?php if( isset($s_info['meta']['sex']) && $s_info['meta']['sex'] == 'male' ) echo 'checked'; ?> type="radio"> 男性
+                              <input name="sex" value="0" <?php if( isset($s_info['meta']['sex']) && $s_info['meta']['sex'] == '0' ) echo 'checked'; ?> type="radio"> 男性
                             </label>
                             <label class="radio-inline">
-                              <input name="sex" value="female" <?php if( isset($s_info['meta']['sex']) && $s_info['meta']['sex'] == 'female' ) echo 'checked'; ?> type="radio"> 女性
+                              <input name="sex" value="1" <?php if( isset($s_info['meta']['sex']) && $s_info['meta']['sex'] == '1' ) echo 'checked'; ?> type="radio"> 女性
                             </label>
                           </div>
                         </td>
@@ -95,13 +95,13 @@
                       <tr>
                         <th class="align-right table-border-none vertical-align-middle">電話番号</th>
                         <td class="bg-white table-border-none">
-                          <input name="phone_number" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset($s_info['meta']['tel'])?$s_info['meta']['tel']:''; ?>" placeholder="" type="text">
+                          <input name="phone_number" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset($s_info['meta']['tel'])?$s_info['meta']['tel']:''; ?>" placeholder="" type="tel" maxlength="11">
                         </td>
                       </tr>
                       <tr>
                         <th class="align-right table-border-none">緊急連絡先</th>
                         <td class="bg-white table-border-none">
-                          <input name="emergency_tel" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset( $s_info['meta']['emergency_tel'] ) ? $s_info['meta']['emergency_tel'] : ''; ?>" placeholder="" type="text">
+                          <input name="emergency_tel" maxlength="11" class="form-control w-sm-50per w-xl-60per" value="<?php echo isset( $s_info['meta']['emergency_tel'] ) ? $s_info['meta']['emergency_tel'] : ''; ?>" placeholder="" type="tel">
                         </td>
                       </tr>
                     </table>
@@ -160,7 +160,6 @@
                         <th class="align-right table-border-none">続柄</th>
                         <td class="bg-white table-border-none">
                           <select name="relationship" class="form-control w-xs-100per w-md-40per">
-                            <option>---</option>
                             <option value="父">父</option>
                             <option value="母">母</option>
                             <option value="夫・妻">夫・妻</option>
@@ -182,12 +181,11 @@
                 <div class="panel panel-card">
                   <div class="panel-heading g-green bg-deep-green align-left pl-30">【希望練習コース・泳力アンケートなど】</div>
                   <div class="panel-body-2 pt-10 bg-ice-green table-responsive">
-                    <h2 class="title-1 mb-20" style="text-decoration: underline;">※入会者が未成年の場合のみ記入</h2>
                     <input type="hidden" value="<?php echo isset( $s_info['course']['valid'][0]['practice_max'] ) ? $s_info['course']['valid'][0]['practice_max'] : ''; ?>" name="practice_max" />
                     <table class="table table-style-1" width="100%" class="text-gray">
                       <tr>
                         <th class="align-right table-border-none">希望練習コース</th>
-                        <td class="bg-white text-gray table-border-none"><?php echo isset( $s_info['course']['nearest'][0]['course_name'] ) ? $s_info['course']['nearest'][0]['course_name'] : ''; ?></td>
+                        <td class="bg-white text-gray table-border-none"><?php echo isset( $s_info['course']['valid'][0]['course_name'] ) ? $s_info['course']['valid'][0]['course_name'] : ''; ?></td>
                       </tr>
                       <tr>
                         <th class="align-right bg-plae-lemmon text-gray table-border-none">コースコード<br><span style="font-size:11px">（スタッフ入力欄）</span></th>
@@ -195,8 +193,8 @@
                           <select class="form-control w-xs-100per" id="change-course" onchange="change_course(this.value, <?php echo $s_info['info']['id']; ?>)">
                           <?php
                             foreach ( $course_valid as $k => $v ) {
-                              $selected = ( $v['id'] == $s_info['course']['valid'][0]['course_id'] ) ? 'selected' : '';
-                              echo '<option value="' . $v['id'] . '" ' . $selected . '>' . $v['course_name'] . '</option>';
+                              $selected = ( $v['course_id'] == $s_info['course']['valid'][0]['course_id'] ) ? 'selected' : '';
+                              echo '<option value="' . $v['course_id'] . '" ' . $selected . '>' . $v['course_name'] . '</option>';
                             }
                           ?>
                           </select>
@@ -261,13 +259,13 @@
                                 <td>バタ足</td>
                                 <td>
                                   <select name="flutter_kick" class="form-control w-xs-100per">
-                                    <?php 
-                                      $arr_m = array('0', '10', '25', '50', '100', '200', '300');
-                                      $selected = '';
-                                      foreach ( $arr_m as $key => $value ) {
-                                        $selected = ( $arr_enquete['style']['flutter_kick'] == $value ) ?  'selected' : '';
-                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
-                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                    <?php
+                                      if ( isset( $distance ) && count( $distance ) > 0 ) {
+                                        $selected = '';
+                                        foreach ( $distance as $k => $v ) {
+                                          $selected = ( $arr_enquete['style']['flutter_kick'] == $v ) ?  'selected' : '';
+                                          echo '<option value="' . $v . '" ' . $selected . '>' . $v . 'M</option>';
+                                        }
                                       }
                                     ?>
                                   </select>
@@ -275,11 +273,13 @@
                                 <td class="pl-30">板キック</td>
                                 <td>
                                   <select name="board_kick" class="form-control w-xs-100per">
-                                    <?php 
-                                      foreach ( $arr_m as $key => $value ) {
-                                        $selected = ( $arr_enquete['style']['board_kick'] == $value ) ?  'selected' : '';
-                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
-                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                    <?php
+                                      if ( isset( $distance ) && count( $distance ) > 0 ) {
+                                        $selected = '';
+                                        foreach ( $distance as $k => $v ) {
+                                          $selected = ( $arr_enquete['style']['board_kick'] == $v ) ?  'selected' : '';
+                                          echo '<option value="' . $v . '" ' . $selected . '>' . $v . 'M</option>';
+                                        }
                                       }
                                     ?>
                                   </select>
@@ -290,10 +290,12 @@
                                 <td>
                                   <select name="backstroke" class="form-control w-xs-100per">
                                     <?php
-                                      foreach ( $arr_m as $key => $value ) {
-                                        $selected = ( $arr_enquete['style']['backstroke'] == $value ) ?  'selected' : '';
-                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
-                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      if ( isset( $distance ) && count( $distance ) > 0 ) {
+                                        $selected = '';
+                                        foreach ( $distance as $k => $v ) {
+                                          $selected = ( $arr_enquete['style']['backstroke'] == $v ) ?  'selected' : '';
+                                          echo '<option value="' . $v . '" ' . $selected . '>' . $v . 'M</option>';
+                                        }
                                       }
                                     ?>
                                   </select>
@@ -302,10 +304,12 @@
                                 <td>
                                   <select name="crawl" class="form-control w-xs-100per">
                                     <?php
-                                      foreach ( $arr_m as $key => $value ) {
-                                        $selected = ( $arr_enquete['style']['crawl'] == $value ) ?  'selected' : '';
-                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
-                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      if ( isset( $distance ) && count( $distance ) > 0 ) {
+                                        $selected = '';
+                                        foreach ( $distance as $k => $v ) {
+                                          $selected = ( $arr_enquete['style']['crawl'] == $v ) ?  'selected' : '';
+                                          echo '<option value="' . $v . '" ' . $selected . '>' . $v . 'M</option>';
+                                        }
                                       }
                                     ?>
                                   </select>
@@ -315,11 +319,13 @@
                                 <td>平泳ぎ</td>
                                 <td>
                                   <select name="breast_stroke" class="form-control w-xs-100per">
-                                    <?php 
-                                      foreach ( $arr_m as $key => $value ) {
-                                        $selected = ( $arr_enquete['style']['breast_stroke'] == $value ) ?  'selected' : '';
-                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
-                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                    <?php
+                                      if ( isset( $distance ) && count( $distance ) > 0 ) {
+                                        $selected = '';
+                                        foreach ( $distance as $k => $v ) {
+                                          $selected = ( $arr_enquete['style']['breast_stroke'] == $v ) ?  'selected' : '';
+                                          echo '<option value="' . $v . '" ' . $selected . '>' . $v . 'M</option>';
+                                        }
                                       }
                                     ?>
                                   </select>
@@ -328,10 +334,12 @@
                                 <td>
                                   <select name="butterfly" class="form-control w-xs-100per">
                                     <?php
-                                      foreach ( $arr_m as $key => $value ) {
-                                        $selected = ( $arr_enquete['style']['butterfly'] == $value ) ?  'selected' : '';
-                                        if ( $value != end( $arr_m ) ) echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M</option>';
-                                        else echo '<option value="' . $value . '" ' . $selected . '>' . $value . 'M以上</option>';
+                                      if ( isset( $distance ) && count( $distance ) > 0 ) {
+                                        $selected = '';
+                                        foreach ( $distance as $k => $v ) {
+                                          $selected = ( $arr_enquete['style']['butterfly'] == $v ) ?  'selected' : '';
+                                          echo '<option value="' . $v . '" ' . $selected . '>' . $v . 'M</option>';
+                                        }
                                       }
                                     ?>
                                   </select>
@@ -418,6 +426,22 @@
                       </tr>
 
                       <tr>
+                        <th class="align-right text-gray table-border-none vertical-align-middle">入会金区分</th>
+                        <td class="bg-white table-border-none">
+                            <select name="item" class="form-control w-xs-30per">
+                              <option value="">選択してください</option>
+                              <?php
+                                if ( isset( $all_items ) && count( $all_items ) > 0 ) {
+                                  foreach ( $all_items as $k => $v ) {
+                                    echo '<option value="' . $v['id'] . '">' . $v['item_code'] . ':' . $v['item_name'] . '・' . $v['sell_price'] . '円</option>';
+                                  }
+                                }
+                              ?>
+                            </select>
+                        </td>
+                      </tr>
+
+                      <tr>
                         <th class="align-right bg-plae-lemmon text-gray table-border-none">メモ・特記事項<br>
                         <span style="font-size:11px">（スタッフ用）</span></th>
                         <td class="bg-white table-border-none text-gray">
@@ -490,7 +514,7 @@
               </div>
             </div>
             <div class="block-30 align-center">
-              <a href="#0" class="btn bg-rouge btn-lg btn-long" id="btn-entry-edit">
+              <a href="#0" class="btn bg-rouge btn-lg btn-long btn-entry-edit">
                 <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                 <span id="button_entry_minority">誓約書します</span>
               </a>
@@ -533,7 +557,7 @@
               </div>
             </div>
             <div class="block-30 align-center">
-              <a href="#0" class="btn bg-rouge btn-lg btn-long">
+              <a href="#0" class="btn bg-rouge btn-lg btn-long btn-entry-edit">
                 <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                 <span id="button_button_entry_majority">誓約書します</span>
               </a>
@@ -553,7 +577,7 @@
 
             <div class="box-style-1 mb-30 bg-lightpink">
               <h3 class="box-style-1-title text-deep-red">初回お支払い金額</h3>
-              <p class="box-style-1-text text-gray">XX,XXXX 円</p>
+              <p class="box-style-1-text text-gray" id="price"></p>
             </div>
 
             <div class="box-style-1 text-lightpink bg-aquatint">
@@ -562,7 +586,7 @@
             </div>
 
             <div class="block-30 align-center">
-              <a href="#0" class="btn bg-light-blue btn-lg btn-long">
+              <a href="<?php echo base_url(); ?>admin/" class="btn bg-light-blue btn-lg btn-long">
                 <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                 <span>完了</span>
               </a>
@@ -581,13 +605,13 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Error</h4>
+          <h4 class="modal-title"><b>エラー</b></h4>
         </div>
         <div class="modal-body">
-          <p>There was an error, please try again</p>
+          <p>エラーが発生されます。再度してください。</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
         </div>
       </div>
     </div>
@@ -598,13 +622,13 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Error</h4>
+          <h4 class="modal-title"><b>エラー</b></h4>
         </div>
         <div class="modal-body">
-          <p>Empty class!</p>
+          <p>クラスを選択してください。</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
         </div>
       </div>
     </div>
@@ -615,13 +639,13 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Error</h4>
+          <h4 class="modal-title"><b>エラー</b></h4>
         </div>
         <div class="modal-body">
-          <p>Max class is: <span id="max_class"><?php echo isset( $s_info['course']['valid'][0]['practice_max'] ) ? $s_info['course']['valid'][0]['practice_max'] : ''; ?></span></p>
+          <p>このコースはクラス数が<span id="max_class"><?php echo isset( $s_info['course']['valid'][0]['practice_max'] ) ? $s_info['course']['valid'][0]['practice_max'] : ''; ?></span>クラス以下で入力してください。</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
         </div>
       </div>
     </div>
@@ -633,6 +657,60 @@
 </html>
 
 <script>
+  function duplicate_bus( class_course_go, class_course_ret, class_route_go, class_route_ret, class_id ) {
+    if ( $('input[name=check_bus_checked]').is(":checked") ) {
+      var bus_course_go_default = $('.'+class_course_go).val();
+      var bus_course_ret_default = $('.'+class_course_ret).val();
+      var bus_route_go_default = [];
+      var bus_route_ret_default = [];
+      var bus_route_go_default_html = [];
+      var bus_route_ret_default_html = [];
+      var bus_route_go_selected = $('.'+class_route_go).val();
+      var bus_route_ret_selected = $('.'+class_route_ret).val();
+      $('.'+class_route_go+' option').each(function() {
+          bus_route_go_default.push($(this).val());
+      });
+      $('.'+class_route_ret+' option').each(function() {
+          bus_route_ret_default.push($(this).val());
+      });
+
+      $('.'+class_route_go+' option').each(function() {
+          bus_route_go_default_html.push($(this).html());
+      });
+      $('.'+class_route_ret+' option').each(function() {
+          bus_route_ret_default_html.push($(this).html());
+      });
+     
+      var id_route = '';
+      $('.main_bus_route').find('.change_bus_route').each( function() {
+        if ( $(this).attr('data-class-id') == class_id ) {
+          if ( $(this).attr('data-go-ret') == 'go' ) {
+            id_route = $(this).attr('id');
+            $(this).empty();
+            var html_route_go = '';
+            for ( var i = 0; i < bus_route_go_default.length; i++ ) {
+              if ( bus_route_go_default[i] == bus_route_go_selected ) selected = 'selected';
+              else selected = '';
+              html_route_go += '<option value="'+bus_route_go_default[i]+'" '+selected+'>'+bus_route_go_default_html[i]+'</option>';
+            }
+            $(this).append( html_route_go );
+            $('.'+id_route).val( bus_course_go_default );
+          } else {
+            id_route = $(this).attr('id');
+            $(this).empty();
+            var html_route_ret = '';
+            for ( var i = 0; i < bus_route_ret_default.length; i++ ) {
+              if ( bus_route_ret_default[i] == bus_route_ret_selected ) selected = 'selected';
+              else selected = '';
+              html_route_ret += '<option value="'+bus_route_ret_default[i]+'" '+selected+'>'+bus_route_ret_default_html[i]+'</option>';
+            }
+            $(this).append( html_route_ret );
+            $('.'+id_route).val( bus_course_ret_default );
+          }
+        }
+      });
+    }
+  }
   function disabled_bus( value ) {
     if ( value == 0 ) $('.disabled_bus').attr('disabled', 'disabled');
     else $('.disabled_bus').removeAttr('disabled');
@@ -640,6 +718,7 @@
 
   var practice_max = $('input[name=practice_max]').val();
   var practice_max_change = 0;
+  var arr_class_unique = [];
 
   function change_course( course_id, student_id ) {
     $.ajax({
@@ -654,9 +733,9 @@
         $('#change-course').prop('disabled', 'disabled');
       },
       success: function(result) {
-        // console.log( result );
         practice_max = result['practice_max'];
         practice_max_change = 0;
+        arr_class_unique = [];
         $('.display_class').empty();
         $('.display_bus').empty();
         $('.html_display').empty();
@@ -675,6 +754,7 @@
     });
   }
 
+
   function change_bus_course( bus_course_id, bus_route_id ) {
     $.ajax({
       url: 'https:' + "<?php echo base_url().'admin/entry/edit/'?>"+$('input[name=student_id]').val(),
@@ -687,9 +767,10 @@
         $('.change_bus_course').prop('disabled', 'disabled');
       },
       success: function(result) {
-        console.log( result );
         $('#'+bus_route_id).empty();
         $('#'+bus_route_id).append( result );
+        if ( result != '<option>データがありません</option>' ) $('#'+bus_route_id).removeAttr('disabled');
+        else $('#'+bus_route_id).attr('disabled', 'disabled');
       }, error: function (XMLHttpRequest, textStatus, errorThrown) {
           console.log(errorThrown);
       },
@@ -698,7 +779,6 @@
       }
     });
   }
-
   $(function() {
     $('.bg-gainsboro').css('border', '1px solid #9e9e9e3d');
     $('.bg-gainsboro').css('cursor', 'default');
@@ -707,12 +787,12 @@
       if ( $(this).hasClass( 'bg-plae-lemmon' ) ) {
         var _class = $(this).attr('data-class');
         var _id = $(this).attr('data-id');
-        var _class_split = _class.split( '_week_' );
-        var _class_name = _class.split('_');
+        var _class_split = _class.split( 'space_weekspace_' );
+        var _class_name = _class.split('space_');
         if ( $(this).hasClass( 'bg-rouge' ) ) {
           practice_max_change--;
           $(this).removeClass( 'bg-rouge' );
-          $(this).text(_class_split[0]+'('+_class_name[3]+'/'+_class_name[4]+')');
+          $(this).text('【'+_class_name[3]+'/'+_class_name[4]+'】');
           $(this).css('color', 'black');
           $(".display_class").find('.each_class').each(function(){
               if ( $(this).attr('data-class') == _class ) {
@@ -721,37 +801,122 @@
           });
           // remove bus
           $( '#' + _class ).remove();
-        } else {
-          if ( practice_max_change < practice_max ) {
-            practice_max_change++;
-            $(this).addClass('bg-rouge');
-            $(this).text('選択');
-            $(this).css('color', 'white');
-            $('.display_class').append('<input type="text" data-id="' + _id + '" data-class="' + _class + '" value="' + _class_split[0] + '" class="form-control w-xs-19per each_class" readonly>');
-            // add bus
-            var student_id = $('input[name=student_id]').val();
-            var course_id = $('#change-course option:selected').val();
-            $.ajax({
-              url: 'https:' + "<?php echo base_url().'admin/entry/edit/'?>"+student_id,
-              data: {
-                  data_class : _class,
-                  class_id : _id,
-                  course_id : course_id
-              },
-              method: "POST",
-              dataType: "json",
-              beforeSend: function() {
-                $('td[data-class='+_class+']').removeClass('bg-plae-lemmon');
-              },
-              success: function(result) {
-                $('.display_bus').append( result );
-              }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-                  console.log(errorThrown);
-              },
-              complete: function() {
-                $('td[data-class='+_class+']').addClass('bg-plae-lemmon');
+          if (arr_class_unique.indexOf( _class_name[2] ) !== -1) arr_class_unique.splice(arr_class_unique.indexOf( _class_name[2] ), 1);
+          var check_bus = 0;
+          $(".display_bus").find('.main_bus_route').each(function(){
+              check_bus++;
+          });
+          var check_bus_2 = 0;
+          if ( check_bus >= 2 ) {
+            $(".display_bus").find('.main_bus_route').each(function(){
+              check_bus_2++;
+              if ( check_bus_2 == 1 ) {
+                var class_course_go = ''; var class_course_ret = ''; var class_route_go = ''; var class_route_ret = ''; var class_id = '';
+                var check_course = 0; var check_route = 0;
+                $(this).find('.change_bus_course').each( function() {
+                  check_course++;
+                  if ( check_course == 1 ) {
+                    class_course_go = $(this).attr('class');
+                    class_course_go = class_course_go.split(' ')[0];
+                  } else {
+                    class_course_ret = $(this).attr('class');
+                    class_course_ret = class_course_ret.split(' ')[0];
+                  }
+                });
+                $(this).find('.change_bus_route').each( function() {
+                  class_id = $(this).attr('data-class-id');
+                  check_route++;
+                  if ( check_route == 1 ) {
+                    class_route_go = $(this).attr('class');
+                    class_route_go = class_route_go.split(' ')[0];
+                  } else {
+                    class_route_ret = $(this).attr('class');
+                    class_route_ret = class_route_ret.split(' ')[0];
+                  }
+                });
+                $(this).find('.checkbox_bus').html('<input type="checkbox" value="" name="check_bus_checked" onclick="duplicate_bus('+"'"+class_course_go+"'"+','+"'"+class_course_ret+"'"+','+"'"+class_route_go+"'"+','+"'"+class_route_ret+"'"+','+"'"+class_id+"'"+ ')" />上記と同じ設定をする');
               }
             });
+          } else {
+            $(".display_bus").find('.checkbox_bus').each(function(){
+              $(this).empty();
+            });
+          }
+        } else {
+          var arr_week = ['日', '月', '火', '水', '木', '金', '土'];
+          if ( practice_max_change < practice_max ) {
+            if ( arr_class_unique.indexOf( _class_name[2] ) != -1 ) {
+              alert( arr_week[_class_name[2]]+'曜日にクラスを追加できません' );
+            } else {
+              arr_class_unique.push( _class_name[2] );
+              practice_max_change++;
+              $(this).addClass('bg-rouge');
+              $(this).text('選択');
+              $(this).css('color', 'white');
+              $('.display_class').append('<input type="text" data-id="' + _id + '" data-class="' + _class + '" value="' + _class_split[0] + '" class="form-control w-xs-19per each_class" readonly>');
+              // add bus
+              var student_id = $('input[name=student_id]').val();
+              var course_id = $('#change-course option:selected').val();
+              var bus_use_flg = $('input[name=bus_use_flg]:checked').val();
+              $.ajax({
+                url: 'https:' + "<?php echo base_url().'admin/entry/edit/'?>"+student_id,
+                data: {
+                    data_class : _class,
+                    class_id : _id,
+                    course_id : course_id,
+                    bus_use_flg : bus_use_flg
+                },
+                method: "POST",
+                dataType: "json",
+                beforeSend: function() {
+                  $('td[data-class='+_class+']').removeClass('bg-plae-lemmon');
+                },
+                success: function(result) {
+                  $('.display_bus').append( result['html'] );
+                  var check_bus = 0;
+                  $(".display_bus").find('.main_bus_route').each(function(){
+                      check_bus++;
+                  });
+                  var check_bus_2 = 0;
+                  if ( check_bus >= 2 ) {
+                    $(".display_bus").find('.main_bus_route').each(function(){
+                      check_bus_2++;
+                      if ( check_bus_2 == 1 ) {
+                        var class_course_go = ''; var class_course_ret = ''; var class_route_go = ''; var class_route_ret = ''; var class_id = '';
+                        var check_course = 0; var check_route = 0;
+                        $(this).find('.change_bus_course').each( function() {
+                          check_course++;
+                          if ( check_course == 1 ) {
+                            class_course_go = $(this).attr('class');
+                            class_course_go = class_course_go.split(' ')[0];
+                          } else {
+                            class_course_ret = $(this).attr('class');
+                            class_course_ret = class_course_ret.split(' ')[0];
+                          }
+                        });
+                        $(this).find('.change_bus_route').each( function() {
+                          class_id = $(this).attr('data-class-id');
+                          check_route++;
+                          if ( check_route == 1 ) {
+                            class_route_go = $(this).attr('class');
+                            class_route_go = class_route_go.split(' ')[0];
+                          } else {
+                            class_route_ret = $(this).attr('class');
+                            class_route_ret = class_route_ret.split(' ')[0];
+                          }
+                        });
+                        $(this).find('.checkbox_bus').html('<input type="checkbox" value="" name="check_bus_checked" onclick="duplicate_bus('+"'"+class_course_go+"'"+','+"'"+class_course_ret+"'"+','+"'"+class_route_go+"'"+','+"'"+class_route_ret+"'"+','+"'"+class_id+"'"+ ')" />上記と同じ設定をする');
+                      }
+                    });
+                  }
+                }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                },
+                complete: function() {
+                  $('td[data-class='+_class+']').addClass('bg-plae-lemmon');
+                }
+              });
+            }
           } else {
             $('#modal-max-class').modal( 'show' );
           }
@@ -837,7 +1002,13 @@
           required: true,
           number: true,
           maxlength: 11,
-          onebyte: true
+          digits: true
+        },
+        emergency_tel: {
+          required: true,
+          number: true,
+          maxlength: 11,
+          digits: true
         },
         email_address: {
           required: true,
@@ -847,7 +1018,7 @@
           required: function(element) {
             var school_name_check = $('input[name=birthday]').val();
             var school_name_return = moment().diff(moment(school_name_check, 'YYYYMMDD'), 'years');
-            return  school_name_return < 18;
+            return  school_name_return < 20;
           },
           twobyte: true
         },
@@ -855,7 +1026,7 @@
           required: function(element) {
             var parent_name_check = $('input[name=birthday]').val();
             var parent_name_return = moment().diff(moment(parent_name_check, 'YYYYMMDD'), 'years');
-            return  parent_name_return < 18;
+            return  parent_name_return < 20;
           },
           twobyte: true
         },
@@ -863,7 +1034,21 @@
           required: function(element) {
             var school_grade_check = $('input[name=birthday]').val();
             var school_grade_return = moment().diff(moment(school_grade_check, 'YYYYMMDD'), 'years');
-            return  school_grade_return < 18;
+            return  school_grade_return < 20;
+          }
+        },
+        family: { 
+          required: function(element) {
+            var family_check = $('input[name=birthday]').val();
+            var family_return = moment().diff(moment(family_check, 'YYYYMMDD'), 'years');
+            return  family_return >= 20;
+          }
+        },
+        relationship: { 
+          required: function(element) {
+            var relationship_check = $('input[name=birthday]').val();
+            var relationship_return = moment().diff(moment(relationship_check, 'YYYYMMDD'), 'years');
+            return  relationship_return >= 20;
           }
         }
       },
@@ -878,41 +1063,49 @@
       },
       messages: {
         user_name: {
-            required: "Username is required",
-            twobyte: "Username must be 2 byte"
+            required: "氏名は必須です。ご入力ください。",
+            twobyte: "氏名は全角文字のみを入力してください。"
         },
         name_kana: { 
-          required: "Name kana is required",
-          katakana: "Name must be katakana"
+          required: "フリガナは必須です。ご入力ください。",
+          katakana: "フリガナは全角カナのみを入力してください。"
         },
         postal_code1: {
-            required: "Postal code is required",
-            number: "Postal code must be number 1 byte"
+            required: "郵便番号は必須です。ご入力ください。",
+            number: "郵便番号は半角英数字のみを入力してください。"
         },
         postal_code2: {
-            required: "Postal code is required",
-            number: "Postal code must be number 1 byte"
+            required: "郵便番号は必須です。ご入力ください。",
+            number: "郵便番号は半角英数字のみを入力してください。"
         },
-        address: { required: "Address is required" },
+        address: { required: "住所は必須です。ご入力ください。" },
         phone_number: {
-            required: "Phone number is required",
-            number: "Phone number must be number",
-            maxlength: "Phone number length is 11",
-            onebyte: "Phone number is 1 byte"
+            required: "電話番号は必須です。ご入力ください。",
+            number: "電話番号は半角英数字のみを入力してください。",
+            maxlength: "11文字以内で入力してください。",
+            digits: "電話番号は半角英数字のみを入力してください。"
+        },
+        emergency_tel: {
+            required: "緊急連絡先は必須です。ご入力ください。",
+            number: "緊急連絡先は半角英数字のみを入力してください。",
+            digits: "電話番号は半角英数字のみを入力してください。",
+            maxlength: "11文字以内で入力してください。"
         },
         email_address: {
-            required: "Email address is required",
-            email: "Email is invalid"
+            required: "メールアドレスは必須です。ご入力ください。",
+            email: "正しいメールアドレスを入力してください。"
         },
         school_name: { 
-          required: "School name is required",
-          twobyte: "School name must be two byte"
+          required: "学校名は必須です。ご入力ください。",
+          twobyte: "学校名は全角文字のみを入力してください。"
         },
         parent_name: { 
-          required: "Parent name is required",
-          twobyte: "Parent name must be 2 byte"
+          required: "保護者氏名は必須です。ご入力ください。",
+          twobyte: "保護者氏名は全角文字のみを入力してください。"
         },
-        school_grade: { required: "School grade is required" }
+        school_grade: { required: "学年は必須です。ご入力ください。" },
+        family: { required: "家族氏名は必須です。ご入力ください。" },
+        relationship: { required: "続柄は必須です。ご入力ください。" }
       },
       errorClass: "label label-danger",
       highlight: function (element, errorClass, validClass) {
@@ -922,9 +1115,7 @@
           return false;
       }
   });
-  $('#btn-entry-edit').click(function() {
-  // $('#btn-entry-next').click(function() {
-    
+  $('.btn-entry-edit').click(function() {
     var user_name = $('input[name=user_name]').val();
     var postal_code1 = $('input[name=postal_code1').val();
     var postal_code2 = $('input[name=postal_code2]').val();
@@ -959,7 +1150,7 @@
     if ( $('input[name=short_lesson]').is(":checked") ) short_lesson = 1;
     if ( $('input[name=status]').is(":checked") ) status = 1;
     var year_month = '';
-    if ( $('input[name=year_month]') != '' ) {
+    if ( $('input[name=year_month]').val() != '' ) {
       year_month = $('input[name=year_month]').val();
       year_month = year_month.split('-');
     } else {
@@ -994,40 +1185,30 @@
     var memo_special = $( 'textarea[name=memo_special]' ).val();
     var student_id = $( 'input[name=student_id]' ).val();
     var course_id = $('#change-course option:selected').val();
+    var item = $('select[name=item]').val();
+
     var class_choose = [];
     $('.display_class').find('.each_class').each( function(){
-      class_choose.push( $(this).attr('data-id') + '_' + $(this).attr('data-class') );
+      class_choose.push( $(this).attr('data-id') + 'space_' + $(this).attr('data-class') );
     });
     var class_route_1 = [];
     var class_route_2 = [];
     $('.display_bus').find('.data_route').each( function() {
-      // if ( $( this ).attr( 'data-route' ) != 'no' ) {
-        class_route_1.push( $( this ).attr( 'data-route' ) );
-        class_route_2.push( $( this ).attr( 'data-route' ) );
-      // }
+      class_route_1.push( $( this ).attr( 'data-route' ) );
+      class_route_2.push( $( this ).attr( 'data-route' ) );
     });
     $('.display_bus').find('.main_bus_route').each( function() {
       $( this ).find( '.each_route' ).each( function() {
-        // if ( $( this ).attr('data-check') != 'no' ) {
-          for ( var i = 0; i < class_route_1.length; i++ ) {
-            if ( class_route_1[i] == $( this ).attr( 'data-route' ) ) {
-              class_route_2[i] = class_route_2[i] + '_' + $( this ).val();
-            }
-          }
-        // }
+        for ( var i = 0; i < class_route_1.length; i++ ) {
+          if ( class_route_1[i] == $( this ).attr( 'data-route' ) ) class_route_2[i] = class_route_2[i] + '_' + $( this ).val();
+        }
       });
     });
-    // console.log( class_route_1 );
     var class_route_3 = [];
-    // console.log( class_route_2 );
     for ( var i = 0; i < class_route_2.length; i++ ) {
       var value = class_route_2[i].split('_');
-      if ( value.length > 3 ) {
-        class_route_3.push( class_route_2[i] );
-      }
+      if ( value.length > 4 ) class_route_3.push( class_route_2[i] );
     }
-    // console.log( class_route_3 );
-
     var family = $('input[name=family]').val();
     var relationship = $('select[name=relationship] option:selected').val();
     var data = {
@@ -1055,20 +1236,21 @@
       class_choose : class_choose,
       class_route : class_route_3,
       family : family,
-      relationship : relationship
+      relationship : relationship,
+      item : item,
+      life_check_flg : life_check_flg
     }
-
-    // console.log( data );
 
     if ( user_name != '' && name_kana != '' && birthday != '' && sex != '' && postal_code1 != '' && postal_code2 != '' && address != '' && email_address != '' && phone_number != '' ) {
       $.ajax({
-        url: 'https:' + "<?php echo base_url().'admin/entry/edit/1'; ?>",
+        url: 'https:' + "<?php echo base_url().'admin/entry/edit/'; ?>" + student_id,
         data: data,
         method: "POST",
         dataType: "json",
         success: function(result) {
           if ( result['update'] == 'success' ) {
             $('#temporary_pw').text( result['temporary_pw'] );
+            $('#price').text( result['price'] );
             entry_disp_view('#entry_complete');
           }
         }, error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -1079,9 +1261,7 @@
       $('#modal-error').modal( 'show' );
     }
   });
-
   entry_disp_view('#page_init');
-
   $('main#page_init').on('click', '#btn-entry-next', function(event) {
       // event.preventDefault();
       var class_choose = [];
@@ -1099,7 +1279,7 @@
       check_year = moment().diff(moment(check_year, 'YYYYMMDD'), 'years');
 
       // 申込者の年齢チェックによって、どちらを表示するか表示を振り分ける
-      if ( check_year < 18 ) {
+      if ( check_year < 20 ) {
           // 未成年者用 誓約書表示
           entry_disp_view('#entry_minority');
       } else {
@@ -1109,18 +1289,7 @@
           entry_disp_view('#entry_majority');
       }
   });
-
-  // $('main#entry_minority').on('click', 'span#button_entry_minority', function(event) {
-  //     event.preventDefault();
-  //     entry_disp_view('#entry_complete');
-  // });
-
-  // $('main#entry_majority').on('click', 'span#button_entry_majority', function(event) {
-  //     event.preventDefault();
-  //     entry_disp_view('#entry_complete');
-  // });
-
-  })
+})
 
   function entry_disp_view(id) {
     $('#page_init').css('display','none');

@@ -99,6 +99,7 @@ $("#update").click(function(e) {
             success: function (data) {
                 if (data.success == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。</b>");
                     window.setTimeout(function () {
@@ -135,6 +136,7 @@ $("#create").click(function(e) {
             success: function (data) {
                 if (data.success == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>クラスを追加しました。</b>");
                     window.setTimeout(function () {
@@ -184,12 +186,14 @@ $(document).ready(function(){
                 $('input#class_code').val(data.short_course_name+base);
             }
         })
+
     })
 });
 
 //onchange base_class_sign
 $(document).ready(function(){
     $("#base_class_sign").change(function () {
+        $('input:checkbox').prop("checked", false);
         var short_name = $('#short_course_name').val();
         $.ajax({
             dataType : "json",
@@ -229,6 +233,7 @@ $("input[type=checkbox]").change( function() {
                     //     });
                     // }, 5000);
                     $("input[value="+week+"]:checked").removeAttr('checked');
+                    if(!$('#enable').is(':checked') && !$('#enable_2').is(':checked')) {$('#enable').prop('checked', true);}
                 }
             }
         });

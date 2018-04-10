@@ -188,6 +188,7 @@ $("#update").click(function(e) {
             success: function (data) {
                 if (data.status == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。</b>");
                     window.setTimeout(function () {
@@ -235,6 +236,7 @@ $("#create").click(function(e) {
             success: function (data) {
                 if (data.status == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>バスコースを追加しました。</b>");
                     window.setTimeout(function () {
@@ -306,6 +308,7 @@ $("#create_bus_stop").click(function(e) {
             success: function (data) {
                 if (data.status == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>バス停を追加しました。 </b>");
                     window.setTimeout(function () {
@@ -343,6 +346,7 @@ $("#update_bus_stop").click(function(e) {
             success: function (data) {
                 if (data.status == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。 </b>");
                     window.setTimeout(function () {
@@ -379,6 +383,7 @@ $("#mytable").on("click", ".copy", function (e) {
             url: url_top + '/bus_route/copy/'+id,
             success: function (data) {
                 $('#popup').click();
+                $('.modal-body').removeClass('alert alert-danger');
                 $('.modal-body').addClass('alert alert-success');
                 $("#status_update").html("<b>正常にコピーされた。 </b>");
                 window.setTimeout(function () {

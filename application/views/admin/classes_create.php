@@ -83,10 +83,10 @@
                         <label for="" class="col-sm-2 control-label">バス利用</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="use-bus" checked value="<?php echo DATA_ON?>"> あり
+                                <input type="radio" name="use-bus" checked value="<?php echo DATA_OFF?>"> あり
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="use-bus" value="<?php echo  DATA_OFF?>"> なし
+                                <input type="radio" name="use-bus" value="<?php echo  DATA_ON?>"> なし
                             </label>
                         </div>
                     </div>
@@ -128,10 +128,10 @@
                         <label for="" class="col-sm-2 control-label">有効/無効</label>
                         <div class="col-sm-10">
                             <label class="radio-inline">
-                                <input type="radio" name="enable" checked value=<?php echo DATA_OFF?>> 有効
+                                <input type="radio" id="enable" name="enable" checked value=<?php echo DATA_OFF?>> 有効
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="enable" value=<?php echo DATA_ON?>> 無効
+                                <input type="radio" id="enable_2" name="enable" value=<?php echo DATA_ON?>> 無効
                             </label>
                         </div>
                     </div>

@@ -10,7 +10,10 @@ $(document).ready(function(){
 
   $("#admin_log").validate({
     rules: {
-      username: "required",
+      username: {
+        required : true,
+        email: true
+      },
       pwd: {
         required: true,
         minlength: 8
@@ -21,6 +24,16 @@ $(document).ready(function(){
         error.appendTo(".err_msg_id");
       else
         error.appendTo(".err_msg_pass");
+    },
+    messages: {
+      username: {
+          required: "必須です。ご入力ください。",
+          email: '正しいメールアドレスを入力してください。'
+      },
+      pwd: { 
+        required: "必須です。ご入力ください。",
+        minlength: "8半角文字以上で入力してください。"
+      }     
     },
   });
 
@@ -47,16 +60,10 @@ $(document).ready(function(){
       method:'POST',
       success:function(result){
         if(result.status == 'OK'){
-          // if(admin){
-          //   go to page my top
-          // }
-          // else{
-          //   go to page bus manager
-          // }
           window.location.href = "/admin"; 
         }
         else{
-          msg_show = 'Email or Password incorrect!';
+          msg_show = 'メールアドレスは正しくありません。';
           msg_login_alert(msg_show);
         }
       },error: function (XMLHttpRequest, textStatus, errorThrown) {

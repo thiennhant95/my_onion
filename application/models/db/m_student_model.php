@@ -80,8 +80,8 @@ class M_student_model extends DB_Model {
                ->from('m_student')
                ->where($array)
                ->or_where($array2);
-		$query = $this->db->get()->result_array();
-		return $query;
+        $query = $this->db->get();
+		return $query->result_array();
     }
 
     public function check_email_exits($email)
@@ -193,7 +193,7 @@ class M_student_model extends DB_Model {
             foreach ($list_id as $key => $value) {
                 $this->db->or_where('student_id', $value);
             }
-            $this->db->having('tag','name_kana'); 
+            $this->db->having('tag','name'); 
             $data = $this->db->get()->result_array();
             return $data;
         }

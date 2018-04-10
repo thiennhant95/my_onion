@@ -112,10 +112,10 @@
                             <td><?php echo $row_class['max_count']?></td>
                             <td><?php if ($row_class['use_bus_flg']==DATA_ON)
                                 {
-                                    echo "あり";
+                                    echo "なし";
                                 }
                                 else
-                                    echo "なし";
+                                    echo "あり";
                                 ?></td>
                             <td><?php if($row_class['invalid_flg']==DATA_ON)
                                 {

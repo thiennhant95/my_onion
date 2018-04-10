@@ -65,7 +65,7 @@
             <div class="form-group">
               <label for="" class="col-sm-2 control-label">ご氏名</label>
               <div class="col-sm-5">
-                <input type="text" name="user_name" maxlength="64" class="form-control" value="" placeholder="">
+                <input type="text" name="user_name" maxlength="64" class="form-control" value="" placeholder="" autofocus>
                 <div class="msg_user_name"></div>
                 <small>
                   <sup>※</sup>お子様が受講される場合は、お子様ご本人のお名前をご記入ください。</small>
@@ -75,7 +75,7 @@
             <div class="form-group" style="margin-bottom:0px;">
               <label for="" class="col-xs-12 col-sm-2 control-label">郵便番号</label>
               <div class="col-xs-3 col-sm-2 col-md-1 postal-code-line">
-                <input type="text" name="postal_code1" class="form-control" maxlength="3" value="" placeholder="">
+                <input type="text" name="postal_code1" class="form-control" maxlength="4" value="" placeholder="">
               </div>
               <div class="col-xs-3 col-sm-2 col-md-1">
                 <input type="text" name="postal_code2" class="form-control" maxlength="4" value="" placeholder="">
@@ -129,14 +129,14 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Confirm register</h4>
+                    <h4 class="modal-title">申込み</h4>
                   </div>
                   <div class="modal-body">
-                    <p>Are you sure to register?</p>
+                    <p>申込みます。よろしいでしょうか？</p>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="register-btn">Register</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="register-btn">申込み</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
                   </div>
                 </div>
               </div>
@@ -147,13 +147,13 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Error</h4>
+                    <h4 class="modal-title"><b>エラー</b></h4>
                   </div>
                   <div class="modal-body">
-                    <p>There was an error, please try again</p>
+                    <p>エラーが発生されます。再度してください。</p>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
                   </div>
                 </div>
               </div>
@@ -279,7 +279,9 @@
                 address: { required: true },
                 phone_number: {
                     required: true,
-                    number: true
+                    number: true,
+                    digits: true,
+                    maxlength: 11
                 },
                 email_address: {
                     required: true,
@@ -297,25 +299,27 @@
             },
             messages: {
                 user_name: {
-                    required: "Username is required",
-                    twobyte: "Username must be 2 byte"
+                    required: "ご氏名は必須です。ご入力ください。",
+                    twobyte: "氏名は全角文字のみを入力してください。"
                 },
                 postal_code1: {
-                    required: "Postal code is required",
-                    number: "Postal code must be number 1 byte"
+                    required: "郵便番号は必須です。ご入力ください。",
+                    number: "郵便番号は半角英数字のみを入力してください。"
                 },
                 postal_code2: {
-                    required: "Postal code is required",
-                    number: "Postal code must be number 1 byte"
+                    required: "郵便番号は必須です。ご入力ください。",
+                    number: "郵便番号は半角英数字のみを入力してください。"
                 },
-                address: { required: "Address is required" },
+                address: { required: "ご住所は必須です。ご入力ください。" },
                 phone_number: {
-                    required: "Phone number is required",
-                    number: "Phone number must be number"
+                    required: "電話番号は必須です。ご入力ください。",
+                    number: "電話番号は半角英数字のみを入力してください。",
+                    digits: "電話番号は半角英数字のみを入力してください。",
+                    maxlength: "11文字以内で入力してください。"
                 },
                 email_address: {
-                    required: "Email address is required",
-                    email: "Email is invalid"
+                    required: "メールアドレスは必須です。ご入力ください。",
+                    email: "正しいメールアドレスを入力してください。"
                 }
             },
             errorClass: "label label-danger",
@@ -368,7 +372,7 @@
                       console.log('success ok');
                       if (result['insert'] == 'email_exists') {
                           console.log('email exit');
-                          $('.msg_email_address').text('This email already exists');
+                          $('.msg_email_address').text('このメールアドレスは既に登録されています。');
                           $('.msg_email_address').css('display', 'inline');
                       } else {
                           console.log( 'hien thi' );

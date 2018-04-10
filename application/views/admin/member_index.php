@@ -52,9 +52,9 @@
                         <label for="" class="control-label text-small col-sm-2">会員番号</label>
                         <div class="col-sm-4">
                           <div class="form-fromto">
-                            <input type="number" class="form-control" id = "id_from" name="id_from" value="" placeholder="FROM">
+                            <input type="number" min = 0 class="form-control" id = "id_from" name="id_from" value="" placeholder="FROM">
                             <span class="form-fromto-split">〜</span>
-                            <input type="number" class="form-control" id = "id_to" name="id_to" value="" placeholder="TO">
+                            <input type="number" min = 0 class="form-control" id = "id_to" name="id_to" value="" placeholder="TO">
                           </div>
                         </div>
                         <div class="col-xs-4 col-sm-2">
@@ -118,7 +118,10 @@
                       <div class="form-group form-group-sm form-gutter-half clearfix mb-1">
                         <label for="" class="control-label text-small col-sm-2">性別</label>
                         <div class="col-sm-4">
-                          <input type="text" class="form-control" id = "sex" name="sex" value="" placeholder="">
+                          <!-- <input type="text" class="form-control" id = "sex" name="sex" value="" placeholder=""> -->
+                          <input type="radio" name="gender" value="0"> 男性
+                          <input type="radio" name="gender" value="1"> 女性
+                          <input type="radio" name="gender" value="" checked="checked"> すべて
                         </div>
                         <div class="col-xs-4 col-sm-2">
                           <input type="text" class="form-control" name="class" value="" placeholder="並び順">
@@ -202,7 +205,7 @@
                       <div class="form-group form-group-sm form-gutter-half clearfix mb-1">
                         <label for="" class="control-label text-small col-sm-2">TEL</label>
                         <div class="col-sm-4">
-                          <input type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" class="form-control" id="tel" name="tel" value="" placeholder="">
+                          <input type="number" min = 0 onkeydown="javascript: return event.keyCode == 69 ? false : true" class="form-control" id="tel" name="tel" value="" placeholder="">
                         </div>
                         <div class="col-xs-4 col-sm-2">
                           <input type="text" class="form-control" name="class" value="" placeholder="並び順">
@@ -493,8 +496,8 @@
                         <td><?php echo $value_stop['id'];?></td>
                         <td><?php echo $value_stop['name'];?></td>
                         <td><?php echo $value_stop['course_name'];?></td>
-                        <td><?php echo $value_stop['base_class_sign'];?></td>
                         <td><?php echo $value_stop['class_name'];?></td>
+                        <td><?php echo $value_stop['base_class_sign'];?></td>
                         <td><?php echo $value_stop['bus_stop_name'];?></td>
                         <td><?php 
                           $string_status = '';
@@ -566,6 +569,7 @@
             format: 'yyyy-mm-dd',
             autoclose: true,
             language:'jp',
+            todayHighlight: true,
             orientation: "auto right"
         }).on('changeDate', function (selected) {
             var startDate = new Date(selected.date.valueOf());
@@ -579,6 +583,7 @@
             format: 'yyyy-mm-dd',
             autoclose: true,
             language:'jp',
+            todayHighlight: true,
             orientation: "auto right"
         }).on('changeDate', function (selected) {
             var endDate = new Date(selected.date.valueOf());
@@ -592,6 +597,7 @@
             isRTL: false,
             format: 'yyyy-mm-dd',
             autoclose: true,
+            todayHighlight: true,
             language:'jp',
             orientation: "auto right"
         }).on('changeDate', function (selected) {
@@ -605,6 +611,7 @@
             isRTL: false,
             format: 'yyyy-mm-dd',
             autoclose: true,
+            todayHighlight: true,
             language:'jp',
             orientation: "auto right"
         }).on('changeDate', function (selected) {
@@ -666,7 +673,7 @@
             data_input_search_item = get_value_input();
             var status_input = false;
             $.each(data_input_search_item, function(index, value) {
-                if((value == '') || (value == false)){      
+                if((value === '') || (value === false)){    
                 }else{
                   status_input = true;
                   return false;
@@ -711,13 +718,15 @@
           var data_input = [];
           var all_user = $("#all_user").prop("checked") ? true : false;
           var sub_user = $("#sub_user").prop("checked") ? true : false;
+          var tmp_zip = $('#zip').val();
+          tmp_zip = tmp_zip.replace('-','');
           data_input = {'id_from': $('#id_from').val(),
                         'id_to': $('#id_to').val(),
                         'name': $('#name').val(),
                         'name_kana': $('#name_kana').val(),
-                        'sex': $('#sex').val(),
+                        'sex': $('input[name="gender"]:checked').val(),
                         'birthday': $('#birthday').val(),
-                        'zip': $('#zip').val(),
+                        'zip': tmp_zip,
                         'address': $('#address').val(),
                         'tel': $('#tel').val(),
                         'emergency_tel': $('#emergency_tel').val(),

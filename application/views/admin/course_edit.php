@@ -190,7 +190,7 @@
                   <input type="radio" name="course-type" value="<?php echo DATA_ON?>" id="short_type" <?php if ($get_course['type']==DATA_ON) echo "checked"?>> 短期
                 </label>
                   <label class="radio-inline">
-                      <input type="radio" name="course-type" value="<?php echo THREE?>" id="free_type" <?php if ($get_course['type']==THREE) echo "checked"?>>無料
+                      <input type="radio" name="course-type" value="<?php echo TWO?>" id="free_type" <?php if ($get_course['type']==THREE) echo "checked"?>>無料
                   </label>
               </div>
             </div>

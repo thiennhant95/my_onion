@@ -33,11 +33,13 @@
                   <span class="btn-icon-inner" data-mh="btn-inner">イベント・短期教室参加申請</span>
                 </a>
               </li>
+              <!--
               <li>
                 <a class="btn-icon btn-icon-mail-config bg-blue" href="#0">
                   <span class="btn-icon-inner" data-mh="btn-inner">通知メール設定</span>
                 </a>
               </li>
+              -->
               <li>
                 <a class="btn-icon btn-icon-note bg-violet" href="<?php echo base_url('/request/change_base_info');?>">
                   <span class="btn-icon-inner" data-mh="btn-inner">基本情報変更</span>
@@ -68,7 +70,7 @@
                     <?php foreach ($list_request as $key => $value) {?>
   
                       <tr class ="<?php if($value['status'] == 1){ echo "complete ";} if($key > 9){ echo "hidden_tr";}?>">
-                        <th><?php echo $value['student_id'];?></th>
+                        <th><?php echo $value['id'];?></th>
                         <td><?php echo $value['create_date'];?></td>
                         <?php 
                           $type_name = '';

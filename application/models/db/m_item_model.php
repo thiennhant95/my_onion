@@ -41,4 +41,18 @@ class M_item_model extends DB_Model {
         $query = $this->db->query($sql);
         return $query->result_array();
     }
+
+    function get_item( $id ) {
+        $sql = "
+            SELECT mi.sell_price
+            FROM m_item mi
+            WHERE  mi.id = '$id' 
+        ";
+        $query = $this->db->query( $sql );
+        if ( $query === FALSE ) {
+            logerr($params, $sql);
+            throw new Exception();
+        }
+        return $query->result_array();
+    }
 }

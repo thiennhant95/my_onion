@@ -30,8 +30,13 @@ class Top extends ADMIN_Controller {
             $data['student_register'] = $this->get_limit_data_users($limit_record, 0);
             //get danh sach yeu cau thay doi hop dong
             $data['student_request']  = $this->request_model->get_list_request($limit_record, 0);
-
             $data['type_search'] = $config['type_search'];
+            $data['db_course_short_term'] = $this->m_course_model->get_list_c_short();
+
+            $timstamp_now = new DateTime();
+            $timstamp_now = $timstamp_now->format('Y-m-d');
+            $data['list_member_today'] = $this->student_data->get_member_today($timstamp_now);
+
             $this->viewVar = $data;
             admin_layout_view('top_index', $this->viewVar);
         } catch (Exception $e) {

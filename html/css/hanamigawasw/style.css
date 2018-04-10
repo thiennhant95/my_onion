@@ -3062,7 +3062,7 @@ a.label-outline-blue:hover
   margin-top: -10px;
 }
 .err_msg{
-  text-align: center
+  margin-top: 5px;
 }
 
 .fc-day-number{
@@ -3260,4 +3260,45 @@ body { padding-right: 0 !important }
 }
 #js_msg_err_member{
   display: none;
+}
+
+.rest_date, .transfer_date , .presence_plan_date{
+  background: #fff;
+    color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 0;
+    width: 50px;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+.rest_date:hover, .transfer_date:hover{
+  color: #007bff;
+}
+.modal{
+  padding-right: 0!important;
+  
+}
+.modal-open{
+  overflow: auto!important;
+}
+.fix-df-btn{
+  min-width: 80px;
+}
+.modal-footer{
+  text-align: center
+}
+.fix-width-modal{
+  width: 500px;
+}
+.edit_width_btn{
+  width: 80px;
+  margin: 0 auto;
+}
+#table_member_schedule > tbody > tr > td.bg-red , td.bg-plae-lemmon {
+  color: black;
+} 
+.fix-width-modal-2{
+  width: 360px;
 }

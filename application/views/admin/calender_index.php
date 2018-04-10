@@ -79,7 +79,7 @@
                             ?>
                           </select>
                         </div>
-                        <div class="col-sm-3"><a href="#0" class="btn delete-intransfer btn-default btn-block">
+                        <div class="col-sm-3"><a class="btn delete-intransfer btn-default btn-block">
                           <i class="fa fa-trash-o" aria-hidden="true"></i><span>削除</span></a>
                         </div>
                     </div>
@@ -94,14 +94,14 @@
         <div class="block-15 text-center row">
           <div class="col-sm-4 col-sm-offset-2">
             <p>
-              <a class="btn btn-default btn-block" href="#0">
+              <a class="btn btn-default btn-block">
                 <span>戻る</span>
               </a>
             </p>
           </div>
           <div class="col-sm-4">
             <p>
-              <a id = "update_date_transfer" class="btn btn-warning btn-block" href="#0">
+              <a id = "update_date_transfer" class="btn btn-warning btn-block">
                 <span>更新</span>
               </a>
             </p>
@@ -113,16 +113,21 @@
       <!-- DEV TRI CUSTOME -->
       <button id="show_show_btn" type="button" style = "display:none" class="btn btn-link btn-sm" data-toggle="modal" data-target="#showMsgCalendar">show list option</button>
       <section class="modal fade" id="showMsgCalendar" role="dialog" aria-labelledby="showMsgCalendar">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog modal fix-width-modal">
+          
           <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h3 class="text-center">
+                  <i class="fa fa-info-circle text-primary" aria-hidden="true"></i>
+                  <strong>通知</strong>
+              </h3>
+            </div>
             <div class="modal-body">
-              <h4 class="text-center">
-                <i class="fa fa-info-circle text-primary" aria-hidden="true"></i>
-                <strong>WARNING!</strong>
-              </h4>
+              
               <div class="" style = "text-align: center ">
                   
-                <span id = "msg_alert_calender" center>
+                <span id="msg_alert_calender" center>
 
               </span>
               </div>
@@ -131,6 +136,35 @@
               <div class="modal-btns row" style = "text-align: center ">
               <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- prop confirm -->
+      <button id="show_show_confirm" type="button" style = "display:none" class="btn btn-link btn-sm" data-toggle="modal" data-target="#showConfCalendar">show list option</button>
+      <section class="modal fade" id="showConfCalendar" role="dialog" aria-labelledby="showConfCalendar">
+        <div class="modal-dialog modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h3 class="text-center">
+                  <i class="fa fa-info-circle text-primary" aria-hidden="true"></i>
+                  <strong>通知</strong>
+              </h3>
+            </div>
+            <div class="modal-body">
+              <div class="" style = "text-align: center ">
+                <p center>
+                この内容を削除します。よろしいでしょうか？
+                </p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              
+                <button type="button" id = "remove_event_date" class="btn btn-success fix-df-btn" data-dismiss="modal">OK</button>
+            
+                <button type="button" class="btn btn-danger fix-df-btn" data-dismiss="modal">キャンセル</button>
+              
             </div>
           </div>
         </div>
@@ -215,7 +249,7 @@
             disabled_button_action();
           }
           uncheck_multiple_date();
-          
+          srcoll_to_div('#absent_date');
         },
         eventDrop: function (event, delta) {
           var start = fmt(event.start);
@@ -231,18 +265,21 @@
             $('#calendar').fullCalendar( 'unselect' );
 
           }else{
-            var decision = confirm("この内容を削除します。よろしいでしょうか？");
             var id_date_current;
-            if (decision) {
-              if($(this).hasClass('closed_class_btn')){
-                id_date_current = event.id;
+            var flag_has_closed = $(this).hasClass('closed_class_btn');
+            var flag_has_test = $(this).hasClass('test_class_btn');
+            id_date_current = event.id;
+
+            $('#show_show_confirm').trigger('click');
+            $('#remove_event_date').on('click', function () {
+              if(flag_has_closed){
                 remove_closed_date(id_date_current);
               }
-              if($(this).hasClass('test_class_btn')){
-                id_date_current = event.id;
+              if(flag_has_test){
                 remove_test_date(id_date_current);
               }
-            }
+            });
+            
           }
           
         },
@@ -308,13 +345,13 @@
             next_month_tmp = (+current_month_tmp == 12) ? '' : (+current_month_tmp + 1);
 
         if(last_month_tmp == 0){
-          $('.fc-pre_event-button').html('< Last year');
+          $('.fc-pre_event-button').html('< 去年');
         }
         else{
           $('.fc-pre_event-button').html('< ' + last_month_tmp + '月');
         }
         if(next_month_tmp == ''){
-          $('.fc-next_event-button').html('Next year >');
+          $('.fc-next_event-button').html('来年>');
         }
         else{
           $('.fc-next_event-button').html(next_month_tmp + '月' + ' >');
@@ -564,7 +601,7 @@
 
         var tmp_data_option = get_list_data_of_month();
         myHtml =  '<div class="row block-15"><div class="col-sm-4 col-sm-offset-2"><select class="form-control">' + tmp_data_option + 
-                  '</select></div><div class="col-sm-3"><a href="#0" class="btn delete-intransfer btn-default btn-block">' + 
+                  '</select></div><div class="col-sm-3"><a class="btn delete-intransfer btn-default btn-block">' + 
                   '<i class="fa fa-trash-o" aria-hidden="true"></i><span>削除</span>' + 
                   '</a></div> </div>';
         $("#block_input_date").append(myHtml);
@@ -624,11 +661,18 @@
             }
           })
         }
-      });
 
+      });
+      
       function show_msg_alert(msg) {
         $( "#show_show_btn" ).trigger( "click" ); 
         $('#msg_alert_calender').html(msg);
+      }
+
+      function srcoll_to_div(id_div) {
+        $('html,body').animate({
+                  scrollTop: $(id_div).offset().top},
+              'slow');
       }
     });
   </script>

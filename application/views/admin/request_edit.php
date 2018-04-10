@@ -62,6 +62,9 @@
                     case 'address_change':
                         $get_request['type_jp']='住所変更申請';
                         break;
+                    case 'change_base_info':
+                        $get_request['type_jp']='基本情報変更 ';
+                        break;
                 }
                 switch ($get_request['status'])
                 {
@@ -185,27 +188,248 @@
                           <input type="hidden" name="type_course" value="<?php echo COURSE_CHANGE?>">
                           <?php
                       }
-                      if ($get_request['type']==ADDRESS_CHANGE)
+                      if ($get_request['type']==INFO_CHANGE)
                       {
+                          if (isset($contents['postal_code']))
+                          {
+                              ?>
+                              <h3>郵便番号</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['postal_code_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <p>
+                                  <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                              </p>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['postal_code_after'];
+                                      ?>
+                                      <input type="hidden" name="postal_code_after" value="<?php echo $get_request['postal_code_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+                          }
+                          if (isset($contents['address']))
+                          {
+                              ?>
+                              <h3>ご住所</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['address_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <p>
+                                  <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                              </p>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['address_after'];
+                                      ?>
+                                      <input type="hidden" name="address_after" value="<?php echo $get_request['address_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+                          }
+                          if (isset($contents['phone_number']))
+                          {
+                              ?>
+                              <h3>電話番号</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['phone_number_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <p>
+                                  <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                              </p>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['phone_number_after'];
+                                      ?>
+                                      <input type="hidden" name="phone_number_after" value="<?php echo $get_request['phone_number_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+                          }
+                          if (isset($contents['emergency_tel']))
+                          {
+                              ?>
+                              <h3>緊急連絡先</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['emergency_tel_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <?php
+                              if ($get_request['emergency_tel_before']!=null) {
+                                  ?>
+                                  <p>
+                                      <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                                  </p>
+                                  <?php
+                              }
+                              ?>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['emergency_tel_after'];
+                                      ?>
+                                      <input type="hidden" name="emergency_tel_after" value="<?php echo $get_request['emergency_tel_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+                          }
+                          if (isset($contents['email_address']))
+                          {
+                              ?>
+                              <h3>メールアドレス</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['email_address_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <?php
+                              if (!$get_request['email_address_before']==null) {
+                                  ?>
+                                  <p>
+                                      <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                                  </p>
+                                  <?php
+                              }
+                              ?>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['email_address_after'];
+                                      ?>
+                                      <input type="hidden" name="email_address_after" value="<?php echo $get_request['email_address_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+
+                          }
+                          if (isset($contents['memo_to_coach']))
+                          {
+                              ?>
+                              <h3>コーチへの伝達事項</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['memo_to_coach_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <?php
+                              if (!$get_request['memo_to_coach_before']==null)
+                              {
+                                  ?>
+                                  <p>
+                                      <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                                  </p>
+                                  <?php
+                              }
+                                  ?>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['memo_to_coach_after'];
+                                      ?>
+                                      <input type="hidden" name="memo_to_coach_after" value="<?php echo $get_request['memo_to_coach_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+
+                          }
+                          if (isset($contents['password']))
+                          {
+                              ?>
+                              <h3>パスワード</h3>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['password_after'];
+                                      ?>
+                                      <input type="hidden" name="password_after" value="<?php echo $get_request['password_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+
+                          }
+                          if (isset($contents['school_name']))
+                          {
+                              ?>
+                              <h3>学校名</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['school_name_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <p>
+                                  <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                              </p>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['school_name_after'];
+                                      ?>
+                                      <input type="hidden" name="school_name_after" value="<?php echo $get_request['school_name_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+
+                          }
+                          if (isset($contents['school_grade']))
+                          {
+                              ?>
+                              <h3>学年</h3>
+                              <h3 class="h4">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['school_grade_before'];
+                                      ?>
+                                  </strong>
+                              </h3>
+                              <p>
+                                  <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
+                              </p>
+                              <h3 class="text-red">
+                                  <strong>
+                                      <?php
+                                      echo $get_request['school_grade_after'];
+                                      ?>
+                                      <input type="hidden" name="school_grade_after" value="<?php echo $get_request['school_grade_after']?>">
+                                  </strong>
+                              </h3>
+                              <hr>
+                              <?php
+                          }
                           ?>
-                          <h3 class="h4">
-                              <strong>
-                                  <?php
-                                  echo $get_request['address_before'];
-                                  ?>
-                              </strong>
-                          </h3>
-                          <p>
-                              <i class="fa fa-long-arrow-down" aria-hidden="true"></i>
-                          </p>
-                          <h3 class="text-red">
-                              <strong>
-                                  <?php
-                                  echo $get_request['address_after'];
-                                  ?>
-                                  <input type="hidden" name="address_after" value="<?php echo $get_request['address_after']?>">
-                              </strong>
-                          </h3>
+
                           <?php
                       }
                       if ($get_request['type']==QUIT)
@@ -322,7 +546,7 @@
                                               {
                                                   ?>
                                                   <h3 class="h4">
-                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['bus_stop_code']."】".$bus_row['bus_stop_name']?></strong>
                                                   </h3>
                                                   <?php
                                               }
@@ -336,7 +560,7 @@
                                                   ?>
 
                                                   <h3 class="text-red">
-                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['bus_stop_code']."】".$bus_row['bus_stop_name']?></strong>
                                                   </h3>
                                                   <br>
                                                   <?php
@@ -354,7 +578,7 @@
                                                       行きの乗車場所：
                                                   </h4>
                                                   <h3 class="text-red">
-                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['bus_stop_code']."】".$bus_row['bus_stop_name']?></strong>
                                                   </h3>
                                                   <?php
                                               }
@@ -365,7 +589,7 @@
                                                       帰りの降車場所：
                                                   </h4>
                                                   <h3 class="text-red">
-                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['route_order']."】".$bus_row['bus_stop_name']?></strong>
+                                                      <strong><?php echo $bus_row['bus_course_name']."【".$bus_row['bus_stop_code']."】".$bus_row['bus_stop_name']?></strong>
                                                   </h3>
                                                   <?php
                                               }
@@ -593,7 +817,7 @@
                                                             if ($bus_key == ZERO || $bus_key == TWO) {
                                                                 ?>
                                                                 <h3 class="h4">
-                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['bus_stop_code'] . "】" . $bus_row['bus_stop_name'] ?></strong>
                                                                 </h3>
                                                                 <?php
                                                             }
@@ -605,7 +829,7 @@
                                                             if ($bus_key == ONE || $bus_key == THREE) {
                                                                 ?>
                                                                 <h3 class="text-red">
-                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['bus_stop_code'] . "】" . $bus_row['bus_stop_name'] ?></strong>
                                                                 </h3>
                                                                 <br>
                                                                 <?php
@@ -619,7 +843,7 @@
                                                                     行きの乗車場所：
                                                                 </h4>
                                                                 <h3 class="text-red">
-                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['bus_stop_code'] . "】" . $bus_row['bus_stop_name'] ?></strong>
                                                                 </h3>
                                                                 <?php
                                                             }
@@ -629,7 +853,7 @@
                                                                     帰りの降車場所：
                                                                 </h4>
                                                                 <h3 class="text-red">
-                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['route_order'] . "】" . $bus_row['bus_stop_name'] ?></strong>
+                                                                    <strong><?php echo $bus_row['bus_course_name'] . "【" . $bus_row['bus_stop_code'] . "】" . $bus_row['bus_stop_name'] ?></strong>
                                                                 </h3>
                                                                 <?php
                                                             }

@@ -1,1 +1,2 @@
-Your password is: %password%
+マイページ仮パスワード: %password%
+初回お支払い金額: %price% 円

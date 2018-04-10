@@ -79,21 +79,6 @@ class M_course_model extends DB_Model {
             return FALSE;
         }
     }
-    public function getData_Course_valid(){   
-        $query ="SELECT a.id , a.course_code , a.course_name , a.start_date , a.end_date , a.regist_start_date,
-                        a.regist_end_date , a.type , a.join_condition , a.practice_max 
-                  FROM  m_course  a
-                  WHERE  a.regist_end_date >= DATE_FORMAT(NOW(), '%Y%m%d') AND a.delete_flg = ? AND a.invalid_flg = ? ";
-        $res = $this->db->query($query ,[ DATA_NOT_DELETED , DATA_INVALID_NO] );
-        if($res === FALSE )
-        {
-            logerr($params, $sql);
-            throw new Exception();
-        }
-        $result = $res->result_array();
-        $this->found_rows = count($result);
-        return $result;
-    }
     public function get_Info_by_type($type){
         $params = array(
             $type,
@@ -112,11 +97,11 @@ class M_course_model extends DB_Model {
         return $result;
     }
     /**
-     * Get data class by  course valid 
+     * Get data class by  course valid
      * @access public
      * @author Bao - VietVang JSC
-     */    
-    public function getData_class_by_id($id = NULL){   
+     */
+    public function getData_class_by_id($id = NULL){
         if($id == NULL) return '';
 
         $query = " SELECT a.id as course_id , b.id as class_id , b.base_class_sign , b.class_code , b.class_name , b.`week`, b.max_count
@@ -124,14 +109,14 @@ class M_course_model extends DB_Model {
                   WHERE  a.id = ? AND  a.invalid_flg = ? AND  b.invalid_flg = ? ";
         $res = $this->db->query( $query , [ $id , DATA_INVALID_NO , DATA_INVALID_NO ] );
         $result = $res->result_array();
-        if(count($result) > 0 )
+        if( count($result) > 0 )
         {
 
             foreach ($result as $key => $value) {
                 $week = explode( ',' , $value['week'] ) ;
                 $sub_id = $value['class_id'] ;
                 $max_count = $value['max_count'] ;
-                $result[ $key ][ 'week_full' ] = '';
+                $result[ $key ][ 'week_full' ] =  array();//'';
                 foreach( $week as $item )
                 {
                     $query = " SELECT COUNT( id ) as num_ber FROM l_student_class  WHERE  class_id = ? AND week_num = ? AND end_date = ?  ";
@@ -139,8 +124,8 @@ class M_course_model extends DB_Model {
                     if( count( $data ) > 0)
                     {
                         $number = $data[0]['num_ber'] ;
-                        if( $number == $max_count )
-                            $result[ $key ][ 'week_full' ] .= $item.'-' ;
+                        // if( $number == $max_count ) $result[ $key ][ 'week_full' ]+= $item.'-';
+                        $result[ $key ][ 'week_full' ][] = [ $item , $number];
                     }
                 }
             }
@@ -148,6 +133,16 @@ class M_course_model extends DB_Model {
         $this->found_rows = count($result);
         return $result;
     }
+    public function getData_Course_valid(){
+        $query =" SELECT a.id as course_id, a.course_code , a.course_name , a.start_date , a.end_date , a.regist_start_date,
+                        a.regist_end_date , a.type , a.join_condition , a.practice_max , a.cost_item_id , a.rest_item_id , a.bus_item_id
+                  FROM  m_course  a
+                  WHERE  a.regist_end_date >= DATE_FORMAT(NOW(), '%Y%m%d') AND a.regist_start_date <= DATE_FORMAT(NOW(), '%Y%m%d') AND a.delete_flg = ? AND a.invalid_flg = ? ";
+        $res = $this->db->query( $query ,[ DATA_NOT_DELETED , DATA_INVALID_NO] );
+        $result = $res->result_array();
+        return $result;
+    }
+
 
     /**
      * Get list course
@@ -189,19 +184,19 @@ class M_course_model extends DB_Model {
                 {
                     $row['cost_item_id']=$row_item['sell_price'];
                 }
-                endforeach;
+            endforeach;
             foreach ($data_item as $row_item):
                 if ($row_item['id']==$row['rest_item_id'])
                 {
                     $row['rest_item_id']=$row_item['sell_price'];
                 }
-                endforeach;
+            endforeach;
             foreach ($data_item as $row_item):
                 if ($row_item['id']==$row['bus_item_id'])
                 {
                     $row['bus_item_id']=$row_item['sell_price'];
                 }
-                endforeach;
+            endforeach;
             $row['grade_manage_flg']=DATA_OFF? $row['grade_manage_flg']='管理しない':$row['grade_manage_flg']='管理する';
             $row['change_flg']=DATA_OFF? $row['change_flg']='なし':$row['change_flg']='あり';
             $row['practice_max']=DATA_OFF? $row['change_flg']='フリー':$row['change_flg'];
@@ -275,4 +270,12 @@ class M_course_model extends DB_Model {
         return $query;
     }
 
+    public function get_list_c_short()
+    {
+        $this->db->select()
+            ->from('m_course')
+            ->where(array('type'=> VALUE_COURSE_TYPE_LIMITED, 'end_date' => END_DATE_DEFAULT));
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
 }

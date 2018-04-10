@@ -49,7 +49,7 @@ class L_student_request_model extends DB_Model {
         $this->db->select()
             ->from('l_student_request')
             ->where('student_id', $student_id)
-            ->order_by('create_date', 'DESC');
+            ->order_by('create_date', 'ASC');
         $data = $this->db->get()->result_array();
         return $data;
     }
@@ -196,7 +196,7 @@ class L_student_request_model extends DB_Model {
                     $this->db->where('type',QUIT);
                     break;
                 case CHANGE_BASIC_INFORMATION:
-                    $this->db->where('type',ADDRESS_CHANGE);
+                    $this->db->where('type',INFO_CHANGE);
                     break;
             }
         }
@@ -234,18 +234,27 @@ class L_student_request_model extends DB_Model {
         $free_text_search=$this->input->post('free_text_search');
         if ($this->input->post('free_text_search')!=NULL) {
             foreach ($student_request as $row_data) {
-                    if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
-                    {
-                        $data_search[]=$row_data;
-                    }
-                    if (strlen(strstr($row_data['message'], $free_text_search)) > 0)
-                    {
-                        $data_search[]=$row_data;
-                    }
                     if (strlen(strstr($row_data['student_id'], $free_text_search)) > 0)
                     {
-                        $data_search[]=$row_data;
+                        $data_search_a[]=$row_data;
                     }
+                    if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
+                    {
+                        $data_search_b[]=$row_data;
+                    }
+            }
+            if (isset($data_search_a) && isset($data_search_b))  {
+                if (count($data_search_a) >= count($data_search_b)) {
+                    $data_search = $data_search_a;
+                } else if (count($data_search_a) < count($data_search_b)) {
+                    $data_search = $data_search_b;
+                }
+            }
+            if (isset($data_search_a) && !isset($data_search_b))  {
+                $data_search = $data_search_a;
+            }
+            if (isset($data_search_b) && !isset($data_search_a))  {
+                $data_search = $data_search_b;
             }
             if ($data_search==NULL)
             {
@@ -277,7 +286,7 @@ class L_student_request_model extends DB_Model {
         foreach ($data_search as $data_date)
         {
             $data_content=json_decode($data_date['contents'],true);
-            if ($date_start<=$data_date['create_date'] && $data_date['create_date']<=$date_end)
+            if ($date_start <= date('Y-m-d',strtotime($data_date['create_date'])) && date('Y-m-d',strtotime($data_date['create_date']))<=$date_end)
             {
                 $request_data[]=$data_date;
             }
@@ -286,7 +295,6 @@ class L_student_request_model extends DB_Model {
         {
                 $request_data=array();
         }
-
         $total=count($request_data);
         $data_search_return=array_slice( $request_data, $start, $limit);
 
@@ -360,23 +368,34 @@ class L_student_request_model extends DB_Model {
         global $data_search;
         $free_text_search=$this->input->post('free_text_search');
         if ($this->input->post('free_text_search')!=NULL) {
-            foreach ($student_request as $row_data) {
-                if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
-                {
-                    $data_search[]=$row_data;
+            if ($this->input->post('free_text_search')!=NULL) {
+                foreach ($student_request as $row_data) {
+                    if (strlen(strstr($row_data['student_id'], $free_text_search)) > 0)
+                    {
+                        $data_search_a[]=$row_data;
+                    }
+                    if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
+                    {
+                        $data_search_b[]=$row_data;
+                    }
                 }
-                if (strlen(strstr($row_data['message'], $free_text_search)) > 0)
-                {
-                    $data_search[]=$row_data;
+                if (isset($data_search_a) && isset($data_search_b))  {
+                    if (count($data_search_a) >= count($data_search_b)) {
+                        $data_search = $data_search_a;
+                    } else if (count($data_search_a) < count($data_search_b)) {
+                        $data_search = $data_search_b;
+                    }
                 }
-                if (strlen(strstr($row_data['student_id'], $free_text_search)) > 0)
-                {
-                    $data_search[]=$row_data;
+                if (isset($data_search_a) && !isset($data_search_b))  {
+                    $data_search = $data_search_a;
                 }
-            }
-            if ($data_search==NULL)
-            {
-                $data_search=array();
+                if (isset($data_search_b) && !isset($data_search_a))  {
+                    $data_search = $data_search_b;
+                }
+                if ($data_search==NULL)
+                {
+                    $data_search=array();
+                }
             }
         }
         else if ($this->input->post('free_text_search')==NULL)
@@ -405,7 +424,7 @@ class L_student_request_model extends DB_Model {
         foreach ($data_search as $data_date)
         {
             $data_content=json_decode($data_date['contents'],true);
-            if ($date_start<=$data_date['create_date'] && $data_date['create_date']<=$date_end)
+            if ($date_start <= date('Y-m-d',strtotime($data_date['create_date'])) && date('Y-m-d',strtotime($data_date['create_date']))<=$date_end)
             {
                 $request_data[]=$data_date;
             }

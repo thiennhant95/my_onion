@@ -38,24 +38,27 @@ class L_student_meta_model extends DB_Model {
     }
     public function update_tagMeta( $arrayDataMeta , $student_id=NULL)
     {
-        if($student_id == NULL) return '';
-        try {
-                foreach ($arrayDataMeta as $key => $value) {
-                    $query = $this->db->select('id')->from('l_student_meta')->where(['student_id'=>$student_id,'tag'=>$key]);
-                    $result = $this->db->get()->result_array();
-                    if($key === 'enquete') $value = json_encode($value);
-                    if( count($result) > 0)
-                    {
-                      $this->db->update('l_student_meta', array( 'value' => $value ), array('student_id' => $student_id, 'tag' => $key) );
-                    }
-                    else
-                    {
-                        $this->db->insert('l_student_meta', array('student_id' => $student_id, 'tag' => $key,'value'=>$value));
-                    }
+        $session_student = $this->session->userdata('admin_account');
+        $admin_id = $session_student['id'];
+
+        if( $student_id != NULL || $admin_id != NULL ){
+
+            foreach ($arrayDataMeta as $key => $value) {
+                $query = $this->db->select('id')->from('l_student_meta')->where([ 'student_id' => $student_id ,'tag' => $key]);
+                $result = $this->db->get()->result_array();
+                if ($key === 'enquete' ) $value = json_encode( $value );
+                if( count( $result ) > 0)
+                {
+                  $this->db->update('l_student_meta', [ 'value' => $value , 'update_id' => $admin_id ] , [ 'student_id' => $student_id, 'tag' => $key  ] );
                 }
+                else
+                {
+                    $this->db->insert('l_student_meta', [ 'student_id' => $student_id, 'tag' => $key ,'value'=>$value , 'create_id' => $admin_id ] );
+                }
+            }
             return TRUE;
-        } catch (Exception $e) {
-            return FALSE;
-        }   
+        }
+
+        return FALSE;  
     }
 }

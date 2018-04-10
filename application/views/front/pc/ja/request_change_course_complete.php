@@ -26,10 +26,12 @@
           <hr class="hr_edit">
           <div class="row list-bus-route">
             <table>
+                
+              <?php if(!empty($data_bus_list)){?>
                 <tr>
                   <td>現在のコース：</td>
                 </tr>
-              <?php foreach ($data_bus_list as $key_bus => $value_bus) {?>
+                <?php foreach ($data_bus_list as $key_bus => $value_bus) {?>
                   <tr>
                     <td></td>
                     <td><?php 
@@ -101,9 +103,11 @@
                         break;
                     }
                   ?>
-                <?php }
-              ?>
-              
+                <?php }?>
+              <?php }?>
+            
+            
+            
             </table>
           </div>
           <p class="text-danger block-15">

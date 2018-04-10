@@ -77,6 +77,7 @@ $("#create").click(function(e) {
             success: function (data) {
                 if (data.status  == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>距離を追加しました。 </b>");
                     window.setTimeout(function () {
@@ -114,6 +115,7 @@ $("#update").click(function(e) {
             success: function (data) {
                 if (data.status  == 1) {
                     $('#popup').click();
+                    $('.modal-body').removeClass('alert alert-danger');
                     $('.modal-body').addClass('alert alert-success');
                     $("#status_update").html("<b>情報を更新しました。 </b>");
                     window.setTimeout(function () {

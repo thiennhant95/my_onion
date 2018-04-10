@@ -20,33 +20,33 @@ class Member_model extends DB_Model {
 
     public function get_list_member_all($limit, $start)
     {
-        $query = "SELECT SQL_CALC_FOUND_ROWS `STD`.`id`, `lsm`.`student_id`, `lsco`.`student_id`, `lsco`.`course_id`, `lsm`.`tag`, `lsm`.`value`,`lstc`.`student_id`, `STD`.`status`, `mcls`.`id`, `mcls`.`base_class_sign`, `mcls`.`class_name`, `mco`.`course_name`, `mbr`.`id`, `lsbr`.`bus_route_ret_id`, `mbst`.`id`, `mbr`.`bus_stop_id`, `mbst`.`bus_stop_name` FROM (`m_student` STD) LEFT JOIN `l_student_meta` lsm ON `std`.`id` = `lsm`.`student_id` LEFT JOIN `l_student_course` lsco ON `lsm`.`student_id` = `lsco`.`student_id` LEFT JOIN `m_course` mco ON `mco`.`id` = `lsco`.`course_id` LEFT JOIN `l_student_class` lstc ON `lstc`.`student_id` = `STD`.`id` LEFT JOIN `m_class` mcls ON `mcls`.`id` = `lstc`.`class_id` LEFT JOIN `l_student_bus_route` lsbr ON `lsbr`.`student_id` = `STD`.`id` LEFT JOIN `m_bus_route` mbr ON `mbr`.`id` = `lsbr`.`bus_route_ret_id` LEFT JOIN `m_bus_stop` mbst ON `mbst`.`id` = `mbr`.`bus_stop_id` WHERE `lsm`.`tag` = 'name'  GROUP BY `std`.`id`  LIMIT $limit OFFSET $start";
-        $data = $this->db->query($query)->result_array();
-        $query_total = $this->db->query('SELECT FOUND_ROWS() AS `count`');
-        $total = $query_total->row()->count;
-
-        return array('0'=>$data,'1'=>$total);
-        // $this->db->select('SQL_CALC_FOUND_ROWS m_student.id, l_student_meta.tag, l_student_meta.value, l_student_course.student_id, l_student_course.course_id, m_student.status, m_class.base_class_sign, m_class.class_name, m_course.course_name, l_student_bus_route.bus_route_ret_id, m_bus_route.bus_stop_id, m_bus_stop.bus_stop_name',FALSE);
-
-        // $this->db->from('m_student');
-        // $this->db->join('l_student_meta' , 'l_student_meta.student_id = m_student.id', 'left');
-        // $this->db->join('l_student_course' , 'l_student_course.student_id = m_student.id', 'left');
-        // $this->db->join('m_course', 'm_course.id = l_student_course.course_id', 'left');
-        // $this->db->join('l_student_class', 'l_student_class.student_id = m_student.id', 'left');
-        // $this->db->join('m_class', 'm_class.id = l_student_class.class_id', 'left');
-        // $this->db->join('l_student_bus_route', 'l_student_bus_route.student_id = m_student.id', 'left');
-        // $this->db->join('m_bus_route', 'm_bus_route.id = l_student_bus_route.bus_route_ret_id', 'left');
-        // $this->db->join('m_bus_stop', 'm_bus_stop.id = m_bus_route.bus_stop_id', 'left');
-        // $this->db->where('m_student.delete_flg','0');
-        // $this->db->where('l_student_meta.tag','name');
-        // $this->db->group_by("m_student.id");
-        // $this->db->limit($limit,$start);
-
-        // $data = $this->db->get()->result_array();
+        // $query = "SELECT SQL_CALC_FOUND_ROWS `std`.`id`, `lsm`.`student_id`, `lsco`.`student_id`, `lsco`.`course_id`, `lsm`.`tag`, `lsm`.`value`,`lstc`.`student_id`, `std`.`status`, `mcls`.`id`, `mcls`.`base_class_sign`, `mcls`.`class_name`, `mco`.`course_name`, `mbr`.`id`, `lsbr`.`bus_route_ret_id`, `mbst`.`id`, `mbr`.`bus_stop_id`, `mbst`.`bus_stop_name` FROM (`m_student` std) LEFT JOIN `l_student_meta` lsm ON `std`.`id` = `lsm`.`student_id` LEFT JOIN `l_student_course` lsco ON `lsm`.`student_id` = `lsco`.`student_id` LEFT JOIN `m_course` mco ON `mco`.`id` = `lsco`.`course_id` LEFT JOIN `l_student_class` lstc ON `lstc`.`student_id` = `std`.`id` LEFT JOIN `m_class` mcls ON `mcls`.`id` = `lstc`.`class_id` LEFT JOIN `l_student_bus_route` lsbr ON `lsbr`.`student_id` = `std`.`id` LEFT JOIN `m_bus_route` mbr ON `mbr`.`id` = `lsbr`.`bus_route_ret_id` LEFT JOIN `m_bus_stop` mbst ON `mbst`.`id` = `mbr`.`bus_stop_id` WHERE `lsm`.`tag` = 'name'  GROUP BY `std`.`id`  LIMIT $limit OFFSET $start";
+        // $data = $this->db->query($query)->result_array();
         // $query_total = $this->db->query('SELECT FOUND_ROWS() AS `count`');
         // $total = $query_total->row()->count;
 
         // return array('0'=>$data,'1'=>$total);
+        $this->db->select('SQL_CALC_FOUND_ROWS m_student.id, l_student_meta.tag, l_student_meta.value, l_student_course.student_id, l_student_course.course_id, m_student.status, m_class.base_class_sign, m_class.class_name, m_course.course_name, l_student_bus_route.bus_route_ret_id, m_bus_route.bus_stop_id, m_bus_stop.bus_stop_name',FALSE);
+
+        $this->db->from('m_student');
+        $this->db->join('l_student_meta' , 'l_student_meta.student_id = m_student.id', 'left');
+        $this->db->join('l_student_course' , 'l_student_course.student_id = m_student.id', 'left');
+        $this->db->join('m_course', 'm_course.id = l_student_course.course_id', 'left');
+        $this->db->join('l_student_class', 'l_student_class.student_id = m_student.id', 'left');
+        $this->db->join('m_class', 'm_class.id = l_student_class.class_id', 'left');
+        $this->db->join('l_student_bus_route', 'l_student_bus_route.student_id = m_student.id', 'left');
+        $this->db->join('m_bus_route', 'm_bus_route.id = l_student_bus_route.bus_route_ret_id', 'left');
+        $this->db->join('m_bus_stop', 'm_bus_stop.id = m_bus_route.bus_stop_id', 'left');
+        $this->db->where('m_student.delete_flg','0');
+        $this->db->where('l_student_meta.tag','name');
+        $this->db->group_by("m_student.id");
+        $this->db->limit($limit,$start);
+
+        $data = $this->db->get()->result_array();
+        $query_total = $this->db->query('SELECT FOUND_ROWS() AS `count`');
+        $total = $query_total->row()->count;
+
+        return array('0'=>$data,'1'=>$total);
 
         
     }
@@ -159,7 +159,7 @@ class Member_model extends DB_Model {
             $cdt_course_from = $data_input_condition['practice_course'];
             $check_space_cf = ctype_space($cdt_course_from);
 
-            if($check_space_cf){
+            if(!$check_space_cf){
                 $this->db->like('m_course.course_code', $cdt_course_from);
             }
 
@@ -174,12 +174,7 @@ class Member_model extends DB_Model {
             }
 
             //còn các đk khóa học, lớp học, cấp đang chờ khách hàng xác nhận
-            if($data_input_condition['all_user'] != true){
-                $condition_exit_group = array('m_student.status !=' => 3 );
-                $this->db->where($condition_exit_group);
-            }
-
-            if($data_input_condition['sub_user'] == true){
+            if((($data_input_condition['sub_user'] == "true") && ($data_input_condition['all_user'] != "true")) || (($data_input_condition['sub_user'] != "true") && ($data_input_condition['all_user'] != "true"))){
                 $condition_exit_group = array('m_student.status !=' => 3 );
                 $this->db->where($condition_exit_group);
             }
@@ -256,7 +251,11 @@ class Member_model extends DB_Model {
                                         
                                         $flag_status = (!empty($tmp_conver_date_data)) && ($tmp_conver_date_data <= $tmp_conver_date_input ) ? TRUE : FALSE;
                                     break;
-                                
+                                case 'zip':
+                                        $tmp_zip = $row_fill[$value];
+                                        $conver_zip = str_replace("-","",$tmp_zip);
+                                        $flag_status = (strlen(strstr($conver_zip, $data_input_condition[$value])) > 0) ? TRUE : FALSE;
+                                    break;
                                 default:
                                         $flag_status = (strlen(strstr($row_fill[$value], $data_input_condition[$value])) > 0) ? TRUE : FALSE;
                                     break;
@@ -294,6 +293,22 @@ class Member_model extends DB_Model {
             
             $input_search = $this->input->post('text_condition');
             $type_search = $this->input->post('type_condition');
+            if($type_search == 'sex'){
+                switch ($input_search) {
+                    case '男性':
+                        $input_search = 0;
+                        break;
+                    case '女性':
+                        $input_search = 1;
+                        break;
+                    default:
+                        $input_search = '';
+                        break;
+                }
+            }
+            if($type_search == 'zip'){
+                $input_search = str_replace("-","",$input_search);
+            }
             
             $this->db->select('SQL_CALC_FOUND_ROWS m_student.id, l_student_course.student_id, l_student_course.course_id, m_student.status, m_class.base_class_sign, m_class.class_name, m_course.course_name, m_course.course_code, l_student_bus_route.bus_route_ret_id, m_bus_route.bus_stop_id, m_bus_stop.bus_stop_name, l_student_meta.tag, l_student_meta.value',FALSE);
             $this->db->from('m_student');
@@ -322,7 +337,9 @@ class Member_model extends DB_Model {
                     $this->db->like('m_class.class_name', $input_search);
                     break;
                 default:
-                    $this->db->like('l_student_meta.value', $input_search);
+                    if($type_search != 'zip'){
+                        $this->db->like('l_student_meta.value', $input_search);
+                    }
                     $this->db->where('l_student_meta.tag',$type_search);
                     break;
             }
@@ -332,9 +349,22 @@ class Member_model extends DB_Model {
             $this->db->limit($limit,$start);
 
             $data = $this->db->get()->result_array();
+
+            if($type_search == 'zip'){
+                $data_fill_zip = [];
+                foreach ($data as $row_zip) {
+                    $tmp_zip = str_replace("-","",$row_zip['value']);
+                    $flag_status_zip = (strlen(strstr($tmp_zip, $input_search)) > 0) ? TRUE : FALSE;
+                    if($flag_status_zip){
+                        $data_fill_zip[] = $row_zip;
+                    }
+                }
+                $data = $data_fill_zip;
+            }
             $data_search_rel = [];
             $query_total = $this->db->query('SELECT FOUND_ROWS() AS `count`');
             $total = $query_total->row()->count;
+            // $total = count($data);
 
             foreach ($data as $row_rel) {
                 $rel_meta = $this->get_student_meta_tag($row_rel['id']);

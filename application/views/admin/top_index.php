@@ -77,11 +77,10 @@
                 </a>
               </div>
               <div class="col-sm-4">
-                <a class="btn-icon btn-icon-2 lead-heading-icon-mail bg-yellow" href="#0">
+                <a class="btn-icon btn-icon-2 lead-heading-icon-mail bg-yellow" href="<?php echo base_url('/admin/reschedule')?>">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
-                      <span>緊急お知らせ</span>
-                      <small>メール</small>
+                      <span>欠席・振替<br>申請一覧</span>
                     </span>
                   </div>
                 </a>
@@ -95,6 +94,7 @@
                   </div>
                 </a>
               </div>
+              <!--
               <div class="col-sm-4">
                 <a class="btn-icon btn-icon-2 btn-icon-iccard bg-yellow-green" href="#0">
                   <div class="btn-icon-inner" data-mh="btn-inner">
@@ -122,6 +122,7 @@
                   </div>
                 </a>
               </div>
+              -->
             </div>
           </div>
         </div>
@@ -133,8 +134,15 @@
           <div class="col-sm-10 col-sm-offset-1">
             <div class="row">
               <div class="col-sm-4 button-type-1-box">
-                <a href="">マイページお知らせ設定</a>
+                <a href="<?php echo base_url('/admin/notice')?>">マイページお知らせ設定</a>
               </div>
+              <div class="col-sm-4 button-type-1-box">
+                <a href="<?php echo base_url('/admin/calender')?>">カレンダー管理</a>
+              </div>
+              <div class="col-sm-4 button-type-1-box">
+                <a href="<?php echo base_url('/admin/course')?>">マスターデータ管理</a>
+              </div>
+              <!--
               <div class="col-sm-4 button-type-1-box">
                 <a href="">マイページお知らせ設定</a>
               </div>
@@ -144,12 +152,7 @@
               <div class="col-sm-4 button-type-1-box">
                 <a href="">マイページお知らせ設定</a>
               </div>
-              <div class="col-sm-4 button-type-1-box">
-                <a href="">マイページお知らせ設定</a>
-              </div>
-              <div class="col-sm-4 button-type-1-box">
-                <a href="">マイページお知らせ設定</a>
-              </div>
+              -->
             </div>
           </div>
         </div>
@@ -162,7 +165,7 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="panel panel-card">
-              <div class="panel-heading bg-carnation-pink align-left pl-30">本日の初日会員一覧（2名）</div>
+              <div class="panel-heading bg-carnation-pink align-left pl-30">本日の初日会員一覧（<?php if(isset($list_member_today)){ $tmp_cnt = count($list_member_today); echo $tmp_cnt;}?>名）</div>
               <div class="panel-body pl-30 pr-30 pt-30 pb-10">
                 <div class="table-responsive">
                   <table class="table table-lg table-center table-border-1">
@@ -178,36 +181,53 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>12345</td>
-                        <td>玉葱　太郎</td>
-                        <td>ジュニア</td>
-                        <td>C</td>
-                        <td>人見知りでおとなしいです</td>
-                        <td class="align-left">■潜れる<br>■バタ足25M</td>
-                        <td>
-                          <div class="block-30 text-center">
-                            <a href="#0" class="btn bg-wasatch-front btn-lg btn-long">
-                              <span>確認</span>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>12345</td>
-                        <td>玉葱　太郎</td>
-                        <td>ジュニア</td>
-                        <td>C</td>
-                        <td>人見知りでおとなしいです</td>
-                        <td class="align-left">■潜れる<br>■バタ足25M</td>
-                        <td>
-                          <div class="block-30 text-center">
-                            <a href="#0" class="btn bg-wasatch-front btn-lg btn-long">
-                              <span>確認</span>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
+                      
+                      <?php if(!empty($list_member_today)){?>
+                        <?php foreach ($list_member_today as $key_mbt => $value_mbt) {?>
+                          <tr>
+                            <td><?php echo  $value_mbt['id'];?></td>
+                            <td><?php echo  $value_mbt['name'];?></td>
+                            <td><?php echo  $value_mbt['course_name'];?></td>
+                            <td><?php echo  $value_mbt['class_name'];?></td>
+                            <td><?php echo  $value_mbt['memo_to_coach'];?></td>
+                            <td class="align-left">
+                            <?php 
+                              $tmp_json = json_decode($value_mbt['enquete'], true);
+                              $strg = '';
+                              $strg .= '<ul>';
+                                $strg .= '<li>' . $tmp_json['face_into_water'] == '1' ? '水に顔をつけることができない' : '水に顔をつけることができる'.'</li>';
+                                $strg .= '<li>' . $tmp_json['dive'] == '1' ? '潜れる' : '潜れない'.'</li>';
+                                $strg .= '<li>' . $tmp_json['float'] == '1' ? '浮かべる' : '浮かべない'.'</li>';
+                                $strg .= '<li> バタ足 :' . $tmp_json['style']['flutter_kick'] .'</li>';
+                                $strg .= '<li> 板キック :' . $tmp_json['style']['board_kick'] .'</li>';
+                                $strg .= '<li> 背泳ぎ :' . $tmp_json['style']['backstroke'] .'</li>';
+                                $strg .= '<li> クロール :' . $tmp_json['style']['crawl'] .'</li>';
+                                $strg .= '<li> 平泳ぎ :' . $tmp_json['style']['breast_stroke'] .'</li>';
+                                $strg .= '<li> バタフライ :' . $tmp_json['style']['butterfly'] .'</li>';
+                                $strg .= '<li> 備考 :' . $tmp_json['style']['note'] .'</li>';
+                                
+                                $strg .= '<li>' . $tmp_json['free_lesson'] == '1' ? '無料体験に参加したことがあります。' : '無料体験に参加したことがありません。'.'</li>';
+                                $strg .= '<li>' . $tmp_json['short_lesson'] == '1' ? '短期水泳教室に参加したことがあります。' : '短期水泳教室に参加したことがありません。'.'</li>';
+                                $strg .= '<li>' . $tmp_json['experience']['status'] == '1' ? '当クラブまたは他クラブに通っていたことがあります。' : '当クラブまたは他クラブに通っていたことがありません。'.'</li>';
+                              $strg .= '</ul>';
+                              echo $strg;
+                            ?>
+                            <td>
+                              <div class="block-30 text-center">
+                                <a href="<?php echo base_url('/admin/member/detail/'.$value_mbt['id']);?>" class="btn btn-default btn-long">
+                                  <span>確認</span>
+                                </a>
+                              </div>
+                            </td>
+                          </tr>
+                        <?php } ?>
+                        <?php } else {?>
+                        <tr>
+                          <td>
+                            <td colspan = 7 center>データがありません。</td>
+                          </td>
+                        </tr>
+                      <?php }?>
                     </tbody>
                   </table>
                 </div>
@@ -223,7 +243,7 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="panel panel-card">
-              <div class="panel-heading bg-carnation-pink align-left pl-30">本日の無料体験者一覧（<?php if(!empty($member_course_free[1])){echo $member_course_free[1];}else{ echo 0;}?>名）(doing)</div>
+              <div class="panel-heading bg-carnation-pink align-left pl-30">本日の無料体験者一覧（<?php if(!empty($member_course_free[1])){echo $member_course_free[1];}else{ echo 0;}?>名）</div>
               <div class="panel-body pl-30 pr-30 pt-30 pb-10">
                 <div class="table-responsive">
                   <table class="table table-lg table-center table-border-1">
@@ -258,7 +278,13 @@
                           </td>
                         </tr>
                       <?php }?>
-                    <?php }?>
+                      <?php } else {?>
+                        <tr>
+                          <td>
+                            <td colspan = 7 center>データがありません。</td>
+                          </td>
+                        </tr>
+                      <?php }?>
                     </tbody>
                   </table>
                 </div>
@@ -278,17 +304,28 @@
                 <div class="table-responsive">
                   <table width="100%" class="">
                     <tbody>
-                      <tr>
-                        <td class="align-left">春の短期水泳教室（3/25～29）</td>
-                        <td class="align-right">
-                          <a href="#0" class="btn bg-wasatch-front btn-lg btn-long border-radius-0">
-                            <span>会員一覧</span>
-                          </a>　
-                          <a href="#0" class="btn bg-wasatch-front btn-lg btn-long border-radius-0">
-                            <span>出欠管理</span>
-                          </a>
-                        </td>
-                      </tr>
+                      <?php if(!empty($db_course_short_term)){?>
+                        <?php foreach ($db_course_short_term as $key_st => $value_st) {?>
+                          <tr>
+                            <td class="align-left"><?php echo $value_st['course_name'];?>（<?php echo $value_st['regist_start_date'];?> ～ <?php echo $value_st['regist_start_date'];?> ）</td>
+                            <td class="align-right">
+                              <a href="<?php echo base_url('/admin/member')?>" class="btn btn-default btn-long border-radius-0">
+                                <span>会員一覧</span>
+                              </a>　
+                              <a href="#0" class="btn btn-default btn-long border-radius-0">
+                                <span>出欠管理</span>
+                              </a>
+                            </td>
+                          </tr>
+                        <?php } ?>
+                        
+                      <?php } else {?>
+                        <tr>
+                          <td>
+                            <td colspan = 3 center>データがありません。</td>
+                          </td>
+                        </tr>
+                      <?php }?>
                     </tbody>
                   </table>
                 </div>
@@ -299,7 +336,7 @@
       </section>
 
 
-
+      <!--
       <section class="mb-30">
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
@@ -359,13 +396,13 @@
           </div>
         </div>
       </section>
-
+      -->
 
       <section class="mb-30">
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="panel panel-card">
-              <div class="panel-heading bg-blue-green align-left pl-30">新規ネット申し込み（未処理）一覧(doing)</div>
+              <div class="panel-heading bg-blue-green align-left pl-30">新規ネット申し込み（未処理）一覧</div>
               <div class="panel-body pl-30 pr-30 pt-30 pb-10">
                 <div class="table-responsive">
                   <table class="table table-border-1 table-lg table-center">
@@ -378,13 +415,19 @@
                           <td><?php echo $value_str['course_name'];?></td>
                           <td><?php echo $value_str['tag_type_course'];?></td>
                           <td class="align-center">
-                            <a target ="blank" href="<?php echo base_url('admin/entry/edit'.$value_str['id']);?>" class="btn btn-default">
+                            <a target ="blank" href="<?php echo base_url('admin/entry/edit/'.$value_str['id']);?>" class="btn btn-default">
                               <span>処理</span>
                             </a>
                           </td>
                         </tr>
                       <?php }?>
-                    <?php }?>
+                      <?php } else {?>
+                        <tr>
+                          <td>
+                            <td colspan = 6 center>データがありません。</td>
+                          </td>
+                        </tr>
+                      <?php }?>
                   </table>
                 </div>
               </div>
@@ -398,7 +441,7 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1">
             <div class="panel panel-card">
-              <div class="panel-heading bg-blue-green align-left pl-30">契約変更申請（未処理）一覧(doing)</div>
+              <div class="panel-heading bg-blue-green align-left pl-30">契約変更申請（未処理）一覧</div>
               <div class="panel-body pl-30 pr-30 pt-30 pb-10">
                 <div class="table-responsive">
                   <table class="table table-border-1 table-lg table-center">
@@ -445,6 +488,9 @@
                                       break;
                                   case 'address_change':
                                       $value_rq['type']='住所変更申請 ';
+                                      break;
+                                  case 'change_base_info':
+                                      $value_rq['type']='基本情報変更';
                                       break;
                               }
                               echo $value_rq['type'];
@@ -495,13 +541,19 @@
                                 ?>
                             </td>
                             <td class="align-center">
-                              <a target ="blank" href="<?php echo base_url('admin/request/edit/'.$value_rq['student_id']);?>" class="btn btn-default">
+                              <a target ="blank" href="<?php echo base_url('admin/member/detail/'.$value_rq['student_id']);?>" class="btn btn-default">
                                 <span>処理</span>
                               </a>
                             </td>
                           </tr>
                         <?php }?>
-                      <?php }?>
+                        <?php } else {?>
+                          <tr>
+                            <td>
+                              <td colspan = 8 center>データがありません。</td>
+                            </td>
+                          </tr>
+                        <?php }?>
                     </tbody>
                   </table>
                 </div>

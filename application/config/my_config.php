@@ -396,6 +396,7 @@ $config['day']=array(
 
 define('VALUE_NUMBER_RESULT', 1);
 define('LENGTH_PASS_RAMDOM', 8);
+define('LENGTH_PASS_RAMDOM_CREATE', 4);
 define('HAVE_RESULT', 1);
 define('NONE_RESULT', 0);
 define('ONLY_ONE_RELSULT', 1);
@@ -445,6 +446,7 @@ define('RECESS','recess');
 define('QUIT','quit');
 define('EVENT_TRY','event_entry');
 define('ADDRESS_CHANGE','address_change');
+define('INFO_CHANGE','change_base_info');
 
 define("END_DATE_DEFAULT", '2199-12-31');
 define("START_DATE_DEFAULT",'1970-01-01');
@@ -524,3 +526,13 @@ define('INVALID_DATE', '0000-00-00');
 define('COURSE_NORMAL', 0);//通常
 define('COURSE_LIMIT', 1);//期間限定（短期）
 define('COURSE_FREE', 2);//無料
+
+
+define('REGISTED_REST', '休');
+define('REGISTED_TRANSFER', '振C');
+
+define('FLAG_EXP_LOG_FILE', TRUE);
+
+define('PERMISSION_DATE', '無連絡欠席日');
+//通常出席予定日
+define('REGISTED_PRESENCE_PLAN', 'C');

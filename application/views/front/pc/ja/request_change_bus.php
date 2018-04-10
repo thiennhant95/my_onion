@@ -71,7 +71,7 @@
                         <div class="form-group">
                           <label for="" class="col-sm-2 control-label">行きの乗車場所</label>
                           <div class="col-sm-5 control-text">
-                            <span><?php echo $v['bus_course_go']['bus_course_name'] . '【' . $v['bus_course_go']['route_order'] . '】' . $v['bus_course_go']['bus_stop_name']; ?></span>
+                            <span><?php echo $v['bus_course_go']['bus_course_name'] . '【' . $v['bus_course_go']['bus_stop_code'] . '】' . $v['bus_course_go']['bus_stop_name']; ?></span>
                           </div>
                         </div>
                       <?php }
@@ -79,7 +79,7 @@
                         <div class="form-group">
                           <label for="" class="col-sm-2 control-label">帰りの降車場所</label>
                           <div class="col-sm-5 control-text">
-                            <span><?php echo $v['bus_course_ret']['bus_course_name'] . '【' . $v['bus_course_ret']['route_order'] . '】' . $v['bus_course_ret']['bus_stop_name']; ?></span>
+                            <span><?php echo $v['bus_course_ret']['bus_course_name'] . '【' . $v['bus_course_ret']['bus_stop_code'] . '】' . $v['bus_course_ret']['bus_stop_name']; ?></span>
                           </div>
                         </div>
                       <?php } ?>
@@ -114,122 +114,98 @@
                   $disabled = ( isset( $s_info['meta']['bus_use_flg'] ) && $s_info['meta']['bus_use_flg'] == 1 ) ? '' : 'disabled';
                   $check_checkbox = 0;
                   foreach( $s_class as $k => $v ) {
-                    $check_checkbox++;
-                    $id_bus_stop_1 = random_string( 'alnum', RANDOM_STRING_LENGTH );
-                    $id_bus_stop_2 = random_string( 'alnum', RANDOM_STRING_LENGTH );
-                    $class_course_go = random_string( 'alpha', RANDOM_STRING_LENGTH );
-                    $class_course_ret = random_string( 'alpha', RANDOM_STRING_LENGTH );
-                    $class_route_go = random_string( 'alpha', RANDOM_STRING_LENGTH );
-                    $class_route_ret = random_string( 'alpha', RANDOM_STRING_LENGTH );
-                  ?>
-                    <div class="each_bus_course">
-                      <div class="form-group">
-                        <label class="col-sm-2 control-label"></label>
-                        <div class="col-sm-5 control-text">
-                          <?php echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name'] . '）'; ?>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <?php if ( isset( $v['list_bus_course'] ) && count( $v['list_bus_course'] ) > 0 ) { ?>  
-                        <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
-                          <div class="col-sm-3">
-                            <select class="form-control change_bus_course disabled_bus <?php echo $class_course_go; ?> <?php echo $id_bus_stop_1; ?>" <?php echo $disabled; ?> data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_1 . "'"; ?>)">
-                              <?php
-                                foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
-                                  if ( isset($v['bus_course_go']['bus_course_id']) && $v['bus_course_go']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
-                                  else $selected = '';
-                                  echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
-                                }
-                              ?>
-                            </select>
-                          </div>
-                        <?php } else { ?>
-                          <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
-                          <div class="col-sm-3">
-                            <select class="form-control" disabled>
-                              <option>データがありません</option>
-                            </select>
-                          </div>
-                        <?php } ?>
-                        <?php if ( isset( $v['list_route_go'] ) && count( $v['list_route_go'] ) > 0 ) { ?>
-                          <div class="col-sm-3">
-                            <select class="form-control change_bus_route disabled_bus <?php echo $class_route_go; ?>" <?php echo $disabled; ?> data-bus="bus_route" data-go-ret="go" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>" data-old-route="<?php echo $v['bus_course_go']['bus_route_go_id']; ?>" id="<?php echo $id_bus_stop_1; ?>">
-                              <?php
-                                foreach ( $v['list_route_go'] as $k2 => $v2 ) {
-                                  if ( $v['bus_course_go']['bus_route_go_id'] == $v2['id'] ) $selected = 'selected';
-                                  else $selected = '';
-                                  echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
-                                }
-                              ?>
-                            </select>
-                          </div>
-                        <?php } else {?>
-                          <div class="col-sm-3">
-                            <select class="form-control change_bus_route" disabled id="<?php echo $id_bus_stop_1; ?>" data-bus="bus_route" data-go-ret="go" data-old-route="null" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>">
-                              <option>データがありません</option>
-                            </select>
-                          </div>
-                        <?php } ?>
-                      </div>
-                      <div class="form-group">
-                      <?php if ( isset( $v['list_bus_course'] ) && count( $v['list_bus_course'] ) > 0 ) { ?>
-                        <label for="" class="col-xs-12 col-sm-2 control-label">帰りの降車場所</label>
-                          <div class="col-sm-3">
-                            <select class="form-control change_bus_course disabled_bus <?php echo $class_course_ret; ?> <?php echo $id_bus_stop_2; ?>" <?php echo $disabled; ?> data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_2 . "'"; ?>)">
-                              <?php
-                                foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
-                                  if ( isset($v['bus_course_ret']['bus_course_id']) && $v['bus_course_ret']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
-                                  else $selected = '';
-                                  echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
-                                }
-                              ?>
-                            </select>
-                          </div>
-                        <?php } else {?>
-                          <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
-                          <div class="col-sm-3">
-                            <select class="form-control" disabled>
-                              <option>データがありません</option>
-                            </select>
-                          </div>
-                        <?php } ?>
-                        <?php if ( isset( $v['list_route_ret'] ) && count( $v['list_route_ret'] ) > 0) { ?>
-                          <div class="col-sm-3">
-                            <select class="form-control change_bus_route disabled_bus <?php echo $class_route_ret; ?>" <?php echo $disabled; ?> data-bus="bus_route" data-go-ret="ret" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>" data-old-route="<?php echo $v['bus_course_ret']['bus_route_ret_id']; ?>" id="<?php echo $id_bus_stop_2; ?>">
-                              <?php
-                                foreach ( $v['list_route_ret'] as $k2 => $v2 ) {
-                                  if ( $v['bus_course_ret']['bus_route_ret_id'] == $v2['id'] ) $selected = 'selected';
-                                  else $selected = '';
-                                  echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['route_order'] . '】' . $v2['bus_stop_name'] . '</option>';
-                                }
-                              ?>
-                            </select>
-                          </div>
-                        <?php } else {?>
-                          <div class="col-sm-3">
-                            <select class="form-control change_bus_route" disabled id="<?php echo $id_bus_stop_2; ?>" data-bus="bus_route" data-go-ret="ret" data-old-route="null" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>">
-                              <option>データがありません</option>
-                            </select>
-                          </div>
-                        <?php } ?>
-                      </div>
-                      <?php if ( $check_checkbox < 2 ) {?>
+                    if ( $v['use_bus_flg'] == 0 ) {
+                      $id_bus_stop_1 = random_string( 'alnum', RANDOM_STRING_LENGTH );
+                      $id_bus_stop_2 = random_string( 'alnum', RANDOM_STRING_LENGTH );
+                      $class_course_go = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                      $class_course_ret = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                      $class_route_go = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                      $class_route_ret = random_string( 'alpha', RANDOM_STRING_LENGTH );
+                    ?>
+                      <div class="each_bus_course">
+                      <?php if ( isset( $v['list_bus_course'] ) && count( $v['list_bus_course'] ) > 0 ) { 
+                        $check_checkbox++;
+                        ?>
                         <div class="form-group">
-                          <div class="col-sm-2"></div>
-                          <div class="col-sm-10">
-                            <label><input type="checkbox" value="" name="check_bus_checked" onclick="duplicate_bus('<?php echo $class_course_go; ?>', '<?php echo $class_course_ret; ?>', '<?php echo $class_route_go; ?>', '<?php echo $class_route_ret; ?>', '<?php echo $v['class_id']; ?>')">上記と同じ設定をする</label>
+                          <label class="col-sm-2 control-label"></label>
+                          <div class="col-sm-5 control-text">
+                            <?php echo $weeks[$v['week_num']]; ?>曜日（<?php echo $v['class_name'] . '）'; ?>
                           </div>
                         </div>
-                      <?php } ?>
-                    </div>
-                  <?php } ?>
+                        <div class="form-group">  
+                          <label for="" class="col-xs-12 col-sm-2 control-label">行きの乗車場所</label>
+                            <div class="col-sm-3">
+                              <select class="form-control change_bus_course disabled_bus <?php echo $class_course_go; ?> <?php echo $id_bus_stop_1; ?>" <?php echo $disabled; ?> data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_1 . "'"; ?>)">
+                                <?php
+                                  foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
+                                    if ( isset($v['bus_course_go']['bus_course_id']) && $v['bus_course_go']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                    else $selected = '';
+                                    echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
+                                  }
+                                ?>
+                              </select>
+                            </div>
+                          <?php } ?>
+                          <?php if ( isset( $v['list_route_go'] ) && count( $v['list_route_go'] ) > 0 ) { ?>
+                            <div class="col-sm-3">
+                              <select class="form-control change_bus_route disabled_bus <?php echo $class_route_go; ?>" <?php echo $disabled; ?> data-bus="bus_route" data-go-ret="go" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>" data-old-route="<?php echo $v['bus_course_go']['bus_route_go_id']; ?>" id="<?php echo $id_bus_stop_1; ?>">
+                                <?php
+                                  foreach ( $v['list_route_go'] as $k2 => $v2 ) {
+                                    if ( $v['bus_course_go']['bus_route_go_id'] == $v2['id'] ) $selected = 'selected';
+                                    else $selected = '';
+                                    echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['bus_stop_code'] . '】' . $v2['bus_stop_name'] . '</option>';
+                                  }
+                                ?>
+                              </select>
+                            </div>
+                          <?php } ?>
+                        </div>
+                        <div class="form-group">
+                        <?php if ( isset( $v['list_bus_course'] ) && count( $v['list_bus_course'] ) > 0 ) { ?>
+                          <label for="" class="col-xs-12 col-sm-2 control-label">帰りの降車場所</label>
+                            <div class="col-sm-3">
+                              <select class="form-control change_bus_course disabled_bus <?php echo $class_course_ret; ?> <?php echo $id_bus_stop_2; ?>" <?php echo $disabled; ?> data-bus="bus_course" onchange="change_bus_course(this.value, <?php echo "'" . $id_bus_stop_2 . "'"; ?>)">
+                                <?php
+                                  foreach ( $v['list_bus_course'] as $k1 => $v1 ) {
+                                    if ( isset($v['bus_course_ret']['bus_course_id']) && $v['bus_course_ret']['bus_course_id'] == $v1['id'] ) $selected = 'selected';
+                                    else $selected = '';
+                                    echo '<option value="' . $v1['id'] . '" ' . $selected . '>' . $v1['bus_course_name'] . '</option>';
+                                  }
+                                ?>
+                              </select>
+                            </div>
+                          <?php } ?>
+                          <?php if ( isset( $v['list_route_ret'] ) && count( $v['list_route_ret'] ) > 0) { ?>
+                            <div class="col-sm-3">
+                              <select class="form-control change_bus_route disabled_bus <?php echo $class_route_ret; ?>" <?php echo $disabled; ?> data-bus="bus_route" data-go-ret="ret" data-class-id="<?php echo $v['class_id']; ?>_<?php echo $v['week_num']; ?>" data-old-route="<?php echo $v['bus_course_ret']['bus_route_ret_id']; ?>" id="<?php echo $id_bus_stop_2; ?>">
+                                <?php
+                                  foreach ( $v['list_route_ret'] as $k2 => $v2 ) {
+                                    if ( $v['bus_course_ret']['bus_route_ret_id'] == $v2['id'] ) $selected = 'selected';
+                                    else $selected = '';
+                                    echo '<option value="' . $v2['id'] . '" ' . $selected . '>【' . $v2['bus_stop_code'] . '】' . $v2['bus_stop_name'] . '</option>';
+                                  }
+                                ?>
+                              </select>
+                            </div>
+                          <?php } ?>
+                        </div>
+                        <?php if ( $check_checkbox == 1 && count( $v['list_bus_course'] ) > 0 ) {?>
+                          <div class="form-group">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10">
+                              <label><input type="checkbox" value="" name="check_bus_checked" onclick="duplicate_bus('<?php echo $class_course_go; ?>', '<?php echo $class_course_ret; ?>', '<?php echo $class_route_go; ?>', '<?php echo $class_route_ret; ?>', '<?php echo $v['class_id']; ?>')">上記と同じ設定をする</label>
+                            </div>
+                          </div>
+                        <?php } ?>
+                      </div>
+                  <?php } } ?>
                   <input type="hidden" name="check_bus" value="<?php echo $check_bus; ?>" />
               </section>
             </div>
           </div>
         </section>
         <div class="block-30 text-center">
-          <button type="button" class="btn btn-success btn-lg btn-long" id="btn-change-bus">
+          <button type="button" class="btn btn-success btn-lg btn-long" data-toggle="modal" data-target="#modal-confirm" id="btn-popup">
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             <span>連絡する</span>
           </button>
@@ -242,13 +218,31 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Error</h4>
+            <h4 class="modal-title">エラー</h4>
           </div>
           <div class="modal-body">
-            <p>There was an error, please try again</p>
+            <p>エラーが発生されます。再度してください。</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modal-confirm" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">バス乗降連絡</h4>
+          </div>
+          <div class="modal-body">
+            <p>バス乗降情報を変更します。よろしいでしょうか？</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="btn-change-bus">変更</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
           </div>
         </div>
       </div>
@@ -329,7 +323,6 @@
         $('.change_bus_course').prop('disabled', 'disabled');
       },
       success: function(result) {
-        console.log( result );
         if ( result == '' ) {
           $('#'+bus_route_id).empty();
           $('#'+bus_route_id).append( '<option>データがありません</option>' );
@@ -341,7 +334,7 @@
         }
         
       }, error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log('error');
+          console.log(errorThrown);
       },
       complete: function() {
         $('.change_bus_course').prop('disabled', '');
@@ -354,7 +347,8 @@
       todayBtn: "linked",
       todayHighlight: true,
       autoclose: true,
-      language:'jp'
+      language:'jp',
+      startDate: '+0d'
     };
     $('input[name=change_date]').datepicker(options);
     $('#btn-change-bus').click(function() {
@@ -395,7 +389,6 @@
           check = 0;
         }
       });
-      console.log( change_bus );
 
       for (var key in change_bus) {
         if (change_bus.hasOwnProperty(key)) {
@@ -403,13 +396,11 @@
         }
       }
 
-    console.log( change_bus );
-
       var data = {
         change_bus : change_bus,
         student_id : $('input[name=student_id]').val()
       };
-      console.log( change_bus );
+
       $.ajax({
         url: 'https:' + "<?php echo base_url().'request/change_bus'; ?>",
         data: data,

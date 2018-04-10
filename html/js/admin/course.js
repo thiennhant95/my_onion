@@ -295,6 +295,7 @@ $(document).ready(function() {
                     success: function (data) {
                         if (data.status == 1) {
                             $('#popup').click();
+                            $('.modal-body').removeClass('alert alert-danger');
                             $('.modal-body').addClass('alert alert-success');
                             $("#status_update").html("<b>情報を更新しました。 </b>");
                             window.setTimeout(function () {
@@ -334,6 +335,7 @@ $(document).ready(function() {
                     console.log(data);
                     if (data.status == 1) {
                         $('#popup').click();
+                        $('.modal-body').removeClass('alert alert-danger');
                         $('.modal-body').addClass('alert alert-success');
                         $("#status_update").html("<b>練習コースを追加しました。</b>");
                         window.setTimeout(function () {

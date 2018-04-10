@@ -51,7 +51,7 @@ class Course extends ADMIN_Controller {
         if ($this->error_flg) return;
         try {
             $data['get_course']=$this->course->select_by_id($id)[0];
-            $data['item_list']=$this->item->get_list();
+            $data['item_list']=$this->item->get_list(array('disp_flg'=> "=".DATA_ON));
             $data['grade_list']=$this->grade->get_list();
             $data['distance_list']=$this->distance->get_list();
             if ($this->input->post())
@@ -153,7 +153,7 @@ class Course extends ADMIN_Controller {
     public function create() {
         if ($this->error_flg) return;
         try {
-            $data['item_list']=$this->item->get_list();
+            $data['item_list']=$this->item->get_list(array('disp_flg'=> "=".DATA_ON));
             $data['grade_list']=$this->grade->get_list();
             $data['distance_list']=$this->distance->get_list();
             if ($this->input->post())

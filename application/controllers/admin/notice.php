@@ -16,6 +16,11 @@ class Notice extends ADMIN_Controller {
     public function index() {
         if ($this->error_flg) return;
         try {
+            $filename = FCPATH . "files/notice.txt";
+            if (!file_exists($filename))
+            {
+                $fp = fopen(FCPATH . "files/notice.txt","wb");
+            }
             if ($this->input->post())
             {
                 if (strlen($_POST['contents'])<100 && strlen($_POST['contents'])!=0)

@@ -60,41 +60,24 @@ class Request extends FRONT_Controller {
                 $student_info = $this->student_model->get_student_data($user_account['id']);
                 $data['s_info'] = $student_info;
                 $data['school_grades'] = $this->configVar['school_grades'];
-                if ( isset( $_POST['postal_code'] ) && isset( $_POST['address'] ) && isset( $_POST['phone_number'] ) && isset( $_POST['email_address'] ) ) {
-                    if ( isset( $_POST['newpass'] ) && $_POST['newpass'] != '' ) {   
-                        $arr_insert = array(
-                            'email' => $_POST['email_address'],
-                            'password' => password_hash( $_POST['newpass'], PASSWORD_DEFAULT ),
-                            'tel_normalize' => $_POST['phone_number']
+                $check_change_base_info = $this->m_bus_course_model->check_bus_exists( $user_account['id'], 'change_base_info' );
+                if ( isset( $_POST['change_base_info'] ) ) {
+                    if ( count( $check_change_base_info ) == 0 ) {
+                        $this->l_student_request_model->insert( 
+                            array(
+                                'student_id' => $user_account['id'],
+                                'type' => 'change_base_info',
+                                'contents' => json_encode( $_POST['change_base_info'] )
+                            )
                         );
+                        $data['update'] = 'success';
+                        die( json_encode( $data ) );
                     } else {
-                        $arr_insert = array( 
-                            'email' => $_POST['email_address'],
-                            'tel_normalize' => $_POST['phone_number']
-                        );
+                        $update_base_info = $this->m_bus_course_model->update_bus_course_exists( $user_account['id'], 'change_base_info', json_encode( $_POST['change_base_info'] ) );
+                        if ( $update_base_info == TRUE ) $data['update'] = 'success';
+                        else $data['update'] = 'fail';
+                        die( json_encode( $data ) );
                     }
-                    foreach ( $arr_insert as $k => $v ) {
-                        if ( $v != '' ) $this->m_student_model->update_student_info( $user_account['id'], $k, $v );
-                    }
-                    $arr_insert_metas = array(
-                        'zip' => $_POST['postal_code'],
-                        'address' => $_POST['address'],
-                        'emergency_tel' => $_POST['emergency_tel'],
-                        'school_name' => $_POST['school_name'],
-                        'school_grade' => $_POST['school_grade'],
-                        'memo_to_coach' => $_POST['memo_to_coach'],
-                        'tel' => $_POST['phone_number']
-                    );
-                    foreach ( $arr_insert_metas as $k => $v ) {
-                        if ( count( $this->l_student_meta_model->select_student_meta( $user_account['id'], $k ) ) == 1 ) {
-                            if ( $v != '' ) $this->l_student_meta_model->update_student_meta( $user_account['id'], $k, $v );
-                        } else {
-                            if ( $v != '' ) $this->l_student_meta_model->insert( array( 'student_id' => $user_account['id'], 'tag' => $k, 'value' => $v ) );
-                        }
-                    }
-                    $data['update'] = 'success';
-                    echo json_encode($data);
-                    die();
                 }
                 $this->viewVar = $data;
                 front_layout_view('request_change_base_info', $this->viewVar);
@@ -121,11 +104,10 @@ class Request extends FRONT_Controller {
             } else {
                 $s_info = $this->student_model->get_student_data($user_account['id']);
                 $s_class = $this->m_bus_course_model->get_student_class_change_bus( $user_account['id'] );
-                // echo '<pre>'; print_r( $s_class ); echo '</pre>'; die();
                 $check_bus = $this->m_bus_course_model->check_bus_exists( $user_account['id'], 'bus_change_eternal' );
                 foreach ( $s_class as $k => $v ) {
-                    $bus_go_ret = $this->m_bus_course_model->get_student_bus_route_change_bus( $user_account['id'], $v['class_id'] );
-                    $check_bus_route_exists = $this->m_bus_course_model->check_bus_route_exists( $user_account['id'], $v['class_id'] );
+                    $bus_go_ret = $this->m_bus_course_model->get_student_bus_route_change_bus( $user_account['id'], $v['id'] );
+                    $check_bus_route_exists = $this->m_bus_course_model->check_bus_route_exists( $user_account['id'], $v['id'] );
                     if ( count( $bus_go_ret ) > 0 ) {
                         if ( count( $check_bus_route_exists ) > 0 ) {
                             $s_bus_course_go = $this->m_bus_course_model->get_bus_course_change_bus( $bus_go_ret[0]['bus_route_go_id'] );
@@ -150,6 +132,7 @@ class Request extends FRONT_Controller {
                         }
                     }
                 }
+
                 if ( isset( $_POST['bus_course_id'] ) ) {
                     $html_change_bus_course = $this->create_html_change_bus_course( $_POST['bus_course_id'] );
                     die( json_encode( $html_change_bus_course ) );
@@ -192,9 +175,9 @@ class Request extends FRONT_Controller {
         $bus_stop = $this->m_bus_stop_model->select_all( 'm_bus_stop' );
         $html_change_bus_course = '';
         foreach ( $bus_route as $k => $v ) {
-            $html_change_bus_course .= '<option value="' . $v['id'] . '">【' . $v['route_order'] . '】 ';
+            $html_change_bus_course .= '<option value="' . $v['id'] . '">';
                 foreach ( $bus_stop as $k1 => $v1 ) {
-                    if ( $v1['id'] == $v['bus_stop_id'] ) $html_change_bus_course .= $v1['bus_stop_name'];
+                    if ( $v1['id'] == $v['bus_stop_id'] ) $html_change_bus_course .= '【' . $v1['bus_stop_code'] . '】' . $v1['bus_stop_name'];
                 }
             $html_change_bus_course .= '</option>';
         }
@@ -228,6 +211,7 @@ class Request extends FRONT_Controller {
             $data['html'] = $this->create_html_data($data);
 
             $this->viewVar = $data;
+
             front_layout_view('request_change_course', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
@@ -289,9 +273,16 @@ class Request extends FRONT_Controller {
     }
     public function get_list_class_of_student($id_course, $id_student)
     {
-        $where = array('student_course_id' => ' = '.$id_course, 'student_id' => ' = '.$id_student, 'end_date' => ' = "'.END_DATE_DEFAULT.'"');
-        $data =  $this->student_model->get_list($where, $order = NULL, $tbl = 'l_student_class');
+        $data_student_course_id = $this->student_model->get_class_or_course($id_course, $id_student);
+        $data = [];
+        if(!empty($data_student_course_id[0])){
+            $std_course_id = $data_student_course_id[0]['id'];
+            $where = array('student_course_id' => ' = '.$std_course_id, 'student_id' => ' = '.$id_student, 'end_date' => ' = "'.END_DATE_DEFAULT.'"');
+            $data =  $this->student_model->get_list($where, $order = NULL, $tbl = 'l_student_class');
+           
+        }
         return $data;
+        
     }
     public function change_course_ajax()
     {
@@ -486,8 +477,14 @@ class Request extends FRONT_Controller {
         if ($this->error_flg) return;
         try {
             $this->load->model('db/m_course_model');
-            $data['Course_Limited'] = $this->m_course_model->getData_Course_valid();
-            front_layout_view('request_event', $data);
+            $course_all = $this->m_course_model->getData_Course_valid();
+            $course_limit = array();
+            foreach ($course_all as $key => $value) {
+                if( $value['type'] == VALUE_COURSE_TYPE_LIMITED )
+                    $course_limit[] = $value;
+             } 
+             $data['course_limit'] = $course_limit;
+            front_layout_view('request_event',  $data );
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }

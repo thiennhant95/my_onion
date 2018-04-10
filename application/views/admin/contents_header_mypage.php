@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header-body">
       <div class="header-cell header-logo">
-        <a href="#0">
+        <a href="<?php echo base_url("/");?>">
           <img class="img-responsive center-block" src="/images/hanamigawasw/logo_hanamigawaswim.svg">
         </a>
       </div>

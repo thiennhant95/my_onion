@@ -49,9 +49,9 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = '192.168.1.111';
-$db['default']['username'] = 'sa';
-$db['default']['password'] = 'asd!@#';
+$db['default']['hostname'] = 'localhost';
+$db['default']['username'] = 'root';
+$db['default']['password'] = 'rootroot';
 $db['default']['database'] = 'hanamigawa_sw';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';

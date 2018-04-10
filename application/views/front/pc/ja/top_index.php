@@ -72,6 +72,7 @@
                   </div>
                 </a>
               </div>
+                <!--
               <div class="col-sm-6">
                 <a class="btn-icon btn-icon-swim bg-light-blue" href="#0">
                   <div class="btn-icon-inner" data-mh="btn-inner">
@@ -92,11 +93,12 @@
                   </div>
                 </a>
               </div>
+                -->
               <div class="col-sm-6">
                 <a class="btn-icon btn-icon-memo bg-green" href="<?php echo base_url('/request');?>">
                   <div class="btn-icon-inner" data-mh="btn-inner">
                     <span class="text-block">
-                      <span>基本情報変更</span>
+                      <span>各種変更申請</span>
                       <small>Markup</small>
                     </span>
                   </div>
@@ -114,7 +116,7 @@
           </div>
         </div>
       </section>
-
+      <!--
       <section>
         <div class="panel panel-card">
           <div class="panel-heading bg-light-blue text-center">通学・練習コース出席記録</div>
@@ -199,7 +201,7 @@
 
         </div>
       </section>
-
+      -->
     </div>
   </main>
 

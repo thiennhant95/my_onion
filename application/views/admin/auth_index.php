@@ -18,7 +18,7 @@
           <form action="" method="" id = "admin_log">
             <div class="form-group login-icon login-user">
               <label>会員番号</label>
-              <input type="email" maxlength = "80" id="username" name = "username" minlength = "3"  class="form-control" placeholder="">
+              <input type="text" maxlength = "80" id="username" name = "username"  class="form-control" placeholder="">
               
               <?php echo form_error('username'); ?>
             </div>

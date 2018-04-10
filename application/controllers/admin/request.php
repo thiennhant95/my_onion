@@ -118,6 +118,9 @@ class Request extends ADMIN_Controller {
                         case 'address_change':
                             $row['type']='住所変更申請 ';
                             break;
+                        case 'change_base_info':
+                            $row['type']='基本情報変更 ';
+                            break;
                     }
                     switch ($row['status'])
                     {
@@ -301,16 +304,14 @@ class Request extends ADMIN_Controller {
                     $get_change_course = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => COURSE_CHANGE));
                     $data['get_request']['bus_use_flg']=$contents['bus_use_flg'];
                     $data['get_request']['change_date_bus']=$contents['change_date'];
-                    $data['get_request']['first_time_change_bus']=$contents['first_time_change_bus'];
+                    $data['get_request']['first_time_change_bus']=$contents['first_time_change'];
                     unset($contents['bus_use_flg']);
                     unset($contents['change_date']);
-                    unset($contents['first_time_change_bus']);
+                    unset($contents['first_time_change']);
 
                     //data change bus
                     foreach ($contents as $key_contents => $row_contents)
                     {
-                        $key_contents=preg_split('/\_/',$key_contents)[0];
-                        $class[]=$this->class->select_by_id($key_contents)['0'];
                         foreach ($row_contents as $child_contents)
                         {
                             if (isset($child_contents['bus_route_go_id_before']) && $child_contents['bus_route_go_id_before']!=null) {
@@ -326,6 +327,8 @@ class Request extends ADMIN_Controller {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_ret_id_after'])[0];
                             }
                         }
+                        $key_contents=preg_split('/\_/',$key_contents)[0];
+                        $class[]=$this->class->select_by_id($key_contents)['0'];
                     }
                     foreach ($get_bus_route as $bus=> $bus_course)
                     {
@@ -339,6 +342,7 @@ class Request extends ADMIN_Controller {
                         foreach ($bus_course as $bus_course_key=>$bus_row)
                         {
                             $bus_row['bus_stop_name']=$this->bus_stop->select_by_id($bus_row['bus_stop_id'])[0]['bus_stop_name'];
+                            $bus_row['bus_stop_code'] = $this->bus_stop->select_by_id($bus_row['bus_stop_id'])[0]['bus_stop_code'];
                             $bus_row['bus_course_name']=$this->bus_course->select_by_id($bus_row['bus_course_id'])[0]['bus_course_name'];
                             $get_bus_route_new[$bus][] =$bus_row;
                         }
@@ -361,6 +365,56 @@ class Request extends ADMIN_Controller {
             {
                 $data['get_request']['address_before']=$contents['address_before'];
                 $data['get_request']['address_after']=$contents['address_after'];
+            }
+
+            // change base info
+            if ($data['get_request']['type']==INFO_CHANGE)
+            {
+                if (isset($contents['postal_code']))
+                {
+                    $data['get_request']['postal_code_before']=$contents['postal_code']['before'];
+                    $data['get_request']['postal_code_after']=$contents['postal_code']['after'];
+                }
+                if (isset($contents['address']))
+                {
+                    $data['get_request']['address_before']=$contents['address']['before'];
+                    $data['get_request']['address_after']=$contents['address']['after'];
+                }
+                if (isset($contents['phone_number']))
+                {
+                    $data['get_request']['phone_number_before']=$contents['phone_number']['before'];
+                    $data['get_request']['phone_number_after']=$contents['phone_number']['after'];
+                }
+                if (isset($contents['emergency_tel']))
+                {
+                    $data['get_request']['emergency_tel_before']=$contents['emergency_tel']['before'];
+                    $data['get_request']['emergency_tel_after']=$contents['emergency_tel']['after'];
+                }
+                if (isset($contents['email_address']))
+                {
+                    $data['get_request']['email_address_before']=$contents['email_address']['before'];
+                    $data['get_request']['email_address_after']=$contents['email_address']['after'];
+                }
+                if (isset($contents['memo_to_coach']))
+                {
+                    $data['get_request']['memo_to_coach_before']=$contents['memo_to_coach']['before'];
+                    $data['get_request']['memo_to_coach_after']=$contents['memo_to_coach']['after'];
+                }
+                if (isset($contents['password']))
+                {
+                    $data['get_request']['password_before']=$contents['password']['before'];
+                    $data['get_request']['password_after']=$contents['password']['after'];
+                }
+                if (isset($contents['school_name']))
+                {
+                    $data['get_request']['school_name_before']=$contents['school_name']['before'];
+                    $data['get_request']['school_name_after']=$contents['school_name']['after'];
+                }
+                if (isset($contents['school_grade']))
+                {
+                    $data['get_request']['school_grade_before']=$contents['school_grade']['before'];
+                    $data['get_request']['school_grade_after']=$contents['school_grade']['after'];
+                }
             }
 
             //get event-short course
@@ -393,15 +447,13 @@ class Request extends ADMIN_Controller {
                 $get_change_course = $this->request->get_where(array('student_id' => $data['get_request']['student_id'], 'type' => COURSE_CHANGE));
                     $data['get_request']['bus_use_flg']=$contents['bus_use_flg'];
                     $data['get_request']['change_date_bus']=$contents['change_date'];
-                    $data['get_request']['first_time_change_bus_route']=$contents['first_time_change_bus'];
+                    $data['get_request']['first_time_change_bus_route']=$contents['first_time_change'];
                     unset($contents['bus_use_flg']);
                     unset($contents['change_date']);
-                    unset($contents['first_time_change_bus']);
+                    unset($contents['first_time_change']);
 
                     foreach ($contents as $key_contents => $row_contents)
                     {
-                        $key_contents=preg_split('/\_/',$key_contents)[0];
-                        $class[]=$this->class->select_by_id($key_contents)['0'];
                         foreach ($row_contents as $child_contents)
                         {
                             if (isset($child_contents['bus_route_go_id_before']) && $child_contents['bus_route_go_id_before']!=null) {
@@ -417,6 +469,8 @@ class Request extends ADMIN_Controller {
                                 $get_bus_route[$key_contents][] = $this->bus_route->select_by_id($child_contents['bus_route_ret_id_after'])[0];
                             }
                         }
+                        $key_contents=preg_split('/\_/',$key_contents)[0];
+                        $class[]=$this->class->select_by_id($key_contents)['0'];
                     }
                     foreach ($get_bus_route as $bus=> $bus_course)
                     {
@@ -429,7 +483,8 @@ class Request extends ADMIN_Controller {
                         }
                             foreach ($bus_course as $bus_course_key => $bus_row) {
                                 $bus_row['bus_stop_name'] = $this->bus_stop->select_by_id($bus_row['bus_stop_id'])[0]['bus_stop_name'];
-                                $bus_row['bus_course_name'] = $this->bus_course->select_by_id($bus_row['bus_course_id'])[0]['bus_course_name'];
+                                $bus_row['bus_stop_code'] = $this->bus_stop->select_by_id($bus_row['bus_stop_id'])[0]['bus_stop_code'];
+                                $bus_row['bus_course_name'] = isset($this->bus_course->select_by_id($bus_row['bus_course_id'])[0]['bus_course_name'])?$this->bus_course->select_by_id($bus_row['bus_course_id'])[0]['bus_course_name']:'';
                                 $get_bus_route_new[$bus][] = $bus_row;
                             }
                     }
@@ -442,7 +497,7 @@ class Request extends ADMIN_Controller {
                     }
                     $get_bus_route_new=array_combine($name_class,$get_bus_route_new);
                     $data['get_request']['class_id']=$id_class;
-                    $data['get_request']['content']=$get_bus_route_new;
+                    $data['get_request']['content']=$get_bus_route_new;;
             }
 
             //update data request
@@ -461,11 +516,35 @@ class Request extends ADMIN_Controller {
                 if ($this->input->post('status') == ONE) {
                     if ($data['get_request']['status'] != ONE) {
 
-                    //update address new
-                    if (isset($_POST['address_after'])) {
-                        $this->student_meta->update_student_meta($data['get_request']['student_id'], 'address', $this->input->post('address_after'));
-                    }
-
+                    //update info student
+                        if (isset($_POST['address_after'])) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'address', $this->input->post('address_after'));
+                        }
+                        if (isset($_POST['postal_code_after'])) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'zip', $this->input->post('postal_code_after'));
+                        }
+                        if (isset($_POST['phone_number_after'])) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'tel', $this->input->post('phone_number_after'));
+                            $this->student_model->update_by_id(array('id' => $data['get_request']['student_id'], 'tel_normalize'=>$_POST['phone_number_after']));
+                        }
+                        if (isset($_POST['emergency_tel_after'])) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'emergency_tel', $this->input->post('emergency_tel_after'));
+                        }
+                        if (isset($_POST['email_address_after'])) {
+                            $this->student_model->update_by_id(array('id' => $data['get_request']['student_id'], 'email'=> $this->input->post('email_address_after')));
+                        }
+                        if (isset($_POST['memo_to_coach_after'])) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'memo_to_coach', $this->input->post('memo_to_coach_after'));
+                        }
+                        if (isset($_POST['password_after'])) {
+                            $this->student_model->update_by_id(array('id' => $data['get_request']['student_id'], 'password'=> password_hash($this->input->post('password_after'),PASSWORD_DEFAULT)));
+                        }
+                        if (isset($_POST['school_name_after'])) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'school_name', $this->input->post('school_name_after'));
+                        }
+                        if (isset($_POST['school_grade_after'])) {
+                            $this->student_meta->update_student_meta($data['get_request']['student_id'], 'school_grade', $this->input->post('school_grade_after'));
+                        }
                     //update quit
                     if (isset($_POST['quit_date'])) {
                         $quit_meta = $this->student_meta->get_list(array('student_id' => '=' . $data['get_request']['student_id'], 'tag' => '=' . "'quit_date'"));

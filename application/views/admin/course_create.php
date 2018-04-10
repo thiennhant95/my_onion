@@ -171,7 +171,7 @@
                                 <input type="radio" name="course-type" id="short_type" value="<?php echo DATA_ON?>"> 短期
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="course-type" id="free_type" value="<?php echo THREE?>">無料
+                                <input type="radio" name="course-type" id="free_type" value="<?php echo TWO?>">無料
                             </label>
                         </div>
                     </div>

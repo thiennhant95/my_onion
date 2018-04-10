@@ -54,9 +54,9 @@
                           }
                         ?>
                         <?php foreach ($user['course']['all'] as $key => $value) {?>
-                          <?php if($value['type'] == '0'){?>
-                            <option value="<?php echo $value['id'];?>" <?php if($value['id'] == $id_course_current){ echo "selected";}?>> <?php echo  $value['course_name'];?></option>
-                          <?php }?>
+                          <?php //if($value['type'] == '0'){?>
+                            <option value="<?php echo $value['course_id'];?>" <?php if($value['course_id'] == $id_course_current){ echo "selected";}?>> <?php echo  $value['course_name'];?></option>
+                          <?php //}?>
                         <?php }?>
                       <?php }?>
                     </select>
@@ -140,7 +140,7 @@
                     <span class="label label-danger label-lg">
                       あと
                       <span id="count">0</span>
-                      ヶ所変更できます。
+                      ヶ所選択できます
                     </span>
                   </p>
                   <p>
@@ -185,18 +185,16 @@
       <!-- DEV TRÍ CUSTOM  VV_JSC       -->
       <button id="show_show_btn" type="button" style = "display:none" class="btn btn-link btn-sm" data-toggle="modal" data-target="#showMsg">show list option</button>
       <section class="modal fade" id="showMsg" role="dialog" aria-labelledby="showMsg">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog modal fix-width-modal-2">
           <div class="modal-content">
             <div class="modal-body">
               <h4 class="text-center">
                 <i class="fa fa-info-circle text-primary" aria-hidden="true"></i>
-                <strong>WARNING!</strong>
+                <strong>通知</strong>
               </h4>
               <div class="" style = "text-align: center ">
                   
-                <span id = "msg_alert" center>
-
-              </span>
+                <span id = "msg_alert" center></span>
               </div>
             </div>
             <div class="modal-footer">
@@ -213,17 +211,18 @@
   <script>
     $(document).on('ready', function(){
 
-      count_active();
+      
       var list_class_new = [];
       list_class_new = get_list_class_selected();
       var practice_max_of_course = $('#practice_course').val();
+      count_active();
 
       $.fn.datepicker.dates['jp'] = {
           days: ["日", "月", "火", "水", "木", "金", "土", "日"],
           daysShort: ["日", "月", "火", "水", "木", "金", "土", "日"],
           daysMin: ["日", "月", "火", "水", "木", "金", "土", "日"],
           months:  ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-          monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+          monthsShort:  ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
           today: "今日",
           clear: "クリア",
           weekStart: 0
@@ -249,6 +248,7 @@
           type: "POST",
           url: "https:" + "<?php echo base_url('request/change_course_ajax');?>",
           dataType: 'json',
+          async: false,
           data: {
             flag_change_coure: 1,
             id_course : id_course
@@ -260,15 +260,12 @@
             $('html,body').animate({
                     scrollTop: $("#start_date_request_change").offset().top},
                 'slow');
-
-            setTimeout(function(){
-              list_class_new = [];
-              list_class_new = get_list_class_selected();
-            }, 2000);
-            practice_max_of_course = data_result.practice_max
-            
+            practice_max_of_course = data_result.practice_max;
           }
         });
+
+        list_class_new = [];
+        list_class_new = get_list_class_selected();
         count_active();
       })
       
@@ -276,44 +273,17 @@
         
         if ( !$(this).hasClass( 'disabled' ) ) {
 
-          count_active();
+          
           var total_select = count_item_selected();
+          
           if((total_select + 1) > practice_max_of_course){
             if($(this).hasClass( 'selected' )){
-              
               $(this).removeClass( 'selected' );
               var name_new = $(this).attr('class');
               $(this).html(name_new);
               var id_selected = $(this).attr('id');
               list_class_new = sub_list_class(id_selected, list_class_new);
-              
-            }else{
-              
-
-              var tmp_class = $(this).parent();
-              var tmp_ = true;
-              $(tmp_class).find('td').each (function() {
-  
-                if($(this).hasClass('selected')){
-                  tmp_ = false;
-                  return false;
-                }
-              });
-              
-              if(tmp_){
-                var msg = "MAX PRACTICE " + practice_max_of_course;
-                show_msg(msg);
-              }
-            }
-            
-          } else {
-            if($(this).hasClass( 'selected' )){
-
-              $(this).removeClass( 'selected' );
-              var name_new = $(this).attr('class');
-              $(this).html(name_new);
-              var id_selected = $(this).attr('id');
-              list_class_new = sub_list_class(id_selected, list_class_new);
+              count_active();
 
             } else {
               var tmp_class = $(this).parent();
@@ -327,12 +297,50 @@
               });
               
               if(tmp_){
+                var msg = "このコースはクラス数が" +  practice_max_of_course + "クラス以下で入力してください。";
+                show_msg(msg);
+              }
+              //case select the same date
+              if(((total_select + 1) > practice_max_of_course)&& !tmp_){
+                var msg = "このコースはクラス数が" +  practice_max_of_course + "クラス以下で入力してください。";
+                show_msg(msg);
+              }
+              count_active();
+
+            }
+            
+          } else {
+            if($(this).hasClass( 'selected' )){
+              $(this).removeClass( 'selected' );
+              count_active();
+              var name_new = $(this).attr('class');
+              $(this).html(name_new);
+              var id_selected = $(this).attr('id');
+              list_class_new = sub_list_class(id_selected, list_class_new);
+              
+            } else {
+              var tmp_class = $(this).parent();
+              var tmp_ = true;
+              $(tmp_class).find('td').each (function() {
+  
+                if($(this).hasClass('selected')){
+                  tmp_ = false;
+                  return false;
+                }
+
+              });
+              
+              if(tmp_){
                 var id_selected = $(this).attr('id'); 
                 list_class_new = sub_list_class(id_selected, list_class_new);
                 $(this).addClass('selected');
                 $(this).html('選択');
                 var tmp_class = $(this).parent();
+              } else {
+                let string = "一日で一クラスのみ選択出来ます。";
+                show_msg(string);
               }
+              count_active();
 
             }
           } 
@@ -348,11 +356,14 @@
       }
 
       function count_active() {
+
         var count = 0;
         $('#table_change_course tbody tr').find('td').each (function() {
-          ($(this).hasClass('disabled')) || ($(this).hasClass('selected')) ? 1 : count++;
+          ($(this).hasClass('selected')) ? count++ : 1;
         })
-        $('#count').html(count-7);
+        var tmp_limit = practice_max_of_course - count;
+        $('#count').html(tmp_limit);
+        
       }
       
       function get_list_class_selected() {
@@ -360,8 +371,10 @@
         $('#table_change_course tbody tr').find('td').each (function() {
   
           if($(this).hasClass('selected')){
+
             var id_select = $(this).attr('id');
             list_data.push(id_select);
+
           }
 
         });
@@ -422,7 +435,6 @@
                 date_change : date_change
               },
               success: function (data_result) {
-                // console.log(data_result);
                 window.location.href = "https:" + "<?php echo base_url('request/change_course_complete');?>"; 
               }
             });
@@ -439,15 +451,15 @@
       })
 
       function formatDate() {
-          var d = new Date(),
-              month = '' + (d.getMonth() + 1),
-              day = '' + d.getDate(),
-              year = d.getFullYear();
+        var d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
-          if (month.length < 2) month = '0' + month;
-          if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
 
-          return [year, month].join('-');
+        return [year, month].join('-');
       }
 
       function show_msg(string) {

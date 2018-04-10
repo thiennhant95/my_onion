@@ -19,6 +19,10 @@ class Auth extends ADMIN_Controller {
         if ($this->error_flg) return;
         try 
         {
+            $user_session = $this->session->userdata('admin_account');
+            if(!empty($user_session['id'])){
+                redirect('/admin/');
+            }
             $this->login();
             admin_layout_view('auth_index', $this->viewVar);
         } 

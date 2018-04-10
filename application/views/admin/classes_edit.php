@@ -74,10 +74,10 @@
               <label for="" class="col-sm-2 control-label">バス利用</label>
               <div class="col-sm-10">
                 <label class="radio-inline">
-                  <input type="radio" name="use-bus" value="<?php echo DATA_ON?>" <?php if ($get_class['use_bus_flg']==DATA_ON) echo "checked"?>> あり
+                  <input type="radio" name="use-bus" value="<?php echo DATA_OFF?>" <?php if ($get_class['use_bus_flg']==DATA_OFF) echo "checked"?>> あり
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="use-bus" value="<?php echo  DATA_OFF?>" <?php if ($get_class['use_bus_flg']==DATA_OFF) echo "checked"?>> なし
+                  <input type="radio" name="use-bus" value="<?php echo  DATA_ON?>" <?php if ($get_class['use_bus_flg']==DATA_ON) echo "checked"?>> なし
                 </label>
               </div>
             </div>
@@ -122,10 +122,10 @@
               <label for="" class="col-sm-2 control-label">有効/無効</label>
               <div class="col-sm-10">
                 <label class="radio-inline">
-                  <input type="radio" name="enable" value=<?php echo DATA_OFF?> <?php if ($get_class['invalid_flg']==DATA_OFF) echo "checked"?>> 有効
+                  <input type="radio" id="enable" name="enable" value=<?php echo DATA_OFF?> <?php if ($get_class['invalid_flg']==DATA_OFF) echo "checked"?>> 有効
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="enable" value=<?php echo DATA_ON?> <?php if ($get_class['invalid_flg']==DATA_ON) echo "checked"?>> 無効
+                  <input type="radio" id="enable_2" name="enable" value=<?php echo DATA_ON?> <?php if ($get_class['invalid_flg']==DATA_ON) echo "checked"?>> 無効
                 </label>
               </div>
             </div>
@@ -172,6 +172,6 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <style>
-    .alert-success {border-radius: 0px }
-    .alert-danger {border-radius: 0px }
+    .alert-success {border-radius: 0px;border: 0px solid  }
+    .alert-danger {border-radius: 0px;border: 0px solid  }
 </style>

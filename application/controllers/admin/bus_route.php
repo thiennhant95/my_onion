@@ -49,7 +49,7 @@
             if ($this->error_flg) return;
             try {
                 $data['get_bus_course']=$this->bus_course->select_by_id($id)[0];
-                $data['class_list']=$this->class->get_list();
+                $data['class_list']=$this->class->get_list(array('invalid_flg'=> "=".DATA_OFF));
                 $data['bus_route_list']=$this->bus_route->get_list(array('bus_course_id'=> "=".$id));
                 $data['bus_stop_list']=$this->bus_stop->get_list();
                 if ($this->input->post())
@@ -144,7 +144,7 @@
         public function create() {
             if ($this->error_flg) return;
             try {
-                $data['class_list']=$this->class->get_list();
+                $data['class_list']=$this->class->get_list(array('invalid_flg'=> "=".DATA_OFF));
                 $data['bus_stop_list']=$this->bus_stop->get_list();
                 if ($this->input->post())
                 {

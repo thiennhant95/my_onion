@@ -23,14 +23,14 @@
                   <div class="col-sm-5">
                     <div class="input-group">
                       <span class="input-group-addon" id="fa-calendar-start"><span class="fa fa-calendar"></span></span>
-                      <input class="form-control " type="text" id="start_date_request_leave" name="start_date" placeholder="YYYY-MM" readonly>
+                      <input class="form-control date_leave" type="text" id="start_date_request_leave" name="start_date" placeholder="YYYY-MM" readonly>
                      </div>
                   </div>
                   <div class="col-sm-2"><center><small>から</small></center></div>
                   <div class="col-sm-5">
                     <div class="input-group">
                       <span class="input-group-addon" id="fa-calendar-end"><span class="fa fa-calendar"></span></span>
-                      <input class="form-control " type="text" id="end_date_request_leave" name="end_date" placeholder="YYYY-MM"   readonly>
+                      <input class="form-control date_leave" type="text" id="end_date_request_leave" name="end_date" placeholder="YYYY-MM"   readonly>
                     </div>
                   </div>
 
@@ -109,8 +109,8 @@
         days: ["日", "月", "火", "水", "木", "金", "土", "日"],
         daysShort: ["日", "月", "火", "水", "木", "金", "土", "日"],
         daysMin: ["日", "月", "火", "水", "木", "金", "土", "日"],
-        months:  ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        months:  ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        monthsShort:  ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
         today: "今日",
         clear: "クリア",
         weekStart: 0
@@ -126,6 +126,12 @@
         orientation: "auto right",
         startDate: new Date() 
     };
+    $( function(){
+      $('.date_leave').datepicker(options);
+      var curr_date = new Date();
+      curr_date.setMonth(curr_date.getMonth() + 1);
+      $('#end_date_request_leave').data('datepicker').setStartDate(curr_date);
+    });
     jQuery.validator.addMethod("greaterThan", function(value, element, params) {
         if($("input[name="+params[0]+"]").val()!='')
         {
@@ -151,15 +157,25 @@
          return true;
     },'休会開始は休会終了の値以下で入力してください');
 
-    $('#start_date_request_leave,#end_date_request_leave').datepicker(options).on('changeDate', function(ev){
+    $('#start_date_request_leave').datepicker(options).on('changeDate', function(ev){
+         var start_date = $(this).val();
+         start_date = new Date(start_date);
+         start_date.setMonth(start_date.getMonth() + 1 );
+         $('#end_date_request_leave').data("datepicker").setStartDate(start_date);
          $( "form#form_request_leave" ).valid();
     });
-
+    $('#end_date_request_leave').datepicker(options).on('changeDate', function(ev){
+         var end_date = $(this).val();
+         end_date = new Date(end_date);
+         end_date.setMonth(end_date.getMonth() - 1 );
+         $('#start_date_request_leave').data("datepicker").setEndDate(end_date);
+         $( "form#form_request_leave" ).valid();
+    });
     $('span#fa-calendar-start').click(function(){
-      $('input[id=start_date_request_leave]').datepicker("show");
+      $('#start_date_request_leave').datepicker("show");
     });
     $('span#fa-calendar-end').click(function(){
-      $('input[id=end_date_request_leave]').datepicker("show");
+      $('#end_date_request_leave').datepicker("show");
     });
 
     $('form#form_request_leave').validate({
@@ -167,13 +183,10 @@
       errorElement: "span",
         rules:{
           start_date:{
-              required:true,
-              lessThan:["end_date"]
-              
+              required:true,   
           },
           end_date:{
             required:true,
-            greaterThan:["start_date"]
           },
           note :{
             maxlength : 100 ,

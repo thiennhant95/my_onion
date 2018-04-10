@@ -7,6 +7,7 @@ class Entry extends FRONT_Controller {
         $this->load->model('student_model', 'student_data');
         $this->load->model('db/m_student_model','student_model');
         $this->load->model('db/m_course_model', 'm_course_model');
+        $this->load->model('db/m_distance_model', 'm_distance_model');
         $this->load->model('db/l_student_meta_model', 'student_meta_model');
         $this->load->model('sendmail_model','send_mail'); 
     }
@@ -74,7 +75,7 @@ class Entry extends FRONT_Controller {
                     front_layout_view('entry_questionnaire', $this->viewVar);
                 } else {
                     $data['school_grades'] = $this->configVar['school_grades'];
-                    $course = $this->m_course_model->select_all( 'm_course' );
+                    $course = $this->m_course_model->getData_Course_valid();
                     $course_type_0 = array();
                     $course_type_1 = array();
                     $course_type_2 = array();
@@ -84,6 +85,12 @@ class Entry extends FRONT_Controller {
                         if ( $value['type'] == 2 ) $course_type_2[] = $value;
                     }
                     $student_info = $this->student_data->get_student_data($token[0]['student_id']);
+                    $all_distance = $this->m_distance_model->select_all( 'm_distance' );
+                    $distance = array();
+                    foreach ( $all_distance as $k => $v ) {
+                        if ( $v['delete_flg'] == 0 ) $distance[] = $v['distance_name'];
+                    }
+                    $data['distance'] = $distance;
                     $data['s_info'] = $student_info;
                     $data['course_type_0'] = $course_type_0;
                     $data['course_type_1'] = $course_type_1;
@@ -119,8 +126,11 @@ class Entry extends FRONT_Controller {
                 );
                 // update l_student_meta
                 foreach ( $arr_insert_meta as $key => $value ) {
-                    if ( $value != '' ) {
-                        $this->student_meta_model->insert(array('student_id' => $_POST['student_id'], 'tag' => $key, 'value' => $value));
+                    if ( $key == 'bus_use_flg' ) {
+                        if ( $value == '' ) $this->student_meta_model->insert(array('student_id' => $_POST['student_id'], 'tag' => $key, 'value' => '0'));
+                        else $this->student_meta_model->insert(array('student_id' => $_POST['student_id'], 'tag' => $key, 'value' => $value));
+                    } else {
+                        if ( $value != '' ) $this->student_meta_model->insert(array('student_id' => $_POST['student_id'], 'tag' => $key, 'value' => $value));
                     }
                 }
                 $email_address = $this->student_model->select_student_field( $_POST['student_id'], 'email' );
@@ -130,12 +140,15 @@ class Entry extends FRONT_Controller {
                 // update l_student_course
                 $course_lesson = $_POST['course_lesson'];
                 $course = $this->m_course_model->select_by_id( $course_lesson, 'id', 'm_course' );
-                $this->l_student_course_model->insert( array( 'student_id' => $_POST['student_id'], 'course_id' => $course_lesson, 'start_date' => $course[0]['start_date'] ) );
+                if ( $course[0]['start_date'] == INVALID_DATE ) $course[0]['start_date'] = date( 'Y-m-d' );
+                if ( $course[0]['type'] == 2 ) $this->l_student_course_model->insert( array( 'student_id' => $_POST['student_id'], 'course_id' => $course_lesson, 'start_date' => $course[0]['start_date'], 'join_date' => $_POST['join_date'] ) );
+                elseif ( $course[0]['type'] == 0 )  $this->l_student_course_model->insert( array( 'student_id' => $_POST['student_id'], 'course_id' => $course_lesson, 'start_date' => date( 'Y-m-d' ) ) );
+                else $this->l_student_course_model->insert( array( 'student_id' => $_POST['student_id'], 'course_id' => $course_lesson, 'start_date' => $course[0]['start_date'] ) );
                 // send mail
                 $today = date('Y-m-d');
                 $diff = date_diff(date_create($_POST['birthday']), date_create($today));
                 $parent_text = '';
-                if ( $diff->format('%y') >= 18 ) {
+                if ( $diff->format('%y') >= 20 ) {
                     $parent_text = '■重要■　成人のご入会者様にご案内
                     ①ご来館前に、本人以外のご家族様に<a href="#">誓約書(要ｸﾘｯｸ)</a> の内容をご確認・同意をお願いします。
                     ②<a href="#">ライフチェックシート(要ｸﾘｯｸ)</a>を印刷、ご記入いただき、ご来館時にご持参ください。(印刷できない場合は、窓口にてご記入頂けますが、必ず事前にご確認下さい)';

@@ -1,9 +1,9 @@
 <?php
 //-------------------------------------------------------
-// 
+//
 // 生徒処理用モデル
 // ※このモデルで直接DBを操作しないこと
-// 
+//
 //-------------------------------------------------------
 class Student_model extends DB_Model {
 
@@ -37,8 +37,8 @@ class Student_model extends DB_Model {
 
     /**
      * 生徒IDを指定して生徒情報を取得する
-     * @param   
-     * @return  
+     * @param
+     * @return
      */
     public function get_student_data($student_id) {
         // 返却値配列
@@ -51,7 +51,7 @@ class Student_model extends DB_Model {
                 'free_course'       => array(),
                 'limited_course'    => array(),
                 'valid'             => array(),
-            ), 
+            ),
             'class'     => array(   // クラス情報
                 'all'       => array(),
                 'valid'     => array(),
@@ -137,7 +137,7 @@ class Student_model extends DB_Model {
      * @param   integer 年
      * @param   integer 月
      * @param   integer 日
-     * @return  array   
+     * @return  array
      */
     public function get_date_propaty($student_id, $year, $month, $day) {
         $this->load->model('db/schedule_system_model');
@@ -194,7 +194,7 @@ class Student_model extends DB_Model {
                 $result['future_transfer_cancel'] = TRUE;
                 break;
         }
-        
+
         return $result;
     }
 
@@ -202,7 +202,7 @@ class Student_model extends DB_Model {
     /**
      * 生徒が欠席した日のうち、振替していない日のレコードを取得する
      * @param   integer 生徒ID
-     * @return  array   
+     * @return  array
      */
     public function get_rest_date_no_transfer($student_id) {
         $this->load->model('db/schedule_system_model');
@@ -220,7 +220,7 @@ class Student_model extends DB_Model {
      * 振替可能な日の一覧を返却する（欠席した日に対して、振り返る事ができる日の一覧）
      * @param   integer 生徒ID
      * @param   integer 生徒クラス予約スケジュールID
-     * @return  array   
+     * @return  array
      */
     public function get_available_transfer_date($student_id, $schedule_class_id) {
 
@@ -238,46 +238,21 @@ class Student_model extends DB_Model {
 
         return $result;
     }
-    private function get_nearest($array){
-        if(!empty($array)){
-            if(array_key_exists('start_date',$array[0])&&array_key_exists('end_date',$array[0]))
-            {
-                $now = date_create(date('Y-m-d'));
-                $maxstartdate = date_create('0000-00-00');
-                $k = 0;
-                foreach ($array as $key => $row) {
-
-                    $startdate = date_create($row['start_date']);
-                    if($startdate >= $maxstartdate && $startdate <= $now )
-                    {
-                        $maxstartdate = $startdate ;
-                        $k=$key;
-                    }
-                        
-                }
-                return $k;
-            }
-            return -1;
-        }
-        return -1; 
-            
-    }
     public function get_student_data_detail($student_id) {
 
         $this->student = array(
-            'info'      => array(), 
-            'meta'      => array(), 
-            'family'    => array(), 
-            'course'    => array(  
-                'all'=>  array(), 
+            'info'      => array(),
+            'meta'      => array(),
+            'family'    => array(),
+            'course'    => array(
+                'all'=>  array(),
                 'valid'   => array(),
-
-            ), 
-            'class'      => array(   
+            ),
+            'class'      => array(
                 'all'       => array(),
                 'valid'     => array(),
             ),
-            'bus_course' => array(   
+            'bus_course' => array(
                 'all'       => array(),
             )
         );
@@ -288,25 +263,25 @@ class Student_model extends DB_Model {
         $this->student_id = $student_id;
 
         //data info basic
-        $result = $this->m_student_model->select_by_id($student_id);
+        $result = $this->m_student_model->select_by_id( $student_id );
         if (empty($result)) return $this->student;
         $this->student['info'] = $result[0];
 
         //data meta
-        $result = $this->l_student_meta_model->select_by_id($student_id, 'student_id');
+        $result = $this->l_student_meta_model->select_by_id( $student_id, 'student_id' );
         foreach ($result as $row) {
             $this->student['meta'][ $row['tag'] ] = $row['value'];
         }
         //data family
-        $result = $this->m_student_model->get_family_detail($student_id);
+        $result = $this->m_student_model->get_family_detail( $student_id );
         foreach ($result as $row) {
             $this->student['family'][] = $row;
         }
 
         //get data course
         $all_course = $this->student['course']['all'] = $this->m_course_model->getData_Course_valid();
-        $course_join = $this->l_student_course_model->getData_course_valid_by_studentid($student_id);
-        
+        $course_join = $this->l_student_course_model->getData_course_valid_by_studentid( $student_id );
+
         if($all_course)
         {
             if($course_join)
@@ -317,10 +292,10 @@ class Student_model extends DB_Model {
 
                 $this->student['course']['valid']['classjoin'] = $this->l_student_course_model->getData_class_by_id($course_join[0]['student_course']);
             }
-            else 
+            else
             {
-                $this->student['course']['valid'] = $all_course[0];
-                $class = $this->m_course_model->getData_class_by_id( $all_course[0]['id'] );
+                $this->student['course']['valid'] = [ $all_course[0] ];
+                $class = $this->m_course_model->getData_class_by_id( $all_course[0]['course_id'] );
                 $this->student['course']['valid']['class'] = $class;
             }
 
@@ -332,12 +307,12 @@ class Student_model extends DB_Model {
 
                     if( $data_class_and_bus_course )
                     {
-                        $this->student['bus_course']['all'][$key]['vaible'] = $data_class_and_bus_course;
+                        $this->student['bus_course']['all'][$key]['available'] = $data_class_and_bus_course;
 
                         foreach ($data_class_and_bus_course as $subkey => $value) {
-                            $this->student['bus_course']['all'][$key]['vaible'][$subkey]['bus_stop'] = $this->m_bus_course_model->getData_Bus_stop_by_id($value['id']);
+                            $this->student['bus_course']['all'][$key]['available'][$subkey]['bus_stop'] = $this->m_bus_course_model->getData_Bus_stop_by_id($value['id']);
                         }
-                        
+
                     }
 
                     $data_student_class = $this->l_student_bus_route_model->get_data_student_class( $item['student_class_id'] );
@@ -347,12 +322,12 @@ class Student_model extends DB_Model {
                         $this->student['bus_course']['all'][$key]['student_join'] = $data_student_class;
 
                         $this->student['bus_course']['all'][$key]['student_join'][0]['bus_go'] = $this->m_bus_route_model->select_by_id( $data_student_class[0]['bus_route_go_id'],'id' );
-                        $this->student['bus_course']['all'][$key]['student_join'][0]['bus_ret'] = $this->m_bus_route_model->select_by_id( $data_student_class[0]['bus_route_ret_id'],'id' ); 
+                        $this->student['bus_course']['all'][$key]['student_join'][0]['bus_ret'] = $this->m_bus_route_model->select_by_id( $data_student_class[0]['bus_route_ret_id'],'id' );
                     }
                 }
             }
         }
-        
+
         return $this->student;
     }
 
@@ -382,8 +357,60 @@ class Student_model extends DB_Model {
         $this->db->select('l_student_course.course_id, m_course.*')
             ->from('l_student_course')
             ->where($condition)
-            ->join('m_course', 'm_course.id = l_student_course.student_id');
+            ->join('m_course', 'm_course.id = l_student_course.course_id');
         $query = $this->db->get()->result_array();
         return $query;
+    }
+
+    public function get_class_user($student_id)
+    {
+        $condition = array('l_student_class.student_id' => $student_id, 'l_student_class.end_date' => END_DATE_DEFAULT);
+        $this->db->select('l_student_class.class_id, m_class.base_class_sign, m_class.class_name, m_class.id')
+            ->from('l_student_class')
+            ->where($condition)
+            ->join('m_class', 'm_class.id = l_student_class.class_id');
+        $query = $this->db->get()->result_array();
+        return $query;
+    }
+    public function get_class_or_course($id_course, $id_student)
+    {
+        $condition = array('l_student_course.student_id' => $id_student, 'l_student_course.course_id' => $id_course,'l_student_course.end_date' => END_DATE_DEFAULT);
+        $this->db->select('l_student_course.id')
+            ->from('l_student_course')
+            ->where($condition);
+        $query = $this->db->get()->result_array();
+
+        return $query;
+    }
+    public function get_member_today($timstamp_now)
+    {
+
+        $star_tm =  $timstamp_now.' 00:00:01';
+        $end_tm = $timstamp_now.' 23:59:59';
+        $condition_arr = array('m_student.create_date >=' =>  $star_tm, 'm_student.create_date <=' =>  $end_tm, 'm_student.status' => 1);
+
+        $this->db->select('m_student.id')
+            ->from('m_student')
+            ->where($condition_arr);
+        $data_std = $this->db->get()->result_array();
+        $data_filter = [];
+        if(!empty($data_std)){
+            foreach ($data_std as $key => $value) {
+                $id_student = $value['id'];
+                $data_detail = $this->get_student_data_detail($id_student);
+                $row = [];
+                if(!empty($data_detail)){
+                    $row['id'] = !empty($data_detail['info']['id']) ? $data_detail['info']['id'] : 0;
+                    $row['name']  = !empty($data_detail['meta']['name']) ? $data_detail['meta']['name'] : '';
+                    $row['name_kana']  = !empty($data_detail['meta']['name_kana']) ? $data_detail['meta']['name_kana'] : '';
+                    $row['course_name'] = !empty($data_detail['course']['valid'][0]['course_name']) ? $data_detail['course']['valid'][0]['course_name'] : '';
+                    $row['class_name'] = !empty($data_detail['course']['valid']['class_join'][0]['class_name']) ? $data_detail['course']['valid']['class_join'][0]['class_name'] : '';
+                    $row['memo_to_coach'] = !empty($data_detail['meta']['memo_to_coach']) ? $data_detail['meta']['memo_to_coach'] : '' ;
+                    $row['enquete'] = !empty($data_detail['meta']['enquete']) ? $data_detail['meta']['enquete'] : '';
+                }
+                $data_filter[] = $row;
+            }
+        }
+        return $data_filter;
     }
 }

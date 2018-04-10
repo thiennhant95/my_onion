@@ -15,7 +15,15 @@
         <form action="" method="" id = "login_customer" >
           <div class="form-group login-icon login-user">
             <label>会員番号またはメールアドレス</label>
-            <input type="" name="users" id = "users" class="form-control" placeholder="">
+            <?php 
+              $name_cookie  = '';
+              $check_val    = 0;
+              if(!empty($cookie_data)){
+                $name_cookie  = $cookie_data['user_cookie'];
+                $check_val    = $cookie_data['checked'];
+              }
+            ?>
+            <input type="" name="users" id = "users" class="form-control" placeholder="" value ="<?php echo $name_cookie; ?>">
           </div>
           <div class=" err_user"><!-- message -->
           </div>
@@ -27,7 +35,7 @@
           </div>
           <div class="checkbox text-center">
             <label>
-              <input type="checkbox" name="checkbox_save" value="" id = "checkbox_save">
+              <input type="checkbox" name="checkbox_save" value="" <?php if($check_val == 1){echo 'checked';}?> id = "checkbox_save">
               <strong>会員番号を記録する</strong>
             </label>
           </div>
@@ -55,7 +63,6 @@
         },
         pass: {
           required: true,
-          minlength: 8
         }
       },
       errorPlacement: function (error, element) {
@@ -70,8 +77,7 @@
             
         },
         pass: { 
-          required: "必須です。ご入力ください。",
-          minlength: "8半角文字以上で入力してください。"
+          required: "必須です。ご入力ください。"
         },
         
       },

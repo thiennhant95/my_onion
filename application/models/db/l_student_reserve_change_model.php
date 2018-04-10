@@ -77,8 +77,8 @@ class L_student_reserve_change_model extends DB_Model {
         }
 
         //search date
-        $this->db->where('target_date >=',$date_start);
-        $this->db->where('target_date <=',$date_end);
+        $this->db->where('dist_date >=',$date_start);
+        $this->db->where('dist_date <=',$date_end);
 
         //search type
         $type=$this->input->post('type');
@@ -153,16 +153,25 @@ class L_student_reserve_change_model extends DB_Model {
             foreach ($student_reserve as $row_data) {
                 if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
                 {
-                    $data_return[]=$row_data;
-                }
-                if (strlen(strstr($row_data['reason'], $free_text_search)) > 0)
-                {
-                    $data_return[]=$row_data;
+                    $data_return_a[]=$row_data;
                 }
                 if (strlen(strstr($row_data['student_id'], $free_text_search)) > 0)
                 {
-                    $data_return[]=$row_data;
+                    $data_return_b[]=$row_data;
                 }
+            }
+            if (isset($data_return_a) && isset($data_return_b))  {
+                if (count($data_return_a) >= count($data_return_b)) {
+                    $data_return = $data_return_a;
+                } else if (count($data_return_a) < count($data_return_b)) {
+                    $data_return = $data_return_b;
+                }
+            }
+            if (isset($data_return_a) && !isset($data_return_b))  {
+                $data_return = $data_return_a;
+            }
+            if (isset($data_return_b) && !isset($data_return_a))  {
+                $data_return = $data_return_b;
             }
             if ($data_return==NULL)
             {
@@ -228,8 +237,8 @@ class L_student_reserve_change_model extends DB_Model {
         }
 
         //search date
-        $this->db->where('target_date >=',$date_start);
-        $this->db->where('target_date <=',$date_end);
+        $this->db->where('dist_date >=',$date_start);
+        $this->db->where('dist_date <=',$date_end);
 
         //search type
         $type=$this->input->post('type');
@@ -304,16 +313,25 @@ class L_student_reserve_change_model extends DB_Model {
             foreach ($student_reserve as $row_data) {
                 if (strlen(strstr($row_data['name'], $free_text_search)) > 0)
                 {
-                    $data_return[]=$row_data;
-                }
-                if (strlen(strstr($row_data['reason'], $free_text_search)) > 0)
-                {
-                    $data_return[]=$row_data;
+                    $data_return_a[]=$row_data;
                 }
                 if (strlen(strstr($row_data['student_id'], $free_text_search)) > 0)
                 {
-                    $data_return[]=$row_data;
+                    $data_return_b[]=$row_data;
                 }
+            }
+            if (isset($data_return_a) && isset($data_return_b))  {
+                if (count($data_return_a) >= count($data_return_b)) {
+                    $data_return = $data_return_a;
+                } else if (count($data_return_a) < count($data_return_b)) {
+                    $data_return = $data_return_b;
+                }
+            }
+            if (isset($data_return_a) && !isset($data_return_b))  {
+                $data_return = $data_return_a;
+            }
+            if (isset($data_return_b) && !isset($data_return_a))  {
+                $data_return = $data_return_b;
             }
             if ($data_return==NULL)
             {

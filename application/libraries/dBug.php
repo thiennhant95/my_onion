@@ -47,7 +47,7 @@
 \*********************************************************************************************************************/
 
 class dBug {
-
+	
 	var $xmlDepth=array();
 	var $xmlCData;
 	var $xmlSData;
@@ -59,12 +59,12 @@ class dBug {
 	var $bInitialized = false;
 	var $bCollapsed = false;
 	var $arrHistory = array();
-    //constructor
-    function __construct()
+	function __construct()
     {
     }
 
-    function dBug($var,$forceType="",$bCollapsed=false) {
+    //constructor
+	function dBug($var,$forceType="",$bCollapsed=false) {
 		//include js and css scripts
 		if(!defined('BDBUGINIT')) {
 			define("BDBUGINIT", TRUE);

@@ -7,13 +7,17 @@ class Member extends ADMIN_Controller {
         parent::__construct();
         $this->load->model('member_model','member_model');
         $this->load->library("pagination");
-	$this->load->model('db/m_bus_course_model');
+	    $this->load->model('db/m_bus_course_model');
         $this->load->model('db/m_class_model');
+        $this->load->model('db/m_item_model');
         $this->load->model('db/m_course_model');
+        $this->load->model('db/m_student_model');
+        $this->load->model('db/m_bus_route_model');
         $this->load->model('db/l_student_class_model');
         $this->load->model('db/l_student_course_model');
         $this->load->model('db/l_student_bus_route_model');
-        $this->load->model('db/m_bus_route_model');
+        $this->load->model('db/l_student_request_model');
+        $this->load->model('db/l_student_meta_model');
     }
     
     //DEV TRÍ VV_JSC
@@ -97,10 +101,10 @@ class Member extends ADMIN_Controller {
                 $html .= '<td>'.$value['value'].'</td>';
                 //course name
                 $html .= '<td>'.$value['course_name'].'</td>';
-                //class basinge
-                $html .= '<td>'.$value['base_class_sign'].'</td>';
                 //class name code
                 $html .= '<td>'.$value['class_name'].'</td>';
+                //class basinge
+                $html .= '<td>'.$value['base_class_sign'].'</td>';
                 //buss name
                 $html .= '<td>'.$value['bus_stop_name'].'</td>';
                 //status
@@ -178,10 +182,10 @@ class Member extends ADMIN_Controller {
                     $html .= '<td>'.$value['name'].'</td>';
                     //course name
                     $html .= '<td>'.$value['course_name'].'</td>';
-                    //class basinge
-                    $html .= '<td>'.$value['base_class_sign'].'</td>';
                     //class name code
                     $html .= '<td>'.$value['class_name'].'</td>';
+                    //class basinge
+                    $html .= '<td>'.$value['base_class_sign'].'</td>';
                     //buss name
                     $html .= '<td>'.$value['bus_stop_name'].'</td>';
                     //status
@@ -325,18 +329,25 @@ class Member extends ADMIN_Controller {
         if ($this->error_flg) return;
         try {
             $this->load->model('student_model');
-            $data= $this->student_model->get_student_data_detail($id);
+            $data = $this->student_model->get_student_data_detail($id);
             // echo '<pre>'.print_r($data).'</pre>';
             // exit();
             $this->viewVar = $data;
+
+            $course = isset( $data['course']['valid'][0] ) ? $data['course']['valid'][0]  :  $data['course']['all'][0] ;
+            $cost_fee =  $this->m_item_model->select_by_id( $course['cost_item_id'] , 'id');
+            $rest_fee =  $this->m_item_model->select_by_id( $course['rest_item_id'] , 'id');
+            $bus_fee  =  $this->m_item_model->select_by_id( $course['bus_item_id'] , 'id');
+            $this->viewVar['item'] = [ 'cost_fee' => $cost_fee , 'rest_fee' => $rest_fee , 'bus_fee' => $bus_fee ];
             $distance = $this->m_distance_model->select_all();
             $this->viewVar['distance'] = $distance;
+           
             admin_layout_view('member_edit', $this->viewVar);
         } catch (Exception $e) {
             $this->_show_error($e->getMessage(), $e->getTraceAsString());
         }
     }
-
+    
     /**
      * 会員詳細
      *
@@ -356,28 +367,22 @@ class Member extends ADMIN_Controller {
     }
     public function Update_data_Member($id = NULL)
     {
-        if ($id==NULL) return;
-        $this->load->model('db/l_student_meta_model');
-        $this->load->model('db/m_student_model');
-        $this->load->model('db/l_student_course_model');
-        $this->load->model('db/l_student_class_model');
-        $this->load->model('db/l_student_bus_route_model');
-	$this->load->model('db/l_student_request_model');
+        if ( $id==NULL ) return;
         $info_data = isset($_POST['infodata'])?$_POST['infodata']:'';
         $meta_data = isset($_POST['metadata'])?$_POST['metadata']:'';
         $course_join = isset($_POST['course_join'])?$_POST['course_join']:'';
         $course_class_join = isset($_POST['course_class_join'])?$_POST['course_class_join']:'';
         $bus_route_join = isset($_POST['bus_route_join'])?$_POST['bus_route_join']:'';
-	$session_student = $this->session->userdata('admin_account');
+	    $session_student = $this->session->userdata('admin_account');
         $admin_id = $session_student['id'];
-        if($info_data =='' || $meta_data =='' || $course_join == '') { echo " UnSuccessfully "; exit(); }
-        try{
-            if( $this->m_student_model->new_update_by_id($info_data,$id) )
-            {	
-	    	$current_date = date('Y-m-d H:i:s');
+        if( $info_data =='' || $meta_data =='' || $course_join == '' ) goto end;
 
-                foreach ($info_data as $key => $value) {
-                    if($key == 'status' && $value == '3')
+            if( $this->m_student_model->new_update_by_id( $info_data , $id ) )
+            {	
+	    	    $current_date = date('Y-m-d H:i:s');
+
+                foreach ( $info_data as $key => $value ) {
+                    if( $key == 'status' && $value == '3' )
                     {
                         $result_search = $this->l_student_request_model->Search_request_notyet_processed( $id , QUIT );
                         if( count( $result_search ) > 0 )
@@ -386,7 +391,7 @@ class Member extends ADMIN_Controller {
                             $this->db->update('l_student_request', array( 'status' => DATA_ON , 'update_id' => $admin_id,'update_date' => $current_date ), array('id'=>$id_1 ) );   
                         }
                     }
-                    else if($key == 'rest_flg' && $value == '2')
+                    else if( $key == 'rest_flg' && $value == '2' )
                     {
                         $result_search_2 = $this->l_student_request_model->Search_request_notyet_processed( $id , RECESS );
                         if( count( $result_search_2 ) > 0 )
@@ -402,24 +407,18 @@ class Member extends ADMIN_Controller {
                     {
                         if($this->l_student_class_model->Update_class($course_class_join))
                         {
-
-                           if( $this->l_student_bus_route_model->Update_bus_route_join($bus_route_join)  )
+                           if($this->l_student_bus_route_model->Update_bus_route_join($bus_route_join))
                            {
-                                echo "Successfully";
+                                echo "Success";
                                 exit();
                            } 
                         }  
                     }  
                 }  
             }
-            echo " UnSuccessfully ";
-            exit();
-        }
-        catch(Exception $e)
-        {
-            echo " UnSuccessfully ";
-            exit();
-        }    
+            end:
+            echo " UnSuccess";
+            exit();  
         
     }
     public function get_data_bus_stop()
@@ -465,6 +464,7 @@ class Member extends ADMIN_Controller {
                     $choose = '';
                     $class_id = '';
                     $class = 'bg-gainsboro';
+                    $week_full_text ='';
                     
                     if($key == 0)
                     {
@@ -480,8 +480,11 @@ class Member extends ADMIN_Controller {
                             if( $value == $subvalue_1['base_class_sign'] && $subvalue_1['week_num'] == strval($x)  )
                             {
                               $class_id = $subvalue_1['class_id'];
+                              $max_count = $subvalue_1['max_count'];
                               $choose = '選択';
                               $class = 'bg-rouge';
+                              $join =  intval( $subvalue_1['week_full'][1] ) > 0 ? intval( $subvalue_1['week_full'][1] ) - 1 : intval( $subvalue_1['week_full'][1] );
+                              $week_full_text = "【 {$join}/{$max_count} 】";
                               $ishas = TRUE ;
                               break;
                             }
@@ -495,7 +498,13 @@ class Member extends ADMIN_Controller {
                             $class_id = $subvalue_2['class_id']; 
                             $class = 'bg-plae-lemmon';
                             $week_full = $subvalue_2['week_full'];
-                            if( strpos( $week_full , strval($x) ) !== false ) $class = 'bg-red';
+                            $max_count = $subvalue_2['max_count'];
+                            $key = array_search( $x , array_column( $week_full , 0 ) );
+                            // if( strpos( $week_full , strval($x) ) !== false ) $class = 'bg-red';
+                            $check =  array_search([ $x , $max_count ] , $week_full );
+                            if( $check != FALSE || $check === 0 ) $class = 'bg-red';
+                            $choose = "【 {$week_full[$key][1]}/{$max_count} 】";
+                            $week_full_text = "【 {$week_full[$key][1]}/{$max_count} 】";
                             break;
                           }
                         }
@@ -504,8 +513,9 @@ class Member extends ADMIN_Controller {
                       $data_id = $class_id != '' ? 'data-id = "'.$class_id.'" ' : '';
                       $data_base = 'data-base = "'.$value.'-'. $x .'"  ' ;
                       $data_class = 'class = "'.$class.'" ' ;
+                      $data_week_full = $week_full_text !='' ? ' data-week_full = "'.$week_full_text.'" ' :'' ;
 
-                      $tag_tr.= '<td '.$data_class. $data_base.$data_id. ' onclick=" choose_class(this) ">'.$choose.'</td>';
+                      $tag_tr.= '<td '.$data_class. $data_base.$data_id.$data_week_full. ' onclick=" choose_class(this) ">'.$choose.'</td>';
                     }                          
                   }
                   $tag_tr .= '</tr>';
@@ -519,7 +529,7 @@ class Member extends ADMIN_Controller {
                     foreach ($classes_join as $key => $value) {
                         $html_0 = '<label  class="col-sm-2 control-label sub_class_join" ';
                         $html_1 = 'data-class="'.$value['base_class_sign'].'-'.$value['week_num'].'" data-id='.$value['class_id'].'>'.$value['class_code'].' </label>';     
-                        $label_class_join.= $html_0.$html_1;     
+                        $label_class_join .= $html_0.$html_1;     
                     }
                 }
                 $result['label_class_join'] = $label_class_join ;
@@ -544,21 +554,37 @@ class Member extends ADMIN_Controller {
                             $classes_join[$key]['student_join_route']['bus_ret'] = $this->m_bus_route_model->select_by_id( $student_join_route[0]['bus_route_ret_id'],'id');
                         }
                     }
-                    
-                    foreach ( $classes_join as $key => $value ) {
 
+                    $bus_couse_join = '';
+                    $index_bus = 0 ;
+                    foreach ( $classes_join as $key => $value ) {
+                        
                         if(  $value['student_join_route'] )
                         {
-                            
-                            $html_2='';
-                            $html_5= '';
-                            $html_8= '';
-                            $html_11='';
+
                             $index = random_string('alnum', RANDOM_STRING_LENGTH );
                             $base_class_sign = isset( $value['base_class_sign'] ) ? $value['base_class_sign'] : '';
                             $class_name = isset( $value['class_name'] ) ? $value['class_name'] : '';
                             $class_id = isset( $value['class_id'] ) ? $value['class_id'] : '';
                             $week_num = isset( $value['week_num'] ) ? $value['week_num'] : '';
+
+                            $html = array();
+                            $html[]  ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week_num.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week[$week_num].'<br>('.$class_name.')</div>';
+                            $html[]  ='<div class="form-group"><label for="" class="col-sm-2 control-label">行き</label><div class="col-sm-5">
+                                  <select class="form-control bus_course" name="bus_course_go_'.$index.'" onchange="changeBuscoure(this)">';
+                            $html[] = '';
+                            $html[] ='</select></div>';
+                            $html[] ='<div class="col-sm-5"><select class="form-control bus_stop" name="bus_stop_go_'.$index.'" >';
+                            $html[] = '';
+                            $html[] ='</select></div></div>';
+                            $html[] = '<div class="form-group"><label for="" class="col-sm-2 control-label">帰り</label><div class="col-sm-5">
+                                  <select class="form-control bus_course" name="bus_course_ret_'.$index.'" onchange="changeBuscoure(this)">';
+                            $html[] = '';
+                            $html[] = '</select></div>';
+                            $html[] = '<div class="col-sm-5"><select class="form-control bus_stop" name="bus_stop_ret_'.$index.'" >';
+                            $html[] = '';
+                            $html[] = '</select></div></div></div>';
+
                             $id_go = isset( $value['student_join_route']['bus_go'][0]['bus_course_id'] ) ? $value['student_join_route']['bus_go'][0]['bus_course_id'] : '';
                             $id_ret = isset( $value['student_join_route']['bus_ret'][0]['bus_course_id'] ) ? $value['student_join_route']['bus_ret'][0]['bus_course_id'] : '';
                             $id_stop_go = isset( $value['student_join_route']['bus_go'][0]['bus_stop_id'] ) ? $value['student_join_route']['bus_go'][0]['bus_stop_id'] : '';
@@ -571,21 +597,21 @@ class Member extends ADMIN_Controller {
                                 $selected_stop_go = '';
                                 $selected_stop_ret = '';
 
-                                if( $subvalue['id'] === $id_go )
+                                if( $subvalue['id'] == $id_go )
                                 {
                                   $selected_go = "selected";
                                   if( $subvalue['bus_stop'] )
                                   {
                                     foreach ( $subvalue['bus_stop'] as $sub_key_stop => $sub_value_stop ) {
 
-                                      if( $sub_value_stop['bus_stop_id'] === $id_stop_go ) $selected_stop_go = "selected";
-                                      $html_5.= '<option value='.$sub_value_stop['bus_stop_id'].' '.$selected_stop_go.'>【'.$sub_value_stop['bus_stop_code'].'】'.$sub_value_stop['bus_stop_name'].'</option>';
+                                      if( $sub_value_stop['bus_stop_id'] == $id_stop_go ) $selected_stop_go = "selected";
+                                      $html[5] .= '<option value='.$sub_value_stop['bus_stop_id'].' '.$selected_stop_go.'>【'.$sub_value_stop['bus_stop_code'].'】'.$sub_value_stop['bus_stop_name'].'</option>';
                                       $selected_stop_go ='';
 
                                     }
                                   }  
                                 } 
-                                $html_2.= '<option value='.$subvalue['id'].' '.$selected_go.'>'.$subvalue['bus_course_name'].'</option>';
+                                $html[2] .= '<option value='.$subvalue['id'].' '.$selected_go.'>'.$subvalue['bus_course_name'].'</option>';
 
 
                                 if( $subvalue['id'] === $id_ret ) 
@@ -594,45 +620,27 @@ class Member extends ADMIN_Controller {
                                   if( $subvalue['bus_stop'] )
                                   {
                                     foreach ( $subvalue['bus_stop'] as $sub_key_stop => $sub_value_stop ) {
-                                      if( $sub_value_stop['bus_stop_id']===$id_stop_ret ) $selected_stop_ret = "selected";
-                                      $html_11.= '<option value='.$sub_value_stop['bus_stop_id'].' '.$selected_stop_ret.'>【'.$sub_value_stop['bus_stop_code'].'】'.$sub_value_stop['bus_stop_name'].'</option>';
+                                      if( $sub_value_stop['bus_stop_id'] == $id_stop_ret ) $selected_stop_ret = "selected";
+                                      $html[11] .= '<option value='.$sub_value_stop['bus_stop_id'].' '.$selected_stop_ret.'>【'.$sub_value_stop['bus_stop_code'].'】'.$sub_value_stop['bus_stop_name'].'</option>';
                                       $selected_stop_ret='';
                                     }
                                   }
                                 }
-                                $html_8.= '<option value='.$subvalue['id'].' '.$selected_ret.'>'.$subvalue['bus_course_name'].'</option>'; 
+                                $html[8] .= '<option value='.$subvalue['id'].' '.$selected_ret.'>'.$subvalue['bus_course_name'].'</option>'; 
                             }
 
-                            $html_0  ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week_num.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week[$week_num].'<br>('.$class_name.')</div>';
-                            $html_1  ='<div class="form-group">
-                                  <label for="" class="col-sm-2 control-label">行き</label>
-                                  <div class="col-sm-5">
-                                  <select class="form-control bus_course" name="bus_course_go_'.$index.'" onchange="changeBuscoure(this)">';
-                            $html_3  ='</select>
-                                    </div>';
-                            $html_4  ='<div class="col-sm-5">
-                                    <select class="form-control bus_stop" name="bus_stop_go_'.$index.'" >';
-                            $html_6  ='</select>
-                                    </div>
-                                    </div>';
-                            $html_7  = '<div class="form-group">
-                                  <label for="" class="col-sm-2 control-label">帰り</label>
-                                  <div class="col-sm-5">
-                                  <select class="form-control bus_course" name="bus_course_ret_'.$index.'" onchange="changeBuscoure(this)">';
-                            $html_9  = '</select>
-                                     </div>';
-                            $html_10  = '<div class="col-sm-5">
-                                  <select class="form-control bus_stop" name="bus_stop_ret_'.$index.'" >';
-                            $html_12 = '</select></div></div></div>';
-                            $bus_couse_join.= $html_0.$html_1.$html_2.$html_3.$html_4.$html_5.$html_6.$html_7.$html_8.$html_9.$html_10.$html_11.$html_12;
+                            foreach($html  as $item )
+                                $bus_couse_join .= $item ;
 
-                            if( $key == 0)
+                            if( $index_bus == 0 && count( $value['student_join_route'] ) > 1 )
                             {
                                 $set_same  = '<div class="checkbox ml-1" id="set_same"><label style="margin: 0px auto 10px 142px;padding-top: 0px;" onclick ="check_set_same()">';
                                 $set_same .= '<input type="checkbox" id = "check_set_same">'; 
                                 $set_same .= '<small>上記と同じ設定をする</small></label></div>';
                                 $bus_couse_join .= $set_same;
                             }
+                            $index_bus ++;
+
                         }    
                     }
                 } 
@@ -640,92 +648,167 @@ class Member extends ADMIN_Controller {
             echo json_encode( $result );
             exit();
     }
-    public function add_click_view()
+
+    /**
+     * function create_Html use to create select tag , label tag
+     *
+     * @param   
+     *  array( [class_id , week_num] )
+     * @return  
+     * html
+     *
+    */
+    private function create_html( $classes = array() , $is_label_class = true  )
     {
-
-        $class_id = isset($_POST['class_id']) ? $_POST['class_id'] : '';
-        $week_num = isset($_POST['week_num']) ? $_POST['week_num'] : '';
-        if( $class_id == ''|| $week_num == '' )  { echo ''; exit(); }
-        
-
         $result = array(); 
-        // $class = $this->m_class_model->select_by_id( $class_id ,'id' ); 
-        $class = $this->m_class_model->Get_data_class( $class_id , $week_num );      
+        $_html = array();
+        if( count( $classes ) == 0 ) goto end;
 
-        $class_name = $class[0]['class_name'] ;
-        $base_class_sign = $class[0]['base_class_sign'] ;
-        $class_code = $class[0]['class_code'] ;
-
-        $html_label  = '<label  class="col-sm-2 control-label sub_class_join" ';
-        $html_label .= 'data-class="' . $base_class_sign . '-' . $week_num . '" data-id="' . $class_id. '">' . $class_code.' </label>';
-        $result['html_label_class_join'] =  $html_label;
-
-        if( $class && $class[0]['use_bus_flg'] !== '1' ) 
-        { 
-            $bus_couse = $this->m_bus_course_model->select_by_id( $class_id ,'class_id' );
-                  $config = $this->configVar;
-                  $week= $config['week_num'];
-                  $index = random_string('alnum', RANDOM_STRING_LENGTH );
-                  $html_0 ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week_num.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week[$week_num].'<br>('.$class_name.')</div>';
-                  $html_1 ='<div class="form-group">
-                          <label for="" class="col-sm-2 control-label">行き</label>
-                          <div class="col-sm-5">
-                          <select class="form-control bus_course" name="bus_course_go_'.$index.'" onchange="changeBuscoure(this)">';
-                  $html_2 ='';
-                  $html_3 ='</select>
-                            </div>';
-                  $html_4 ='<div class="col-sm-5">
-                            <select class="form-control bus_stop" name="bus_stop_go_'.$index.'" >';
-                  $html_5 = '';
-                  $html_6 ='</select>
-                            </div>
-                            </div>';
-                  $html_7 = '<div class="form-group">
-                          <label for="" class="col-sm-2 control-label">帰り</label>
-                          <div class="col-sm-5">
-                          <select class="form-control bus_course" name="bus_course_ret_'.$index.'" onchange="changeBuscoure(this)">';
-                  $html_8 = '';
-                  $html_9 = '</select>
-                             </div>';
-                  $html_10 = '<div class="col-sm-5">
-                          <select class="form-control bus_stop" name="bus_stop_ret_'.$index.'" >';
-                  $html_11 = '';
-                  $html_12 = '</select></div></div></div>';
-                  
-            if( count( $bus_couse ) > 0 )
+        foreach( $classes as $key => $value ){
+            
+            $class = $this->m_class_model->Get_data_class( $value['class_id'] ,  $value['week_num'] );
+            if( count( $class ) > 0 )
             {
-                foreach( $bus_couse as $key => $value )
+                $class_id   = $class[0]['id'];
+                $class_name = $class[0]['class_name'] ;
+                $base_class_sign = $class[0]['base_class_sign'] ;
+                $class_code = $class[0]['class_code'] ;
+                
+                $result[$key]['class_base']  = [ 'class_id' => $value['class_id'] , 'class_name' => $class_name, 'class_code' => $class_code , 'base_sign_class' => $base_class_sign , 'week_num'=> $value['week_num'] ];
+                if( $class[0]['use_bus_flg'] == '0' )
                 {
-                    $bus_couse[$key]['bus_stop']=$this->m_bus_course_model->getData_Bus_stop_by_id( $value['id'] );
-                }
-
-                foreach ( $bus_couse as $key => $value ) {
-                    $selected = '';
-                    if( $key == 0 ) $selected ="seleceted";
-                       $html_2.= '<option value='.$value['id'].' '.$selected.' >'.$value['bus_course_name'].'</option>';
-                       $html_8.= '<option value='.$value['id'].'>'.$value['bus_course_name'].'</option>';
-
-                    foreach( $bus_couse[$key]['bus_stop'] as $subkey => $subvalue )
+                    $bus_course  = $this->m_bus_course_model->select_by_id( $class_id ,'class_id' );
+                    if( count( $bus_course ) > 0)
                     {
-                        if( $key == 0 )
-                        {
-                            $html_5.= '<option value='.$subvalue['bus_stop_id'].'>【'.$subvalue['bus_stop_code'].'】'.$subvalue['bus_stop_name'].'</option>';
-                            $html_11.= '<option value='.$subvalue['bus_stop_id'].'>【'.$subvalue['bus_stop_code'].'】'.$subvalue['bus_stop_name'].'</option>';
+                        foreach( $bus_course as $key_1 => $value_1 ){
+
+                            $bus_course[$key_1]['bus_stop'] = $this->m_bus_course_model->getData_Bus_stop_by_id( $value_1['id'] );
                         }
+                        $result[$key]['bus_course'] =  $bus_course ;
                     }
                 }
             }
-            else
-            {
-                $html_2 = '<option  > データがありません。 </option>';
-                $html_8 = '<option  > データがありません。 </option>';
-                $html_5 = '<option  > データがありません。 </option>';
-                $html_11 = '<option > データがありません。 </option>';
-            }
-
-            $result['html_bus_course'] = $html_0.$html_1.$html_2.$html_3.$html_4.$html_5.$html_6.$html_7.$html_8.$html_9.$html_10.$html_11.$html_12;
         }
-        echo json_encode( $result );
+        
+
+        if( count( $result ) == 0  ) goto end;
+
+        
+        $config = $this->configVar;
+        $week = $config['week_num'];
+        $index_bus = 0;
+        
+        foreach( $result as $key => $value ){
+
+            $_class_base = $value['class_base'];
+            $class_id = $_class_base['class_id'];
+            $class_name = $_class_base['class_name'];
+            $base_class_sign =  $_class_base['base_sign_class'];
+            $class_code = $_class_base['class_code'];
+            $week_num = $_class_base['week_num'];
+            $select_bus = '';
+            
+            if( $is_label_class )
+            {
+                $html_label  = '<label  class="col-sm-2 control-label sub_class_join" ';
+                $html_label .= 'data-class="' . $base_class_sign . '-' . $week_num . '" data-id="' . $class_id . '">' . $class_code .' </label>';
+                $_html['html_label_class_join'][] =  $html_label;
+            }
+            
+            if( isset( $value['bus_course'] ) )
+            {
+                $_bus_course = $value['bus_course'];
+                $index = random_string('md5', RANDOM_STRING_LENGTH );
+                $html = array();
+
+                $html[] ='<div class="element_bus_course" data-sign="'.$base_class_sign.'-'.$week_num.'" data-id="'.$class_id.'"><div for="" class"col-sm-2 control-label " id="classnameforbus">'.$week[$week_num].'<br>('.$class_name.')</div>';
+                $html[] ='<div class="form-group">
+                        <label for="" class="col-sm-2 control-label">行き</label>
+                        <div class="col-sm-5">
+                        <select class="form-control bus_course" name="bus_course_go_'.$index.'" onchange="changeBuscoure(this)">';
+                $html[] ='';
+                $html[] ='</select>
+                        </div>';
+                $html[] ='<div class="col-sm-5">
+                        <select class="form-control bus_stop" name="bus_stop_go_'.$index.'" >';
+                $html[] = '';
+                $html[] ='</select>
+                        </div>
+                        </div>';
+                $html[] = '<div class="form-group">
+                        <label for="" class="col-sm-2 control-label">帰り</label>
+                        <div class="col-sm-5">
+                        <select class="form-control bus_course" name="bus_course_ret_'.$index.'" onchange="changeBuscoure(this)">';
+                $html[]= '';
+                $html[] = '</select>
+                            </div>';
+                $html[]= '<div class="col-sm-5">
+                        <select class="form-control bus_stop" name="bus_stop_ret_'.$index.'" >';
+                $html[] = '';
+                $html[] = '</select></div></div></div>';
+
+                foreach ( $_bus_course as $key_1 => $value_1 ) {
+                    $selected = '';
+
+                    if( $key_1 == 0 ) $selected ="seleceted";
+
+                    $html[2].= '<option value='.$value_1['id'].' '.$selected.' >'.$value_1['bus_course_name'].'</option>';
+                    $html[8].= '<option value='.$value_1['id'].'>'.$value_1['bus_course_name'].'</option>';
+
+                    if( count( $value_1['bus_stop'] ) > 0)
+                    {
+                        foreach( $value_1['bus_stop'] as $subkey => $subvalue )
+                        {
+                            if( $key_1 == 0 )
+                            {
+                                $html[5].= '<option value='.$subvalue['bus_stop_id'].'>【'.$subvalue['bus_stop_code'].'】'.$subvalue['bus_stop_name'].'</option>';
+                                $html[11].= '<option value='.$subvalue['bus_stop_id'].'>【'.$subvalue['bus_stop_code'].'】'.$subvalue['bus_stop_name'].'</option>';
+                            }
+                        }
+                    }          
+                }
+
+                foreach($html  as $item )
+                    $select_bus .= $item ;
+
+                if( $index_bus == 0 &&  count( $result ) > 1)
+                {
+                    $set_same  = '<div class="checkbox ml-1" id="set_same"><label style="margin: 0px auto 10px 142px;padding-top: 0px;" onclick ="check_set_same()">';
+                    $set_same .= '<input type="checkbox" id = "check_set_same">'; 
+                    $set_same .= '<small>上記と同じ設定をする</small></label></div>';
+                    $select_bus .= $set_same;
+                    $_html['has_set_same'] = true; 
+                }
+                $index_bus ++;
+
+                $_html['html_bus_course'][] = $select_bus;
+            }
+        }
+        end:
+        return $_html;
+    }
+
+    public function add_click_view()
+    {
+        if( !isset( $_POST['classes'] ) ) { 
+            echo '';
+            exit(); 
+        }
+        $_html = $this->create_html( $_POST['classes'] );
+        echo json_encode(  $_html );
+        exit();    
+    }
+
+    public function swich_bus_flg_view()
+    {
+        if( !isset( $_POST['classes'] ) ) { 
+            echo '';
+            exit(); 
+        }
+
+        $_html = $this->create_html( $_POST['classes'] , false );
+        echo json_encode(  $_html );
+
         exit();       
     }
     //END DEV BAO VV_JSC
